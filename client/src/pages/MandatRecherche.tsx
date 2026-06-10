@@ -3,7 +3,7 @@ import { useSearchParams } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
-const LOGO_URL = "https://cdn-assets.manus.space/webdev/dS69FocN6akHjQivURfVvd/logo-sigma.png";
+const LOGO_URL = "/logo-sigma.png";
 const LOGO_SNPI_URL = "https://upload.wikimedia.org/wikipedia/fr/thumb/8/8e/Logo_SNPI.svg/200px-Logo_SNPI.svg.png";
 
 // ─── Utilitaire : nombre en lettres (français, simplifié) ─────────────────────

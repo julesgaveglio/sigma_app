@@ -1,70 +1,101 @@
-// Preconfigured storage helpers for Manus WebDev templates
-// Uses the Biz-provided storage proxy (Authorization: Bearer <token>)
+// Storage abstraction – supports S3 (production) or local filesystem (development)
+// The interface (storagePut / storageGet) is unchanged so callers don't need updates.
 
-import { ENV } from './_core/env';
+import { ENV } from "./_core/env";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import fs from "fs";
+import path from "path";
 
-type StorageConfig = { baseUrl: string; apiKey: string };
+// ─── S3 BACKEND ──────────────────────────────────────────────────────────────
 
-function getStorageConfig(): StorageConfig {
-  const baseUrl = ENV.forgeApiUrl;
-  const apiKey = ENV.forgeApiKey;
+let _s3: S3Client | null = null;
 
-  if (!baseUrl || !apiKey) {
-    throw new Error(
-      "Storage proxy credentials missing: set BUILT_IN_FORGE_API_URL and BUILT_IN_FORGE_API_KEY"
-    );
+function getS3Client(): S3Client {
+  if (!_s3) {
+    _s3 = new S3Client({
+      region: ENV.s3Region || "eu-west-3",
+      ...(ENV.s3Endpoint ? { endpoint: ENV.s3Endpoint, forcePathStyle: true } : {}),
+      credentials: {
+        accessKeyId: ENV.s3AccessKeyId,
+        secretAccessKey: ENV.s3SecretAccessKey,
+      },
+    });
   }
-
-  return { baseUrl: baseUrl.replace(/\/+$/, ""), apiKey };
+  return _s3;
 }
 
-function buildUploadUrl(baseUrl: string, relKey: string): URL {
-  const url = new URL("v1/storage/upload", ensureTrailingSlash(baseUrl));
-  url.searchParams.set("path", normalizeKey(relKey));
-  return url;
-}
-
-async function buildDownloadUrl(
-  baseUrl: string,
-  relKey: string,
-  apiKey: string
-): Promise<string> {
-  const downloadApiUrl = new URL(
-    "v1/storage/downloadUrl",
-    ensureTrailingSlash(baseUrl)
-  );
-  downloadApiUrl.searchParams.set("path", normalizeKey(relKey));
-  const response = await fetch(downloadApiUrl, {
-    method: "GET",
-    headers: buildAuthHeaders(apiKey),
-  });
-  return (await response.json()).url;
-}
-
-function ensureTrailingSlash(value: string): string {
-  return value.endsWith("/") ? value : `${value}/`;
-}
-
-function normalizeKey(relKey: string): string {
-  return relKey.replace(/^\/+/, "");
-}
-
-function toFormData(
+async function s3Put(
+  key: string,
   data: Buffer | Uint8Array | string,
-  contentType: string,
-  fileName: string
-): FormData {
-  const blob =
-    typeof data === "string"
-      ? new Blob([data], { type: contentType })
-      : new Blob([data as any], { type: contentType });
-  const form = new FormData();
-  form.append("file", blob, fileName || "file");
-  return form;
+  contentType: string
+): Promise<{ key: string; url: string }> {
+  const client = getS3Client();
+  const bucket = ENV.s3Bucket;
+  const body = typeof data === "string" ? Buffer.from(data) : data;
+
+  await client.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: body,
+      ContentType: contentType,
+    })
+  );
+
+  // Generate a presigned URL valid for 7 days
+  const url = await getSignedUrl(
+    client,
+    new GetObjectCommand({ Bucket: bucket, Key: key }),
+    { expiresIn: 7 * 24 * 3600 }
+  );
+
+  return { key, url };
 }
 
-function buildAuthHeaders(apiKey: string): HeadersInit {
-  return { Authorization: `Bearer ${apiKey}` };
+async function s3Get(key: string): Promise<{ key: string; url: string }> {
+  const client = getS3Client();
+  const url = await getSignedUrl(
+    client,
+    new GetObjectCommand({ Bucket: ENV.s3Bucket, Key: key }),
+    { expiresIn: 7 * 24 * 3600 }
+  );
+  return { key, url };
+}
+
+// ─── LOCAL FILESYSTEM BACKEND (development) ──────────────────────────────────
+
+const LOCAL_STORAGE_DIR = path.resolve(process.cwd(), ".storage");
+
+function ensureLocalDir(filePath: string) {
+  const dir = path.dirname(filePath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
+
+async function localPut(
+  key: string,
+  data: Buffer | Uint8Array | string,
+  _contentType: string
+): Promise<{ key: string; url: string }> {
+  const filePath = path.join(LOCAL_STORAGE_DIR, key);
+  ensureLocalDir(filePath);
+  const body = typeof data === "string" ? Buffer.from(data) : Buffer.from(data);
+  fs.writeFileSync(filePath, body);
+  // Serve via Express static route /storage/*
+  const url = `/storage/${key}`;
+  return { key, url };
+}
+
+async function localGet(key: string): Promise<{ key: string; url: string }> {
+  return { key, url: `/storage/${key}` };
+}
+
+// ─── PUBLIC API (unchanged interface) ────────────────────────────────────────
+
+function useS3(): boolean {
+  return Boolean(ENV.s3Bucket && ENV.s3AccessKeyId && ENV.s3SecretAccessKey);
 }
 
 export async function storagePut(
@@ -72,31 +103,19 @@ export async function storagePut(
   data: Buffer | Uint8Array | string,
   contentType = "application/octet-stream"
 ): Promise<{ key: string; url: string }> {
-  const { baseUrl, apiKey } = getStorageConfig();
-  const key = normalizeKey(relKey);
-  const uploadUrl = buildUploadUrl(baseUrl, key);
-  const formData = toFormData(data, contentType, key.split("/").pop() ?? key);
-  const response = await fetch(uploadUrl, {
-    method: "POST",
-    headers: buildAuthHeaders(apiKey),
-    body: formData,
-  });
-
-  if (!response.ok) {
-    const message = await response.text().catch(() => response.statusText);
-    throw new Error(
-      `Storage upload failed (${response.status} ${response.statusText}): ${message}`
-    );
+  const key = relKey.replace(/^\/+/, "");
+  if (useS3()) {
+    return s3Put(key, data, contentType);
   }
-  const url = (await response.json()).url;
-  return { key, url };
+  return localPut(key, data, contentType);
 }
 
-export async function storageGet(relKey: string): Promise<{ key: string; url: string; }> {
-  const { baseUrl, apiKey } = getStorageConfig();
-  const key = normalizeKey(relKey);
-  return {
-    key,
-    url: await buildDownloadUrl(baseUrl, key, apiKey),
-  };
+export async function storageGet(
+  relKey: string
+): Promise<{ key: string; url: string }> {
+  const key = relKey.replace(/^\/+/, "");
+  if (useS3()) {
+    return s3Get(key);
+  }
+  return localGet(key);
 }

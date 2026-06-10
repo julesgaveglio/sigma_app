@@ -109,5 +109,9 @@ temp/
 # Webdev artifacts (checkpoint zips, migrations, etc.)
 .webdev/
 
-# Manus version file (auto-generated, not part of source)
-client/public/__manus__/version.json
+# Local file storage (dev mode)
+.storage/
+
+# Manus artifacts (removed)
+.manus-logs/
+client/public/__manus__/

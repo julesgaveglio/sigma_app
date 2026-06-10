@@ -4,7 +4,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { CheckCircle, ChevronRight, ChevronLeft, Loader2, Plus, Trash2, Users, Home, BarChart3 } from "lucide-react";
 
-const LOGO_URL = "https://cdn-assets.manus.space/webdev/dS69FocN6akHjQivURfVvd/logo-sigma.png";
+const LOGO_URL = "/logo-sigma.png";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type PatrimoineItem = {

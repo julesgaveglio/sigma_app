@@ -75,7 +75,7 @@ export default function PortailMembreDemo() {
   const totalAttente  = DEMO_COMMISSIONS.filter(c => c.statut !== "paye" && c.statut !== "annule").reduce((s, c) => s + c.montantHt, 0);
   const totalGeneral  = DEMO_COMMISSIONS.filter(c => c.statut !== "annule").reduce((s, c) => s + c.montantHt, 0);
 
-  const lienParrainage = `https://sigmacivil-ds69focn.manus.space/parrainage/${DEMO_AMBASSADEUR.codeParrain}`;
+  const lienParrainage = `/parrainage/${DEMO_AMBASSADEUR.codeParrain}`;
 
   const copyCode = () => {
     navigator.clipboard.writeText(DEMO_AMBASSADEUR.codeParrain).catch(() => {});

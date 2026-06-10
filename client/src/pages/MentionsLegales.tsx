@@ -87,10 +87,10 @@ export default function MentionsLegales() {
           <table style={{ width: "100%", borderCollapse: "collapse", color: "#aaa", fontSize: "14px" }}>
             <tbody>
               {[
-                ["Société", "Manus AI Inc."],
-                ["Site web", "manus.im"],
-                ["Contact", "https://help.manus.im"],
-                ["Localisation des serveurs", "États-Unis (us-east)"],
+                ["Société", "À définir"],
+                ["Site web", "sigmafactory.fr"],
+                ["Contact", "contact@sigmafactory.fr"],
+                ["Localisation des serveurs", "Europe (eu-west)"],
               ].map(([label, value]) => (
                 <tr key={label} style={{ borderBottom: "1px solid #222" }}>
                   <td style={{ padding: "8px 12px 8px 0", fontWeight: 600, color: "#ccc", whiteSpace: "nowrap" }}>{label}</td>

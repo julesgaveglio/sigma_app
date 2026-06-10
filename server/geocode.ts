@@ -1,6 +1,6 @@
 /**
  * Helper de géocodage côté serveur
- * Utilise le proxy Google Maps Manus pour convertir une adresse en coordonnées GPS
+ * Utilise l'API Google Maps directement pour convertir une adresse en coordonnées GPS
  */
 import { makeRequest } from "./_core/map";
 
