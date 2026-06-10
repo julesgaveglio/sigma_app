@@ -139,12 +139,12 @@ export const ambassadeursRouter = router({
         await db.insert(allowedEmails).values({
           email: data.email.toLowerCase(),
           nom: `${data.prenom} ${data.nom}`,
-          role: "user",
+          role: "agent",
           actif: true,
         });
       } else {
         await db.update(allowedEmails)
-          .set({ actif: true })
+          .set({ role: "agent", actif: true })
           .where(eq(allowedEmails.email, data.email.toLowerCase()));
       }
 
