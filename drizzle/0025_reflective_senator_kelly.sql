@@ -1,0 +1,1 @@
+ALTER TABLE `crm_leads` ADD `mandatSignePdfUrl` varchar(1024);

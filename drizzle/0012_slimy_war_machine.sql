@@ -1,0 +1,2 @@
+ALTER TABLE `allowed_emails` MODIFY COLUMN `role` enum('user','admin','direction','agent','courtier') NOT NULL DEFAULT 'user';--> statement-breakpoint
+ALTER TABLE `users` MODIFY COLUMN `role` enum('user','admin','direction','agent','courtier') NOT NULL DEFAULT 'user';

@@ -1,0 +1,1 @@
+ALTER TABLE `crm_leads` MODIFY COLUMN `etape` enum('welcome_call','sigma_cash','sigma_credit','point_personnalise','courtage','recherche_bien') NOT NULL DEFAULT 'welcome_call';

@@ -1,0 +1,1 @@
+ALTER TABLE `demandes` ADD `soumis_par_client` tinyint DEFAULT 0 NOT NULL;

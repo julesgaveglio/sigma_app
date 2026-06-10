@@ -1,0 +1,2 @@
+ALTER TABLE `calendar_tasks` MODIFY COLUMN `assigneA` enum('Maria','Manon','Elodie','Hanna','Marie') NOT NULL;--> statement-breakpoint
+ALTER TABLE `notifications` MODIFY COLUMN `destinataire` enum('Maria','Manon','Elodie','Hanna','Marie','Owner') NOT NULL;

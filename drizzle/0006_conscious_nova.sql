@@ -1,0 +1,1 @@
+ALTER TABLE `ambassadeurs` ADD `parrainCourtierId` int;

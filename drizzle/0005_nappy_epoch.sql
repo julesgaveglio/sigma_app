@@ -1,0 +1,22 @@
+CREATE TABLE `hexa_dossiers` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`civilite` enum('M.','Mme','Mme M.','M. Mme'),
+	`nom` varchar(128) NOT NULL,
+	`prenom` varchar(128) NOT NULL,
+	`email` varchar(320) NOT NULL,
+	`mobile` varchar(32),
+	`fixe` varchar(32),
+	`adresse` varchar(256) NOT NULL,
+	`codePostal` varchar(10) NOT NULL,
+	`ville` varchar(128) NOT NULL,
+	`paysNaissance` varchar(128) NOT NULL,
+	`villeNaissance` varchar(128) NOT NULL,
+	`montant` int NOT NULL,
+	`statut` enum('nouveau','en_cours','lien_envoye','paiement_recu','annule') NOT NULL DEFAULT 'nouveau',
+	`notesInternes` text,
+	`assigneA` varchar(128),
+	`lienPaiement` text,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `hexa_dossiers_id` PRIMARY KEY(`id`)
+);
