@@ -4,14 +4,12 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { FileText, HeadphonesIcon, LogOut, Search, Coins, GitBranch, CalendarDays, Bell, CheckCheck, X, Filter, Users, Euro, TrendingUp, MessageSquarePlus, ShieldCheck, Building2, Home, Menu, Gem, Star } from "lucide-react";
 
-const LOGO_FULL = "https://d2xsxph8kpxj0f.cloudfront.net/110243537/dS69FocN6akHjQivURfVvd/sigma-logo-full_c217e268.png";
-
 const NAV_ITEMS = [
   {
     href: "/dashboard",
-    label: "État Civil",
+    label: "Etat Civil",
     icon: FileText,
-    match: (path: string) => path === "/dashboard" || (path.startsWith("/dashboard") && !path.startsWith("/dashboard/mandats") && !path.startsWith("/dashboard/hexa") && !path.startsWith("/dashboard/pipeline") && !path.startsWith("/dashboard/courtage") && !path.startsWith("/dashboard/recherche-bien") && !path.startsWith("/dashboard/calendar") && !path.startsWith("/dashboard/customcare") && !path.startsWith("/dashboard/sigma-credit") && !path.startsWith("/dashboard/reseau") && !path.startsWith("/dashboard/commissions") && !path.startsWith("/dashboard/sales") && !path.startsWith("/dashboard/feedbacks") && !path.startsWith("/dashboard/admin") && !path.startsWith("/dashboard/avis-pipe")),
+    match: (path: string) => path === "/dashboard" || (path.startsWith("/dashboard") && !path.startsWith("/dashboard/mandats") && !path.startsWith("/dashboard/hexa") && !path.startsWith("/dashboard/pipeline") && !path.startsWith("/dashboard/courtage") && !path.startsWith("/dashboard/recherche-bien") && !path.startsWith("/dashboard/calendar") && !path.startsWith("/dashboard/customcare") && !path.startsWith("/dashboard/sigma-credit") && !path.startsWith("/dashboard/reseau") && !path.startsWith("/dashboard/commissions") && !path.startsWith("/dashboard/sales") && !path.startsWith("/dashboard/feedbacks") && !path.startsWith("/dashboard/admin") && !path.startsWith("/dashboard/avis-pipe") && !path.startsWith("/dashboard/off-market") && !path.startsWith("/dashboard/courtiers") && !path.startsWith("/dashboard/portail") && !path.startsWith("/dashboard/courtier") && !path.startsWith("/dashboard/matching")),
   },
   {
     href: "/dashboard/customcare",
@@ -27,7 +25,7 @@ const NAV_ITEMS = [
   },
   {
     href: "/dashboard/sigma-credit",
-    label: "Sigma Crédit",
+    label: "Sigma Credit",
     icon: Coins,
     match: (path: string) => path.startsWith("/dashboard/sigma-credit"),
   },
@@ -57,7 +55,7 @@ const NAV_ITEMS = [
   },
   {
     href: "/dashboard/reseau",
-    label: "Réseau",
+    label: "Reseau",
     icon: Users,
     match: (path: string) => path.startsWith("/dashboard/reseau") || path.startsWith("/ambassadeur"),
   },
@@ -87,13 +85,13 @@ const NAV_ITEMS = [
   },
   {
     href: "/dashboard/avis-pipe",
-    label: "Avis & Témoignages",
+    label: "Avis",
     icon: Star,
     match: (path: string) => path.startsWith("/dashboard/avis-pipe"),
   },
   {
     href: "/dashboard/admin/whitelist",
-    label: "Accès",
+    label: "Acces",
     icon: ShieldCheck,
     adminOnly: true,
     match: (path: string) => path.startsWith("/dashboard/admin"),
@@ -102,18 +100,10 @@ const NAV_ITEMS = [
 
 const TYPE_LABELS: Record<string, string> = {
   nouveau_lead: "Nouveau lead",
-  changement_etape: "Étape modifiée",
+  changement_etape: "Etape modifiee",
   nouvelle_note: "Nouvelle note",
-  nouvelle_tache: "Nouvelle tâche",
+  nouvelle_tache: "Nouvelle tache",
   rappel_rdv: "Rappel RDV",
-};
-
-const TYPE_COLORS: Record<string, string> = {
-  nouveau_lead: "text-emerald-400",
-  changement_etape: "text-blue-400",
-  nouvelle_note: "text-yellow-400",
-  nouvelle_tache: "text-purple-400",
-  rappel_rdv: "text-red-400",
 };
 
 const MEMBRES = ["Maria", "Manon", "Elodie", "Hanna", "Marie", "Owner"];
@@ -140,7 +130,6 @@ function NotificationPanel({ onClose, userMembre }: { onClose: () => void; userM
     markRead.mutate({ id: n.id });
     if (n.lien) {
       onClose();
-      // Navigation interne SPA pour éviter les 404 sur rechargement
       if (n.lien.startsWith("/")) {
         navigate(n.lien);
       } else {
@@ -152,56 +141,93 @@ function NotificationPanel({ onClose, userMembre }: { onClose: () => void; userM
   const notifsFiltrees = notifs.filter((n: any) => filtreMembre === "Owner" ? true : n.destinataire === filtreMembre);
 
   return (
-    <div className="absolute right-0 top-full mt-2 w-96 bg-[#1a1a1a] border border-zinc-700 rounded-xl shadow-2xl z-50 overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
+    <div className="absolute right-0 top-full mt-1" style={{
+      width: "380px",
+      background: "#111111",
+      border: "1px solid #1E1E1E",
+      borderRadius: "2px",
+      zIndex: 50,
+      overflow: "hidden",
+    }}>
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: "1px solid #1E1E1E" }}>
         <div className="flex items-center gap-2">
-          <Bell className="w-4 h-4 text-[#C9A84C]" />
-          <span className="text-sm font-semibold text-white">Notifications</span>
+          <Bell className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+          <span className="label-uppercase" style={{ color: "#F0EDE6", fontSize: "11px" }}>Notifications</span>
           {notifs.filter((n: any) => !n.lu).length > 0 && (
-            <span className="bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
+            <span style={{
+              background: "#C9A84C",
+              color: "#0A0A0A",
+              fontSize: "10px",
+              fontWeight: 600,
+              padding: "1px 6px",
+              borderRadius: "2px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+            }}>
               {notifs.filter((n: any) => !n.lu).length}
             </span>
           )}
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={() => markAll.mutate()} className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors" title="Tout marquer comme lu">
-            <CheckCheck className="w-4 h-4" />
+          <button onClick={() => markAll.mutate()} className="p-1.5 transition-opacity duration-300 hover:opacity-70" title="Tout marquer comme lu" style={{ color: "#6B6560" }}>
+            <CheckCheck className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </button>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
-            <X className="w-4 h-4" />
+          <button onClick={onClose} className="p-1.5 transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }}>
+            <X className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </button>
         </div>
       </div>
-      <div className="px-4 py-2 border-b border-zinc-800 flex items-center gap-2 flex-wrap">
-        <Filter className="w-3 h-3 text-zinc-500 shrink-0" />
+
+      {/* Filtres membres */}
+      <div className="px-5 py-2.5 flex items-center gap-2 flex-wrap" style={{ borderBottom: "1px solid #1E1E1E" }}>
+        <Filter className="w-3 h-3 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
         {MEMBRES.map((m) => (
           <button key={m} onClick={() => setFiltreMembre(m)}
-            className={`text-xs px-2.5 py-1 rounded-full font-medium transition-colors ${filtreMembre === m ? "text-black" : "text-zinc-400 hover:text-white bg-zinc-800"}`}
-            style={filtreMembre === m ? { background: "linear-gradient(135deg, #C9A84C, #F0D080)" } : {}}
+            className="transition-colors duration-300"
+            style={{
+              fontSize: "10px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontWeight: 500,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase" as const,
+              padding: "3px 8px",
+              borderRadius: "2px",
+              background: filtreMembre === m ? "#C9A84C" : "#161616",
+              color: filtreMembre === m ? "#0A0A0A" : "#6B6560",
+              border: `1px solid ${filtreMembre === m ? "#C9A84C" : "#1E1E1E"}`,
+            }}
           >{m}</button>
         ))}
       </div>
-      <div className="max-h-96 overflow-y-auto">
+
+      {/* Liste */}
+      <div style={{ maxHeight: "360px", overflowY: "auto" }}>
         {isLoading ? (
-          <div className="px-4 py-8 text-center text-zinc-500 text-sm">Chargement…</div>
+          <div className="px-5 py-8 text-center" style={{ color: "#3A3632", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>Chargement...</div>
         ) : notifsFiltrees.length === 0 ? (
-          <div className="px-4 py-8 text-center text-zinc-500 text-sm">Aucune notification</div>
+          <div className="px-5 py-8 text-center" style={{ color: "#3A3632", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>Aucune notification</div>
         ) : (
           notifsFiltrees.map((n: any) => (
-            <button key={n.id} className={`w-full text-left px-4 py-3 border-b border-zinc-800/50 hover:bg-zinc-800/50 transition-colors ${!n.lu ? "bg-zinc-800/30" : ""}`}
+            <button key={n.id} className="w-full text-left px-5 py-3 transition-colors duration-300"
+              style={{
+                borderBottom: "1px solid #151515",
+                background: !n.lu ? "#0D0D0D" : "transparent",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+              onMouseLeave={e => (e.currentTarget.style.background = !n.lu ? "#0D0D0D" : "transparent")}
               onClick={() => handleNotifClick(n)}
             >
-              <div className="flex items-start gap-2">
-                {!n.lu && <div className="w-2 h-2 rounded-full bg-[#C9A84C] mt-1.5 shrink-0" />}
+              <div className="flex items-start gap-2.5">
+                {!n.lu && <div className="w-1.5 h-1.5 mt-1.5 shrink-0" style={{ background: "#C9A84C", borderRadius: "1px" }} />}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                    <span className={`text-xs font-medium ${TYPE_COLORS[n.type] || "text-zinc-300"}`}>{TYPE_LABELS[n.type] || n.type}</span>
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#6B6560", letterSpacing: "0.04em", textTransform: "uppercase" as const }}>{TYPE_LABELS[n.type] || n.type}</span>
                     {n.destinataire && (
-                      <span className="text-[10px] bg-zinc-700 text-zinc-300 px-1.5 py-0.5 rounded-full">{n.destinataire}</span>
+                      <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", padding: "1px 5px", background: "#161616", borderRadius: "2px" }}>{n.destinataire}</span>
                     )}
                   </div>
-                  <p className="text-xs text-white font-medium truncate">{n.titre}</p>
-                  <p className="text-xs text-zinc-400 mt-0.5 line-clamp-2">{n.message}</p>
+                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{n.titre}</p>
+                  <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>{n.message}</p>
                 </div>
               </div>
             </button>
@@ -234,7 +260,6 @@ export default function AdminNav() {
   const { data: countByPageData } = trpc.notifications.countByPage.useQuery(undefined, { refetchInterval: 30000 });
   const countByPage = countByPageData ?? {};
 
-  // Fermer les panneaux en cliquant ailleurs
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) setShowNotifs(false);
@@ -248,62 +273,126 @@ export default function AdminNav() {
   const activeItem = visibleItems.find(item => item.match(location));
 
   return (
-    <div className="border-b border-zinc-800 bg-[#0f0f0f] sticky top-0 z-40">
-      <div className="max-w-screen-2xl mx-auto px-4 py-2.5 flex items-center gap-3">
+    <div className="sticky top-0 z-40" style={{ background: "#0A0A0A", borderBottom: "1px solid #1E1E1E" }}>
+      <div className="flex items-center gap-4 px-5 py-3" style={{ maxWidth: "1440px", margin: "0 auto" }}>
 
-        {/* Logo */}
-        <img src={LOGO_FULL} alt="Sigma Factory" className="h-6 object-contain shrink-0" />
-        <div className="h-5 w-px bg-zinc-700 shrink-0" />
+        {/* Wordmark */}
+        <span style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: "14px",
+          fontWeight: 700,
+          letterSpacing: "0.15em",
+          color: "#C9A84C",
+          textTransform: "uppercase" as const,
+          whiteSpace: "nowrap" as const,
+        }}>
+          SIGMA
+        </span>
 
-        {/* Page active (label courant) */}
+        <div style={{ width: "1px", height: "16px", background: "#1E1E1E" }} />
+
+        {/* Page active */}
         {activeItem && (
-          <div className="flex items-center gap-1.5 text-sm font-semibold shrink-0" style={{ color: "#C9A84C" }}>
-            <activeItem.icon className="w-4 h-4" />
-            <span>{activeItem.label}</span>
+          <div className="flex items-center gap-2" style={{ color: "#F0EDE6" }}>
+            <activeItem.icon className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+            <span style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "12px",
+              fontWeight: 500,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase" as const,
+            }}>
+              {activeItem.label}
+            </span>
           </div>
         )}
 
-        {/* Spacer */}
         <div className="flex-1" />
 
         {/* Notifications */}
         <div className="relative shrink-0" ref={notifRef}>
           <button
             onClick={() => { setShowNotifs(v => !v); setShowMenu(false); }}
-            className="relative flex items-center justify-center w-9 h-9 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+            className="relative flex items-center justify-center w-8 h-8 transition-opacity duration-300 hover:opacity-70"
             title="Notifications"
+            style={{ color: "#6B6560" }}
           >
-            <Bell className="w-5 h-5" />
+            <Bell className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             {unreadCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
-                {unreadCount > 9 ? "9+" : unreadCount}
+              <span style={{
+                position: "absolute",
+                top: "0",
+                right: "0",
+                background: "#C9A84C",
+                color: "#0A0A0A",
+                fontSize: "9px",
+                fontWeight: 700,
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                width: "14px",
+                height: "14px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "2px",
+              }}>
+                {unreadCount > 9 ? "+" : unreadCount}
               </span>
             )}
           </button>
           {showNotifs && <NotificationPanel onClose={() => setShowNotifs(false)} userMembre={userMembre} />}
         </div>
 
-        {/* Utilisateur connecté */}
+        {/* User */}
         {user && (
-          <span className="text-zinc-500 text-xs hidden md:block truncate max-w-[120px] shrink-0">
+          <span style={{
+            color: "#3A3632",
+            fontSize: "11px",
+            fontFamily: "'Hanken Grotesk', sans-serif",
+            letterSpacing: "0.02em",
+            maxWidth: "120px",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap" as const,
+          }} className="hidden md:block">
             {user.name ?? user.email}
           </span>
         )}
 
-        {/* Menu hamburger */}
+        {/* Menu */}
         <div className="relative shrink-0" ref={menuRef}>
           <button
             onClick={() => { setShowMenu(v => !v); setShowNotifs(false); }}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 text-sm transition-colors"
+            className="flex items-center gap-2 px-3 py-1.5 transition-colors duration-300"
             title="Navigation"
+            style={{
+              color: "#6B6560",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              background: "transparent",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
           >
-            <Menu className="w-5 h-5" />
-            <span className="hidden sm:block text-xs font-medium">Menu</span>
+            <Menu className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+            <span className="hidden sm:block" style={{
+              fontSize: "11px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontWeight: 500,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase" as const,
+            }}>Menu</span>
           </button>
 
-          {/* Dropdown menu */}
           {showMenu && (
-            <div className="absolute right-0 top-full mt-2 w-64 bg-[#1a1a1a] border border-zinc-700 rounded-xl shadow-2xl z-50 overflow-hidden py-1">
+            <div className="absolute right-0 top-full mt-1" style={{
+              width: "240px",
+              background: "#111111",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              zIndex: 50,
+              overflow: "hidden",
+              padding: "4px 0",
+            }}>
               {visibleItems.map((item) => {
                 const active = item.match(location);
                 const notifCount = countByPage[item.href] ?? 0;
@@ -312,30 +401,55 @@ export default function AdminNav() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setShowMenu(false)}
-                    className={`flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors ${
-                      active
-                        ? "text-black"
-                        : "text-zinc-300 hover:text-white hover:bg-zinc-800"
-                    }`}
-                    style={active ? { background: "linear-gradient(135deg, #C9A84C, #F0D080)" } : {}}
+                    className="flex items-center gap-3 px-4 py-2 transition-colors duration-300"
+                    style={{
+                      fontSize: "12px",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      fontWeight: active ? 500 : 400,
+                      letterSpacing: "0.02em",
+                      color: active ? "#C9A84C" : "#6B6560",
+                      background: active ? "#161616" : "transparent",
+                      textDecoration: "none",
+                      borderLeft: active ? "2px solid #C9A84C" : "2px solid transparent",
+                    }}
+                    onMouseEnter={e => { if (!active) { e.currentTarget.style.color = "#F0EDE6"; e.currentTarget.style.background = "#161616"; }}}
+                    onMouseLeave={e => { if (!active) { e.currentTarget.style.color = "#6B6560"; e.currentTarget.style.background = "transparent"; }}}
                   >
-                    <item.icon className="w-4 h-4 shrink-0" />
+                    <item.icon className="w-3.5 h-3.5 shrink-0" style={{ strokeWidth: 1.5 }} />
                     <span className="flex-1">{item.label}</span>
                     {notifCount > 0 && (
-                      <span className={`text-[10px] rounded-full px-1.5 py-0.5 min-w-[20px] text-center font-bold ${active ? "bg-black/20 text-black" : "bg-red-500 text-white"}`}>
+                      <span style={{
+                        fontSize: "9px",
+                        fontWeight: 600,
+                        fontFamily: "'Hanken Grotesk', sans-serif",
+                        padding: "1px 5px",
+                        borderRadius: "2px",
+                        background: active ? "#C9A84C" : "#1E1E1E",
+                        color: active ? "#0A0A0A" : "#6B6560",
+                      }}>
                         {notifCount > 9 ? "9+" : notifCount}
                       </span>
                     )}
                   </a>
                 );
               })}
-              <div className="border-t border-zinc-800 mt-1 pt-1">
+              <div style={{ borderTop: "1px solid #1E1E1E", marginTop: "4px", paddingTop: "4px" }}>
                 <button
                   onClick={() => logoutMutation.mutate()}
-                  className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors w-full text-left"
+                  className="flex items-center gap-3 px-4 py-2 w-full text-left transition-colors duration-300"
+                  style={{
+                    fontSize: "12px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    color: "#3A3632",
+                    background: "transparent",
+                    border: "none",
+                    borderLeft: "2px solid transparent",
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.color = "#A04040"; e.currentTarget.style.background = "#161616"; }}
+                  onMouseLeave={e => { e.currentTarget.style.color = "#3A3632"; e.currentTarget.style.background = "transparent"; }}
                 >
-                  <LogOut className="w-4 h-4 shrink-0" />
-                  <span>Déconnexion</span>
+                  <LogOut className="w-3.5 h-3.5 shrink-0" style={{ strokeWidth: 1.5 }} />
+                  <span>Deconnexion</span>
                 </button>
               </div>
             </div>

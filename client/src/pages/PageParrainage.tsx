@@ -28,162 +28,518 @@ export default function PageParrainage() {
   const goCourtier = () => navigate(`/inscription-courtier?parrain=${encodeURIComponent(code)}`);
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <header className="border-b border-[#C9A84C]/20 bg-[#0d0d0d]">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen" style={{ background: "#0A0A0A", color: "#F0EDE6" }}>
+
+      {/* ── Header ── */}
+      <header style={{
+        borderBottom: "1px solid #1E1E1E",
+        background: "#0A0A0A",
+      }}>
+        <div style={{
+          maxWidth: "1280px",
+          margin: "0 auto",
+          padding: "20px 24px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
           <div>
-            <h1 className="text-2xl font-black tracking-widest">
-              SIGMA <span className="text-[#C9A84C]">FACTORY</span>
+            <h1 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "22px",
+              fontWeight: 700,
+              letterSpacing: "0.2em",
+              lineHeight: 1,
+              color: "#F0EDE6",
+              margin: 0,
+              textTransform: "uppercase" as const,
+            }}>
+              SIGMA FACTORY
             </h1>
-            <p className="text-xs text-gray-500 tracking-widest mt-0.5">CONSEIL EN IMMOBILIER &amp; FINANCEMENT</p>
+            <p style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "10px",
+              color: "#3A3632",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase" as const,
+              marginTop: "4px",
+            }}>
+              Conseil en immobilier & financement
+            </p>
           </div>
-          <div className="text-right">
-            <div className="text-[#C9A84C] font-bold text-sm">PROGRAMME D'AFFILIATION</div>
-            <div className="text-gray-500 text-xs">Invitation personnelle</div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "11px",
+              fontWeight: 500,
+              color: "#C9A84C",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase" as const,
+            }}>
+              Programme d'affiliation
+            </div>
+            <div style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "12px",
+              color: "#6B6560",
+              marginTop: "2px",
+            }}>
+              Invitation personnelle
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Bloc parrain */}
-      <div className="bg-[#0d0d0d] border-b border-[#C9A84C]/20 py-10 px-6">
-        <div className="max-w-3xl mx-auto text-center">
+      {/* ── Bloc parrain ── */}
+      <div style={{
+        borderBottom: "1px solid #1E1E1E",
+        padding: "48px 24px",
+      }}>
+        <div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center" }}>
           {isLoading ? (
-            <div className="animate-pulse text-gray-500">Chargement...</div>
+            <div style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "13px",
+              color: "#6B6560",
+            }}>
+              Chargement...
+            </div>
           ) : parrain ? (
             <>
-              <div className="inline-flex items-center gap-2 bg-[#C9A84C]/10 border border-[#C9A84C]/30 text-[#C9A84C] text-sm px-4 py-2 rounded-full mb-4">
-                <CheckCircle size={14} />
-                Invitation validée
+              <div style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                background: "#111111",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                padding: "8px 16px",
+                marginBottom: "20px",
+              }}>
+                <CheckCircle size={14} style={{ color: "#4A7A5A" }} />
+                <span style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "12px",
+                  color: "#4A7A5A",
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                }}>
+                  Invitation validee
+                </span>
               </div>
-              <h2 className="text-3xl font-black text-white mb-2">
-                {parrain.nom} vous invite à rejoindre le réseau
+              <h2 style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "28px",
+                fontWeight: 600,
+                color: "#F0EDE6",
+                letterSpacing: "0.04em",
+                marginBottom: "8px",
+              }}>
+                {parrain.nom} vous invite a rejoindre le reseau
               </h2>
-              <p className="text-gray-400 mb-4">
+              <p style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "14px",
+                color: "#6B6560",
+                marginBottom: "24px",
+                lineHeight: "1.6",
+              }}>
                 {parrain.type === "agent"
                   ? "Agent Immobilier Sigma Factory"
                   : parrain.type === "courtier"
                   ? "Courtier Partenaire Sigma Factory"
                   : "Sigma Factory"}
               </p>
-              <div className="inline-flex items-center gap-3 bg-zinc-900 border border-zinc-700 px-5 py-3 rounded-lg">
-                <span className="text-xs text-zinc-400">Code parrain :</span>
-                <span className="font-mono font-bold text-[#C9A84C] text-lg tracking-widest">{parrain.code}</span>
-                <button onClick={copyLink} className="text-zinc-400 hover:text-white transition-colors">
+              <div style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "12px",
+                background: "#111111",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                padding: "14px 20px",
+              }}>
+                <span style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "11px",
+                  color: "#6B6560",
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase" as const,
+                }}>
+                  Code parrain
+                </span>
+                <span style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  color: "#C9A84C",
+                  letterSpacing: "0.12em",
+                  fontVariantNumeric: "tabular-nums",
+                }}>
+                  {parrain.code}
+                </span>
+                <button
+                  onClick={copyLink}
+                  className="transition-opacity duration-300 ease-out hover:opacity-70"
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#6B6560",
+                    cursor: "pointer",
+                    padding: "0",
+                  }}
+                >
                   <Copy size={14} />
                 </button>
               </div>
             </>
           ) : code ? (
             <>
-              <div className="inline-flex items-center gap-2 bg-zinc-800 border border-zinc-700 text-zinc-400 text-sm px-4 py-2 rounded-full mb-4">
-                Code non reconnu
+              <div style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                background: "#111111",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                padding: "8px 16px",
+                marginBottom: "20px",
+              }}>
+                <span style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "12px",
+                  color: "#6B6560",
+                }}>
+                  Code non reconnu
+                </span>
               </div>
-              <h2 className="text-3xl font-black text-white mb-2">Rejoignez le réseau Sigma Factory</h2>
-              <p className="text-gray-400">Inscrivez-vous en tant qu'agent ou courtier partenaire.</p>
+              <h2 style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "28px",
+                fontWeight: 600,
+                color: "#F0EDE6",
+                letterSpacing: "0.04em",
+                marginBottom: "8px",
+              }}>
+                Rejoignez le reseau Sigma Factory
+              </h2>
+              <p style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "14px",
+                color: "#6B6560",
+                lineHeight: "1.6",
+              }}>
+                Inscrivez-vous en tant qu'agent ou courtier partenaire.
+              </p>
             </>
           ) : (
             <>
-              <h2 className="text-3xl font-black text-white mb-2">Rejoignez le réseau Sigma Factory</h2>
-              <p className="text-gray-400">Inscrivez-vous en tant qu'agent ou courtier partenaire.</p>
+              <h2 style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "28px",
+                fontWeight: 600,
+                color: "#F0EDE6",
+                letterSpacing: "0.04em",
+                marginBottom: "8px",
+              }}>
+                Rejoignez le reseau Sigma Factory
+              </h2>
+              <p style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "14px",
+                color: "#6B6560",
+                lineHeight: "1.6",
+              }}>
+                Inscrivez-vous en tant qu'agent ou courtier partenaire.
+              </p>
             </>
           )}
         </div>
       </div>
 
-      {/* Hero */}
-      <div className="max-w-5xl mx-auto px-6 py-16">
-        <div className="text-center mb-14">
-          <h3 className="text-4xl font-black mb-4">
-            Un réseau d'affiliation <span className="text-[#C9A84C]">à 2 niveaux</span>
+      {/* ── Hero ── */}
+      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "64px 24px" }}>
+        <div style={{ textAlign: "center", marginBottom: "56px" }}>
+          <h3 style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: "32px",
+            fontWeight: 600,
+            color: "#F0EDE6",
+            letterSpacing: "0.04em",
+            marginBottom: "16px",
+          }}>
+            Un reseau d'affiliation a 2 niveaux
           </h3>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Rejoignez Sigma Factory et percevez des rétrocommissions sur chaque transaction de votre réseau.
+          <p style={{
+            fontFamily: "'Hanken Grotesk', sans-serif",
+            fontSize: "15px",
+            color: "#6B6560",
+            maxWidth: "560px",
+            margin: "0 auto",
+            lineHeight: "1.6",
+          }}>
+            Rejoignez Sigma Factory et percevez des retrocommissions sur chaque transaction de votre reseau.
           </p>
         </div>
 
-        {/* Avantages — 2 colonnes agent / courtier */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-14 max-w-4xl mx-auto">
+        {/* ── Avantages — 2 colonnes ── */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "24px",
+          maxWidth: "900px",
+          margin: "0 auto 56px",
+        }}>
           {/* Agent */}
-          <div className="bg-[#111] border border-[#C9A84C]/20 p-6 space-y-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Home className="w-5 h-5 text-[#C9A84C]" />
-              <span className="text-[#C9A84C] text-xs font-bold uppercase tracking-wider">Agent Immobilier</span>
+          <div style={{
+            background: "#111111",
+            border: "1px solid #1E1E1E",
+            borderRadius: "2px",
+            padding: "32px",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "24px" }}>
+              <Home size={16} style={{ color: "#6B6560" }} />
+              <span style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "11px",
+                fontWeight: 500,
+                color: "#6B6560",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase" as const,
+              }}>
+                Agent Immobilier
+              </span>
             </div>
             {[
-              { icon: TrendingUp, title: "50% des honoraires", desc: "Vous conservez 50% de chaque commission générée sur vos dossiers immobiliers." },
-              { icon: Users, title: "10% sur vos filleuls N1", desc: "Percevez 10% de rétrocommission sur chaque vente de vos filleuls directs." },
-              { icon: TrendingUp, title: "5% sur le réseau N2", desc: "Percevez 5% sur les ventes des filleuls de vos filleuls." },
+              { icon: TrendingUp, title: "50% des honoraires", desc: "Vous conservez 50% de chaque commission generee sur vos dossiers immobiliers." },
+              { icon: Users, title: "10% sur vos filleuls N1", desc: "Percevez 10% de retrocommission sur chaque vente de vos filleuls directs." },
+              { icon: TrendingUp, title: "5% sur le reseau N2", desc: "Percevez 5% sur les ventes des filleuls de vos filleuls." },
             ].map((item, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <item.icon className="w-4 h-4 text-[#C9A84C] mt-0.5 shrink-0" />
+              <div key={i} style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "12px",
+                marginBottom: i < 2 ? "20px" : "0",
+              }}>
+                <item.icon size={16} style={{ color: "#3A3632", marginTop: "2px", flexShrink: 0 }} />
                 <div>
-                  <p className="text-white font-semibold text-sm">{item.title}</p>
-                  <p className="text-gray-400 text-xs mt-0.5 leading-relaxed">{item.desc}</p>
+                  <p style={{
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    color: "#F0EDE6",
+                    marginBottom: "4px",
+                  }}>
+                    {item.title}
+                  </p>
+                  <p style={{
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontSize: "12px",
+                    color: "#6B6560",
+                    lineHeight: "1.6",
+                  }}>
+                    {item.desc}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
+
           {/* Courtier */}
-          <div className="bg-[#111] border border-[#C9A84C]/20 p-6 space-y-4">
-            <div className="flex items-center gap-2 mb-2">
-              <CreditCard className="w-5 h-5 text-[#C9A84C]" />
-              <span className="text-[#C9A84C] text-xs font-bold uppercase tracking-wider">Courtier Partenaire</span>
+          <div style={{
+            background: "#111111",
+            border: "1px solid #1E1E1E",
+            borderRadius: "2px",
+            padding: "32px",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "24px" }}>
+              <CreditCard size={16} style={{ color: "#6B6560" }} />
+              <span style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "11px",
+                fontWeight: 500,
+                color: "#6B6560",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase" as const,
+              }}>
+                Courtier Partenaire
+              </span>
             </div>
             {[
-              { icon: TrendingUp, title: "75% des honoraires", desc: "Vous conservez 75% de chaque commission générée sur vos dossiers de financement." },
-              { icon: Users, title: "10% sur vos filleuls N1", desc: "Percevez 10% de rétrocommission sur chaque dossier de vos filleuls directs." },
-              { icon: TrendingUp, title: "5% sur le réseau N2", desc: "Percevez 5% sur les dossiers des filleuls de vos filleuls." },
+              { icon: TrendingUp, title: "75% des honoraires", desc: "Vous conservez 75% de chaque commission generee sur vos dossiers de financement." },
+              { icon: Users, title: "10% sur vos filleuls N1", desc: "Percevez 10% de retrocommission sur chaque dossier de vos filleuls directs." },
+              { icon: TrendingUp, title: "5% sur le reseau N2", desc: "Percevez 5% sur les dossiers des filleuls de vos filleuls." },
             ].map((item, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <item.icon className="w-4 h-4 text-[#C9A84C] mt-0.5 shrink-0" />
+              <div key={i} style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: "12px",
+                marginBottom: i < 2 ? "20px" : "0",
+              }}>
+                <item.icon size={16} style={{ color: "#3A3632", marginTop: "2px", flexShrink: 0 }} />
                 <div>
-                  <p className="text-white font-semibold text-sm">{item.title}</p>
-                  <p className="text-gray-400 text-xs mt-0.5 leading-relaxed">{item.desc}</p>
+                  <p style={{
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    color: "#F0EDE6",
+                    marginBottom: "4px",
+                  }}>
+                    {item.title}
+                  </p>
+                  <p style={{
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontSize: "12px",
+                    color: "#6B6560",
+                    lineHeight: "1.6",
+                  }}>
+                    {item.desc}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+        {/* ── CTA ── */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "24px",
+          maxWidth: "640px",
+          margin: "0 auto",
+        }}>
           <button
             onClick={goAgent}
-            className="group bg-[#C9A84C] hover:bg-[#b8943e] text-black p-8 text-left transition-colors"
+            className="transition-opacity duration-300 ease-out"
+            style={{
+              background: "#C9A84C",
+              color: "#0A0A0A",
+              border: "none",
+              borderRadius: "2px",
+              padding: "32px 24px",
+              textAlign: "left",
+              cursor: "pointer",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = "0.9")}
+            onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
           >
-            <Home className="w-10 h-10 mb-4" />
-            <h4 className="text-xl font-black mb-2">Agent Immobilier</h4>
-            <p className="text-black/70 text-sm mb-4">
-              Soumettez des biens, accompagnez des clients et développez votre réseau d'agents.
+            <Home size={24} style={{ marginBottom: "16px" }} />
+            <h4 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "20px",
+              fontWeight: 600,
+              letterSpacing: "0.02em",
+              marginBottom: "8px",
+            }}>
+              Agent Immobilier
+            </h4>
+            <p style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "12px",
+              color: "rgba(10,10,10,0.6)",
+              lineHeight: "1.6",
+              marginBottom: "16px",
+            }}>
+              Soumettez des biens, accompagnez des clients et developpez votre reseau d'agents.
             </p>
-            <div className="flex items-center gap-2 font-bold text-sm">
-              Rejoindre en tant qu'agent <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "11px",
+              fontWeight: 500,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase" as const,
+            }}>
+              Rejoindre <ArrowRight size={14} />
             </div>
           </button>
 
           <button
             onClick={goCourtier}
-            className="group bg-[#111] border border-[#C9A84C]/40 hover:border-[#C9A84C] text-white p-8 text-left transition-colors"
+            className="transition-colors duration-300 ease-out"
+            style={{
+              background: "#111111",
+              color: "#F0EDE6",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              padding: "32px 24px",
+              textAlign: "left",
+              cursor: "pointer",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = "#C9A84C")}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
           >
-            <CreditCard className="w-10 h-10 mb-4 text-[#C9A84C]" />
-            <h4 className="text-xl font-black mb-2">Courtier Partenaire</h4>
-            <p className="text-gray-400 text-sm mb-4">
-              Apportez des dossiers de financement et percevez vos honoraires + rétrocommissions.
+            <CreditCard size={24} style={{ marginBottom: "16px", color: "#6B6560" }} />
+            <h4 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "20px",
+              fontWeight: 600,
+              letterSpacing: "0.02em",
+              marginBottom: "8px",
+            }}>
+              Courtier Partenaire
+            </h4>
+            <p style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "12px",
+              color: "#6B6560",
+              lineHeight: "1.6",
+              marginBottom: "16px",
+            }}>
+              Apportez des dossiers de financement et percevez vos honoraires + retrocommissions.
             </p>
-            <div className="flex items-center gap-2 font-bold text-sm text-[#C9A84C]">
-              Rejoindre en tant que courtier <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "11px",
+              fontWeight: 500,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase" as const,
+              color: "#6B6560",
+            }}>
+              Rejoindre <ArrowRight size={14} />
             </div>
           </button>
         </div>
 
-        {/* Sigma info */}
-        <div className="mt-14 border border-[#222] bg-[#111] p-6 flex items-start gap-4 max-w-2xl mx-auto">
-          <Shield className="w-6 h-6 text-[#C9A84C] shrink-0 mt-1" />
+        {/* ── Sigma info ── */}
+        <div style={{
+          marginTop: "56px",
+          background: "#111111",
+          border: "1px solid #1E1E1E",
+          borderRadius: "2px",
+          padding: "24px 28px",
+          display: "flex",
+          alignItems: "flex-start",
+          gap: "16px",
+          maxWidth: "640px",
+          margin: "56px auto 0",
+        }}>
+          <Shield size={20} style={{ color: "#3A3632", flexShrink: 0, marginTop: "2px" }} />
           <div>
-            <p className="text-white font-semibold text-sm">SIGMA FACTORY SAS</p>
-            <p className="text-gray-400 text-sm mt-1">
-              Capital 5 000 € — RCS Lyon 999 672 777 — Carte pro CPI69012026000000022 — CCI Lyon Métropole<br />
+            <p style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "11px",
+              fontWeight: 500,
+              color: "#6B6560",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase" as const,
+              marginBottom: "8px",
+            }}>
+              Sigma Factory SAS
+            </p>
+            <p style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "12px",
+              color: "#3A3632",
+              lineHeight: "1.8",
+            }}>
+              Capital 5 000 EUR — RCS Lyon 999 672 777 — Carte pro CPI69012026000000022 — CCI Lyon Metropole<br />
               12 Rue de la Part-Dieu, 69003 Lyon
             </p>
           </div>

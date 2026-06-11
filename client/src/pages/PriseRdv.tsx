@@ -92,6 +92,31 @@ export function PriseRdvPointPersonnalise() {
   return <PriseRdv presetType="point_personnalise" />;
 }
 
+/* ── Shared inline styles ── */
+const inputStyle: React.CSSProperties = {
+  background: "#161616",
+  border: "1px solid #1E1E1E",
+  borderRadius: "2px",
+  padding: "12px 14px",
+  color: "#F0EDE6",
+  fontSize: "14px",
+  fontFamily: "'Hanken Grotesk', sans-serif",
+  width: "100%",
+  outline: "none",
+  transition: "border-color 300ms ease",
+};
+
+const labelStyle: React.CSSProperties = {
+  fontFamily: "'Hanken Grotesk', sans-serif",
+  fontSize: "11px",
+  fontWeight: 500,
+  color: "#6B6560",
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  display: "block",
+  marginBottom: "8px",
+};
+
 export default function PriseRdv({ presetType }: PriseRdvProps) {
   const today = new Date();
   const [step, setStep] = useState<"type" | "date" | "info" | "confirm">(presetType ? "date" : "type");
@@ -200,35 +225,102 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
     });
   };
 
+  /* ── Confirmation screen ── */
   if (submitted) {
     const [h] = (selectedHeure ?? "").split(":");
     const dateStr = selectedDay
       ? new Date(calYear, calMonth, selectedDay).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
       : "";
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-6">
-        <div className="max-w-md w-full text-center space-y-6">
-          <div className="w-20 h-20 bg-[#C9A84C]/10 rounded-full flex items-center justify-center mx-auto">
-            <CheckCircle className="w-10 h-10 text-[#C9A84C]" />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A", padding: "24px" }}>
+        <div style={{ maxWidth: "420px", width: "100%", textAlign: "center" }}>
+          <div style={{
+            width: "64px",
+            height: "64px",
+            background: "#111111",
+            border: "1px solid #1E1E1E",
+            borderRadius: "2px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "0 auto 24px",
+          }}>
+            <CheckCircle size={28} style={{ color: "#4A7A5A" }} />
           </div>
-          <div>
-            <h1 className="text-2xl font-black text-white mb-2">Rendez-vous confirmé !</h1>
-            <p className="text-[#C9A84C] font-semibold text-sm tracking-widest uppercase">SIGMA FACTORY</p>
-          </div>
-          <div className="bg-[#111] border border-[#C9A84C]/30 p-5 text-left space-y-3">
-            <div className="flex items-center gap-3">
-              <Calendar className="w-4 h-4 text-[#C9A84C]" />
-              <span className="text-white text-sm">{dateStr}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Clock className="w-4 h-4 text-[#C9A84C]" />
-              <span className="text-white text-sm">{selectedHeure} — {selectedType?.label} ({selectedType?.duree})</span>
-            </div>
-          </div>
-          <p className="text-gray-400 text-sm">
-            Maria vous contactera à l'heure convenue. Un email de confirmation vous a été envoyé à <strong className="text-white">{form.email}</strong>.
+          <h1 style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: "24px",
+            fontWeight: 600,
+            color: "#F0EDE6",
+            letterSpacing: "0.04em",
+            marginBottom: "8px",
+          }}>
+            Rendez-vous confirme
+          </h1>
+          <p style={{
+            fontFamily: "'Hanken Grotesk', sans-serif",
+            fontSize: "11px",
+            fontWeight: 500,
+            color: "#6B6560",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase" as const,
+            marginBottom: "32px",
+          }}>
+            Sigma Factory
           </p>
-          <a href="/" className="inline-block text-[#C9A84C] text-sm hover:underline">← Retour à l'accueil</a>
+
+          <div style={{
+            background: "#111111",
+            border: "1px solid #1E1E1E",
+            borderRadius: "2px",
+            padding: "20px 24px",
+            textAlign: "left",
+            marginBottom: "24px",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+              <Calendar size={16} style={{ color: "#3A3632" }} />
+              <span style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "13px",
+                color: "#F0EDE6",
+              }}>
+                {dateStr}
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <Clock size={16} style={{ color: "#3A3632" }} />
+              <span style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "13px",
+                color: "#F0EDE6",
+              }}>
+                {selectedHeure} — {selectedType?.label} ({selectedType?.duree})
+              </span>
+            </div>
+          </div>
+
+          <p style={{
+            fontFamily: "'Hanken Grotesk', sans-serif",
+            fontSize: "13px",
+            color: "#6B6560",
+            lineHeight: "1.6",
+            marginBottom: "24px",
+          }}>
+            Maria vous contactera a l'heure convenue. Un email de confirmation vous a ete envoye a <strong style={{ color: "#F0EDE6" }}>{form.email}</strong>.
+          </p>
+          <a
+            href="/"
+            className="transition-opacity duration-300 ease-out hover:opacity-70"
+            style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "12px",
+              color: "#6B6560",
+              textDecoration: "none",
+              letterSpacing: "0.04em",
+            }}
+          >
+            Retour a l'accueil
+          </a>
         </div>
       </div>
     );
@@ -251,53 +343,151 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <div className="border-b border-[#C9A84C]/20 py-5 px-6">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
+    <div className="min-h-screen" style={{ background: "#0A0A0A", color: "#F0EDE6" }}>
+
+      {/* ── Header ── */}
+      <div style={{ borderBottom: "1px solid #1E1E1E", padding: "20px 24px" }}>
+        <div style={{
+          maxWidth: "720px",
+          margin: "0 auto",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
           <div>
-            <h1 className="text-xl font-black tracking-widest">SIGMA <span className="text-[#C9A84C]">FACTORY</span></h1>
-            <p className="text-xs text-gray-500 tracking-widest mt-0.5">CONSEIL EN IMMOBILIER & FINANCEMENT</p>
+            <h1 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "18px",
+              fontWeight: 700,
+              letterSpacing: "0.2em",
+              color: "#F0EDE6",
+              margin: 0,
+              textTransform: "uppercase" as const,
+            }}>
+              Sigma Factory
+            </h1>
+            <p style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "10px",
+              color: "#3A3632",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase" as const,
+              marginTop: "4px",
+            }}>
+              Conseil en immobilier & financement
+            </p>
           </div>
-          <div className="text-right">
-            <div className="text-[#C9A84C] font-bold text-sm">PRISE DE RENDEZ-VOUS</div>
-            <div className="text-gray-500 text-xs">avec Maria</div>
+          <div style={{ textAlign: "right" }}>
+            <div style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "11px",
+              fontWeight: 500,
+              color: "#6B6560",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase" as const,
+            }}>
+              Prise de rendez-vous
+            </div>
+            <div style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "12px",
+              color: "#3A3632",
+              marginTop: "2px",
+            }}>
+              avec Maria
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-6 py-10">
+      <div style={{ maxWidth: "720px", margin: "0 auto", padding: "48px 24px" }}>
 
-        {/* Étape 1 : Choix du type */}
+        {/* ── Etape 1 : Choix du type ── */}
         {step === "type" && (
-          <div className="space-y-8">
-            <div>
-              <h2 className="text-2xl font-black mb-2">Choisissez votre rendez-vous</h2>
-              <p className="text-gray-400">Sélectionnez le type d'échange avec Maria.</p>
+          <div>
+            <div style={{ marginBottom: "32px" }}>
+              <h2 style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "24px",
+                fontWeight: 600,
+                color: "#F0EDE6",
+                letterSpacing: "0.04em",
+                marginBottom: "8px",
+              }}>
+                Choisissez votre rendez-vous
+              </h2>
+              <p style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "14px",
+                color: "#6B6560",
+                lineHeight: "1.6",
+              }}>
+                Selectionnez le type d'echange avec Maria.
+              </p>
             </div>
-            <div className="grid gap-4">
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               {TYPE_RDV.map(t => {
                 const Icon = t.icon;
                 return (
                   <button
                     key={t.id}
                     onClick={() => { setTypeRdv(t.id as "welcome_call" | "point_personnalise"); setStep("date"); }}
-                    className={`w-full text-left border p-6 transition-all ${
-                      typeRdv === t.id
-                        ? "border-[#C9A84C] bg-[#C9A84C]/5"
-                        : "border-gray-800 bg-[#111] hover:border-[#C9A84C]/50"
-                    }`}
+                    className="transition-colors duration-300 ease-out"
+                    style={{
+                      width: "100%",
+                      textAlign: "left",
+                      background: "#111111",
+                      border: "1px solid #1E1E1E",
+                      borderRadius: "2px",
+                      padding: "24px",
+                      cursor: "pointer",
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = "#C9A84C")}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
                   >
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-[#C9A84C]/10 flex items-center justify-center shrink-0">
-                        <Icon className="w-5 h-5 text-[#C9A84C]" />
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
+                      <div style={{
+                        width: "40px",
+                        height: "40px",
+                        background: "#161616",
+                        border: "1px solid #1E1E1E",
+                        borderRadius: "2px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}>
+                        <Icon size={20} style={{ color: "#6B6560" }} />
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-bold text-white text-lg">{t.label}</span>
-                          <span className="text-[#C9A84C] text-sm font-mono">{t.duree}</span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
+                          <span style={{
+                            fontFamily: "'Cormorant Garamond', serif",
+                            fontSize: "18px",
+                            fontWeight: 600,
+                            color: "#F0EDE6",
+                            letterSpacing: "0.02em",
+                          }}>
+                            {t.label}
+                          </span>
+                          <span style={{
+                            fontFamily: "'Hanken Grotesk', sans-serif",
+                            fontSize: "12px",
+                            fontWeight: 500,
+                            color: "#3A3632",
+                            fontVariantNumeric: "tabular-nums",
+                          }}>
+                            {t.duree}
+                          </span>
                         </div>
-                        <p className="text-gray-400 text-sm">{t.description}</p>
+                        <p style={{
+                          fontFamily: "'Hanken Grotesk', sans-serif",
+                          fontSize: "13px",
+                          color: "#6B6560",
+                          lineHeight: "1.6",
+                        }}>
+                          {t.description}
+                        </p>
                       </div>
                     </div>
                   </button>
@@ -307,39 +497,83 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
           </div>
         )}
 
-        {/* Étape 2 : Choix de la date et heure */}
+        {/* ── Etape 2 : Choix de la date et heure ── */}
         {step === "date" && (
-          <div className="space-y-8">
-            <div className="flex items-center gap-3">
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "32px" }}>
               {!presetType && (
-                <button onClick={() => setStep("type")} className="text-gray-400 hover:text-white transition-colors">
-                  <ChevronLeft className="w-5 h-5" />
+                <button
+                  onClick={() => setStep("type")}
+                  className="transition-opacity duration-300 ease-out hover:opacity-70"
+                  style={{ background: "none", border: "none", color: "#6B6560", cursor: "pointer", padding: 0 }}
+                >
+                  <ChevronLeft size={20} />
                 </button>
               )}
               <div>
-                <h2 className="text-2xl font-black">Choisissez une date</h2>
-                <p className="text-[#C9A84C] text-sm font-semibold">{selectedType?.label} · {selectedType?.duree}</p>
+                <h2 style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: "24px",
+                  fontWeight: 600,
+                  color: "#F0EDE6",
+                  letterSpacing: "0.04em",
+                }}>
+                  Choisissez une date
+                </h2>
+                <p style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "12px",
+                  color: "#6B6560",
+                  marginTop: "4px",
+                }}>
+                  {selectedType?.label} — {selectedType?.duree}
+                </p>
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
               {/* Calendrier */}
               <div>
-                <div className="flex items-center justify-between mb-4">
-                  <button onClick={prevMonth} className="p-2 text-gray-400 hover:text-white transition-colors">
-                    <ChevronLeft className="w-4 h-4" />
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+                  <button
+                    onClick={prevMonth}
+                    className="transition-opacity duration-300 ease-out hover:opacity-70"
+                    style={{ background: "none", border: "none", color: "#6B6560", cursor: "pointer", padding: "4px" }}
+                  >
+                    <ChevronLeft size={16} />
                   </button>
-                  <span className="font-bold text-white">{MOIS[calMonth]} {calYear}</span>
-                  <button onClick={nextMonth} className="p-2 text-gray-400 hover:text-white transition-colors">
-                    <ChevronRight className="w-4 h-4" />
+                  <span style={{
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    color: "#F0EDE6",
+                  }}>
+                    {MOIS[calMonth]} {calYear}
+                  </span>
+                  <button
+                    onClick={nextMonth}
+                    className="transition-opacity duration-300 ease-out hover:opacity-70"
+                    style={{ background: "none", border: "none", color: "#6B6560", cursor: "pointer", padding: "4px" }}
+                  >
+                    <ChevronRight size={16} />
                   </button>
                 </div>
-                <div className="grid grid-cols-7 gap-1 mb-2">
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "2px", marginBottom: "8px" }}>
                   {["L", "M", "M", "J", "V", "S", "D"].map((j, i) => (
-                    <div key={i} className="text-center text-xs text-gray-500 py-1">{j}</div>
+                    <div key={i} style={{
+                      textAlign: "center",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      fontSize: "10px",
+                      fontWeight: 500,
+                      color: "#3A3632",
+                      letterSpacing: "0.04em",
+                      padding: "4px 0",
+                    }}>
+                      {j}
+                    </div>
                   ))}
                 </div>
-                <div className="grid grid-cols-7 gap-1">
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "2px" }}>
                   {Array.from({ length: firstDayAdj }).map((_, i) => <div key={`empty-${i}`} />)}
                   {Array.from({ length: daysInMonth }).map((_, i) => {
                     const day = i + 1;
@@ -354,13 +588,18 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                         key={day}
                         disabled={disabled}
                         onClick={() => { setSelectedDay(day); setSelectedHeure(null); }}
-                        className={`aspect-square text-sm font-medium transition-all ${
-                          disabled
-                            ? "text-gray-700 cursor-not-allowed"
-                            : selected
-                            ? "bg-[#C9A84C] text-black font-bold"
-                            : "text-white hover:bg-[#C9A84C]/20"
-                        }`}
+                        className="transition-colors duration-300 ease-out"
+                        style={{
+                          aspectRatio: "1",
+                          fontFamily: "'Hanken Grotesk', sans-serif",
+                          fontSize: "13px",
+                          fontWeight: selected ? 600 : 400,
+                          background: selected ? "#C9A84C" : "transparent",
+                          color: disabled ? "#1E1E1E" : selected ? "#0A0A0A" : "#F0EDE6",
+                          border: "none",
+                          borderRadius: "2px",
+                          cursor: disabled ? "not-allowed" : "pointer",
+                        }}
                       >
                         {day}
                       </button>
@@ -369,120 +608,261 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                 </div>
               </div>
 
-              {/* Créneaux horaires */}
+              {/* Creneaux horaires */}
               <div>
-                <p className="text-[#C9A84C]/60 text-xs mb-3 flex items-center gap-1">
-                  <span>🕐</span> Tous les horaires sont en heure de Paris (UTC+2)
+                <p style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "11px",
+                  color: "#3A3632",
+                  marginBottom: "12px",
+                }}>
+                  Horaires en heure de Paris (UTC+2)
                 </p>
                 {selectedDay ? (
                   <>
-                    <p className="text-gray-400 text-sm mb-4">
+                    <p style={{
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      fontSize: "13px",
+                      color: "#6B6560",
+                      marginBottom: "16px",
+                    }}>
                       {new Date(calYear, calMonth, selectedDay).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}
                     </p>
                     {typeRdv && getAvailableSlotsFiltered(typeRdv, calYear, calMonth, selectedDay).length > 0 ? (
-                      <div className="grid grid-cols-2 gap-2">
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
                         {getAvailableSlotsFiltered(typeRdv, calYear, calMonth, selectedDay).map((h: string) => (
                           <button
                             key={h}
                             onClick={() => setSelectedHeure(h)}
-                            className={`py-3 text-sm font-mono font-bold border transition-all ${
-                              selectedHeure === h
-                                ? "border-[#C9A84C] bg-[#C9A84C] text-black"
-                                : "border-gray-700 text-white hover:border-[#C9A84C]/50"
-                            }`}
+                            className="transition-colors duration-300 ease-out"
+                            style={{
+                              padding: "12px",
+                              fontFamily: "'Hanken Grotesk', sans-serif",
+                              fontSize: "13px",
+                              fontWeight: 500,
+                              fontVariantNumeric: "tabular-nums",
+                              background: selectedHeure === h ? "#C9A84C" : "transparent",
+                              color: selectedHeure === h ? "#0A0A0A" : "#F0EDE6",
+                              border: selectedHeure === h ? "1px solid #C9A84C" : "1px solid #1E1E1E",
+                              borderRadius: "2px",
+                              cursor: "pointer",
+                            }}
                           >
                             {h}
                           </button>
                         ))}
                       </div>
                     ) : (
-                      <div className="text-gray-600 text-sm py-4">Aucun créneau disponible ce jour.</div>
+                      <div style={{
+                        fontFamily: "'Hanken Grotesk', sans-serif",
+                        fontSize: "13px",
+                        color: "#3A3632",
+                        padding: "16px 0",
+                      }}>
+                        Aucun creneau disponible ce jour.
+                      </div>
                     )}
                   </>
                 ) : (
-                  <div className="flex items-center justify-center h-full text-gray-600 text-sm">
-                    Sélectionnez une date pour voir les créneaux
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100%",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontSize: "13px",
+                    color: "#3A3632",
+                  }}>
+                    Selectionnez une date pour voir les creneaux
                   </div>
                 )}
               </div>
             </div>
 
-            <Button
+            <button
               disabled={!selectedDay || !selectedHeure}
               onClick={() => setStep("info")}
-              className="bg-[#C9A84C] hover:bg-[#b8943e] text-black font-bold px-8"
+              className="transition-opacity duration-300 ease-out"
+              style={{
+                marginTop: "32px",
+                background: (!selectedDay || !selectedHeure) ? "#8A7535" : "#C9A84C",
+                color: "#0A0A0A",
+                border: "none",
+                borderRadius: "2px",
+                padding: "14px 28px",
+                fontSize: "11px",
+                fontWeight: 500,
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase" as const,
+                cursor: (!selectedDay || !selectedHeure) ? "not-allowed" : "pointer",
+                opacity: (!selectedDay || !selectedHeure) ? 0.7 : 1,
+              }}
             >
-              Continuer →
-            </Button>
+              Continuer
+            </button>
           </div>
         )}
 
-        {/* Étape 3 : Informations */}
+        {/* ── Etape 3 : Informations ── */}
         {step === "info" && (
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="flex items-center gap-3">
-              <button type="button" onClick={() => setStep("date")} className="text-gray-400 hover:text-white transition-colors">
-                <ChevronLeft className="w-5 h-5" />
+          <form onSubmit={handleSubmit}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "32px" }}>
+              <button
+                type="button"
+                onClick={() => setStep("date")}
+                className="transition-opacity duration-300 ease-out hover:opacity-70"
+                style={{ background: "none", border: "none", color: "#6B6560", cursor: "pointer", padding: 0 }}
+              >
+                <ChevronLeft size={20} />
               </button>
               <div>
-                <h2 className="text-2xl font-black">Vos coordonnées</h2>
-                <p className="text-gray-400 text-sm">
-                  {selectedType?.label} · {selectedDay && new Date(calYear, calMonth, selectedDay).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })} à {selectedHeure}
+                <h2 style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: "24px",
+                  fontWeight: 600,
+                  color: "#F0EDE6",
+                  letterSpacing: "0.04em",
+                }}>
+                  Vos coordonnees
+                </h2>
+                <p style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "12px",
+                  color: "#6B6560",
+                  marginTop: "4px",
+                }}>
+                  {selectedType?.label} — {selectedDay && new Date(calYear, calMonth, selectedDay).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })} a {selectedHeure}
                 </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "32px" }}>
               <div>
-                <Label className="text-gray-400 text-xs mb-1 block">Prénom *</Label>
-                <Input value={form.prenom} onChange={set("prenom")} required className="bg-[#111] border-gray-700 text-white" />
+                <label style={labelStyle}>Prenom *</label>
+                <input
+                  value={form.prenom}
+                  onChange={set("prenom")}
+                  required
+                  style={inputStyle}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                />
               </div>
               <div>
-                <Label className="text-gray-400 text-xs mb-1 block">Nom *</Label>
-                <Input value={form.nom} onChange={set("nom")} required className="bg-[#111] border-gray-700 text-white" />
+                <label style={labelStyle}>Nom *</label>
+                <input
+                  value={form.nom}
+                  onChange={set("nom")}
+                  required
+                  style={inputStyle}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                />
               </div>
               <div>
-                <Label className="text-gray-400 text-xs mb-1 block">Email *</Label>
-                <Input type="email" value={form.email} onChange={set("email")} required className="bg-[#111] border-gray-700 text-white" />
+                <label style={labelStyle}>Email *</label>
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={set("email")}
+                  required
+                  style={inputStyle}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                />
               </div>
               <div>
-                <Label className="text-gray-400 text-xs mb-1 block">Téléphone *</Label>
-                <Input value={form.telephone} onChange={set("telephone")} required className="bg-[#111] border-gray-700 text-white" />
+                <label style={labelStyle}>Telephone *</label>
+                <input
+                  value={form.telephone}
+                  onChange={set("telephone")}
+                  required
+                  style={inputStyle}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                />
               </div>
-              <div className="col-span-2">
-                <Label className="text-gray-400 text-xs mb-1 block">Message (optionnel)</Label>
+              <div style={{ gridColumn: "1 / -1" }}>
+                <label style={labelStyle}>Message (optionnel)</label>
                 <textarea
                   value={form.message}
                   onChange={set("message")}
                   rows={3}
-                  placeholder="Décrivez brièvement votre projet ou vos questions..."
-                  className="w-full bg-[#111] border border-gray-700 text-white text-sm px-3 py-2 resize-none focus:outline-none focus:border-[#C9A84C]/50"
+                  placeholder="Decrivez brievement votre projet ou vos questions..."
+                  style={{
+                    ...inputStyle,
+                    resize: "none",
+                  }}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                 />
               </div>
             </div>
 
-            {/* Récapitulatif */}
-            <div className="bg-[#111] border border-[#C9A84C]/20 p-5 space-y-2">
-              <p className="text-[#C9A84C] text-xs font-bold uppercase tracking-widest mb-3">Récapitulatif</p>
-              <div className="flex items-center gap-3 text-sm">
-                <Calendar className="w-4 h-4 text-gray-500" />
-                <span className="text-white">
+            {/* Recapitulatif */}
+            <div style={{
+              background: "#111111",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              padding: "20px 24px",
+              marginBottom: "32px",
+            }}>
+              <p style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "11px",
+                fontWeight: 500,
+                color: "#6B6560",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase" as const,
+                marginBottom: "16px",
+              }}>
+                Recapitulatif
+              </p>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
+                <Calendar size={16} style={{ color: "#3A3632" }} />
+                <span style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "13px",
+                  color: "#F0EDE6",
+                }}>
                   {selectedDay && new Date(calYear, calMonth, selectedDay).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                 </span>
               </div>
-              <div className="flex items-center gap-3 text-sm">
-                <Clock className="w-4 h-4 text-gray-500" />
-                <span className="text-white">{selectedHeure} — {selectedType?.label} ({selectedType?.duree})</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <Clock size={16} style={{ color: "#3A3632" }} />
+                <span style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "13px",
+                  color: "#F0EDE6",
+                }}>
+                  {selectedHeure} — {selectedType?.label} ({selectedType?.duree})
+                </span>
               </div>
             </div>
 
-            <Button
+            <button
               type="submit"
               disabled={bookRdv.isPending}
-              className="w-full bg-[#C9A84C] hover:bg-[#b8943e] text-black font-bold py-4 text-base"
+              className="transition-opacity duration-300 ease-out"
+              style={{
+                width: "100%",
+                background: bookRdv.isPending ? "#8A7535" : "#C9A84C",
+                color: "#0A0A0A",
+                border: "none",
+                borderRadius: "2px",
+                padding: "14px",
+                fontSize: "11px",
+                fontWeight: 500,
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase" as const,
+                cursor: bookRdv.isPending ? "not-allowed" : "pointer",
+                opacity: bookRdv.isPending ? 0.7 : 1,
+              }}
             >
               {bookRdv.isPending ? "Confirmation en cours..." : "Confirmer mon rendez-vous"}
-            </Button>
+            </button>
           </form>
         )}
       </div>

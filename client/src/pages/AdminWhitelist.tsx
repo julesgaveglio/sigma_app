@@ -6,11 +6,11 @@ import AdminNav from "@/components/AdminNav";
 import { toast } from "sonner";
 import { UserPlus, Trash2, Shield, User, Crown, Loader2, Mail, Search, Building2, ToggleLeft, ToggleRight, Send } from "lucide-react";
 
-const ROLE_LABELS: Record<string, { label: string; color: string; icon: any }> = {
-  user: { label: "Utilisateur", color: "text-blue-400 bg-blue-400/10 border-blue-400/30", icon: User },
-  agent: { label: "Agent immo", color: "text-emerald-400 bg-emerald-400/10 border-emerald-400/30", icon: Building2 },
-  direction: { label: "Direction", color: "text-[var(--gold)] bg-[var(--gold)]/10 border-[var(--gold)]/30", icon: Crown },
-  admin: { label: "Admin", color: "text-red-400 bg-red-400/10 border-red-400/30", icon: Shield },
+const ROLE_LABELS: Record<string, { label: string; icon: any; color: string; bg: string; border: string }> = {
+  user: { label: "Utilisateur", icon: User, color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  agent: { label: "Agent immo", icon: Building2, color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  direction: { label: "Direction", icon: Crown, color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  admin: { label: "Admin", icon: Shield, color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
 };
 
 export default function AdminWhitelist() {
@@ -32,39 +32,39 @@ export default function AdminWhitelist() {
 
   const addMutation = trpc.admin.addWhitelist.useMutation({
     onSuccess: () => {
-      toast.success(sendWelcome ? "Accès ajouté — email de bienvenue envoyé !" : "Accès ajouté");
+      toast.success(sendWelcome ? "Acces ajoute — email de bienvenue envoye !" : "Acces ajoute");
       utils.admin.listWhitelist.invalidate();
       setNewEmail(""); setNewNom(""); setNewRole("user"); setSendWelcome(true); setShowForm(false);
     },
-    onError: (e) => toast.error(e.message.includes("Duplicate") ? "Cet email est déjà dans la liste" : e.message),
+    onError: (e) => toast.error(e.message.includes("Duplicate") ? "Cet email est deja dans la liste" : e.message),
   });
 
   const removeMutation = trpc.admin.removeWhitelist.useMutation({
-    onSuccess: () => { toast.success("Accès supprimé"); utils.admin.listWhitelist.invalidate(); },
+    onSuccess: () => { toast.success("Acces supprime"); utils.admin.listWhitelist.invalidate(); },
     onError: (e) => toast.error(e.message),
   });
 
   const updateMutation = trpc.admin.updateWhitelistRole.useMutation({
-    onSuccess: () => { toast.success("Rôle mis à jour"); utils.admin.listWhitelist.invalidate(); setEditId(null); },
+    onSuccess: () => { toast.success("Role mis a jour"); utils.admin.listWhitelist.invalidate(); setEditId(null); },
     onError: (e) => toast.error(e.message),
   });
 
   const toggleMutation = trpc.admin.toggleWhitelistActif.useMutation({
     onSuccess: (_, vars) => {
-      toast.success(vars.actif ? "Accès réactivé" : "Accès suspendu");
+      toast.success(vars.actif ? "Acces reactive" : "Acces suspendu");
       utils.admin.listWhitelist.invalidate();
     },
     onError: (e) => toast.error(e.message),
   });
 
   const resendMutation = trpc.admin.resendWelcomeEmail.useMutation({
-    onSuccess: () => toast.success("Email de bienvenue renvoyé !"),
+    onSuccess: () => toast.success("Email de bienvenue renvoye !"),
     onError: (e) => toast.error(e.message),
   });
 
   if (authLoading) return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <Loader2 className="w-8 h-8 animate-spin text-[var(--gold)]" />
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
     </div>
   );
 
@@ -72,8 +72,9 @@ export default function AdminWhitelist() {
 
   if (user.role !== "admin" && user.role !== "direction") {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Accès réservé aux administrateurs.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: "#0A0A0A" }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.04em" }}>Acces refuse</h2>
+        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Acces reserve aux administrateurs.</p>
       </div>
     );
   }
@@ -86,94 +87,181 @@ export default function AdminWhitelist() {
   const actifCount = (whitelist ?? []).filter(e => (e as any).actif !== false).length;
   const inactifCount = (whitelist ?? []).length - actifCount;
 
+  // Shared input style
+  const inputStyle = {
+    background: "#161616",
+    border: "1px solid #1E1E1E",
+    borderRadius: "2px",
+    padding: "10px 12px",
+    fontSize: "13px",
+    fontFamily: "'Hanken Grotesk', sans-serif",
+    color: "#F0EDE6",
+    outline: "none",
+    transition: "border-color 300ms ease",
+    width: "100%",
+  } as React.CSSProperties;
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
       <AdminNav />
-      <main className="pt-16 px-4 md:px-8 max-w-4xl mx-auto pb-12">
+      <main className="px-5 py-8" style={{ maxWidth: "960px", margin: "0 auto" }}>
         {/* Header */}
-        <div className="flex items-center justify-between mt-8 mb-6">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Accès autorisés</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              {actifCount} actif{actifCount > 1 ? "s" : ""}
-              {inactifCount > 0 && <span className="text-orange-400 ml-2">· {inactifCount} suspendu{inactifCount > 1 ? "s" : ""}</span>}
+            <h1 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "24px",
+              fontWeight: 600,
+              color: "#F0EDE6",
+              letterSpacing: "0.04em",
+            }}>
+              Acces autorises
+            </h1>
+            <p style={{
+              fontSize: "12px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              color: "#6B6560",
+              marginTop: "4px",
+            }}>
+              <span className="tabular-nums">{actifCount}</span> actif{actifCount > 1 ? "s" : ""}
+              {inactifCount > 0 && <span style={{ color: "#C9A84C", marginLeft: "8px" }}>· {inactifCount} suspendu{inactifCount > 1 ? "s" : ""}</span>}
             </p>
           </div>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 px-4 py-2 bg-[var(--gold)] text-black font-semibold rounded-lg text-sm hover:bg-[var(--gold)]/90 transition-colors"
+            className="flex items-center gap-2 transition-opacity duration-300 hover:opacity-80"
+            style={{
+              padding: "10px 20px",
+              background: "#C9A84C",
+              color: "#0A0A0A",
+              fontSize: "11px",
+              fontWeight: 500,
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase" as const,
+              borderRadius: "2px",
+              border: "none",
+              cursor: "pointer",
+            }}
           >
-            <UserPlus className="w-4 h-4" />
-            Ajouter un accès
+            <UserPlus className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+            Ajouter un acces
           </button>
         </div>
 
         {/* Formulaire d'ajout */}
         {showForm && (
-          <div className="bg-card border border-border rounded-xl p-5 mb-6">
-            <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-              <UserPlus className="w-4 h-4 text-[var(--gold)]" />
-              Nouvel accès autorisé
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div style={{
+            background: "#111111",
+            border: "1px solid #1E1E1E",
+            borderRadius: "2px",
+            padding: "24px",
+            marginBottom: "24px",
+          }}>
+            <div className="flex items-center gap-2 mb-5">
+              <UserPlus className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+              <span style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "16px",
+                fontWeight: 600,
+                color: "#F0EDE6",
+                letterSpacing: "0.02em",
+              }}>
+                Nouvel acces autorise
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="text-xs text-muted-foreground uppercase tracking-wide mb-1 block">Prénom et Nom</label>
+                <label className="label-uppercase block mb-2">Prenom et Nom</label>
                 <input
                   type="text"
                   value={newNom}
                   onChange={e => setNewNom(e.target.value)}
-                  placeholder="ex: Jérôme CHIBAU"
-                  className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--gold)]"
+                  placeholder="ex: Jerome CHIBAU"
+                  style={inputStyle}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                 />
               </div>
               <div>
-                <label className="text-xs text-muted-foreground uppercase tracking-wide mb-1 block">Adresse email</label>
+                <label className="label-uppercase block mb-2">Adresse email</label>
                 <input
                   type="email"
                   value={newEmail}
                   onChange={e => setNewEmail(e.target.value)}
                   placeholder="ex: jerome@exemple.fr"
-                  className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--gold)]"
+                  style={inputStyle}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                 />
               </div>
               <div>
-                <label className="text-xs text-muted-foreground uppercase tracking-wide mb-1 block">Rôle</label>
+                <label className="label-uppercase block mb-2">Role</label>
                 <select
                   value={newRole}
                   onChange={e => setNewRole(e.target.value as any)}
-                  className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:border-[var(--gold)]"
+                  style={inputStyle}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                 >
-                  <option value="agent">Agent immobilier (IAD, réseau...)</option>
+                  <option value="agent">Agent immobilier (IAD, reseau...)</option>
                   <option value="user">Utilisateur (courtier, partenaire...)</option>
-                  <option value="direction">Direction (Maria, Manon, Élodie...)</option>
+                  <option value="direction">Direction (Maria, Manon, Elodie...)</option>
                   <option value="admin">Admin (Othmane)</option>
                 </select>
               </div>
             </div>
             {/* Option email de bienvenue */}
-            <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
+            <label className="flex items-center gap-2 mt-4 cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={sendWelcome}
                 onChange={e => setSendWelcome(e.target.checked)}
-                className="w-4 h-4 accent-[var(--gold)]"
+                style={{ accentColor: "#C9A84C" }}
               />
-              <span className="text-sm text-muted-foreground">
-                Envoyer automatiquement un <strong className="text-foreground">email de bienvenue</strong> avec le lien d'inscription
+              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>
+                Envoyer automatiquement un <strong style={{ color: "#F0EDE6" }}>email de bienvenue</strong> avec le lien d'inscription
               </span>
             </label>
-            <div className="flex gap-2 mt-4">
+            <div className="flex gap-3 mt-5">
               <button
                 onClick={() => addMutation.mutate({ email: newEmail, nom: newNom, role: newRole, sendWelcomeEmail: sendWelcome })}
                 disabled={!newEmail || !newNom || addMutation.isPending}
-                className="flex items-center gap-2 px-4 py-2 bg-[var(--gold)] text-black font-semibold rounded-lg text-sm disabled:opacity-50 hover:bg-[var(--gold)]/90 transition-colors"
+                className="flex items-center gap-2 transition-opacity duration-300"
+                style={{
+                  padding: "10px 20px",
+                  background: (!newEmail || !newNom || addMutation.isPending) ? "#8A7535" : "#C9A84C",
+                  color: "#0A0A0A",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase" as const,
+                  borderRadius: "2px",
+                  border: "none",
+                  cursor: (!newEmail || !newNom || addMutation.isPending) ? "not-allowed" : "pointer",
+                  opacity: (!newEmail || !newNom || addMutation.isPending) ? 0.7 : 1,
+                }}
               >
-                {addMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+                {addMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <UserPlus className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />}
                 Ajouter
               </button>
               <button
                 onClick={() => { setShowForm(false); setNewEmail(""); setNewNom(""); }}
-                className="px-4 py-2 border border-border rounded-lg text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="transition-opacity duration-300 hover:opacity-70"
+                style={{
+                  padding: "10px 20px",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase" as const,
+                  color: "#6B6560",
+                  border: "1px solid #1E1E1E",
+                  borderRadius: "2px",
+                  background: "transparent",
+                  cursor: "pointer",
+                }}
               >
                 Annuler
               </button>
@@ -182,50 +270,71 @@ export default function AdminWhitelist() {
         )}
 
         {/* Barre de recherche */}
-        <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <div className="relative mb-6">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher par nom ou email..."
-            className="w-full bg-card border border-border rounded-lg pl-9 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--gold)]"
+            className="w-full transition-colors duration-300 focus:outline-none"
+            style={{
+              ...inputStyle,
+              background: "#111111",
+              paddingLeft: "36px",
+            }}
+            onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+            onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
           />
         </div>
 
         {/* Liste */}
         {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 animate-spin text-[var(--gold)]" />
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            <Mail className="w-8 h-8 mx-auto mb-2 opacity-40" />
-            <p>Aucun accès trouvé</p>
+          <div className="text-center py-20">
+            <Mail className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
+            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun acces trouve</p>
           </div>
         ) : (
-          <div className="space-y-2">
-            {filtered.map(entry => {
+          <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+            {filtered.map((entry, idx) => {
               const roleInfo = ROLE_LABELS[entry.role] ?? ROLE_LABELS.user;
               const RoleIcon = roleInfo.icon;
               const isEditing = editId === entry.id;
               const isActif = (entry as any).actif !== false;
 
               return (
-                <div key={entry.id} className={`bg-card border rounded-xl px-5 py-4 transition-opacity ${isActif ? "border-border" : "border-orange-400/30 opacity-60"}`}>
+                <div key={entry.id}
+                  className="transition-colors duration-300"
+                  style={{
+                    padding: "14px 20px",
+                    borderBottom: idx < filtered.length - 1 ? "1px solid #151515" : "none",
+                    opacity: isActif ? 1 : 0.5,
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                >
                   {isEditing ? (
                     <div className="flex items-center gap-3 flex-wrap">
                       <input
                         type="text"
                         value={editNom}
                         onChange={e => setEditNom(e.target.value)}
-                        className="flex-1 min-w-[150px] bg-background border border-border rounded-lg px-3 py-1.5 text-sm text-foreground focus:outline-none focus:border-[var(--gold)]"
+                        className="flex-1 focus:outline-none"
+                        style={{ ...inputStyle, minWidth: "150px" }}
+                        onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                        onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                       />
-                      <span className="text-sm text-muted-foreground">{entry.email}</span>
+                      <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{entry.email}</span>
                       <select
                         value={editRole}
                         onChange={e => setEditRole(e.target.value as any)}
-                        className="bg-background border border-border rounded-lg px-2 py-1.5 text-sm text-foreground focus:outline-none focus:border-[var(--gold)]"
+                        style={{ ...inputStyle, width: "auto" }}
+                        onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                        onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                       >
                         <option value="agent">Agent immobilier</option>
                         <option value="user">Utilisateur</option>
@@ -235,71 +344,137 @@ export default function AdminWhitelist() {
                       <button
                         onClick={() => updateMutation.mutate({ id: entry.id, nom: editNom, role: editRole })}
                         disabled={updateMutation.isPending}
-                        className="px-3 py-1.5 bg-[var(--gold)] text-black text-sm font-semibold rounded-lg"
+                        className="transition-opacity duration-300 hover:opacity-80"
+                        style={{
+                          padding: "6px 14px",
+                          background: "#C9A84C",
+                          color: "#0A0A0A",
+                          fontSize: "11px",
+                          fontWeight: 500,
+                          fontFamily: "'Hanken Grotesk', sans-serif",
+                          letterSpacing: "0.06em",
+                          textTransform: "uppercase" as const,
+                          borderRadius: "2px",
+                          border: "none",
+                          cursor: "pointer",
+                        }}
                       >
                         {updateMutation.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : "Sauvegarder"}
                       </button>
-                      <button onClick={() => setEditId(null)} className="px-3 py-1.5 border border-border rounded-lg text-sm text-muted-foreground">
+                      <button
+                        onClick={() => setEditId(null)}
+                        className="transition-opacity duration-300 hover:opacity-70"
+                        style={{
+                          padding: "6px 14px",
+                          fontSize: "11px",
+                          fontFamily: "'Hanken Grotesk', sans-serif",
+                          color: "#6B6560",
+                          border: "1px solid #1E1E1E",
+                          borderRadius: "2px",
+                          background: "transparent",
+                          cursor: "pointer",
+                        }}
+                      >
                         Annuler
                       </button>
                     </div>
                   ) : (
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${isActif ? "bg-[var(--gold)]/10" : "bg-orange-400/10"}`}>
-                          <RoleIcon className={`w-4 h-4 ${isActif ? "text-[var(--gold)]" : "text-orange-400"}`} />
-                        </div>
+                        <RoleIcon className="w-4 h-4 shrink-0" style={{ color: isActif ? "#6B6560" : "#3A3632", strokeWidth: 1.5 }} />
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            <p className="font-medium text-foreground text-sm truncate">{entry.nom ?? "—"}</p>
-                            {!isActif && <span className="text-xs text-orange-400 font-medium">Suspendu</span>}
+                            <p style={{
+                              fontFamily: "'Hanken Grotesk', sans-serif",
+                              fontSize: "13px",
+                              fontWeight: 500,
+                              color: "#F0EDE6",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap" as const,
+                            }}>{entry.nom ?? "—"}</p>
+                            {!isActif && <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "#C9A84C" }}>Suspendu</span>}
                           </div>
-                          <p className="text-xs text-muted-foreground truncate">{entry.email}</p>
+                          <p style={{
+                            fontSize: "11px",
+                            fontFamily: "'Hanken Grotesk', sans-serif",
+                            color: "#3A3632",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap" as const,
+                          }}>{entry.email}</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${roleInfo.color}`}>
-                          <RoleIcon className="w-3 h-3" />
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "4px",
+                          padding: "2px 8px",
+                          borderRadius: "2px",
+                          fontSize: "10px",
+                          fontFamily: "'Hanken Grotesk', sans-serif",
+                          fontWeight: 500,
+                          letterSpacing: "0.06em",
+                          textTransform: "uppercase" as const,
+                          color: roleInfo.color,
+                          background: roleInfo.bg,
+                          border: `1px solid ${roleInfo.border}`,
+                        }}>
+                          <RoleIcon className="w-3 h-3" style={{ strokeWidth: 1.5 }} />
                           {roleInfo.label}
                         </span>
-                        {/* Renvoyer email de bienvenue */}
+                        {/* Renvoyer email */}
                         <button
                           onClick={() => resendMutation.mutate({ id: entry.id })}
                           disabled={resendMutation.isPending}
-                          className="p-1.5 text-muted-foreground hover:text-[var(--gold)] transition-colors"
+                          className="p-1.5 transition-opacity duration-300 hover:opacity-70"
+                          style={{ color: "#3A3632", background: "none", border: "none", cursor: "pointer" }}
                           title="Renvoyer l'email de bienvenue"
                         >
-                          {resendMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                          {resendMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#6B6560" }} /> : <Send className="w-4 h-4" style={{ strokeWidth: 1.5 }} />}
                         </button>
-                        {/* Modifier le rôle */}
+                        {/* Modifier */}
                         <button
                           onClick={() => { setEditId(entry.id); setEditNom(entry.nom ?? ""); setEditRole(entry.role as any); }}
-                          className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
-                          title="Modifier le rôle"
+                          className="p-1.5 transition-opacity duration-300 hover:opacity-70"
+                          style={{ color: "#3A3632", background: "none", border: "none", cursor: "pointer" }}
+                          title="Modifier le role"
                         >
-                          <Shield className="w-4 h-4" />
+                          <Shield className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                         </button>
-                        {/* Toggle actif/inactif */}
+                        {/* Toggle actif */}
                         <button
                           onClick={() => toggleMutation.mutate({ id: entry.id, actif: !isActif })}
                           disabled={toggleMutation.isPending}
-                          className={`p-1.5 transition-colors ${isActif ? "text-emerald-400 hover:text-orange-400" : "text-orange-400 hover:text-emerald-400"}`}
-                          title={isActif ? "Suspendre l'accès" : "Réactiver l'accès"}
+                          className="p-1.5 transition-colors duration-300"
+                          style={{
+                            color: isActif ? "#4A7A5A" : "#C9A84C",
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                          }}
+                          onMouseEnter={e => (e.currentTarget.style.color = isActif ? "#C9A84C" : "#4A7A5A")}
+                          onMouseLeave={e => (e.currentTarget.style.color = isActif ? "#4A7A5A" : "#C9A84C")}
+                          title={isActif ? "Suspendre l'acces" : "Reactiver l'acces"}
                         >
-                          {isActif ? <ToggleRight className="w-5 h-5" /> : <ToggleLeft className="w-5 h-5" />}
+                          {isActif ? <ToggleRight className="w-5 h-5" style={{ strokeWidth: 1.5 }} /> : <ToggleLeft className="w-5 h-5" style={{ strokeWidth: 1.5 }} />}
                         </button>
                         {/* Supprimer */}
                         <button
                           onClick={() => {
-                            if (confirm(`Supprimer définitivement l'accès de ${entry.nom ?? entry.email} ?`)) {
+                            if (confirm(`Supprimer definitivement l'acces de ${entry.nom ?? entry.email} ?`)) {
                               removeMutation.mutate({ id: entry.id });
                             }
                           }}
                           disabled={removeMutation.isPending}
-                          className="p-1.5 text-muted-foreground hover:text-red-400 transition-colors"
-                          title="Supprimer définitivement"
+                          className="p-1.5 transition-colors duration-300"
+                          style={{ color: "#3A3632", background: "none", border: "none", cursor: "pointer" }}
+                          onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
+                          onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                          title="Supprimer definitivement"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                         </button>
                       </div>
                     </div>

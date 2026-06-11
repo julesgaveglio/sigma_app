@@ -1,7 +1,7 @@
 /**
  * AvisPipe — Tableau de bord Marie
- * Pipe Avis & Témoignages (4 étapes : Avis à faire / Avis effectué / En montage / Montage OK)
- * Fonctionnalités : notes libres inline, filtres par source (Courtage / Immo / Tous)
+ * Pipe Avis & Temoignages (4 etapes : Avis a faire / Avis effectue / En montage / Montage OK)
+ * Fonctionnalites : notes libres inline, filtres par source (Courtage / Immo / Tous)
  */
 
 import { useState } from "react";
@@ -10,51 +10,44 @@ import AdminNav from "@/components/AdminNav";
 import {
   CheckCircle2, Clock, Star, Layers, ChevronRight,
   RefreshCw, Trash2, Phone, Mail, Pencil, Check, X,
+  Loader2,
 } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { toast } from "sonner";
 
-// ─── Étapes du pipe ──────────────────────────────────────────────────────────
+// --- Etapes du pipe ---
 
 const ETAPES = [
   {
     id: "avis_a_faire" as const,
-    label: "Avis à faire",
+    label: "Avis a faire",
     icon: Clock,
-    color: "text-amber-400",
-    bg: "bg-amber-400/10 border-amber-400/30",
-    badge: "bg-amber-400/20 text-amber-300",
+    color: "#C9A84C",
   },
   {
     id: "avis_effectue" as const,
-    label: "Avis effectué",
+    label: "Avis effectue",
     icon: CheckCircle2,
-    color: "text-emerald-400",
-    bg: "bg-emerald-400/10 border-emerald-400/30",
-    badge: "bg-emerald-400/20 text-emerald-300",
+    color: "#4A7A5A",
   },
   {
     id: "en_montage" as const,
     label: "En montage",
     icon: Layers,
-    color: "text-blue-400",
-    bg: "bg-blue-400/10 border-blue-400/30",
-    badge: "bg-blue-400/20 text-blue-300",
+    color: "#F0EDE6",
   },
   {
     id: "montage_ok" as const,
     label: "Montage OK",
     icon: Star,
-    color: "text-purple-400",
-    bg: "bg-purple-400/10 border-purple-400/30",
-    badge: "bg-purple-400/20 text-purple-300",
+    color: "#6B6560",
   },
 ] as const;
 
 type EtapeId = typeof ETAPES[number]["id"];
 type SourceFilter = "tous" | "courtage" | "immo";
 
-// ─── Composant carte ─────────────────────────────────────────────────────────
+// --- Composant carte ---
 
 function AvisCard({
   item,
@@ -72,13 +65,9 @@ function AvisCard({
   const [editingNotes, setEditingNotes] = useState(false);
   const [notesValue, setNotesValue] = useState(item.notes ?? "");
 
-  const etapeActuelle = ETAPES.find(e => e.id === item.etape);
   const etapeIdx = ETAPES.findIndex(e => e.id === item.etape);
   const etapeSuivante = ETAPES[etapeIdx + 1];
-  const sourceLabel = item.etapeSource === "courtage" ? "Courtage — Manon" : "Immo — Élodie";
-  const sourceBadge = item.etapeSource === "courtage"
-    ? "bg-purple-500/10 text-purple-300 border-purple-500/20"
-    : "bg-emerald-500/10 text-emerald-300 border-emerald-500/20";
+  const sourceLabel = item.etapeSource === "courtage" ? "Courtage" : "Immo";
 
   const handleSaveNotes = () => {
     onNotesSaved(item.id, notesValue);
@@ -91,60 +80,131 @@ function AvisCard({
   };
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 flex flex-col gap-3">
-      {/* En-tête */}
+    <div style={{
+      background: "#111111",
+      border: "1px solid #1E1E1E",
+      borderRadius: "2px",
+      padding: "16px",
+      display: "flex",
+      flexDirection: "column" as const,
+      gap: "12px",
+    }}>
+      {/* En-tete */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <p className="text-white font-semibold text-sm truncate">{item.leadNom}</p>
-          <span className={`inline-block text-xs px-2 py-0.5 rounded-full border mt-1 ${sourceBadge}`}>
+          <p style={{
+            fontFamily: "'Hanken Grotesk', sans-serif",
+            fontSize: "13px",
+            fontWeight: 500,
+            color: "#F0EDE6",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap" as const,
+          }}>{item.leadNom}</p>
+          <span style={{
+            display: "inline-block",
+            marginTop: "4px",
+            padding: "2px 6px",
+            borderRadius: "2px",
+            fontSize: "10px",
+            fontFamily: "'Hanken Grotesk', sans-serif",
+            fontWeight: 500,
+            letterSpacing: "0.06em",
+            textTransform: "uppercase" as const,
+            color: item.etapeSource === "courtage" ? "#6B6560" : "#4A7A5A",
+            background: item.etapeSource === "courtage" ? "rgba(107,101,96,0.08)" : "rgba(74,122,90,0.08)",
+            border: `1px solid ${item.etapeSource === "courtage" ? "rgba(107,101,96,0.2)" : "rgba(74,122,90,0.2)"}`,
+          }}>
             {sourceLabel}
           </span>
         </div>
-        <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${etapeActuelle?.badge}`}>
-          {etapeActuelle?.label}
-        </span>
       </div>
 
-      {/* Coordonnées */}
-      <div className="flex flex-col gap-1">
+      {/* Coordonnees */}
+      <div style={{ display: "flex", flexDirection: "column" as const, gap: "4px" }}>
         {item.leadEmail && (
-          <a href={`mailto:${item.leadEmail}`} className="flex items-center gap-1.5 text-zinc-400 hover:text-amber-400 text-xs transition-colors">
-            <Mail className="w-3 h-3 shrink-0" />
-            <span className="truncate">{item.leadEmail}</span>
+          <a href={`mailto:${item.leadEmail}`}
+            className="flex items-center gap-1.5 transition-opacity duration-300 hover:opacity-70"
+            style={{ color: "#3A3632", fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", textDecoration: "none" }}
+          >
+            <Mail className="w-3 h-3 shrink-0" style={{ strokeWidth: 1.5 }} />
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{item.leadEmail}</span>
           </a>
         )}
         {item.leadTelephone && (
-          <a href={`tel:${item.leadTelephone}`} className="flex items-center gap-1.5 text-zinc-400 hover:text-amber-400 text-xs transition-colors">
-            <Phone className="w-3 h-3 shrink-0" />
+          <a href={`tel:${item.leadTelephone}`}
+            className="flex items-center gap-1.5 transition-opacity duration-300 hover:opacity-70"
+            style={{ color: "#3A3632", fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", textDecoration: "none" }}
+          >
+            <Phone className="w-3 h-3 shrink-0" style={{ strokeWidth: 1.5 }} />
             <span>{item.leadTelephone}</span>
           </a>
         )}
       </div>
 
       {/* Notes libres */}
-      <div className="border-t border-zinc-800 pt-2">
+      <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "8px" }}>
         {editingNotes ? (
-          <div className="space-y-2">
+          <div style={{ display: "flex", flexDirection: "column" as const, gap: "8px" }}>
             <textarea
               value={notesValue}
               onChange={e => setNotesValue(e.target.value)}
-              placeholder="Ton du client, plateforme d'avis (Google, Trustpilot…), disponibilité..."
+              placeholder="Notes internes..."
               rows={3}
-              className="w-full bg-zinc-800 border border-zinc-700 text-white text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500 resize-none placeholder:text-zinc-600"
+              className="focus:outline-none"
+              style={{
+                width: "100%",
+                background: "#161616",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                padding: "8px 10px",
+                fontSize: "12px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                color: "#F0EDE6",
+                resize: "none",
+                transition: "border-color 300ms ease",
+              }}
+              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
               autoFocus
             />
             <div className="flex gap-2">
               <button
                 onClick={handleSaveNotes}
-                className="flex items-center gap-1 text-xs bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-lg transition-colors font-medium"
+                className="flex items-center gap-1 transition-opacity duration-300 hover:opacity-80"
+                style={{
+                  padding: "4px 10px",
+                  borderRadius: "2px",
+                  fontSize: "10px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase" as const,
+                  background: "#C9A84C",
+                  color: "#0A0A0A",
+                  border: "none",
+                  cursor: "pointer",
+                }}
               >
-                <Check className="w-3 h-3" /> Enregistrer
+                <Check className="w-3 h-3" style={{ strokeWidth: 1.5 }} /> Enregistrer
               </button>
               <button
                 onClick={handleCancelNotes}
-                className="flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-300 px-2 py-1.5 transition-colors"
+                className="flex items-center gap-1 transition-opacity duration-300 hover:opacity-70"
+                style={{
+                  padding: "4px 8px",
+                  fontSize: "10px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase" as const,
+                  color: "#3A3632",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                }}
               >
-                <X className="w-3 h-3" /> Annuler
+                <X className="w-3 h-3" style={{ strokeWidth: 1.5 }} /> Annuler
               </button>
             </div>
           </div>
@@ -155,13 +215,13 @@ function AvisCard({
           >
             {notesValue ? (
               <div className="flex items-start gap-2">
-                <p className="text-zinc-400 text-xs leading-relaxed flex-1">{notesValue}</p>
-                <Pencil className="w-3 h-3 text-zinc-600 group-hover:text-amber-400 transition-colors shrink-0 mt-0.5" />
+                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", lineHeight: "1.6", flex: 1 }}>{notesValue}</p>
+                <Pencil className="w-3 h-3 shrink-0 mt-0.5 transition-opacity duration-300 opacity-0 group-hover:opacity-100" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
               </div>
             ) : (
-              <div className="flex items-center gap-1.5 text-zinc-600 hover:text-zinc-400 transition-colors">
-                <Pencil className="w-3 h-3" />
-                <span className="text-xs italic">Ajouter une note...</span>
+              <div className="flex items-center gap-1.5 transition-opacity duration-300 hover:opacity-70">
+                <Pencil className="w-3 h-3" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", fontStyle: "italic" }}>Ajouter une note...</span>
               </div>
             )}
           </div>
@@ -169,13 +229,25 @@ function AvisCard({
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-2 pt-1 border-t border-zinc-800">
+      <div className="flex items-center gap-2" style={{ borderTop: "1px solid #1E1E1E", paddingTop: "8px" }}>
         {etapeSuivante && (
           <button
             onClick={() => onEtapeChange(item.id, etapeSuivante.id)}
-            className="flex items-center gap-1.5 text-xs font-medium text-amber-400 hover:text-amber-300 transition-colors"
+            className="flex items-center gap-1 transition-opacity duration-300 hover:opacity-80"
+            style={{
+              fontSize: "10px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontWeight: 500,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase" as const,
+              color: "#C9A84C",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 0,
+            }}
           >
-            <ChevronRight className="w-3.5 h-3.5" />
+            <ChevronRight className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
             {etapeSuivante.label}
           </button>
         )}
@@ -183,23 +255,26 @@ function AvisCard({
         {isAdmin && (
           <button
             onClick={() => onDelete(item.id)}
-            className="text-zinc-600 hover:text-red-400 transition-colors"
+            className="transition-colors duration-300"
+            style={{ color: "#3A3632", background: "none", border: "none", cursor: "pointer", padding: "2px" }}
+            onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
+            onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
             title="Supprimer"
           >
-            <Trash2 className="w-3.5 h-3.5" />
+            <Trash2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
           </button>
         )}
       </div>
 
       {/* Date */}
-      <p className="text-zinc-600 text-xs">
-        Ajouté le {new Date(item.createdAt).toLocaleDateString("fr-FR")}
+      <p className="tabular-nums" style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+        Ajoute le {new Date(item.createdAt).toLocaleDateString("fr-FR")}
       </p>
     </div>
   );
 }
 
-// ─── Page principale ─────────────────────────────────────────────────────────
+// --- Page principale ---
 
 export default function AvisPipe() {
   const { user } = useAuth();
@@ -217,7 +292,7 @@ export default function AvisPipe() {
   const updateNotes = trpc.marie.updateEtapeAvis.useMutation({
     onSuccess: () => {
       utils.marie.listAvisPipe.invalidate();
-      toast.success("Note enregistrée !");
+      toast.success("Note enregistree !");
     },
     onError: (e) => toast.error("Erreur sauvegarde note : " + e.message),
   });
@@ -238,7 +313,7 @@ export default function AvisPipe() {
   };
 
   const handleDelete = (id: number) => {
-    if (confirm("Supprimer cette entrée du pipe avis ?")) {
+    if (confirm("Supprimer cette entree du pipe avis ?")) {
       deleteEntry.mutate({ id });
     }
   };
@@ -252,64 +327,106 @@ export default function AvisPipe() {
   const countCourtage = (items as any[]).filter((i: any) => i.etapeSource === "courtage").length;
   const countImmo = (items as any[]).filter((i: any) => i.etapeSource === "immo").length;
 
-  const SOURCE_FILTERS: { id: SourceFilter; label: string; count: number; color: string }[] = [
-    { id: "tous", label: "Tous", count: (items as any[]).length, color: "border-zinc-600 text-zinc-300 bg-zinc-800 hover:border-zinc-500" },
-    { id: "courtage", label: "Courtage", count: countCourtage, color: "border-purple-500/40 text-purple-300 bg-purple-500/10 hover:bg-purple-500/20" },
-    { id: "immo", label: "Immo", count: countImmo, color: "border-emerald-500/40 text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20" },
+  const SOURCE_FILTERS: { id: SourceFilter; label: string; count: number }[] = [
+    { id: "tous", label: "Tous", count: (items as any[]).length },
+    { id: "courtage", label: "Courtage", count: countCourtage },
+    { id: "immo", label: "Immo", count: countImmo },
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
       <AdminNav />
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* En-tête */}
-        <div className="flex items-start justify-between mb-6 gap-4 flex-wrap">
+      <div className="px-5 py-8" style={{ maxWidth: "1280px", margin: "0 auto" }}>
+        {/* En-tete */}
+        <div className="flex items-start justify-between mb-8 gap-4 flex-wrap">
           <div>
-            <h1 className="text-2xl font-bold text-white">Pipe Avis & Témoignages</h1>
-            <p className="text-zinc-400 text-sm mt-1">
+            <h1 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "24px",
+              fontWeight: 600,
+              color: "#F0EDE6",
+              letterSpacing: "0.04em",
+            }}>
+              Pipe Avis & Temoignages
+            </h1>
+            <p style={{
+              fontSize: "12px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              color: "#6B6560",
+              marginTop: "4px",
+            }}>
               {filteredItems.length} dossier{filteredItems.length !== 1 ? "s" : ""}
               {sourceFilter !== "tous" && ` — ${sourceFilter === "courtage" ? "Courtage" : "Immo"}`}
             </p>
           </div>
           <button
             onClick={() => refetch()}
-            className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-500 px-3 py-2 rounded-lg transition-colors"
+            className="flex items-center gap-2 transition-colors duration-300"
+            style={{
+              padding: "8px 12px",
+              fontSize: "11px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontWeight: 500,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase" as const,
+              color: "#3A3632",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              background: "transparent",
+              cursor: "pointer",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#6B6560"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#3A3632"; }}
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
             Actualiser
           </button>
         </div>
 
         {/* Filtres par source */}
-        <div className="flex gap-2 mb-6 flex-wrap">
+        <div className="flex gap-2 mb-8 flex-wrap">
           {SOURCE_FILTERS.map(f => (
             <button
               key={f.id}
               onClick={() => setSourceFilter(f.id)}
-              className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg border transition-all ${
-                sourceFilter === f.id
-                  ? f.color + " ring-1 ring-offset-1 ring-offset-zinc-950 ring-current"
-                  : f.color + " opacity-60"
-              }`}
+              className="flex items-center gap-2 transition-colors duration-300"
+              style={{
+                padding: "6px 14px",
+                fontSize: "11px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontWeight: 500,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase" as const,
+                borderRadius: "2px",
+                border: `1px solid ${sourceFilter === f.id ? "#C9A84C" : "#1E1E1E"}`,
+                background: sourceFilter === f.id ? "rgba(201,168,76,0.06)" : "transparent",
+                color: sourceFilter === f.id ? "#C9A84C" : "#3A3632",
+                cursor: "pointer",
+              }}
             >
               {f.label}
-              <span className="text-xs bg-black/20 px-1.5 py-0.5 rounded-full">{f.count}</span>
+              <span className="tabular-nums" style={{
+                fontSize: "10px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                padding: "0 4px",
+                color: sourceFilter === f.id ? "#C9A84C" : "#3A3632",
+                opacity: 0.7,
+              }}>{f.count}</span>
             </button>
           ))}
         </div>
 
         {isLoading ? (
           <div className="flex items-center justify-center py-24">
-            <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="text-center py-24">
-            <Star className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
-            <p className="text-zinc-400 text-lg font-medium">Aucun dossier dans le pipe</p>
-            <p className="text-zinc-600 text-sm mt-2">
+            <Star className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
+            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
               {sourceFilter === "tous"
-                ? "Les dossiers apparaissent ici quand Manon ou Élodie vous assignent depuis le Pipeline CRM."
+                ? "Aucun dossier dans le pipe"
                 : `Aucun dossier pour la source "${sourceFilter === "courtage" ? "Courtage" : "Immo"}".`}
             </p>
           </div>
@@ -320,18 +437,33 @@ export default function AvisPipe() {
               const Icon = etape.icon;
               const colItems = filteredItems.filter((i: any) => i.etape === etape.id);
               return (
-                <div key={etape.id} className={`rounded-xl border p-4 ${etape.bg}`}>
-                  {/* En-tête colonne */}
+                <div key={etape.id} style={{
+                  background: "#0D0D0D",
+                  border: "1px solid #1E1E1E",
+                  borderRadius: "2px",
+                  padding: "16px",
+                }}>
+                  {/* En-tete colonne */}
                   <div className="flex items-center gap-2 mb-4">
-                    <Icon className={`w-4 h-4 ${etape.color}`} />
-                    <span className={`font-semibold text-sm ${etape.color}`}>{etape.label}</span>
-                    <span className="ml-auto text-xs text-zinc-500 font-medium">{colItems.length}</span>
+                    <Icon className="w-4 h-4" style={{ color: etape.color, strokeWidth: 1.5 }} />
+                    <span className="label-uppercase" style={{ color: etape.color }}>{etape.label}</span>
+                    <span className="ml-auto tabular-nums" style={{
+                      fontSize: "11px",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      color: "#3A3632",
+                    }}>{colItems.length}</span>
                   </div>
 
                   {/* Cartes */}
-                  <div className="flex flex-col gap-3">
+                  <div style={{ display: "flex", flexDirection: "column" as const, gap: "8px" }}>
                     {colItems.length === 0 ? (
-                      <p className="text-zinc-600 text-xs text-center py-4">Aucun dossier</p>
+                      <p style={{
+                        fontSize: "11px",
+                        fontFamily: "'Hanken Grotesk', sans-serif",
+                        color: "#3A3632",
+                        textAlign: "center" as const,
+                        padding: "16px 0",
+                      }}>Aucun dossier</p>
                     ) : (
                       colItems.map((item: any) => (
                         <AvisCard

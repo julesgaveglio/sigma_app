@@ -5,6 +5,7 @@ import { getLoginUrl } from "@/const";
 import AdminNav from "@/components/AdminNav";
 import { AssigneeSelect } from "@/components/AssigneeSelect";
 import { toast } from "sonner";
+import { Search, Download, Eye, ChevronLeft, ChevronRight, X, FileText, Loader2, Trash2 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -48,13 +49,13 @@ type Mandat = {
 
 // ─── Labels ───────────────────────────────────────────────────────────────────
 
-const STATUT_LABELS: Record<string, { label: string; color: string }> = {
-  nouveau: { label: "Nouveau", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-  en_cours: { label: "En cours", color: "bg-amber-500/20 text-amber-400 border-amber-500/30" },
-  en_attente_retour: { label: "En attente retour", color: "bg-orange-500/20 text-orange-400 border-orange-500/30" },
-  standby: { label: "Standby", color: "bg-zinc-500/20 text-zinc-400 border-zinc-500/30" },
-  traite: { label: "Traité", color: "bg-green-500/20 text-green-400 border-green-500/30" },
-  annule: { label: "Annulé", color: "bg-red-500/20 text-red-400 border-red-500/30" },
+const STATUT_LABELS: Record<string, { label: string; style: { color: string; bg: string; border: string } }> = {
+  nouveau: { label: "Nouveau", style: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" } },
+  en_cours: { label: "En cours", style: { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" } },
+  en_attente_retour: { label: "En attente retour", style: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" } },
+  standby: { label: "Standby", style: { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } },
+  traite: { label: "Traite", style: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" } },
+  annule: { label: "Annule", style: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" } },
 };
 
 const TYPE_BIEN_LABELS: Record<string, string> = {
@@ -68,17 +69,41 @@ const TYPE_BIEN_LABELS: Record<string, string> = {
 
 const FINANCEMENT_LABELS: Record<string, string> = {
   comptant: "Comptant",
-  credit: "Crédit",
+  credit: "Credit",
   mixte: "Mixte",
 };
 
 const USAGE_LABELS: Record<string, string> = {
-  residence_principale: "Résidence principale",
-  residence_secondaire: "Résidence secondaire",
+  residence_principale: "Residence principale",
+  residence_secondaire: "Residence secondaire",
   investissement_locatif: "Investissement locatif",
 };
 
-// ─── Composant détail mandat ──────────────────────────────────────────────────
+// ─── StatutBadge ─────────────────────────────────────────────────────────────
+
+function StatutBadge({ statut }: { statut: string }) {
+  const s = STATUT_LABELS[statut] ?? { label: statut, style: { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } };
+  return (
+    <span style={{
+      display: "inline-flex",
+      alignItems: "center",
+      padding: "2px 8px",
+      borderRadius: "2px",
+      fontSize: "10px",
+      fontFamily: "'Hanken Grotesk', sans-serif",
+      fontWeight: 500,
+      letterSpacing: "0.06em",
+      textTransform: "uppercase" as const,
+      color: s.style.color,
+      background: s.style.bg,
+      border: `1px solid ${s.style.border}`,
+    }}>
+      {s.label}
+    </span>
+  );
+}
+
+// ─── Composant detail mandat ─────────────────────────────────────────────────
 
 function MandatDetail({ mandat, onClose, onUpdate }: {
   mandat: Mandat;
@@ -110,123 +135,257 @@ function MandatDetail({ mandat, onClose, onUpdate }: {
     mandat.calme && "Environnement calme",
     mandat.lumineux && "Lumineux",
     mandat.procheTransports && "Proche transports",
-    mandat.procheEcoles && "Proche écoles",
+    mandat.procheEcoles && "Proche ecoles",
   ].filter(Boolean) as string[];
 
-  const s = STATUT_LABELS[statut] ?? { label: statut, color: "bg-zinc-700 text-zinc-300" };
-
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto">
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-2xl my-8">
+    <div className="fixed inset-0 z-50 flex items-start justify-end"
+      style={{ background: "rgba(0,0,0,0.7)" }}
+      onClick={onClose}
+    >
+      <div className="w-full h-full overflow-y-auto"
+        style={{ maxWidth: "520px", background: "#111111", borderLeft: "1px solid #1E1E1E" }}
+        onClick={e => e.stopPropagation()}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-zinc-800">
+        <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between"
+          style={{ background: "#111111", borderBottom: "1px solid #1E1E1E" }}
+        >
           <div>
-            <h2 className="text-xl font-bold text-white">{mandat.nom} {mandat.prenoms}</h2>
-            <p className="text-zinc-400 text-sm mt-0.5">Mandat #{mandat.id} · {new Date(mandat.createdAt).toLocaleDateString("fr-FR")}</p>
+            <h2 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "20px",
+              fontWeight: 600,
+              color: "#F0EDE6",
+              letterSpacing: "0.02em",
+            }}>
+              {mandat.nom} {mandat.prenoms}
+            </h2>
+            <p style={{
+              fontSize: "11px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              color: "#3A3632",
+              marginTop: "2px",
+            }}>
+              Mandat #{mandat.id} — {new Date(mandat.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
+            </p>
           </div>
-          <button onClick={onClose} className="text-zinc-400 hover:text-white transition p-2">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+          <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }}>
+            <X className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
-          {/* Coordonnées */}
-          <section>
-            <h3 className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-3">Coordonnées</h3>
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div><span className="text-zinc-500">Email :</span> <span className="text-white">{mandat.email}</span></div>
-              <div><span className="text-zinc-500">Tél :</span> <span className="text-white">{mandat.telephone}</span></div>
+        <div className="p-6 space-y-8">
+          {/* Coordonnees */}
+          <div>
+            <p className="label-uppercase mb-3">Coordonnees</p>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Email :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.email}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Tel :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.telephone}</span>
+              </div>
             </div>
-          </section>
+          </div>
 
-          {/* Bien recherché */}
-          <section>
-            <h3 className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-3">Bien recherché</h3>
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div><span className="text-zinc-500">Type :</span> <span className="text-white">{TYPE_BIEN_LABELS[mandat.typeBien] ?? mandat.typeBien}</span></div>
-              <div><span className="text-zinc-500">Usage :</span> <span className="text-white">{USAGE_LABELS[mandat.usage] ?? mandat.usage}</span></div>
-              <div className="col-span-2"><span className="text-zinc-500">Localisation :</span> <span className="text-white">{mandat.localisation}</span></div>
+          {/* Bien recherche */}
+          <div>
+            <p className="label-uppercase mb-3">Bien recherche</p>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Type :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{TYPE_BIEN_LABELS[mandat.typeBien] ?? mandat.typeBien}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Usage :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{USAGE_LABELS[mandat.usage] ?? mandat.usage}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Localisation :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.localisation}</span>
+              </div>
               {(mandat.surfaceMin || mandat.surfaceMax) && (
-                <div><span className="text-zinc-500">Surface :</span> <span className="text-white">{mandat.surfaceMin ?? "—"}–{mandat.surfaceMax ?? "—"} m²</span></div>
+                <div className="flex items-center gap-2">
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Surface :</span>
+                  <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.surfaceMin ?? "—"}–{mandat.surfaceMax ?? "—"} m2</span>
+                </div>
               )}
               {(mandat.nbPiecesMin || mandat.nbPiecesMax) && (
-                <div><span className="text-zinc-500">Pièces :</span> <span className="text-white">{mandat.nbPiecesMin ?? "—"}–{mandat.nbPiecesMax ?? "—"}</span></div>
+                <div className="flex items-center gap-2">
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Pieces :</span>
+                  <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.nbPiecesMin ?? "—"}–{mandat.nbPiecesMax ?? "—"}</span>
+                </div>
               )}
-              {mandat.etatBien && <div><span className="text-zinc-500">État :</span> <span className="text-white capitalize">{mandat.etatBien.replace("_", " ")}</span></div>}
-              {mandat.travauxAcceptes && <div><span className="text-zinc-500">Travaux :</span> <span className="text-white capitalize">{mandat.travauxAcceptes.replace("_", " ")}</span></div>}
+              {mandat.etatBien && (
+                <div className="flex items-center gap-2">
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Etat :</span>
+                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", textTransform: "capitalize" as const }}>{mandat.etatBien.replace("_", " ")}</span>
+                </div>
+              )}
+              {mandat.travauxAcceptes && (
+                <div className="flex items-center gap-2">
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Travaux :</span>
+                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", textTransform: "capitalize" as const }}>{mandat.travauxAcceptes.replace("_", " ")}</span>
+                </div>
+              )}
             </div>
-          </section>
+          </div>
 
-          {/* Critères */}
+          {/* Criteres */}
           {criteres.length > 0 && (
-            <section>
-              <h3 className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-3">Critères souhaités</h3>
+            <div>
+              <p className="label-uppercase mb-3">Criteres souhaites</p>
               <div className="flex flex-wrap gap-2">
                 {criteres.map(c => (
-                  <span key={c} className="px-2.5 py-1 bg-zinc-800 border border-zinc-700 rounded-full text-xs text-zinc-300">{c}</span>
+                  <span key={c} style={{
+                    padding: "3px 10px",
+                    borderRadius: "2px",
+                    fontSize: "11px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontWeight: 400,
+                    color: "#6B6560",
+                    background: "#161616",
+                    border: "1px solid #1E1E1E",
+                  }}>{c}</span>
                 ))}
               </div>
-              {mandat.autresCriteres && <p className="text-sm text-zinc-400 mt-2">{mandat.autresCriteres}</p>}
-            </section>
+              {mandat.autresCriteres && (
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "8px" }}>{mandat.autresCriteres}</p>
+              )}
+            </div>
           )}
 
           {/* Budget */}
-          <section>
-            <h3 className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-3">Budget & financement</h3>
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div><span className="text-zinc-500">Budget :</span> <span className="text-amber-400 font-bold">{mandat.budgetMax ? mandat.budgetMax.toLocaleString("fr-FR") + " €" : "À définir après courtage"}</span></div>
-              <div><span className="text-zinc-500">Financement :</span> <span className="text-white">{mandat.modeFinancement ? (FINANCEMENT_LABELS[mandat.modeFinancement] ?? mandat.modeFinancement) : "À définir"}</span></div>
-              {mandat.accordBancaire && <div><span className="text-zinc-500">Accord bancaire :</span> <span className="text-white capitalize">{mandat.accordBancaire.replace("_", " ")}</span></div>}
-              {mandat.typeMandat && <div><span className="text-zinc-500">Type mandat :</span> <span className="text-white capitalize">{mandat.typeMandat}</span></div>}
-              {mandat.dureeMandat && <div><span className="text-zinc-500">Durée :</span> <span className="text-white">{mandat.dureeMandat} mois</span></div>}
-            </div>
-          </section>
-
-          {/* Gestion */}
-          <section className="border-t border-zinc-800 pt-5">
-            <h3 className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-3">Gestion interne</h3>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-xs text-zinc-400 mb-1">Statut</label>
-                <select
-                  value={statut}
-                  onChange={e => setStatut(e.target.value)}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-amber-500"
-                >
-                  {Object.entries(STATUT_LABELS).map(([k, v]) => (
-                    <option key={k} value={k}>{v.label}</option>
-                  ))}
-                </select>
+          <div>
+            <p className="label-uppercase mb-3">Budget & financement</p>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Budget :</span>
+                <span className="tabular-nums" style={{
+                  fontSize: "13px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  color: "#F0EDE6",
+                }}>{mandat.budgetMax ? mandat.budgetMax.toLocaleString("fr-FR") + " EUR" : "A definir apres courtage"}</span>
               </div>
+              <div className="flex items-center gap-2">
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Financement :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.modeFinancement ? (FINANCEMENT_LABELS[mandat.modeFinancement] ?? mandat.modeFinancement) : "A definir"}</span>
+              </div>
+              {mandat.accordBancaire && (
+                <div className="flex items-center gap-2">
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Accord bancaire :</span>
+                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", textTransform: "capitalize" as const }}>{mandat.accordBancaire.replace("_", " ")}</span>
+                </div>
+              )}
+              {mandat.typeMandat && (
+                <div className="flex items-center gap-2">
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Type mandat :</span>
+                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", textTransform: "capitalize" as const }}>{mandat.typeMandat}</span>
+                </div>
+              )}
+              {mandat.dureeMandat && (
+                <div className="flex items-center gap-2">
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Duree :</span>
+                  <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.dureeMandat} mois</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Gestion interne */}
+          <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "24px" }}>
+            <p className="label-uppercase mb-3">Gestion interne</p>
+            <div className="space-y-4">
+              {/* Statut buttons */}
               <div>
-                <label className="block text-xs text-zinc-400 mb-1">Assigné à</label>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginBottom: "8px" }}>Statut</p>
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(STATUT_LABELS).map(([key, val]) => (
+                    <button key={key} onClick={() => setStatut(key)}
+                      className="transition-colors duration-300"
+                      style={{
+                        padding: "6px 12px",
+                        borderRadius: "2px",
+                        fontSize: "11px",
+                        fontFamily: "'Hanken Grotesk', sans-serif",
+                        fontWeight: 500,
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase" as const,
+                        border: `1px solid ${statut === key ? val.style.border : "#1E1E1E"}`,
+                        background: statut === key ? val.style.bg : "transparent",
+                        color: statut === key ? val.style.color : "#3A3632",
+                        cursor: "pointer",
+                      }}>
+                      {val.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Assigne */}
+              <div>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginBottom: "8px" }}>Assigne a</p>
                 <AssigneeSelect
                   mode="team"
                   value={assigneA}
                   onChange={(val) => setAssigneA(val)}
-                  placeholder="— Sélectionner un membre —"
+                  placeholder="— Selectionner un membre —"
                   className="w-full"
                 />
               </div>
+
+              {/* Notes */}
               <div>
-                <label className="block text-xs text-zinc-400 mb-1">Notes internes</label>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginBottom: "8px" }}>Notes internes</p>
                 <textarea
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
                   rows={3}
                   placeholder="Observations, suivi..."
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-amber-500 resize-none"
+                  style={{
+                    width: "100%",
+                    background: "#161616",
+                    border: "1px solid #1E1E1E",
+                    borderRadius: "2px",
+                    padding: "10px 12px",
+                    fontSize: "13px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    color: "#F0EDE6",
+                    resize: "none",
+                    outline: "none",
+                  }}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                 />
               </div>
+
+              {/* Save button */}
               <button
                 onClick={handleSave}
                 disabled={updateMutation.isPending}
-                className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg text-sm transition disabled:opacity-60"
+                style={{
+                  width: "100%",
+                  padding: "12px 28px",
+                  background: updateMutation.isPending ? "#8A7535" : "#C9A84C",
+                  color: "#0A0A0A",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase" as const,
+                  borderRadius: "2px",
+                  border: "none",
+                  cursor: updateMutation.isPending ? "not-allowed" : "pointer",
+                }}
               >
                 {updateMutation.isPending ? "Enregistrement..." : "Enregistrer les modifications"}
               </button>
             </div>
-          </section>
+          </div>
         </div>
       </div>
     </div>
@@ -285,21 +444,29 @@ export default function MandatDashboard() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
-        <div className="text-center">
-          <p className="text-zinc-400 mb-4">Vous devez être connecté pour accéder au tableau de bord.</p>
-          <a href="/login" className="px-6 py-3 bg-amber-500 text-black font-bold rounded-lg hover:bg-amber-400 transition">
-            Se connecter
-          </a>
-        </div>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-6" style={{ background: "#0A0A0A" }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.04em" }}>Acces reserve</h2>
+        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Connectez-vous pour acceder au tableau de bord.</p>
+        <a href="/login" style={{
+          padding: "12px 28px",
+          background: "#C9A84C",
+          color: "#0A0A0A",
+          fontSize: "11px",
+          fontWeight: 500,
+          fontFamily: "'Hanken Grotesk', sans-serif",
+          letterSpacing: "0.1em",
+          textTransform: "uppercase" as const,
+          textDecoration: "none",
+          borderRadius: "2px",
+        }}>Se connecter</a>
       </div>
     );
   }
@@ -311,40 +478,112 @@ export default function MandatDashboard() {
   const totalPages = Math.ceil(total / LIMIT);
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
       <AdminNav />
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-white">Mandats de Recherche</h1>
-            <p className="text-zinc-400 text-sm mt-1">{total} mandat{total > 1 ? "s" : ""} au total</p>
-          </div>
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white rounded-lg text-sm font-medium transition"
+      {/* Toolbar */}
+      <div style={{ borderBottom: "1px solid #1E1E1E" }}>
+        <div className="flex items-center justify-between px-5 py-2.5" style={{ maxWidth: "1280px", margin: "0 auto" }}>
+          <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+            {total} mandat{total > 1 ? "s" : ""}
+          </p>
+          <button onClick={handleExport} className="flex items-center gap-2 px-4 py-2 transition-colors duration-300"
+            style={{
+              fontSize: "11px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontWeight: 500,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase" as const,
+              color: "#6B6560",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              background: "transparent",
+              cursor: "pointer",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-            Exporter CSV
+            <Download className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> Export CSV
           </button>
+        </div>
+      </div>
+
+      <div className="px-5 py-8" style={{ maxWidth: "1280px", margin: "0 auto" }}>
+
+        {/* Title */}
+        <div className="mb-10">
+          <h1 style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: "28px",
+            fontWeight: 700,
+            color: "#F0EDE6",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase" as const,
+          }}>Mandats de Recherche</h1>
+        </div>
+
+        {/* KPIs */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mb-10" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+          {[
+            { label: "Total mandats", value: total },
+            { label: "Nouveaux", value: mandats.filter(m => m.statut === "nouveau").length },
+            { label: "En cours", value: mandats.filter(m => m.statut === "en_cours").length },
+            { label: "Traites", value: mandats.filter(m => m.statut === "traite").length },
+          ].map((stat, i) => (
+            <div key={stat.label} className="p-5" style={{ background: "#0A0A0A" }}>
+              <p className="tabular-nums" style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "32px",
+                fontWeight: 600,
+                color: i === 0 ? "#C9A84C" : "#F0EDE6",
+                lineHeight: 1,
+                letterSpacing: "0.02em",
+              }}>
+                {stat.value}
+              </p>
+              <p className="label-uppercase mt-2">{stat.label}</p>
+            </div>
+          ))}
         </div>
 
         {/* Filtres */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <div className="flex flex-col sm:flex-row gap-3 mb-5">
           <div className="relative flex-1">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
             <input
               value={search}
               onChange={e => { setSearch(e.target.value); setPage(0); }}
               placeholder="Rechercher par nom, email, localisation..."
-              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-zinc-500 focus:outline-none focus:border-amber-500 text-sm"
+              className="w-full transition-colors duration-300 focus:outline-none"
+              style={{
+                background: "#111111",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                paddingLeft: "36px",
+                paddingRight: "14px",
+                paddingTop: "10px",
+                paddingBottom: "10px",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                color: "#F0EDE6",
+              }}
+              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
             />
           </div>
           <select
             value={statut}
             onChange={e => { setStatut(e.target.value); setPage(0); }}
-            className="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"
+            style={{
+              background: "#111111",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              padding: "10px 14px",
+              fontSize: "13px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              color: "#F0EDE6",
+              outline: "none",
+            }}
           >
             <option value="tous">Tous les statuts</option>
             {Object.entries(STATUT_LABELS).map(([k, v]) => (
@@ -353,108 +592,135 @@ export default function MandatDashboard() {
           </select>
         </div>
 
-        {/* Table */}
-        {isLoading ? (
-          <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : mandats.length === 0 ? (
-          <div className="text-center py-20 text-zinc-500">
-            <svg className="w-12 h-12 mx-auto mb-4 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-            <p>Aucun mandat trouvé</p>
-          </div>
-        ) : (
-          <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-zinc-800">
-                    <th className="text-left px-4 py-3 text-zinc-500 font-medium text-xs uppercase tracking-wider">#</th>
-                    <th className="text-left px-4 py-3 text-zinc-500 font-medium text-xs uppercase tracking-wider">Acquéreur</th>
-                    <th className="text-left px-4 py-3 text-zinc-500 font-medium text-xs uppercase tracking-wider hidden md:table-cell">Bien / Localisation</th>
-                    <th className="text-left px-4 py-3 text-zinc-500 font-medium text-xs uppercase tracking-wider hidden lg:table-cell">Budget</th>
-                    <th className="text-left px-4 py-3 text-zinc-500 font-medium text-xs uppercase tracking-wider">Statut</th>
-                    <th className="text-left px-4 py-3 text-zinc-500 font-medium text-xs uppercase tracking-wider hidden sm:table-cell">Date</th>
-                    <th className="px-4 py-3"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {mandats.map((m, i) => {
-                    const s = STATUT_LABELS[m.statut] ?? { label: m.statut, color: "bg-zinc-700 text-zinc-300 border-zinc-600" };
-                    return (
-                      <tr key={m.id} className={`border-b border-zinc-800/50 hover:bg-zinc-800/40 transition ${i % 2 === 0 ? "" : "bg-zinc-900/50"}`}>
-                        <td className="px-4 py-3 text-zinc-500 font-mono">{m.id}</td>
-                        <td className="px-4 py-3">
-                          <div className="font-medium text-white">{m.nom} {m.prenoms}</div>
-                          <div className="text-zinc-500 text-xs">{m.email}</div>
+        {/* Tableau */}
+        <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+            </div>
+          ) : mandats.length === 0 ? (
+            <div className="text-center py-20">
+              <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
+              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun mandat trouve</p>
+            </div>
+          ) : (
+            <>
+              {/* Desktop table */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                      {["#", "Acquereur", "Bien / Localisation", "Budget", "Statut", "Date", ""].map(h => (
+                        <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "#0D0D0D" }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {mandats.map((m) => (
+                      <tr key={m.id}
+                        className="cursor-pointer transition-colors duration-300"
+                        style={{ borderBottom: "1px solid #151515" }}
+                        onClick={() => setSelected(m)}
+                        onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                        onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                      >
+                        <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{m.id}</td>
+                        <td className="px-5 py-3">
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{m.nom} {m.prenoms}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", maxWidth: "180px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{m.email}</p>
                         </td>
-                        <td className="px-4 py-3 hidden md:table-cell">
-                          <div className="text-white">{TYPE_BIEN_LABELS[m.typeBien] ?? m.typeBien}</div>
-                          <div className="text-zinc-500 text-xs truncate max-w-[200px]">{m.localisation}</div>
+                        <td className="px-5 py-3">
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{TYPE_BIEN_LABELS[m.typeBien] ?? m.typeBien}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{m.localisation}</p>
                         </td>
-                        <td className="px-4 py-3 hidden lg:table-cell">
-                          <span className="text-amber-400 font-semibold">{m.budgetMax ? m.budgetMax.toLocaleString("fr-FR") + " €" : "À définir"}</span>
-                          <div className="text-zinc-500 text-xs">{m.modeFinancement ? (FINANCEMENT_LABELS[m.modeFinancement] ?? m.modeFinancement) : "À définir"}</div>
+                        <td className="px-5 py-3">
+                          <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                            {m.budgetMax ? m.budgetMax.toLocaleString("fr-FR") + " EUR" : "A definir"}
+                          </p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{m.modeFinancement ? (FINANCEMENT_LABELS[m.modeFinancement] ?? m.modeFinancement) : "A definir"}</p>
                         </td>
-                        <td className="px-4 py-3">
-                          <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${s.color}`}>
-                            {s.label}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 hidden sm:table-cell text-zinc-500 text-xs">
+                        <td className="px-5 py-3"><StatutBadge statut={m.statut} /></td>
+                        <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
                           {new Date(m.createdAt).toLocaleDateString("fr-FR")}
                         </td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => setSelected(m)}
-                              className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white rounded-lg text-xs transition"
-                            >
-                              Voir
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-1">
+                            <button onClick={(e) => { e.stopPropagation(); setSelected(m); }} className="p-1.5 transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632" }}>
+                              <Eye className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                             </button>
-                            <button
-                              onClick={(e) => handleDelete(e, m.id, `${m.nom} ${m.prenoms}`)}
-                              className="p-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 rounded-lg transition"
+                            <button onClick={(e) => handleDelete(e, m.id, `${m.nom} ${m.prenoms}`)} className="p-1.5 transition-colors duration-300" style={{ color: "#3A3632" }}
+                              onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
+                              onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
                               title="Supprimer"
                             >
-                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                              <Trash2 className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                             </button>
                           </div>
                         </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between px-4 py-3 border-t border-zinc-800">
-                <span className="text-zinc-500 text-sm">Page {page + 1} / {totalPages}</span>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setPage(p => Math.max(0, p - 1))}
-                    disabled={page === 0}
-                    className="px-3 py-1.5 bg-zinc-800 border border-zinc-700 text-white rounded text-sm disabled:opacity-40"
-                  >
-                    ←
-                  </button>
-                  <button
-                    onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
-                    disabled={page >= totalPages - 1}
-                    className="px-3 py-1.5 bg-zinc-800 border border-zinc-700 text-white rounded text-sm disabled:opacity-40"
-                  >
-                    →
-                  </button>
-                </div>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            )}
+
+              {/* Mobile cards */}
+              <div className="md:hidden">
+                {mandats.map(m => (
+                  <div key={m.id}
+                    className="p-4 cursor-pointer transition-colors duration-300"
+                    style={{ borderBottom: "1px solid #151515" }}
+                    onClick={() => setSelected(m)}
+                    onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                    onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{m.nom} {m.prenoms}</p>
+                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>{TYPE_BIEN_LABELS[m.typeBien] ?? m.typeBien} — {m.localisation}</p>
+                      </div>
+                      <StatutBadge statut={m.statut} />
+                    </div>
+                    <div className="flex items-center gap-4 mt-2">
+                      <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>
+                        {m.budgetMax ? m.budgetMax.toLocaleString("fr-FR") + " EUR" : "A definir"}
+                      </span>
+                      <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                        {new Date(m.createdAt).toLocaleDateString("fr-FR")}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-5">
+            <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+              {page * LIMIT + 1}–{Math.min((page + 1) * LIMIT, total)} sur {total}
+            </p>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}
+                className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
+                style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px", background: "transparent" }}
+              >
+                <ChevronLeft className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+              </button>
+              <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", padding: "0 8px" }}>{page + 1} / {totalPages}</span>
+              <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1}
+                className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
+                style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px", background: "transparent" }}
+              >
+                <ChevronRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+              </button>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Modal détail */}
+      {/* Modal detail */}
       {selected && (
         <MandatDetail
           mandat={selected}

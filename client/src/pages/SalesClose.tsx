@@ -1,13 +1,73 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle } from "lucide-react";
 
 type Resultat = "close" | "non_close" | "r2" | "perdu";
+
+/* ── Shared inline style helpers ── */
+const inputStyle: React.CSSProperties = {
+  background: "#161616",
+  border: "1px solid #1E1E1E",
+  borderRadius: "2px",
+  padding: "12px 14px",
+  color: "#F0EDE6",
+  fontSize: "14px",
+  fontFamily: "'Hanken Grotesk', sans-serif",
+  width: "100%",
+  outline: "none",
+  transition: "border-color 300ms ease",
+};
+
+const labelStyle: React.CSSProperties = {
+  fontFamily: "'Hanken Grotesk', sans-serif",
+  fontWeight: 500,
+  fontSize: "11px",
+  textTransform: "uppercase",
+  letterSpacing: "0.08em",
+  color: "#6B6560",
+  display: "block",
+  marginBottom: "8px",
+};
+
+const sectionStyle: React.CSSProperties = {
+  background: "#111111",
+  border: "1px solid #1E1E1E",
+  borderRadius: "2px",
+  padding: "32px",
+};
+
+const sectionTitleStyle: React.CSSProperties = {
+  fontFamily: "'Cormorant Garamond', serif",
+  fontSize: "18px",
+  fontWeight: 600,
+  color: "#F0EDE6",
+  letterSpacing: "0.04em",
+  marginBottom: "24px",
+  paddingBottom: "16px",
+  borderBottom: "1px solid #1E1E1E",
+};
+
+const selectTriggerStyle: React.CSSProperties = {
+  background: "#161616",
+  border: "1px solid #1E1E1E",
+  borderRadius: "2px",
+  padding: "12px 14px",
+  color: "#F0EDE6",
+  fontSize: "14px",
+  fontFamily: "'Hanken Grotesk', sans-serif",
+  width: "100%",
+  cursor: "pointer",
+  outline: "none",
+  transition: "border-color 300ms ease",
+  appearance: "none" as const,
+  WebkitAppearance: "none" as const,
+};
+
+const focusIn = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  e.target.style.borderColor = "#C9A84C";
+};
+const focusOut = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  e.target.style.borderColor = "#1E1E1E";
+};
 
 export default function SalesClose() {
   const [submitted, setSubmitted] = useState(false);
@@ -57,7 +117,7 @@ export default function SalesClose() {
       return;
     }
     if (isShow && !form.resultat) {
-      setError("Veuillez indiquer le résultat du call.");
+      setError("Veuillez indiquer le resultat du call.");
       return;
     }
 
@@ -97,148 +157,223 @@ export default function SalesClose() {
     }));
   };
 
+  /* ── Confirmation post-submit ── */
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-6">
-        <div className="text-center space-y-4 max-w-sm">
-          <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto">
-            <CheckCircle className="w-8 h-8 text-green-400" />
+      <div style={{ background: "#0A0A0A", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
+        <div style={{ textAlign: "center", maxWidth: "380px" }}>
+          <div style={{ borderBottom: "1px solid #1E1E1E", paddingBottom: "24px", marginBottom: "24px" }}>
+            <h2 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "24px",
+              fontWeight: 600,
+              color: "#F0EDE6",
+              letterSpacing: "0.04em",
+              marginBottom: "12px",
+            }}>
+              Call enregistre
+            </h2>
+            <p style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "13px",
+              color: "#6B6560",
+              lineHeight: "1.6",
+              margin: 0,
+            }}>
+              Les donnees ont bien ete transmises a la direction.
+            </p>
           </div>
-          <h2 className="text-2xl font-bold text-white">Call enregistré</h2>
-          <p className="text-zinc-400">Les données ont bien été transmises à la direction.</p>
-          <Button onClick={resetForm} className="bg-[#c9a84c] hover:bg-[#b8963e] text-black font-semibold">
+          <button
+            onClick={resetForm}
+            style={{
+              background: "#C9A84C",
+              color: "#0A0A0A",
+              border: "none",
+              borderRadius: "2px",
+              padding: "14px 28px",
+              fontSize: "11px",
+              fontWeight: 500,
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase" as const,
+              cursor: "pointer",
+              transition: "opacity 300ms ease",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = "0.85")}
+            onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
+          >
             Saisir un nouveau call
-          </Button>
+          </button>
         </div>
       </div>
     );
   }
 
+  /* ── Main form ── */
   return (
-    <div className="min-h-screen bg-[#080808] text-white">
-      {/* Header sticky */}
-      <div className="border-b border-zinc-800 bg-[#0a0a0a] sticky top-0 z-10">
-        <div className="max-w-xl mx-auto px-5 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div>
-              <p className="text-[#c9a84c] text-[10px] tracking-[0.2em] uppercase font-medium">SIGMA FACTORY</p>
-              <h1 className="text-base font-bold text-white">Rapport de Call</h1>
-            </div>
+    <div style={{ background: "#0A0A0A", minHeight: "100vh" }}>
+
+      {/* Header */}
+      <header style={{
+        borderBottom: "1px solid #1E1E1E",
+        background: "#0A0A0A",
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
+      }}>
+        <div style={{ maxWidth: "520px", margin: "0 auto", padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div>
+            <p style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "10px",
+              fontWeight: 500,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase" as const,
+              color: "#C9A84C",
+              margin: "0 0 4px",
+            }}>
+              SIGMA FACTORY
+            </p>
+            <h1 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "20px",
+              fontWeight: 600,
+              color: "#F0EDE6",
+              letterSpacing: "0.04em",
+              margin: 0,
+            }}>
+              Rapport de Call
+            </h1>
           </div>
-          <p className="text-zinc-600 text-xs">Saisie obligatoire après chaque appel</p>
+          <p style={{
+            fontFamily: "'Hanken Grotesk', sans-serif",
+            fontSize: "11px",
+            color: "#3A3632",
+            margin: 0,
+          }}>
+            Saisie obligatoire apres chaque appel
+          </p>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-xl mx-auto px-5 py-6">
-        <form onSubmit={handleSubmit} className="space-y-5">
+      <div style={{ maxWidth: "520px", margin: "0 auto", padding: "32px 24px 48px" }}>
+        <form onSubmit={handleSubmit}>
 
-          {/* ─── SECTION 1 : CLOSER & CALL ─── */}
-          <div className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-5 space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-zinc-800">
-              <div className="w-7 h-7 rounded-lg bg-[#c9a84c]/10 flex items-center justify-center">
-                <span className="text-[#c9a84c] text-xs font-bold">1</span>
-              </div>
-              <h2 className="text-sm font-semibold text-white">Closer & Call</h2>
+          {/* ── SECTION 1 : CLOSER & CALL ── */}
+          <div style={{ ...sectionStyle, marginBottom: "24px" }}>
+            <h2 style={sectionTitleStyle}>Closer & Call</h2>
+
+            {/* Closer */}
+            <div style={{ marginBottom: "20px" }}>
+              <label style={labelStyle}>Votre prenom *</label>
+              <select
+                value={form.closerNom}
+                onChange={e => set("closerNom", e.target.value)}
+                style={{
+                  ...selectTriggerStyle,
+                  color: form.closerNom ? "#F0EDE6" : "#3A3632",
+                }}
+                onFocus={focusIn as any}
+                onBlur={focusOut as any}
+              >
+                <option value="" disabled>Selectionnez votre prenom...</option>
+                <option value="Marie">Marie</option>
+                <option value="Laurent">Laurent</option>
+              </select>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              {/* Closer — menu déroulant fixe */}
-              <div className="col-span-2">
-                <Label className="text-zinc-300 text-sm mb-1.5 block">Votre prénom *</Label>
-                <Select value={form.closerNom} onValueChange={v => set("closerNom", v)}>
-                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
-                    <SelectValue placeholder="Sélectionnez votre prénom..." />
-                  </SelectTrigger>
-                  <SelectContent className="bg-zinc-800 border-zinc-700">
-                    <SelectItem value="Marie" className="text-white">Marie</SelectItem>
-                    <SelectItem value="Laurent" className="text-white">Laurent</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
               {/* Offre */}
               <div>
-                <Label className="text-zinc-300 text-sm mb-1.5 block">Offre *</Label>
-                <Select value={form.offre} onValueChange={v => set("offre", v)}>
-                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
-                    <SelectValue placeholder="Offre..." />
-                  </SelectTrigger>
-                  <SelectContent className="bg-zinc-800 border-zinc-700">
-                    {["IDRH", "HZC", "SDT"].map(o => (
-                      <SelectItem key={o} value={o} className="text-white">{o}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <label style={labelStyle}>Offre *</label>
+                <select
+                  value={form.offre}
+                  onChange={e => set("offre", e.target.value)}
+                  style={{
+                    ...selectTriggerStyle,
+                    color: form.offre ? "#F0EDE6" : "#3A3632",
+                  }}
+                  onFocus={focusIn as any}
+                  onBlur={focusOut as any}
+                >
+                  <option value="" disabled>Offre...</option>
+                  {["IDRH", "HZC", "SDT"].map(o => (
+                    <option key={o} value={o}>{o}</option>
+                  ))}
+                </select>
               </div>
 
-              {/* Date + heure du call */}
+              {/* Date & heure du call */}
               <div>
-                <Label className="text-zinc-300 text-sm mb-1.5 block">Date & heure du call *</Label>
-                <Input
+                <label style={labelStyle}>Date & heure du call *</label>
+                <input
                   type="datetime-local"
                   value={form.dateCall}
                   onChange={e => set("dateCall", e.target.value)}
-                  className="bg-zinc-800 border-zinc-700 text-white [color-scheme:dark]"
+                  style={{ ...inputStyle, colorScheme: "dark" }}
+                  onFocus={focusIn}
+                  onBlur={focusOut}
                 />
               </div>
             </div>
           </div>
 
-          {/* ─── SECTION 2 : LEAD ─── */}
-          <div className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-5 space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-zinc-800">
-              <div className="w-7 h-7 rounded-lg bg-[#c9a84c]/10 flex items-center justify-center">
-                <span className="text-[#c9a84c] text-xs font-bold">2</span>
-              </div>
-              <h2 className="text-sm font-semibold text-white">Lead</h2>
-            </div>
+          {/* ── SECTION 2 : LEAD ── */}
+          <div style={{ ...sectionStyle, marginBottom: "24px" }}>
+            <h2 style={sectionTitleStyle}>Lead</h2>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
               <div>
-                <Label className="text-zinc-300 text-sm mb-1.5 block">Email</Label>
-                <Input
+                <label style={labelStyle}>Email</label>
+                <input
                   type="email"
                   value={form.leadEmail}
                   onChange={e => set("leadEmail", e.target.value)}
                   placeholder="email@exemple.fr"
-                  className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600"
+                  style={inputStyle}
+                  onFocus={focusIn}
+                  onBlur={focusOut}
                 />
               </div>
               <div>
-                <Label className="text-zinc-300 text-sm mb-1.5 block">Téléphone</Label>
-                <Input
+                <label style={labelStyle}>Telephone</label>
+                <input
                   value={form.leadTelephone}
                   onChange={e => set("leadTelephone", e.target.value)}
                   placeholder="06 XX XX XX XX"
-                  className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600"
+                  style={inputStyle}
+                  onFocus={focusIn}
+                  onBlur={focusOut}
                 />
               </div>
             </div>
           </div>
 
-          {/* ─── SECTION 3 : RÉSULTAT DU CALL ─── */}
-          <div className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-5 space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-zinc-800">
-              <div className="w-7 h-7 rounded-lg bg-[#c9a84c]/10 flex items-center justify-center">
-                <span className="text-[#c9a84c] text-xs font-bold">3</span>
-              </div>
-              <h2 className="text-sm font-semibold text-white">Résultat du call</h2>
-            </div>
+          {/* ── SECTION 3 : RESULTAT DU CALL ── */}
+          <div style={{ ...sectionStyle, marginBottom: "24px" }}>
+            <h2 style={sectionTitleStyle}>Resultat du call</h2>
 
             {/* Show / No Show */}
-            <div>
-              <Label className="text-zinc-300 text-sm mb-2 block">Présence *</Label>
-              <div className="grid grid-cols-2 gap-3">
-                {[{ v: "true", label: "✅ Show" }, { v: "false", label: "❌ No Show" }].map(opt => (
+            <div style={{ marginBottom: "20px" }}>
+              <label style={labelStyle}>Presence *</label>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                {[{ v: "true", label: "Show" }, { v: "false", label: "No Show" }].map(opt => (
                   <button
                     key={opt.v}
                     type="button"
                     onClick={() => { set("show", opt.v); if (opt.v === "false") set("resultat", ""); }}
-                    className={`py-3 rounded-lg border text-sm font-medium transition-all ${
-                      form.show === opt.v
-                        ? "border-[#c9a84c] bg-[#c9a84c]/10 text-[#c9a84c]"
-                        : "border-zinc-700 bg-zinc-800/50 text-zinc-400 hover:border-zinc-600"
-                    }`}
+                    style={{
+                      background: form.show === opt.v ? "rgba(201, 168, 76, 0.06)" : "#161616",
+                      border: `1px solid ${form.show === opt.v ? "#C9A84C" : "#1E1E1E"}`,
+                      borderRadius: "2px",
+                      padding: "12px",
+                      color: form.show === opt.v ? "#C9A84C" : "#6B6560",
+                      fontSize: "13px",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      fontWeight: 500,
+                      cursor: "pointer",
+                      transition: "all 300ms ease",
+                    }}
                   >
                     {opt.label}
                   </button>
@@ -246,29 +381,33 @@ export default function SalesClose() {
               </div>
             </div>
 
-            {/* Résultat détaillé — visible uniquement si Show */}
+            {/* Resultat detaille */}
             {isShow && (
-              <div>
-                <Label className="text-zinc-300 text-sm mb-2 block">Résultat *</Label>
-                <div className="grid grid-cols-2 gap-3">
+              <div style={{ marginBottom: "20px" }}>
+                <label style={labelStyle}>Resultat *</label>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
                   {[
-                    { v: "close", label: "🏆 Closé", color: "green" },
-                    { v: "non_close", label: "💬 Non closé", color: "zinc" },
-                    { v: "r2", label: "🔄 R2", color: "blue" },
-                    { v: "perdu", label: "❌ Perdu", color: "red" },
+                    { v: "close", label: "Close" },
+                    { v: "non_close", label: "Non close" },
+                    { v: "r2", label: "R2" },
+                    { v: "perdu", label: "Perdu" },
                   ].map(opt => (
                     <button
                       key={opt.v}
                       type="button"
                       onClick={() => set("resultat", opt.v)}
-                      className={`py-3 rounded-lg border text-sm font-medium transition-all ${
-                        form.resultat === opt.v
-                          ? opt.color === "green" ? "border-green-500 bg-green-500/10 text-green-400"
-                            : opt.color === "blue" ? "border-blue-500 bg-blue-500/10 text-blue-400"
-                            : opt.color === "red" ? "border-red-500 bg-red-500/10 text-red-400"
-                            : "border-zinc-500 bg-zinc-500/10 text-zinc-300"
-                          : "border-zinc-700 bg-zinc-800/50 text-zinc-400 hover:border-zinc-600"
-                      }`}
+                      style={{
+                        background: form.resultat === opt.v ? "rgba(201, 168, 76, 0.06)" : "#161616",
+                        border: `1px solid ${form.resultat === opt.v ? "#C9A84C" : "#1E1E1E"}`,
+                        borderRadius: "2px",
+                        padding: "12px",
+                        color: form.resultat === opt.v ? "#C9A84C" : "#6B6560",
+                        fontSize: "13px",
+                        fontFamily: "'Hanken Grotesk', sans-serif",
+                        fontWeight: 500,
+                        cursor: "pointer",
+                        transition: "all 300ms ease",
+                      }}
                     >
                       {opt.label}
                     </button>
@@ -278,158 +417,253 @@ export default function SalesClose() {
             )}
 
             {/* Lien Fathom */}
-            <div>
-              <Label className="text-zinc-300 text-sm mb-1.5 block">Lien Fathom</Label>
-              <Input
+            <div style={{ marginBottom: "20px" }}>
+              <label style={labelStyle}>Lien Fathom</label>
+              <input
                 value={form.lienFathom}
                 onChange={e => set("lienFathom", e.target.value)}
                 placeholder="https://fathom.video/..."
-                className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600"
+                style={inputStyle}
+                onFocus={focusIn}
+                onBlur={focusOut}
               />
             </div>
 
             {/* Commentaire */}
             <div>
-              <Label className="text-zinc-300 text-sm mb-1.5 block">Commentaire</Label>
-              <Textarea
+              <label style={labelStyle}>Commentaire</label>
+              <textarea
                 value={form.commentaire}
                 onChange={e => set("commentaire", e.target.value)}
-                placeholder="Objections, contexte, prochaine étape..."
+                placeholder="Objections, contexte, prochaine etape..."
                 rows={3}
-                className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 resize-none"
+                style={{
+                  ...inputStyle,
+                  resize: "none",
+                }}
+                onFocus={focusIn as any}
+                onBlur={focusOut as any}
               />
             </div>
           </div>
 
-          {/* ─── SECTION 4 : DÉTAIL DU CA — uniquement si Closé ─── */}
+          {/* ── SECTION 4 : DETAIL DU CA — uniquement si Close ── */}
           {isShow && isClose && (
-            <div className="bg-zinc-900/60 border border-[#c9a84c]/30 rounded-xl p-5 space-y-4">
-              <div className="flex items-center gap-2 pb-2 border-b border-zinc-800">
-                <div className="w-7 h-7 rounded-lg bg-[#c9a84c]/20 flex items-center justify-center">
-                  <span className="text-[#c9a84c] text-xs font-bold">4</span>
-                </div>
-                <h2 className="text-sm font-semibold text-[#c9a84c]">Détail du CA</h2>
-                <span className="text-xs text-zinc-500 ml-auto">Remonte dans le dashboard Sales</span>
-              </div>
+            <div style={{ ...sectionStyle, borderColor: "#C9A84C", marginBottom: "24px" }}>
+              <h2 style={{ ...sectionTitleStyle, color: "#C9A84C" }}>Detail du CA</h2>
 
               {/* Formule + Mode de paiement */}
-              <div className="grid grid-cols-2 gap-4">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
                 <div>
-                  <Label className="text-zinc-300 text-sm mb-1.5 block">Formule vendue</Label>
-                  <Select value={form.formule} onValueChange={v => set("formule", v)}>
-                    <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
-                      <SelectValue placeholder="Formule..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-zinc-800 border-zinc-700">
-                      <SelectItem value="Starter" className="text-white">Starter</SelectItem>
-                      <SelectItem value="Premium" className="text-white">Premium</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <label style={labelStyle}>Formule vendue</label>
+                  <select
+                    value={form.formule}
+                    onChange={e => set("formule", e.target.value)}
+                    style={{
+                      ...selectTriggerStyle,
+                      color: form.formule ? "#F0EDE6" : "#3A3632",
+                    }}
+                    onFocus={focusIn as any}
+                    onBlur={focusOut as any}
+                  >
+                    <option value="" disabled>Formule...</option>
+                    <option value="Starter">Starter</option>
+                    <option value="Premium">Premium</option>
+                  </select>
                 </div>
                 <div>
-                  <Label className="text-zinc-300 text-sm mb-1.5 block">Mode de paiement</Label>
-                  <Select value={form.modePaiement} onValueChange={v => set("modePaiement", v)}>
-                    <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
-                      <SelectValue placeholder="Paiement..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-zinc-800 border-zinc-700">
-                      <SelectItem value="une_fois" className="text-white">1× (comptant)</SelectItem>
-                      <SelectItem value="deux_fois" className="text-white">2× (échelonné)</SelectItem>
-                      <SelectItem value="trois_fois" className="text-white">3× (échelonné)</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <label style={labelStyle}>Mode de paiement</label>
+                  <select
+                    value={form.modePaiement}
+                    onChange={e => set("modePaiement", e.target.value)}
+                    style={{
+                      ...selectTriggerStyle,
+                      color: form.modePaiement ? "#F0EDE6" : "#3A3632",
+                    }}
+                    onFocus={focusIn as any}
+                    onBlur={focusOut as any}
+                  >
+                    <option value="" disabled>Paiement...</option>
+                    <option value="une_fois">1x (comptant)</option>
+                    <option value="deux_fois">2x (echelonne)</option>
+                    <option value="trois_fois">3x (echelonne)</option>
+                  </select>
                 </div>
               </div>
 
               {/* Montants globaux */}
-              <div className="grid grid-cols-2 gap-4">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "24px" }}>
                 <div>
-                  <Label className="text-zinc-300 text-sm mb-1.5 block">Montant généré (€ TTC)</Label>
-                  <Input
+                  <label style={labelStyle}>Montant genere (EUR TTC)</label>
+                  <input
                     type="number"
                     min="0"
                     step="0.01"
                     value={form.montantGenere}
                     onChange={e => set("montantGenere", e.target.value)}
                     placeholder="0.00"
-                    className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600"
+                    style={inputStyle}
+                    onFocus={focusIn}
+                    onBlur={focusOut}
                   />
                 </div>
                 <div>
-                  <Label className="text-zinc-300 text-sm mb-1.5 block">Montant encaissé (€ TTC)</Label>
-                  <Input
+                  <label style={labelStyle}>Montant encaisse (EUR TTC)</label>
+                  <input
                     type="number"
                     min="0"
                     step="0.01"
                     value={form.montantEncaisse}
                     onChange={e => set("montantEncaisse", e.target.value)}
                     placeholder="0.00"
-                    className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600"
+                    style={inputStyle}
+                    onFocus={focusIn}
+                    onBlur={focusOut}
                   />
                 </div>
               </div>
 
-              {/* Détail par mode */}
-              <div className="space-y-3">
-                <p className="text-zinc-400 text-xs uppercase tracking-wider">Détail des encaissements</p>
+              {/* Detail par mode */}
+              <div>
+                <label style={{ ...labelStyle, marginBottom: "16px" }}>Detail des encaissements</label>
 
                 {/* CB Stripe */}
-                <div className="flex items-center gap-3">
-                  <button type="button" onClick={() => set("hasCb", !form.hasCb)}
-                    className={`w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 transition-colors ${form.hasCb ? "bg-[#c9a84c] border-[#c9a84c]" : "border-zinc-600 bg-zinc-800"}`}>
-                    {form.hasCb && <span className="text-black text-xs font-bold">✓</span>}
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                  <button
+                    type="button"
+                    onClick={() => set("hasCb", !form.hasCb)}
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      borderRadius: "2px",
+                      border: `1px solid ${form.hasCb ? "#C9A84C" : "#1E1E1E"}`,
+                      background: form.hasCb ? "#C9A84C" : "#161616",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      flexShrink: 0,
+                      padding: 0,
+                      transition: "all 300ms ease",
+                    }}
+                  >
+                    {form.hasCb && <span style={{ color: "#0A0A0A", fontSize: "11px", fontWeight: 700, lineHeight: 1 }}>&#10003;</span>}
                   </button>
-                  <Label className="text-zinc-300 text-sm flex-shrink-0 w-32">CB Stripe</Label>
+                  <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6", width: "120px", flexShrink: 0 }}>CB Stripe</span>
                   {form.hasCb && (
-                    <Input type="number" min="0" step="0.01" value={form.montantCb}
+                    <input
+                      type="number" min="0" step="0.01" value={form.montantCb}
                       onChange={e => set("montantCb", e.target.value)} placeholder="0.00"
-                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 h-8 text-sm" />
+                      style={{ ...inputStyle, padding: "8px 12px", fontSize: "13px" }}
+                      onFocus={focusIn} onBlur={focusOut}
+                    />
                   )}
                 </div>
 
                 {/* Virement */}
-                <div className="flex items-center gap-3">
-                  <button type="button" onClick={() => set("hasVirement", !form.hasVirement)}
-                    className={`w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 transition-colors ${form.hasVirement ? "bg-[#c9a84c] border-[#c9a84c]" : "border-zinc-600 bg-zinc-800"}`}>
-                    {form.hasVirement && <span className="text-black text-xs font-bold">✓</span>}
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                  <button
+                    type="button"
+                    onClick={() => set("hasVirement", !form.hasVirement)}
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      borderRadius: "2px",
+                      border: `1px solid ${form.hasVirement ? "#C9A84C" : "#1E1E1E"}`,
+                      background: form.hasVirement ? "#C9A84C" : "#161616",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      flexShrink: 0,
+                      padding: 0,
+                      transition: "all 300ms ease",
+                    }}
+                  >
+                    {form.hasVirement && <span style={{ color: "#0A0A0A", fontSize: "11px", fontWeight: 700, lineHeight: 1 }}>&#10003;</span>}
                   </button>
-                  <Label className="text-zinc-300 text-sm flex-shrink-0 w-32">Virement</Label>
+                  <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6", width: "120px", flexShrink: 0 }}>Virement</span>
                   {form.hasVirement && (
-                    <Input type="number" min="0" step="0.01" value={form.montantVirement}
+                    <input
+                      type="number" min="0" step="0.01" value={form.montantVirement}
                       onChange={e => set("montantVirement", e.target.value)} placeholder="0.00"
-                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 h-8 text-sm" />
+                      style={{ ...inputStyle, padding: "8px 12px", fontSize: "13px" }}
+                      onFocus={focusIn} onBlur={focusOut}
+                    />
                   )}
                 </div>
 
-                {/* Crédit d'impôt */}
-                <div className="flex items-center gap-3">
-                  <button type="button" onClick={() => set("hasCreditImpot", !form.hasCreditImpot)}
-                    className={`w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 transition-colors ${form.hasCreditImpot ? "bg-[#c9a84c] border-[#c9a84c]" : "border-zinc-600 bg-zinc-800"}`}>
-                    {form.hasCreditImpot && <span className="text-black text-xs font-bold">✓</span>}
+                {/* Credit d'impot */}
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                  <button
+                    type="button"
+                    onClick={() => set("hasCreditImpot", !form.hasCreditImpot)}
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      borderRadius: "2px",
+                      border: `1px solid ${form.hasCreditImpot ? "#C9A84C" : "#1E1E1E"}`,
+                      background: form.hasCreditImpot ? "#C9A84C" : "#161616",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      flexShrink: 0,
+                      padding: 0,
+                      transition: "all 300ms ease",
+                    }}
+                  >
+                    {form.hasCreditImpot && <span style={{ color: "#0A0A0A", fontSize: "11px", fontWeight: 700, lineHeight: 1 }}>&#10003;</span>}
                   </button>
-                  <Label className="text-zinc-300 text-sm flex-shrink-0 w-32">Crédit d'impôt</Label>
+                  <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6", width: "120px", flexShrink: 0 }}>Credit d'impot</span>
                   {form.hasCreditImpot && (
-                    <Input type="number" min="0" step="0.01" value={form.montantCreditImpot}
+                    <input
+                      type="number" min="0" step="0.01" value={form.montantCreditImpot}
                       onChange={e => set("montantCreditImpot", e.target.value)} placeholder="0.00"
-                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 h-8 text-sm" />
+                      style={{ ...inputStyle, padding: "8px 12px", fontSize: "13px" }}
+                      onFocus={focusIn} onBlur={focusOut}
+                    />
                   )}
                 </div>
 
-                {/* Prélèvement */}
-                <div className="flex items-start gap-3">
-                  <button type="button" onClick={() => set("hasPrelevement", !form.hasPrelevement)}
-                    className={`w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${form.hasPrelevement ? "bg-[#c9a84c] border-[#c9a84c]" : "border-zinc-600 bg-zinc-800"}`}>
-                    {form.hasPrelevement && <span className="text-black text-xs font-bold">✓</span>}
+                {/* Prelevement */}
+                <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                  <button
+                    type="button"
+                    onClick={() => set("hasPrelevement", !form.hasPrelevement)}
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      borderRadius: "2px",
+                      border: `1px solid ${form.hasPrelevement ? "#C9A84C" : "#1E1E1E"}`,
+                      background: form.hasPrelevement ? "#C9A84C" : "#161616",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                      flexShrink: 0,
+                      padding: 0,
+                      marginTop: "2px",
+                      transition: "all 300ms ease",
+                    }}
+                  >
+                    {form.hasPrelevement && <span style={{ color: "#0A0A0A", fontSize: "11px", fontWeight: 700, lineHeight: 1 }}>&#10003;</span>}
                   </button>
-                  <Label className="text-zinc-300 text-sm flex-shrink-0 w-32 mt-0.5">Prélèvement</Label>
+                  <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6", width: "120px", flexShrink: 0, marginTop: "2px" }}>Prelevement</span>
                   {form.hasPrelevement && (
-                    <div className="flex gap-2 flex-1">
-                      <Input type="number" min="0" step="0.01" value={form.montantPrelevement}
+                    <div style={{ display: "flex", gap: "8px", flex: 1 }}>
+                      <input
+                        type="number" min="0" step="0.01" value={form.montantPrelevement}
                         onChange={e => set("montantPrelevement", e.target.value)} placeholder="0.00"
-                        className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-600 h-8 text-sm" />
-                      <Input type="date" value={form.datePrelevement}
+                        style={{ ...inputStyle, padding: "8px 12px", fontSize: "13px" }}
+                        onFocus={focusIn} onBlur={focusOut}
+                      />
+                      <input
+                        type="date" value={form.datePrelevement}
                         onChange={e => set("datePrelevement", e.target.value)}
-                        className="bg-zinc-800 border-zinc-700 text-white h-8 text-sm [color-scheme:dark]" />
+                        style={{ ...inputStyle, padding: "8px 12px", fontSize: "13px", colorScheme: "dark" }}
+                        onFocus={focusIn} onBlur={focusOut}
+                      />
                     </div>
                   )}
                 </div>
@@ -439,19 +673,43 @@ export default function SalesClose() {
 
           {/* Erreur */}
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
-              <p className="text-red-400 text-sm">{error}</p>
+            <div style={{
+              background: "#1A1010",
+              border: "1px solid #3A1E1E",
+              borderRadius: "2px",
+              padding: "12px 16px",
+              marginBottom: "24px",
+              color: "#A04040",
+              fontSize: "13px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+            }}>
+              {error}
             </div>
           )}
 
           {/* Submit */}
-          <Button
+          <button
             type="submit"
             disabled={soumettre.isPending}
-            className="w-full bg-[#c9a84c] hover:bg-[#b8963e] text-black font-semibold py-3 text-base"
+            style={{
+              width: "100%",
+              background: soumettre.isPending ? "#8A7535" : "#C9A84C",
+              color: "#0A0A0A",
+              border: "none",
+              borderRadius: "2px",
+              padding: "14px",
+              fontSize: "11px",
+              fontWeight: 500,
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase" as const,
+              cursor: soumettre.isPending ? "not-allowed" : "pointer",
+              opacity: soumettre.isPending ? 0.7 : 1,
+              transition: "opacity 300ms ease",
+            }}
           >
-            {soumettre.isPending ? "Enregistrement..." : "Enregistrer le call →"}
-          </Button>
+            {soumettre.isPending ? "Enregistrement..." : "Enregistrer le call"}
+          </button>
 
         </form>
       </div>

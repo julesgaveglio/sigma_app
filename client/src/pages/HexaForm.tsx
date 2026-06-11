@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { CheckCircle, ChevronRight, ChevronLeft, Loader2 } from "lucide-react";
 
 type SituationFamiliale = "celibataire" | "marie" | "pacse" | "divorce" | "veuf";
 
@@ -39,6 +40,96 @@ const initialForm: FormData = {
   paysNaissance: "France",
   villeNaissance: "",
 };
+
+/* ── Design tokens ── */
+const fonts = {
+  heading: "'Cormorant Garamond', serif",
+  body: "'Hanken Grotesk', sans-serif",
+};
+
+const colors = {
+  bg: "#0A0A0A",
+  surface: "#111111",
+  surfaceRaised: "#161616",
+  border: "#1E1E1E",
+  fg: "#F0EDE6",
+  muted: "#6B6560",
+  faint: "#3A3632",
+  gold: "#C9A84C",
+  goldMuted: "#8A7535",
+  destructive: "#A04040",
+};
+
+const labelStyle: React.CSSProperties = {
+  fontFamily: fonts.body,
+  fontSize: "11px",
+  fontWeight: 500,
+  textTransform: "uppercase",
+  letterSpacing: "0.08em",
+  color: colors.muted,
+  marginBottom: "8px",
+  display: "block",
+};
+
+const inputStyle: React.CSSProperties = {
+  background: colors.surfaceRaised,
+  border: `1px solid ${colors.border}`,
+  borderRadius: "2px",
+  padding: "12px 14px",
+  color: colors.fg,
+  fontSize: "14px",
+  fontFamily: fonts.body,
+  width: "100%",
+  outline: "none",
+  transition: "border-color 300ms ease",
+};
+
+const errorStyle: React.CSSProperties = {
+  fontSize: "12px",
+  color: colors.destructive,
+  fontFamily: fonts.body,
+  marginTop: "4px",
+};
+
+function SigmaInput({ label, error, required, ...props }: { label: string; error?: string; required?: boolean } & React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <div>
+      <label style={labelStyle}>
+        {label}{required && <span style={{ color: colors.gold, marginLeft: "4px" }}>*</span>}
+      </label>
+      <input
+        {...props}
+        style={{
+          ...inputStyle,
+          borderColor: error ? colors.destructive : colors.border,
+        }}
+        className="w-full focus:outline-none [color-scheme:dark]"
+        onFocus={e => { e.target.style.borderColor = error ? colors.destructive : colors.gold; }}
+        onBlur={e => { e.target.style.borderColor = error ? colors.destructive : colors.border; }}
+      />
+      {error && <p style={errorStyle}>{error}</p>}
+    </div>
+  );
+}
+
+function SectionDivider({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "16px", margin: "32px 0 24px" }}>
+      <div style={{ flex: 1, height: "1px", background: colors.border }} />
+      <span style={{
+        fontFamily: fonts.body,
+        fontSize: "10px",
+        fontWeight: 500,
+        textTransform: "uppercase",
+        letterSpacing: "0.12em",
+        color: colors.muted,
+      }}>
+        {children}
+      </span>
+      <div style={{ flex: 1, height: "1px", background: colors.border }} />
+    </div>
+  );
+}
 
 export default function HexaForm() {
   const [step, setStep] = useState(1);
@@ -117,278 +208,554 @@ export default function HexaForm() {
     });
   };
 
+  /* ── Confirmation ── */
   if (submitted) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
-        <div className="w-full max-w-lg text-center">
-          <div className="mb-8">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
-              <svg className="w-8 h-8 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div className="text-amber-400 font-bold tracking-widest text-sm uppercase">Sigma Factory</div>
+      <div style={{
+        minHeight: "100vh",
+        background: colors.bg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "24px 16px",
+      }}>
+        <div style={{ width: "100%", maxWidth: "520px" }}>
+          {/* Wordmark */}
+          <div style={{ textAlign: "center", marginBottom: "48px" }}>
+            <h1 style={{
+              fontFamily: fonts.heading,
+              fontSize: "28px",
+              fontWeight: 700,
+              letterSpacing: "0.2em",
+              color: colors.gold,
+              lineHeight: 1,
+              marginBottom: "12px",
+            }}>
+              SIGMA FACTORY
+            </h1>
+            <div style={{ width: "40px", height: "1px", background: colors.gold, margin: "0 auto" }} />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-3">Bienvenue chez Sigma Factory !</h1>
-          <div className="text-zinc-300 text-sm leading-relaxed mb-8 space-y-3 text-left bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-            <p>Votre demande a bien été transmise à notre équipe.</p>
-            <p>Vous allez recevoir sous peu un <span className="text-amber-400 font-semibold">lien de paiement unique</span> émanant de <span className="text-white font-medium">Hexa Coop</span>, notre partenaire, pour bénéficier de notre programme crédit d’impôt.</p>
-            <p>Le paiement doit être initié par <span className="text-white font-medium">carte ou virement dans les 24h</span> suivant l’envoi du lien.</p>
-            <p>Vous recevrez dès réception du paiement une <span className="text-white font-medium">attestation</span> — le reste est automatique et ne nécessite aucune action de votre part.</p>
+
+          {/* Card */}
+          <div style={{
+            background: colors.surface,
+            border: `1px solid ${colors.border}`,
+            borderRadius: "2px",
+            padding: "48px 40px",
+            textAlign: "center",
+          }}>
+            <CheckCircle size={40} strokeWidth={1.5} style={{ color: colors.gold, margin: "0 auto 20px", display: "block" }} />
+            <h2 style={{
+              fontFamily: fonts.heading,
+              fontSize: "26px",
+              fontWeight: 600,
+              color: colors.fg,
+              letterSpacing: "0.04em",
+              marginBottom: "8px",
+            }}>
+              Demande enregistree
+            </h2>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: "14px",
+              color: colors.muted,
+              lineHeight: "1.6",
+              marginBottom: "32px",
+            }}>
+              Votre demande a bien ete transmise a notre equipe. Vous allez recevoir sous peu un lien de paiement unique emanant de Hexa Coop, notre partenaire, pour beneficier de notre programme credit d'impot.
+            </p>
+
+            <div style={{
+              background: colors.surfaceRaised,
+              border: `1px solid ${colors.border}`,
+              borderRadius: "2px",
+              padding: "24px",
+              textAlign: "left",
+              marginBottom: "24px",
+            }}>
+              <p style={{ ...labelStyle, marginBottom: "16px" }}>Recapitulatif</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", fontFamily: fonts.body }}>
+                  <span style={{ color: colors.muted }}>Nom</span>
+                  <span style={{ color: colors.fg, fontWeight: 500 }}>{form.civilite ? `${form.civilite} ` : ""}{form.prenom} {form.nom}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", fontFamily: fonts.body }}>
+                  <span style={{ color: colors.muted }}>Email</span>
+                  <span style={{ color: colors.fg }}>{form.email}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", fontFamily: fonts.body }}>
+                  <span style={{ color: colors.muted }}>Montant</span>
+                  <span style={{ color: colors.gold, fontWeight: 600 }}>{parseFloat(form.montantNegocie).toLocaleString("fr-FR")} EUR</span>
+                </div>
+              </div>
+            </div>
+
+            <div style={{
+              background: colors.surfaceRaised,
+              border: `1px solid ${colors.border}`,
+              borderRadius: "2px",
+              padding: "20px",
+              textAlign: "left",
+            }}>
+              <p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted, lineHeight: "1.7", margin: 0 }}>
+                Le paiement doit etre initie par carte ou virement dans les 24h suivant l'envoi du lien. Vous recevrez des reception du paiement une attestation — le reste est automatique et ne necessite aucune action de votre part.
+              </p>
+            </div>
           </div>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 text-left space-y-3 mb-8">
-            <p className="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Récapitulatif</p>
-            <div className="flex justify-between text-sm">
-              <span className="text-zinc-400">Nom</span>
-              <span className="text-white font-medium">{form.civilite ? `${form.civilite} ` : ""}{form.prenom} {form.nom}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-zinc-400">Email</span>
-              <span className="text-white">{form.email}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-zinc-400">Montant</span>
-              <span className="text-amber-400 font-bold">{parseFloat(form.montantNegocie).toLocaleString("fr-FR")} €</span>
-            </div>
-          </div>
-          <p className="text-zinc-600 text-xs">
-            Sigma Factory — Toutes vos informations sont traitées de manière strictement confidentielle.
+
+          <p style={{
+            textAlign: "center",
+            marginTop: "40px",
+            fontFamily: fonts.body,
+            fontSize: "10px",
+            color: colors.border,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+          }}>
+            Document confidentiel — Sigma Factory
           </p>
         </div>
       </div>
     );
   }
 
-  const inputClass = (field: keyof FormData) =>
-    `w-full bg-zinc-900 border rounded-lg px-3 py-2.5 text-white placeholder-zinc-600 text-sm focus:outline-none focus:border-amber-500 transition ${errors[field] ? "border-red-500" : "border-zinc-700"}`;
+  /* ── Main form ── */
+  const STEPS = [
+    { id: 1, label: "Montant" },
+    { id: 2, label: "Identite" },
+    { id: 3, label: "Adresse" },
+  ];
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col">
+    <div style={{ minHeight: "100vh", background: colors.bg }}>
       {/* Header */}
-      <header className="border-b border-zinc-800/60 px-6 py-4">
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <div>
-            <div className="text-amber-400 font-bold tracking-widest text-sm uppercase">Sigma Factory</div>
-            <div className="text-zinc-500 text-xs mt-0.5">Crédit d'impôt — Confidentiel</div>
-          </div>
-          <div className="flex items-center gap-2">
-            {[1, 2, 3].map(s => (
-              <div key={s} className="flex items-center gap-2">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border transition-all ${
-                  step === s ? "bg-amber-500 border-amber-500 text-black"
-                  : step > s ? "bg-amber-500/20 border-amber-500/40 text-amber-400"
-                  : "bg-zinc-800 border-zinc-700 text-zinc-500"
-                }`}>
-                  {step > s ? (
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                  ) : s}
-                </div>
-                {s < 3 && <div className={`w-8 h-px ${step > s ? "bg-amber-500/40" : "bg-zinc-700"}`} />}
-              </div>
-            ))}
-          </div>
+      <div style={{
+        borderBottom: `1px solid ${colors.border}`,
+        background: colors.bg,
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
+      }}>
+        <div style={{
+          maxWidth: "640px",
+          margin: "0 auto",
+          padding: "16px 24px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
+          <h1 style={{
+            fontFamily: fonts.heading,
+            fontSize: "18px",
+            fontWeight: 700,
+            letterSpacing: "0.15em",
+            color: colors.gold,
+            margin: 0,
+          }}>
+            SIGMA FACTORY
+          </h1>
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: "10px",
+            fontWeight: 500,
+            color: colors.faint,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            margin: 0,
+          }}>
+            Credit d'impot — Confidentiel
+          </p>
         </div>
-      </header>
+      </div>
 
-      <div className="flex-1 flex items-start justify-center p-6 pt-10">
-        <div className="w-full max-w-lg">
+      <div style={{ maxWidth: "560px", margin: "0 auto", padding: "48px 24px" }}>
+        {/* Title */}
+        <div style={{ textAlign: "center", marginBottom: "40px" }}>
+          <h2 style={{
+            fontFamily: fonts.heading,
+            fontSize: "28px",
+            fontWeight: 700,
+            color: colors.fg,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            margin: "0 0 6px",
+            lineHeight: 1.1,
+          }}>
+            Montant & Identite
+          </h2>
+          <div style={{ width: "40px", height: "1px", background: colors.gold, margin: "12px auto 16px" }} />
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: "12px",
+            color: colors.faint,
+            letterSpacing: "0.02em",
+            margin: 0,
+          }}>
+            Vos donnees sont protegees et traitees de maniere strictement confidentielle.
+          </p>
+        </div>
 
-          {/* Bandeau confidentialité */}
-          <div className="bg-amber-500/8 border border-amber-500/20 rounded-xl p-4 mb-8 flex gap-3">
-            <svg className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-            <div>
-              <p className="text-amber-300 text-sm font-semibold">Vos données sont protégées</p>
-              <p className="text-zinc-400 text-xs mt-0.5 leading-relaxed">Ce formulaire est strictement confidentiel. Vos informations sont utilisées uniquement par l'équipe Sigma Factory.</p>
-            </div>
-          </div>
+        {/* Stepper */}
+        <div style={{ display: "flex", alignItems: "center", marginBottom: "40px" }}>
+          {STEPS.map((s, i) => {
+            const isActive = step === s.id;
+            const isDone = step > s.id;
+            return (
+              <div key={s.id} style={{ display: "flex", alignItems: "center", flex: 1 }}>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", minWidth: "48px" }}>
+                  <div style={{
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "2px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: `1px solid ${isActive ? colors.gold : isDone ? colors.goldMuted : colors.border}`,
+                    background: isActive ? colors.gold : "transparent",
+                    transition: "all 300ms ease",
+                    fontFamily: fonts.body,
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    color: isActive ? colors.bg : isDone ? colors.goldMuted : colors.faint,
+                  }}>
+                    {isDone ? (
+                      <CheckCircle size={14} strokeWidth={1.5} style={{ color: colors.goldMuted }} />
+                    ) : s.id}
+                  </div>
+                  <span style={{
+                    fontFamily: fonts.body,
+                    fontSize: "9px",
+                    fontWeight: 500,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    color: isActive ? colors.fg : isDone ? colors.muted : colors.faint,
+                    transition: "color 300ms ease",
+                  }}>
+                    {s.label}
+                  </span>
+                </div>
+                {i < STEPS.length - 1 && (
+                  <div style={{
+                    flex: 1,
+                    height: "1px",
+                    margin: "0 8px",
+                    marginBottom: "20px",
+                    background: isDone ? colors.goldMuted : colors.border,
+                    transition: "background 300ms ease",
+                  }} />
+                )}
+              </div>
+            );
+          })}
+        </div>
 
-          {/* ── Étape 1 : Montant négocié ── */}
+        {/* Form card */}
+        <div style={{
+          background: colors.surface,
+          border: `1px solid ${colors.border}`,
+          borderRadius: "2px",
+          padding: "40px 36px",
+        }}>
+
+          {/* Step 1 — Montant */}
           {step === 1 && (
             <div>
-              <h1 className="text-xl font-bold text-white mb-1">Montant de votre accompagnement</h1>
-              <p className="text-zinc-500 text-sm mb-6">Renseignez le montant de votre accompagnement.</p>
-              <div>
-                <label className="block text-xs text-zinc-400 mb-1.5 font-medium">
-                  Montant (€) <span className="text-amber-500">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="number"
-                    min="100"
-                    step="1"
-                    value={form.montantNegocie}
-                    onChange={e => set("montantNegocie", e.target.value)}
-                    placeholder="Ex : 5000"
-                    className={`${inputClass("montantNegocie")} pr-10`}
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm font-medium">€</span>
-                </div>
-                {errors.montantNegocie && <p className="text-red-400 text-xs mt-1">{errors.montantNegocie}</p>}
-
-              </div>
-              <button
-                onClick={() => { if (validateStep1()) setStep(2); }}
-                className="w-full mt-8 py-3 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl text-sm transition flex items-center justify-center gap-2"
-              >
-                Continuer
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
+              <SectionDivider>Montant de l'accompagnement</SectionDivider>
+              <p style={{
+                fontFamily: fonts.body,
+                fontSize: "13px",
+                color: colors.muted,
+                lineHeight: "1.6",
+                margin: "0 0 24px",
+              }}>
+                Renseignez le montant de votre accompagnement.
+              </p>
+              <SigmaInput
+                label="Montant (EUR)"
+                required
+                type="number"
+                min={100}
+                step={1}
+                value={form.montantNegocie}
+                onChange={e => set("montantNegocie", e.target.value)}
+                placeholder="Ex : 5000"
+                error={errors.montantNegocie}
+              />
             </div>
           )}
 
-          {/* ── Étape 2 : Identité ── */}
+          {/* Step 2 — Identite */}
           {step === 2 && (
             <div>
-              <h1 className="text-xl font-bold text-white mb-1">Vos informations personnelles</h1>
-              <p className="text-zinc-500 text-sm mb-6">Ces informations permettent de constituer votre dossier.</p>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Civilité</label>
-                  <div className="flex gap-2 flex-wrap">
-                    {["M.", "Mme", "Mme M.", "M. Mme"].map(c => (
-                      <button key={c} type="button" onClick={() => set("civilite", form.civilite === c ? "" : c)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
-                          form.civilite === c ? "bg-amber-500 border-amber-500 text-black" : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:border-zinc-500"
-                        }`}>{c}</button>
-                    ))}
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Nom <span className="text-amber-500">*</span></label>
-                    <input value={form.nom} onChange={e => set("nom", e.target.value)} placeholder="Dupont" className={inputClass("nom")} />
-                    {errors.nom && <p className="text-red-400 text-xs mt-1">{errors.nom}</p>}
-                  </div>
-                  <div>
-                    <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Prénom <span className="text-amber-500">*</span></label>
-                    <input value={form.prenom} onChange={e => set("prenom", e.target.value)} placeholder="Jean" className={inputClass("prenom")} />
-                    {errors.prenom && <p className="text-red-400 text-xs mt-1">{errors.prenom}</p>}
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Email <span className="text-amber-500">*</span></label>
-                  <input type="email" value={form.email} onChange={e => set("email", e.target.value)} placeholder="jean.dupont@email.com" className={inputClass("email")} />
-                  {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
-                </div>
-                {/* Date de naissance */}
-                <div>
-                  <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Date de naissance <span className="text-amber-500">*</span></label>
-                  <input type="date" value={form.dateNaissance} onChange={e => set("dateNaissance", e.target.value)}
-                    className={`${inputClass("dateNaissance")} [color-scheme:dark]`} />
-                  {errors.dateNaissance && <p className="text-red-400 text-xs mt-1">{errors.dateNaissance}</p>}
-                </div>
-                {/* Situation familiale */}
-                <div>
-                  <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Situation familiale</label>
-                  <div className="flex gap-2 flex-wrap">
-                    {SITUATIONS.map(s => (
-                      <button key={s.value} type="button" onClick={() => set("situationFamiliale", form.situationFamiliale === s.value ? "" : s.value)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
-                          form.situationFamiliale === s.value ? "bg-amber-500 border-amber-500 text-black" : "bg-zinc-900 border-zinc-700 text-zinc-400 hover:border-zinc-500"
-                        }`}>{s.label}</button>
-                    ))}
-                  </div>
-                </div>
-                {/* Profession */}
-                <div>
-                  <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Profession</label>
-                  <input value={form.profession} onChange={e => set("profession", e.target.value)} placeholder="Ex : Salarié, Indépendant, Retraité…" className={inputClass("profession")} />
-                </div>
-                {/* Téléphones */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Mobile</label>
-                    <input type="tel" value={form.mobile} onChange={e => set("mobile", e.target.value)} placeholder="06 00 00 00 00" className={inputClass("mobile")} />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Fixe</label>
-                    <input type="tel" value={form.fixe} onChange={e => set("fixe", e.target.value)} placeholder="01 00 00 00 00" className={inputClass("fixe")} />
-                  </div>
+              <SectionDivider>Informations personnelles</SectionDivider>
+              <p style={{
+                fontFamily: fonts.body,
+                fontSize: "13px",
+                color: colors.muted,
+                lineHeight: "1.6",
+                margin: "0 0 24px",
+              }}>
+                Ces informations permettent de constituer votre dossier.
+              </p>
+
+              {/* Civilite */}
+              <div style={{ marginBottom: "20px" }}>
+                <label style={labelStyle}>Civilite</label>
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  {["M.", "Mme", "Mme M.", "M. Mme"].map(c => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => set("civilite", form.civilite === c ? "" : c)}
+                      style={{
+                        padding: "8px 16px",
+                        borderRadius: "2px",
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        fontFamily: fonts.body,
+                        letterSpacing: "0.04em",
+                        border: `1px solid ${form.civilite === c ? colors.gold : colors.border}`,
+                        background: form.civilite === c ? colors.gold : "transparent",
+                        color: form.civilite === c ? colors.bg : colors.muted,
+                        cursor: "pointer",
+                        transition: "all 300ms ease",
+                      }}
+                    >
+                      {c}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="flex gap-3 mt-8">
-                <button onClick={() => setStep(1)} className="flex-1 py-3 bg-zinc-900 border border-zinc-700 hover:border-zinc-500 text-zinc-400 font-medium rounded-xl text-sm transition">Retour</button>
-                <button onClick={() => { if (validateStep2()) setStep(3); }}
-                  className="flex-1 py-3 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-xl text-sm transition flex items-center justify-center gap-2">
-                  Continuer
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                <SigmaInput label="Nom" required value={form.nom} onChange={e => set("nom", e.target.value)} placeholder="Dupont" error={errors.nom} />
+                <SigmaInput label="Prenom" required value={form.prenom} onChange={e => set("prenom", e.target.value)} placeholder="Jean" error={errors.prenom} />
+              </div>
+
+              <div style={{ marginBottom: "16px" }}>
+                <SigmaInput label="Email" required type="email" value={form.email} onChange={e => set("email", e.target.value)} placeholder="jean.dupont@email.com" error={errors.email} />
+              </div>
+
+              <div style={{ marginBottom: "16px" }}>
+                <SigmaInput label="Date de naissance" required type="date" value={form.dateNaissance} onChange={e => set("dateNaissance", e.target.value)} error={errors.dateNaissance} />
+              </div>
+
+              {/* Situation familiale */}
+              <div style={{ marginBottom: "20px" }}>
+                <label style={labelStyle}>Situation familiale</label>
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  {SITUATIONS.map(s => (
+                    <button
+                      key={s.value}
+                      type="button"
+                      onClick={() => set("situationFamiliale", form.situationFamiliale === s.value ? "" : s.value)}
+                      style={{
+                        padding: "8px 16px",
+                        borderRadius: "2px",
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        fontFamily: fonts.body,
+                        letterSpacing: "0.04em",
+                        border: `1px solid ${form.situationFamiliale === s.value ? colors.gold : colors.border}`,
+                        background: form.situationFamiliale === s.value ? colors.gold : "transparent",
+                        color: form.situationFamiliale === s.value ? colors.bg : colors.muted,
+                        cursor: "pointer",
+                        transition: "all 300ms ease",
+                      }}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ marginBottom: "16px" }}>
+                <SigmaInput label="Profession" value={form.profession} onChange={e => set("profession", e.target.value)} placeholder="Ex : Salarie, Independant, Retraite..." />
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                <SigmaInput label="Mobile" type="tel" value={form.mobile} onChange={e => set("mobile", e.target.value)} placeholder="06 00 00 00 00" />
+                <SigmaInput label="Fixe" type="tel" value={form.fixe} onChange={e => set("fixe", e.target.value)} placeholder="01 00 00 00 00" />
               </div>
             </div>
           )}
 
-          {/* ── Étape 3 : Coordonnées & naissance ── */}
+          {/* Step 3 — Adresse & naissance */}
           {step === 3 && (
             <div>
-              <h1 className="text-xl font-bold text-white mb-1">Adresse & lieu de naissance</h1>
-              <p className="text-zinc-500 text-sm mb-6">Informations nécessaires pour votre dossier fiscal.</p>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Adresse <span className="text-amber-500">*</span></label>
-                  <input value={form.adresse} onChange={e => set("adresse", e.target.value)} placeholder="12 rue de la Paix" className={inputClass("adresse")} />
-                  {errors.adresse && <p className="text-red-400 text-xs mt-1">{errors.adresse}</p>}
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Code postal <span className="text-amber-500">*</span></label>
-                    <input value={form.codePostal} onChange={e => set("codePostal", e.target.value)} placeholder="75001" className={inputClass("codePostal")} />
-                    {errors.codePostal && <p className="text-red-400 text-xs mt-1">{errors.codePostal}</p>}
-                  </div>
-                  <div>
-                    <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Ville <span className="text-amber-500">*</span></label>
-                    <input value={form.ville} onChange={e => set("ville", e.target.value)} placeholder="Paris" className={inputClass("ville")} />
-                    {errors.ville && <p className="text-red-400 text-xs mt-1">{errors.ville}</p>}
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Pays de naissance <span className="text-amber-500">*</span></label>
-                    <input value={form.paysNaissance} onChange={e => set("paysNaissance", e.target.value)} placeholder="France" className={inputClass("paysNaissance")} />
-                    {errors.paysNaissance && <p className="text-red-400 text-xs mt-1">{errors.paysNaissance}</p>}
-                  </div>
-                  <div>
-                    <label className="block text-xs text-zinc-400 mb-1.5 font-medium">Ville de naissance <span className="text-amber-500">*</span></label>
-                    <input value={form.villeNaissance} onChange={e => set("villeNaissance", e.target.value)} placeholder="Lyon" className={inputClass("villeNaissance")} />
-                    {errors.villeNaissance && <p className="text-red-400 text-xs mt-1">{errors.villeNaissance}</p>}
-                  </div>
-                </div>
+              <SectionDivider>Adresse & lieu de naissance</SectionDivider>
+              <p style={{
+                fontFamily: fonts.body,
+                fontSize: "13px",
+                color: colors.muted,
+                lineHeight: "1.6",
+                margin: "0 0 24px",
+              }}>
+                Informations necessaires pour votre dossier fiscal.
+              </p>
+
+              <div style={{ marginBottom: "16px" }}>
+                <SigmaInput label="Adresse" required value={form.adresse} onChange={e => set("adresse", e.target.value)} placeholder="12 rue de la Paix" error={errors.adresse} />
               </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                <SigmaInput label="Code postal" required value={form.codePostal} onChange={e => set("codePostal", e.target.value)} placeholder="75001" error={errors.codePostal} />
+                <SigmaInput label="Ville" required value={form.ville} onChange={e => set("ville", e.target.value)} placeholder="Paris" error={errors.ville} />
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                <SigmaInput label="Pays de naissance" required value={form.paysNaissance} onChange={e => set("paysNaissance", e.target.value)} placeholder="France" error={errors.paysNaissance} />
+                <SigmaInput label="Ville de naissance" required value={form.villeNaissance} onChange={e => set("villeNaissance", e.target.value)} placeholder="Lyon" error={errors.villeNaissance} />
+              </div>
+
               {form.montantNegocie && (
-                <div className="mt-6 bg-zinc-900 border border-zinc-700 rounded-xl p-4">
-                  <p className="text-xs text-zinc-500 uppercase tracking-wider font-semibold mb-2">Récapitulatif</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-zinc-400">{form.prenom} {form.nom}</span>
-                    <span className="text-amber-400 font-bold">{parseFloat(form.montantNegocie).toLocaleString("fr-FR")} €</span>
+                <div style={{
+                  background: colors.surfaceRaised,
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: "2px",
+                  padding: "20px",
+                  marginTop: "24px",
+                }}>
+                  <p style={{ ...labelStyle, marginBottom: "12px" }}>Recapitulatif</p>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontFamily: fonts.body, fontSize: "14px", color: colors.muted }}>{form.prenom} {form.nom}</span>
+                    <span style={{ fontFamily: fonts.body, fontSize: "14px", color: colors.gold, fontWeight: 600 }}>{parseFloat(form.montantNegocie).toLocaleString("fr-FR")} EUR</span>
                   </div>
                 </div>
               )}
-              <div className="flex gap-3 mt-6">
-                <button onClick={() => setStep(2)} className="flex-1 py-3 bg-zinc-900 border border-zinc-700 hover:border-zinc-500 text-zinc-400 font-medium rounded-xl text-sm transition">Retour</button>
-                <button onClick={handleSubmit} disabled={submitMutation.isPending}
-                  className="flex-1 py-3 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-black font-bold rounded-xl text-sm transition flex items-center justify-center gap-2">
-                  {submitMutation.isPending ? (
-                    <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                  ) : (
-                    <>Soumettre ma demande
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </>
-                  )}
-                </button>
-              </div>
-              <p className="text-xs text-zinc-600 text-center mt-4">En soumettant ce formulaire, vous acceptez que vos données soient traitées par Sigma Factory.</p>
+
+              <p style={{
+                fontFamily: fonts.body,
+                fontSize: "11px",
+                color: colors.faint,
+                textAlign: "center",
+                marginTop: "20px",
+              }}>
+                En soumettant ce formulaire, vous acceptez que vos donnees soient traitees par Sigma Factory.
+              </p>
             </div>
           )}
+
+          {/* Navigation */}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginTop: "32px",
+            paddingTop: "24px",
+            borderTop: `1px solid ${colors.border}`,
+          }}>
+            <button
+              type="button"
+              onClick={() => setStep(s => Math.max(1, s - 1))}
+              disabled={step === 1}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "12px 20px",
+                background: "transparent",
+                border: `1px solid ${colors.border}`,
+                borderRadius: "2px",
+                fontFamily: fonts.body,
+                fontSize: "11px",
+                fontWeight: 500,
+                color: step === 1 ? colors.faint : colors.muted,
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                cursor: step === 1 ? "not-allowed" : "pointer",
+                opacity: step === 1 ? 0.4 : 1,
+                transition: "all 300ms ease",
+              }}
+            >
+              <ChevronLeft size={14} strokeWidth={1.5} /> Precedent
+            </button>
+
+            <span style={{
+              fontFamily: fonts.body,
+              fontSize: "11px",
+              color: colors.faint,
+              letterSpacing: "0.04em",
+            }}>
+              {step} / 3
+            </span>
+
+            {step < 3 ? (
+              <button
+                type="button"
+                onClick={() => {
+                  if (step === 1 && !validateStep1()) return;
+                  if (step === 2 && !validateStep2()) return;
+                  setStep(s => s + 1);
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "12px 24px",
+                  background: "transparent",
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: "2px",
+                  fontFamily: fonts.body,
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  color: colors.fg,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  cursor: "pointer",
+                  transition: "all 300ms ease",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = colors.gold; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = colors.border; }}
+              >
+                Suivant <ChevronRight size={14} strokeWidth={1.5} />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={submitMutation.isPending}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "14px 28px",
+                  background: submitMutation.isPending ? colors.goldMuted : colors.gold,
+                  border: "none",
+                  borderRadius: "2px",
+                  fontFamily: fonts.body,
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  color: colors.bg,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  cursor: submitMutation.isPending ? "not-allowed" : "pointer",
+                  opacity: submitMutation.isPending ? 0.7 : 1,
+                  transition: "opacity 300ms ease",
+                }}
+              >
+                {submitMutation.isPending ? (
+                  <><Loader2 size={14} strokeWidth={1.5} className="animate-spin" /> Envoi en cours...</>
+                ) : (
+                  <>Soumettre ma demande</>
+                )}
+              </button>
+            )}
+          </div>
         </div>
+
+        {/* Footer */}
+        <p style={{
+          textAlign: "center",
+          marginTop: "48px",
+          fontFamily: fonts.body,
+          fontSize: "10px",
+          color: colors.border,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+        }}>
+          Document confidentiel — Sigma Factory
+        </p>
       </div>
     </div>
   );

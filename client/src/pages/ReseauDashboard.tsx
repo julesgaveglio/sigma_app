@@ -19,6 +19,120 @@ import { toast } from "sonner";
 import AdminNav from "@/components/AdminNav";
 import { CarteReseau } from "@/components/CarteReseau";
 
+/* ── Design tokens ─────────────────────────────────────────── */
+const T = {
+  bg: "#0A0A0A",
+  surface: "#111111",
+  raised: "#161616",
+  border: "#1E1E1E",
+  borderSubtle: "#151515",
+  fg: "#F0EDE6",
+  muted: "#6B6560",
+  faint: "#3A3632",
+  gold: "#C9A84C",
+  goldMuted: "#8A7535",
+  destructive: "#A04040",
+  success: "#4A7A5A",
+  headerBg: "#0D0D0D",
+} as const;
+
+const font = {
+  display: "'Cormorant Garamond', serif",
+  body: "'Hanken Grotesk', sans-serif",
+} as const;
+
+/* ── Statut styling (design-system badges) ─────────────────── */
+const STATUT_STYLES: Record<string, { label: string; color: string; bg: string; border: string }> = {
+  en_attente: { label: "En attente", color: T.gold, bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  actif: { label: "Actif", color: T.success, bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  suspendu: { label: "Suspendu", color: T.muted, bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  resilie: { label: "Resilie", color: T.destructive, bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+};
+
+const STATUT_BIEN_STYLES: Record<string, { label: string; color: string; bg: string; border: string }> = {
+  en_attente_validation: { label: "A valider", color: T.gold, bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  publie: { label: "Publie", color: T.success, bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  sous_compromis: { label: "Sous compromis", color: T.muted, bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  vendu: { label: "Vendu", color: T.fg, bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+  retire: { label: "Retire", color: T.faint, bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" },
+};
+
+const STATUT_LABELS: Record<string, string> = {
+  en_attente: "En attente", actif: "Actif", suspendu: "Suspendu", resilie: "Résilié",
+  en_attente_validation: "À valider", publie: "Publié", sous_compromis: "Sous compromis",
+  vendu: "Vendu", retire: "Retiré",
+};
+
+/* ── Shared inline style helpers ───────────────────────────── */
+const labelStyle: React.CSSProperties = {
+  fontFamily: font.body,
+  fontSize: "11px",
+  fontWeight: 500,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  color: T.muted,
+};
+
+const bodyStyle: React.CSSProperties = {
+  fontFamily: font.body,
+  fontSize: "13px",
+  fontWeight: 400,
+  color: T.fg,
+};
+
+const bodyMutedStyle: React.CSSProperties = {
+  ...bodyStyle,
+  color: T.faint,
+  fontSize: "12px",
+};
+
+const cardStyle: React.CSSProperties = {
+  background: T.surface,
+  border: `1px solid ${T.border}`,
+  borderRadius: "2px",
+};
+
+const raisedStyle: React.CSSProperties = {
+  background: T.raised,
+  border: `1px solid ${T.border}`,
+  borderRadius: "2px",
+};
+
+const inputStyle: React.CSSProperties = {
+  background: T.raised,
+  border: `1px solid ${T.border}`,
+  borderRadius: "2px",
+  padding: "10px 14px",
+  fontSize: "13px",
+  fontFamily: font.body,
+  color: T.fg,
+  outline: "none",
+};
+
+function StatutBadgeInline({ statut, map }: { statut: string; map?: Record<string, { label: string; color: string; bg: string; border: string }> }) {
+  const styles = map ?? STATUT_STYLES;
+  const s = styles[statut] ?? { label: statut, color: T.faint, bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
+  return (
+    <span style={{
+      display: "inline-flex",
+      alignItems: "center",
+      padding: "2px 8px",
+      borderRadius: "2px",
+      fontSize: "10px",
+      fontFamily: font.body,
+      fontWeight: 500,
+      letterSpacing: "0.06em",
+      textTransform: "uppercase",
+      color: s.color,
+      background: s.bg,
+      border: `1px solid ${s.border}`,
+    }}>
+      {STATUT_LABELS[statut] ?? statut}
+    </span>
+  );
+}
+
+/* ── Backward-compat: keep STATUT_COLORS for Select triggers ─ */
 const STATUT_COLORS: Record<string, string> = {
   en_attente: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30",
   actif: "bg-green-500/10 text-green-400 border-green-500/30",
@@ -32,12 +146,6 @@ const STATUT_BIEN_COLORS: Record<string, string> = {
   sous_compromis: "bg-blue-500/10 text-blue-400 border-blue-500/30",
   vendu: "bg-purple-500/10 text-purple-400 border-purple-500/30",
   retire: "bg-gray-500/10 text-gray-400 border-gray-500/30",
-};
-
-const STATUT_LABELS: Record<string, string> = {
-  en_attente: "En attente", actif: "Actif", suspendu: "Suspendu", resilie: "Résilié",
-  en_attente_validation: "À valider", publie: "Publié", sous_compromis: "Sous compromis",
-  vendu: "Vendu", retire: "Retiré",
 };
 
 export default function ReseauDashboard() {
@@ -310,81 +418,127 @@ export default function ReseauDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen" style={{ background: T.bg }}>
       <AdminNav />
-      <div className="p-6 space-y-6">
-      {/* Header */}
+      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "32px 24px" }} className="space-y-10">
+
+      {/* ── Header ──────────────────────────────────────────── */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <a href="/dashboard" className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#111] border border-[#222] text-gray-400 hover:text-white hover:border-[#C9A84C] transition-colors" title="Retour">
-            <ArrowLeft className="w-4 h-4" />
+        <div className="flex items-center gap-4">
+          <a
+            href="/dashboard"
+            className="flex items-center justify-center transition-colors duration-300"
+            style={{ width: "32px", height: "32px", borderRadius: "2px", background: T.surface, border: `1px solid ${T.border}`, color: T.faint }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = T.gold; e.currentTarget.style.color = T.fg; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.faint; }}
+            title="Retour"
+          >
+            <ArrowLeft className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </a>
           <div>
-            <h1 className="text-2xl font-black text-white tracking-wide">
-              Réseau <span className="text-[#C9A84C]">Agents</span>
+            <h1 style={{
+              fontFamily: font.display,
+              fontSize: "26px",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: T.fg,
+            }}>
+              Reseau Agents
             </h1>
-            <p className="text-gray-400 text-sm mt-1">Gestion du réseau d'affiliation Sigma Factory</p>
+            <p style={{ fontFamily: font.body, fontSize: "13px", color: T.muted, marginTop: "4px" }}>
+              Gestion du reseau d'affiliation Sigma Factory
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <a href="/ambassadeur/bien">
-            <Button className="bg-green-600 hover:bg-green-700 text-white font-bold text-sm">
-              <Building2 className="mr-2 w-4 h-4" />
-              Déposer un bien
-            </Button>
+            <button
+              className="flex items-center gap-2 transition-colors duration-300"
+              style={{
+                padding: "10px 20px",
+                borderRadius: "2px",
+                border: `1px solid ${T.border}`,
+                background: "transparent",
+                color: T.fg,
+                fontFamily: font.body,
+                fontSize: "11px",
+                fontWeight: 500,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = T.muted)}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = T.border)}
+            >
+              <Building2 className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+              Deposer un bien
+            </button>
           </a>
           <a href="/ambassadeur" target="_blank">
-            <Button className="bg-[#C9A84C] hover:bg-[#b8943d] text-black font-bold text-sm">
-              <Users className="mr-2 w-4 h-4" />
+            <button style={{
+              padding: "10px 20px",
+              borderRadius: "2px",
+              background: T.gold,
+              color: T.bg,
+              fontFamily: font.body,
+              fontSize: "11px",
+              fontWeight: 500,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              border: "none",
+              cursor: "pointer",
+            }} className="flex items-center gap-2">
+              <Users className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               Page de recrutement
-            </Button>
+            </button>
           </a>
         </div>
       </div>
 
-      {/* ── Panneau alertes inactivité agents ── */}
+      {/* ── Panneau alertes inactivite agents ── */}
       {agentsInactifs.length > 0 && (
-        <div className="border border-red-500/40 bg-red-500/5 p-4 space-y-3">
+        <div style={{ border: `1px solid ${T.destructive}40`, background: `${T.destructive}08`, borderRadius: "2px", padding: "20px" }} className="space-y-3">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-red-400" />
-            <h3 className="text-red-400 font-bold text-sm">{agentsInactifs.length} agent(s) inactif(s) — aucun bien posé depuis plus de 30 jours</h3>
+            <AlertTriangle className="w-4 h-4" style={{ color: T.destructive, strokeWidth: 1.5 }} />
+            <span style={{ fontFamily: font.body, fontSize: "12px", fontWeight: 500, color: T.destructive }}>
+              {agentsInactifs.length} agent(s) inactif(s) — aucun bien pose depuis plus de 30 jours
+            </span>
           </div>
           <div className="space-y-2">
             {agentsInactifs.map((a: any) => (
-              <div key={a.agentId} className="flex items-center justify-between bg-red-500/10 border border-red-500/20 p-3">
+              <div key={a.agentId} className="flex items-center justify-between" style={{ background: `${T.destructive}0A`, border: `1px solid ${T.destructive}20`, borderRadius: "2px", padding: "12px 16px" }}>
                 <div className="flex items-center gap-3">
-                  <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                  <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: T.destructive, strokeWidth: 1.5 }} />
                   <div>
-                    <div className="text-white font-semibold text-sm">{a.agentNom}</div>
-                    <div className="text-red-300 text-xs">
-                      {a.nbBiensTotaux === 0 ? "Aucun bien posé" : `Dernier bien : ${a.dernierBienDate ? new Date(a.dernierBienDate).toLocaleDateString("fr-FR") : "—"}`}
-                      {" · "}{a.joursInactivite}j d'inactivité · {a.agentEmail}
-                    </div>
+                    <p style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg }}>{a.agentNom}</p>
+                    <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>
+                      {a.nbBiensTotaux === 0 ? "Aucun bien pose" : `Dernier bien : ${a.dernierBienDate ? new Date(a.dernierBienDate).toLocaleDateString("fr-FR") : "—"}`}
+                      {" · "}{a.joursInactivite}j d'inactivite · {a.agentEmail}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   {a.statutInterne !== "suspendu" && (
-                    <Button
-                      size="sm"
+                    <button
                       onClick={() => declencherTriggerAgent.mutate({ agentId: a.agentId })}
                       disabled={declencherTriggerAgent.isPending}
-                      className="bg-red-600 hover:bg-red-700 text-white text-xs gap-1"
+                      className="flex items-center gap-1.5 transition-colors duration-300"
+                      style={{ padding: "6px 12px", borderRadius: "2px", background: T.destructive, color: T.fg, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", border: "none", cursor: "pointer" }}
                     >
-                      <AlertTriangle className="w-3.5 h-3.5" />
-                      Suspendre + Notifier Élodie
-                    </Button>
+                      <AlertTriangle className="w-3 h-3" style={{ strokeWidth: 1.5 }} />
+                      Suspendre + Notifier
+                    </button>
                   )}
                   {a.statutInterne === "suspendu" && (
-                    <Button
-                      size="sm"
-                      variant="outline"
+                    <button
                       onClick={() => reactiverAgent.mutate({ agentId: a.agentId })}
                       disabled={reactiverAgent.isPending}
-                      className="border-green-500/40 text-green-400 hover:bg-green-500/10 text-xs gap-1"
+                      className="flex items-center gap-1.5 transition-colors duration-300"
+                      style={{ padding: "6px 12px", borderRadius: "2px", background: "transparent", color: T.success, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", border: `1px solid ${T.success}40`, cursor: "pointer" }}
                     >
-                      <RefreshCw className="w-3.5 h-3.5" />
-                      Réactiver
-                    </Button>
+                      <RefreshCw className="w-3 h-3" style={{ strokeWidth: 1.5 }} />
+                      Reactiver
+                    </button>
                   )}
                 </div>
               </div>
@@ -393,136 +547,173 @@ export default function ReseauDashboard() {
         </div>
       )}
 
-      {/* Stats globales réseau */}
-      <div className="grid grid-cols-4 gap-4">
+      {/* ── Stats globales reseau (KPI cards) ── */}
+      <div className="grid grid-cols-4 gap-px" style={{ background: T.border, border: `1px solid ${T.border}`, borderRadius: "2px" }}>
         {[
-          { label: "Agents actifs", value: stats?.actifs ?? 0, sub: `${stats?.total ?? 0} au total`, icon: Users, color: "text-green-400" },
-          { label: "Courtiers actifs", value: statsCourtiers?.courtiersActifs ?? 0, sub: `${statsCourtiers?.totalCourtiers ?? 0} au total`, icon: Building2, color: "text-[#C9A84C]" },
-          { label: "Biens disponibles", value: stats?.biensDispos ?? 0, sub: "dans le portefeuille", icon: Home, color: "text-purple-400" },
-          { label: "Dossiers validés", value: statsCourtiers?.dossiersValides ?? 0, sub: `${statsCourtiers?.dossiersEnCours ?? 0} en cours`, icon: TrendingUp, color: "text-blue-400" },
+          { label: "Agents actifs", value: stats?.actifs ?? 0, sub: `${stats?.total ?? 0} au total` },
+          { label: "Courtiers actifs", value: statsCourtiers?.courtiersActifs ?? 0, sub: `${statsCourtiers?.totalCourtiers ?? 0} au total` },
+          { label: "Biens disponibles", value: stats?.biensDispos ?? 0, sub: "dans le portefeuille" },
+          { label: "Dossiers valides", value: statsCourtiers?.dossiersValides ?? 0, sub: `${statsCourtiers?.dossiersEnCours ?? 0} en cours` },
         ].map((s, i) => (
-          <div key={i} className="bg-[#111] border border-[#222] p-4 space-y-1">
-            <div className="flex items-center justify-between">
-              <p className="text-gray-400 text-xs uppercase tracking-wider">{s.label}</p>
-              <s.icon className={`w-4 h-4 ${s.color}`} />
-            </div>
-            <p className={`text-3xl font-black ${s.color}`}>{s.value}</p>
-            <p className="text-gray-500 text-xs">{s.sub}</p>
+          <div key={i} style={{ background: T.bg, padding: "24px" }}>
+            <p className="tabular-nums" style={{
+              fontFamily: font.display,
+              fontSize: "32px",
+              fontWeight: 600,
+              fontVariantNumeric: "tabular-nums",
+              color: i === 0 ? T.gold : T.fg,
+              lineHeight: 1,
+              letterSpacing: "0.02em",
+            }}>
+              {s.value}
+            </p>
+            <p style={{ ...labelStyle, marginTop: "8px" }}>{s.label}</p>
+            <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginTop: "2px" }}>{s.sub}</p>
           </div>
         ))}
       </div>
 
-      {/* Tabs */}
+      {/* ── Tabs ── */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="bg-[#111] border border-[#222]">
-          <TabsTrigger value="reseau" className="data-[state=active]:bg-[#C9A84C] data-[state=active]:text-black text-gray-400">
-            <Users className="mr-2 w-4 h-4" /> Réseau
-          </TabsTrigger>
-          <TabsTrigger value="ambassadeurs" className="data-[state=active]:bg-[#C9A84C] data-[state=active]:text-black text-gray-400">
-            <UserCheck className="mr-2 w-4 h-4" /> Liste Agents
-          </TabsTrigger>
-          <TabsTrigger value="biens" className="data-[state=active]:bg-[#C9A84C] data-[state=active]:text-black text-gray-400">
-            <Home className="mr-2 w-4 h-4" /> Portefeuille de biens
-          </TabsTrigger>
-          <TabsTrigger value="courtiers" className="data-[state=active]:bg-[#C9A84C] data-[state=active]:text-black text-gray-400">
-            <Building2 className="mr-2 w-4 h-4" /> Liste Courtiers
-          </TabsTrigger>
-          <TabsTrigger value="matching" className="data-[state=active]:bg-[#C9A84C] data-[state=active]:text-black text-gray-400">
-            <TrendingUp className="mr-2 w-4 h-4" /> Matching leads
-          </TabsTrigger>
-          <TabsTrigger value="carte" className="data-[state=active]:bg-[#C9A84C] data-[state=active]:text-black text-gray-400">
-            <Map className="mr-2 w-4 h-4" /> Carte du réseau
-          </TabsTrigger>
-        </TabsList>
+        <div style={{ borderBottom: `1px solid ${T.border}` }}>
+          <div className="flex items-center gap-0" style={{ marginBottom: "-1px" }}>
+            {[
+              { value: "reseau", label: "Reseau", icon: Users },
+              { value: "ambassadeurs", label: "Liste Agents", icon: UserCheck },
+              { value: "biens", label: "Portefeuille de biens", icon: Home },
+              { value: "courtiers", label: "Liste Courtiers", icon: Building2 },
+              { value: "matching", label: "Matching leads", icon: TrendingUp },
+              { value: "carte", label: "Carte du reseau", icon: Map },
+            ].map(tab => (
+              <button
+                key={tab.value}
+                onClick={() => setActiveTab(tab.value)}
+                className="flex items-center gap-2 transition-colors duration-300"
+                style={{
+                  padding: "12px 20px",
+                  fontFamily: font.body,
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  color: activeTab === tab.value ? T.gold : T.faint,
+                  background: "transparent",
+                  border: "none",
+                  borderBottom: activeTab === tab.value ? `2px solid ${T.gold}` : "2px solid transparent",
+                  cursor: "pointer",
+                }}
+              >
+                <tab.icon className="w-4 h-4" style={{ strokeWidth: 1.5 }} /> {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
-        {/* ONGLET RÉSEAU — Arborescence */}
-        <TabsContent value="reseau" className="mt-4">
-          <div className="bg-[#111] border border-[#222] p-6">
-            {/* Sélecteur type réseau */}
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="text-white font-bold text-sm uppercase tracking-wider">Arborescence du réseau</h3>
+        {/* ═══════════════════════════════════════════════════════
+            ONGLET RESEAU — Arborescence
+            ═══════════════════════════════════════════════════════ */}
+        <TabsContent value="reseau" className="mt-8">
+          <div style={cardStyle} className="p-8">
+            {/* Selecteur type reseau */}
+            <div className="flex items-center justify-between mb-6">
+              <h3 style={{ fontFamily: font.display, fontSize: "18px", fontWeight: 600, color: T.fg, letterSpacing: "0.04em" }}>
+                Arborescence du reseau
+              </h3>
               <Select value={typeReseau} onValueChange={(v) => setTypeReseau(v as "agents" | "courtiers")}>
-                <SelectTrigger className="w-44 bg-[#1a1a1a] border-[#333] text-white text-sm">
+                <SelectTrigger className="w-44" style={{ ...inputStyle, padding: "8px 12px", fontSize: "12px" }}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#333]">
-                  <SelectItem value="agents" className="text-white">Agents immo</SelectItem>
-                  <SelectItem value="courtiers" className="text-white">Courtiers</SelectItem>
+                <SelectContent style={{ background: T.raised, border: `1px solid ${T.border}` }}>
+                  <SelectItem value="agents" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Agents immo</SelectItem>
+                  <SelectItem value="courtiers" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Courtiers</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Arborescence Agents */}
             {typeReseau === "agents" && (!arborescence?.length ? (
-              <div className="text-center py-12 text-gray-500">
-                <Users className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                <p>Aucun agent pour l'instant</p>
-                <p className="text-xs mt-1">Partagez la page de recrutement pour commencer</p>
+              <div className="text-center py-16">
+                <Users className="w-10 h-10 mx-auto mb-3" style={{ color: T.border, strokeWidth: 1.5 }} />
+                <p style={{ fontFamily: font.body, fontSize: "13px", color: T.faint }}>Aucun agent pour l'instant</p>
+                <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginTop: "4px" }}>Partagez la page de recrutement pour commencer</p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {arborescence.map((parent: any) => (
-                  <div key={parent.id} className="border border-[#222]">
+                  <div key={parent.id} style={{ border: `1px solid ${T.border}`, borderRadius: "2px" }}>
                     {/* Ambassadeur N1 */}
                     <div
-                      className="flex items-center justify-between p-4 cursor-pointer hover:bg-[#1a1a1a]"
+                      className="flex items-center justify-between cursor-pointer transition-colors duration-300"
+                      style={{ padding: "16px 20px" }}
                       onClick={() => toggleNode(parent.id)}
+                      onMouseEnter={e => (e.currentTarget.style.background = T.raised)}
+                      onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-[#C9A84C]/10 border border-[#C9A84C]/30 flex items-center justify-center">
-                          <span className="text-[#C9A84C] text-xs font-black">N1</span>
+                        <div style={{
+                          width: "28px", height: "28px",
+                          background: `${T.gold}10`, border: `1px solid ${T.gold}30`,
+                          borderRadius: "2px",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                        }}>
+                          <span style={{ color: T.gold, fontSize: "10px", fontFamily: font.body, fontWeight: 600, letterSpacing: "0.04em" }}>N1</span>
                         </div>
                         <div>
-                          <p className="text-white font-semibold">{parent.prenom} {parent.nom}</p>
-                          <p className="text-gray-400 text-xs">{parent.email} — {parent.ville}</p>
+                          <p style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg }}>{parent.prenom} {parent.nom}</p>
+                          <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>{parent.email} — {parent.ville}</p>
                         </div>
-                        <Badge className={`text-xs border ${STATUT_COLORS[parent.statutInterne] ?? ""}`}>
-                          {STATUT_LABELS[parent.statutInterne]}
-                        </Badge>
+                        <StatutBadgeInline statut={parent.statutInterne} />
                         {parent.filleuls?.length > 0 && (
-                          <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/30 text-xs">
+                          <span style={{
+                            display: "inline-flex", alignItems: "center",
+                            padding: "2px 8px", borderRadius: "2px",
+                            fontSize: "10px", fontFamily: font.body, fontWeight: 500,
+                            letterSpacing: "0.06em", textTransform: "uppercase",
+                            color: T.muted, background: "rgba(107,101,96,0.08)", border: "1px solid rgba(107,101,96,0.15)",
+                          }}>
                             {parent.filleuls.length} filleul{parent.filleuls.length > 1 ? "s" : ""}
-                          </Badge>
+                          </span>
                         )}
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
+                        <button
                           onClick={e => { e.stopPropagation(); setSelectedAmb(parent.id); }}
-                          className="text-gray-400 hover:text-white h-7 px-2"
+                          className="transition-opacity duration-300 hover:opacity-70"
+                          style={{ padding: "4px", color: T.faint, background: "transparent", border: "none", cursor: "pointer" }}
                         >
-                          <Eye className="w-3.5 h-3.5" />
-                        </Button>
-                        {expandedNodes.has(parent.id) ? <ChevronUp className="w-4 h-4 text-gray-500" /> : <ChevronDown className="w-4 h-4 text-gray-500" />}
+                          <Eye className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+                        </button>
+                        {expandedNodes.has(parent.id) ? <ChevronUp className="w-4 h-4" style={{ color: T.faint, strokeWidth: 1.5 }} /> : <ChevronDown className="w-4 h-4" style={{ color: T.faint, strokeWidth: 1.5 }} />}
                       </div>
                     </div>
 
                     {/* Filleuls N2 */}
                     {expandedNodes.has(parent.id) && parent.filleuls?.length > 0 && (
-                      <div className="border-t border-[#222] bg-[#0d0d0d]">
+                      <div style={{ borderTop: `1px solid ${T.border}`, background: T.headerBg }}>
                         {parent.filleuls.map((filleul: any) => (
-                          <div key={filleul.id} className="flex items-center justify-between px-4 py-3 border-b border-[#1a1a1a] last:border-0">
-                            <div className="flex items-center gap-3 ml-8">
-                              <div className="w-6 h-6 bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
-                                <span className="text-blue-400 text-xs font-black">N2</span>
+                          <div key={filleul.id} className="flex items-center justify-between" style={{ padding: "12px 20px", borderBottom: `1px solid ${T.borderSubtle}` }}>
+                            <div className="flex items-center gap-3" style={{ marginLeft: "32px" }}>
+                              <div style={{
+                                width: "24px", height: "24px",
+                                background: "rgba(107,101,96,0.08)", border: "1px solid rgba(107,101,96,0.15)",
+                                borderRadius: "2px",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                              }}>
+                                <span style={{ color: T.muted, fontSize: "9px", fontFamily: font.body, fontWeight: 600 }}>N2</span>
                               </div>
                               <div>
-                                <p className="text-gray-200 font-medium text-sm">{filleul.prenom} {filleul.nom}</p>
-                                <p className="text-gray-500 text-xs">{filleul.email} — {filleul.ville}</p>
+                                <p style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg }}>{filleul.prenom} {filleul.nom}</p>
+                                <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>{filleul.email} — {filleul.ville}</p>
                               </div>
-                              <Badge className={`text-xs border ${STATUT_COLORS[filleul.statutInterne] ?? ""}`}>
-                                {STATUT_LABELS[filleul.statutInterne]}
-                              </Badge>
+                              <StatutBadgeInline statut={filleul.statutInterne} />
                             </div>
-                            <Button
-                              size="sm"
-                              variant="ghost"
+                            <button
                               onClick={() => setSelectedAmb(filleul.id)}
-                              className="text-gray-400 hover:text-white h-7 px-2"
+                              className="transition-opacity duration-300 hover:opacity-70"
+                              style={{ padding: "4px", color: T.faint, background: "transparent", border: "none", cursor: "pointer" }}
                             >
-                              <Eye className="w-3.5 h-3.5" />
-                            </Button>
+                              <Eye className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+                            </button>
                           </div>
                         ))}
                       </div>
@@ -534,74 +725,87 @@ export default function ReseauDashboard() {
 
             {/* Arborescence Courtiers */}
             {typeReseau === "courtiers" && (!arborescenceCourtiers?.length ? (
-              <div className="text-center py-12 text-gray-500">
-                <Users className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                <p>Aucun courtier pour l'instant</p>
-                <p className="text-xs mt-1">Partagez la page d'inscription courtier pour commencer</p>
+              <div className="text-center py-16">
+                <Users className="w-10 h-10 mx-auto mb-3" style={{ color: T.border, strokeWidth: 1.5 }} />
+                <p style={{ fontFamily: font.body, fontSize: "13px", color: T.faint }}>Aucun courtier pour l'instant</p>
+                <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginTop: "4px" }}>Partagez la page d'inscription courtier pour commencer</p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {arborescenceCourtiers.map((parent: any) => (
-                  <div key={parent.id} className="border border-[#222]">
+                  <div key={parent.id} style={{ border: `1px solid ${T.border}`, borderRadius: "2px" }}>
                     <div
-                      className="flex items-center justify-between p-4 cursor-pointer hover:bg-[#1a1a1a]"
+                      className="flex items-center justify-between cursor-pointer transition-colors duration-300"
+                      style={{ padding: "16px 20px" }}
                       onClick={() => toggleCourtierNode(parent.id)}
+                      onMouseEnter={e => (e.currentTarget.style.background = T.raised)}
+                      onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-500/10 border border-blue-500/30 flex items-center justify-center">
-                          <span className="text-blue-400 text-xs font-black">N1</span>
+                        <div style={{
+                          width: "28px", height: "28px",
+                          background: "rgba(107,101,96,0.08)", border: "1px solid rgba(107,101,96,0.15)",
+                          borderRadius: "2px",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                        }}>
+                          <span style={{ color: T.muted, fontSize: "10px", fontFamily: font.body, fontWeight: 600 }}>N1</span>
                         </div>
                         <div>
-                          <p className="text-white font-semibold">{parent.prenom} {parent.nom}</p>
-                          <p className="text-gray-400 text-xs">{parent.email} — {parent.ville}</p>
-                          {parent.codeParrain && <p className="text-[#C9A84C] text-xs font-mono mt-0.5">{parent.codeParrain}</p>}
+                          <p style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg }}>{parent.prenom} {parent.nom}</p>
+                          <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>{parent.email} — {parent.ville}</p>
+                          {parent.codeParrain && <p style={{ fontFamily: font.body, fontSize: "11px", color: T.gold, marginTop: "2px" }}>{parent.codeParrain}</p>}
                         </div>
-                        <Badge className={`text-xs border ${STATUT_COLORS[parent.statutInterne] ?? ""}`}>
-                          {STATUT_LABELS[parent.statutInterne]}
-                        </Badge>
+                        <StatutBadgeInline statut={parent.statutInterne} />
                         {parent.filleuls?.length > 0 && (
-                          <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/30 text-xs">
+                          <span style={{
+                            display: "inline-flex", alignItems: "center",
+                            padding: "2px 8px", borderRadius: "2px",
+                            fontSize: "10px", fontFamily: font.body, fontWeight: 500,
+                            letterSpacing: "0.06em", textTransform: "uppercase",
+                            color: T.muted, background: "rgba(107,101,96,0.08)", border: "1px solid rgba(107,101,96,0.15)",
+                          }}>
                             {parent.filleuls.length} filleul{parent.filleuls.length > 1 ? "s" : ""}
-                          </Badge>
+                          </span>
                         )}
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
+                        <button
                           onClick={e => { e.stopPropagation(); setSelectedCourtier(parent.id); }}
-                          className="text-gray-400 hover:text-white h-7 px-2"
+                          className="transition-opacity duration-300 hover:opacity-70"
+                          style={{ padding: "4px", color: T.faint, background: "transparent", border: "none", cursor: "pointer" }}
                         >
-                          <Eye className="w-3.5 h-3.5" />
-                        </Button>
-                        {expandedCourtierNodes.has(parent.id) ? <ChevronUp className="w-4 h-4 text-gray-500" /> : <ChevronDown className="w-4 h-4 text-gray-500" />}
+                          <Eye className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+                        </button>
+                        {expandedCourtierNodes.has(parent.id) ? <ChevronUp className="w-4 h-4" style={{ color: T.faint, strokeWidth: 1.5 }} /> : <ChevronDown className="w-4 h-4" style={{ color: T.faint, strokeWidth: 1.5 }} />}
                       </div>
                     </div>
                     {expandedCourtierNodes.has(parent.id) && parent.filleuls?.length > 0 && (
-                      <div className="border-t border-[#222] bg-[#0d0d0d]">
+                      <div style={{ borderTop: `1px solid ${T.border}`, background: T.headerBg }}>
                         {parent.filleuls.map((filleul: any) => (
-                          <div key={filleul.id} className="flex items-center justify-between px-4 py-3 border-b border-[#1a1a1a] last:border-0">
-                            <div className="flex items-center gap-3 ml-8">
-                              <div className="w-6 h-6 bg-[#C9A84C]/10 border border-[#C9A84C]/20 flex items-center justify-center">
-                                <span className="text-[#C9A84C] text-xs font-black">N2</span>
+                          <div key={filleul.id} className="flex items-center justify-between" style={{ padding: "12px 20px", borderBottom: `1px solid ${T.borderSubtle}` }}>
+                            <div className="flex items-center gap-3" style={{ marginLeft: "32px" }}>
+                              <div style={{
+                                width: "24px", height: "24px",
+                                background: `${T.gold}10`, border: `1px solid ${T.gold}20`,
+                                borderRadius: "2px",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                              }}>
+                                <span style={{ color: T.gold, fontSize: "9px", fontFamily: font.body, fontWeight: 600 }}>N2</span>
                               </div>
                               <div>
-                                <p className="text-gray-200 font-medium text-sm">{filleul.prenom} {filleul.nom}</p>
-                                <p className="text-gray-500 text-xs">{filleul.email} — {filleul.ville}</p>
-                                {filleul.codeParrain && <p className="text-[#C9A84C] text-xs font-mono">{filleul.codeParrain}</p>}
+                                <p style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg }}>{filleul.prenom} {filleul.nom}</p>
+                                <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>{filleul.email} — {filleul.ville}</p>
+                                {filleul.codeParrain && <p style={{ fontFamily: font.body, fontSize: "11px", color: T.gold }}>{filleul.codeParrain}</p>}
                               </div>
-                              <Badge className={`text-xs border ${STATUT_COLORS[filleul.statutInterne] ?? ""}`}>
-                                {STATUT_LABELS[filleul.statutInterne]}
-                              </Badge>
+                              <StatutBadgeInline statut={filleul.statutInterne} />
                             </div>
-                            <Button
-                              size="sm"
-                              variant="ghost"
+                            <button
                               onClick={() => setSelectedCourtier(filleul.id)}
-                              className="text-gray-400 hover:text-white h-7 px-2"
+                              className="transition-opacity duration-300 hover:opacity-70"
+                              style={{ padding: "4px", color: T.faint, background: "transparent", border: "none", cursor: "pointer" }}
                             >
-                              <Eye className="w-3.5 h-3.5" />
-                            </Button>
+                              <Eye className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+                            </button>
                           </div>
                         ))}
                       </div>
@@ -613,116 +817,115 @@ export default function ReseauDashboard() {
           </div>
         </TabsContent>
 
-        {/* DIALOG DÉTAIL COURTIER */}
+        {/* ── DIALOG DETAIL COURTIER ── */}
         <Dialog open={!!selectedCourtier} onOpenChange={open => { if (!open) { setSelectedCourtier(null); setShowAssignerDossier(false); setSelectedDossierToAssign(null); setNoteAssignation(""); } }}>
-          <DialogContent className="bg-[#111] border-[#222] text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: "2px", color: T.fg, maxWidth: "640px", maxHeight: "90vh", overflowY: "auto" }}>
             <DialogHeader>
-              <DialogTitle className="text-white text-lg">Fiche courtier</DialogTitle>
+              <DialogTitle style={{ fontFamily: font.display, fontSize: "18px", fontWeight: 600, color: T.fg, letterSpacing: "0.02em" }}>Fiche courtier</DialogTitle>
             </DialogHeader>
             {courtierDetail && (
-              <div className="space-y-5">
-                {/* En-tête identité */}
+              <div className="space-y-6">
+                {/* En-tete identite */}
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-2xl font-black text-white">{courtierDetail.courtier.prenom} {courtierDetail.courtier.nom}</p>
-                    {courtierDetail.courtier.cabinetNom && <p className="text-[#C9A84C] text-sm font-medium">{courtierDetail.courtier.cabinetNom}</p>}
-                    <div className="flex flex-wrap gap-3 mt-2">
-                      <span className="flex items-center gap-1 text-gray-400 text-xs"><Mail className="w-3 h-3" />{courtierDetail.courtier.email}</span>
-                      <span className="flex items-center gap-1 text-gray-400 text-xs"><Phone className="w-3 h-3" />{courtierDetail.courtier.telephone}</span>
-                      {courtierDetail.courtier.ville && <span className="flex items-center gap-1 text-gray-400 text-xs"><MapPinIcon className="w-3 h-3" />{courtierDetail.courtier.ville}</span>}
+                    <p style={{ fontFamily: font.display, fontSize: "22px", fontWeight: 600, color: T.fg, letterSpacing: "0.02em" }}>{courtierDetail.courtier.prenom} {courtierDetail.courtier.nom}</p>
+                    {courtierDetail.courtier.cabinetNom && <p style={{ fontFamily: font.body, fontSize: "13px", color: T.gold, marginTop: "2px" }}>{courtierDetail.courtier.cabinetNom}</p>}
+                    <div className="flex flex-wrap gap-4 mt-3">
+                      <span className="flex items-center gap-1.5" style={{ fontFamily: font.body, fontSize: "12px", color: T.muted }}><Mail className="w-3 h-3" style={{ strokeWidth: 1.5 }} />{courtierDetail.courtier.email}</span>
+                      <span className="flex items-center gap-1.5" style={{ fontFamily: font.body, fontSize: "12px", color: T.muted }}><Phone className="w-3 h-3" style={{ strokeWidth: 1.5 }} />{courtierDetail.courtier.telephone}</span>
+                      {courtierDetail.courtier.ville && <span className="flex items-center gap-1.5" style={{ fontFamily: font.body, fontSize: "12px", color: T.muted }}><MapPinIcon className="w-3 h-3" style={{ strokeWidth: 1.5 }} />{courtierDetail.courtier.ville}</span>}
                     </div>
-                    <p className="text-[#C9A84C] font-mono text-xs mt-1">Code parrain : {courtierDetail.courtier.codeParrain}</p>
+                    <p style={{ fontFamily: font.body, fontSize: "11px", color: T.gold, marginTop: "4px" }}>Code parrain : {courtierDetail.courtier.codeParrain}</p>
                   </div>
-                  <Badge className={`text-xs border ${STATUT_COLORS[courtierDetail.courtier.statutInterne] ?? ""} shrink-0`}>
-                    {STATUT_LABELS[courtierDetail.courtier.statutInterne]}
-                  </Badge>
+                  <StatutBadgeInline statut={courtierDetail.courtier.statutInterne} />
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-4 gap-px" style={{ background: T.border, borderRadius: "2px" }}>
                   {[
-                    { label: "Dossiers", value: courtierDetail.stats.totalDossiers, color: "text-white" },
-                    { label: "Filleuls", value: courtierDetail.stats.totalFilleuls, color: "text-white" },
-                    { label: "Commissions", value: (courtierDetail.stats.totalCommissions / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" }), color: "text-[#C9A84C]" },
-                    { label: "Payées", value: (courtierDetail.stats.commissionsPayees / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" }), color: "text-green-400" },
+                    { label: "Dossiers", value: courtierDetail.stats.totalDossiers },
+                    { label: "Filleuls", value: courtierDetail.stats.totalFilleuls },
+                    { label: "Commissions", value: (courtierDetail.stats.totalCommissions / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" }) },
+                    { label: "Payees", value: (courtierDetail.stats.commissionsPayees / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" }) },
                   ].map(s => (
-                    <div key={s.label} className="bg-[#1a1a1a] border border-[#222] p-3 text-center">
-                      <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">{s.label}</p>
-                      <p className={`font-bold text-sm ${s.color}`}>{s.value}</p>
+                    <div key={s.label} style={{ background: T.bg, padding: "16px", textAlign: "center" }}>
+                      <p style={labelStyle}>{s.label}</p>
+                      <p className="tabular-nums" style={{ fontFamily: font.display, fontSize: "18px", fontWeight: 600, color: T.fg, marginTop: "4px", fontVariantNumeric: "tabular-nums" }}>{s.value}</p>
                     </div>
                   ))}
                 </div>
 
                 {/* ─── SECTION ASSIGNER UN DOSSIER ─── */}
-                <div className="border border-[#C9A84C]/30 bg-[#C9A84C]/5 p-4">
+                <div style={{ border: `1px solid ${T.gold}30`, background: `${T.gold}05`, borderRadius: "2px", padding: "20px" }}>
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-[#C9A84C] text-sm font-semibold flex items-center gap-2">
-                      <FileText className="w-4 h-4" /> Assigner un dossier de financement
+                    <p className="flex items-center gap-2" style={{ ...labelStyle, color: T.gold }}>
+                      <FileText className="w-4 h-4" style={{ strokeWidth: 1.5 }} /> Assigner un dossier de financement
                     </p>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="text-[#C9A84C] hover:bg-[#C9A84C]/10 h-7 px-2 text-xs"
+                    <button
                       onClick={() => setShowAssignerDossier(v => !v)}
+                      style={{ fontFamily: font.body, fontSize: "11px", fontWeight: 500, color: T.gold, background: "transparent", border: "none", cursor: "pointer", letterSpacing: "0.04em" }}
                     >
-                      {showAssignerDossier ? "Masquer" : <><Plus className="w-3 h-3 mr-1" />Choisir un dossier</>}
-                    </Button>
+                      {showAssignerDossier ? "Masquer" : "+ Choisir un dossier"}
+                    </button>
                   </div>
                   {showAssignerDossier && (
                     <div className="space-y-3">
                       <div className="relative">
-                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" />
-                        <Input
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: T.faint, strokeWidth: 1.5 }} />
+                        <input
                           value={searchDossierAssign}
                           onChange={e => setSearchDossierAssign(e.target.value)}
                           placeholder="Rechercher un lead (nom)..."
-                          className="pl-8 h-8 text-xs bg-[#111] border-[#333] text-white placeholder:text-gray-600"
+                          style={{ ...inputStyle, width: "100%", paddingLeft: "32px", fontSize: "12px" }}
                         />
                       </div>
                       <div className="max-h-40 overflow-y-auto space-y-1">
                         {dossiersFiltered.length === 0 ? (
-                          <p className="text-gray-500 text-xs text-center py-3">Aucun dossier disponible</p>
+                          <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, textAlign: "center", padding: "12px" }}>Aucun dossier disponible</p>
                         ) : dossiersFiltered.map((d: any) => (
                           <div
                             key={d.id}
                             onClick={() => setSelectedDossierToAssign(d.id === selectedDossierToAssign ? null : d.id)}
-                            className={`flex items-center justify-between px-3 py-2 cursor-pointer border text-xs ${
-                              selectedDossierToAssign === d.id
-                                ? "border-[#C9A84C] bg-[#C9A84C]/10"
-                                : "border-[#222] bg-[#111] hover:border-[#333]"
-                            }`}
+                            className="flex items-center justify-between cursor-pointer transition-colors duration-300"
+                            style={{
+                              padding: "8px 12px",
+                              border: `1px solid ${selectedDossierToAssign === d.id ? T.gold : T.border}`,
+                              background: selectedDossierToAssign === d.id ? `${T.gold}0A` : T.surface,
+                              borderRadius: "2px",
+                            }}
                           >
                             <div>
-                              <p className="text-white font-medium">{d.emprunteur1Prenom} {d.emprunteur1Nom}</p>
-                              <p className="text-gray-500">{d.montantProjet?.toLocaleString("fr-FR")} € · {d.duree} mois</p>
+                              <p style={{ fontFamily: font.body, fontSize: "12px", fontWeight: 500, color: T.fg }}>{d.emprunteur1Prenom} {d.emprunteur1Nom}</p>
+                              <p className="tabular-nums" style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, fontVariantNumeric: "tabular-nums" }}>{d.montantProjet?.toLocaleString("fr-FR")} EUR · {d.duree} mois</p>
                             </div>
-                            <Badge className={`text-xs border ${STATUT_COLORS[d.statut] ?? "bg-gray-500/10 text-gray-400 border-gray-500/30"}`}>
-                              {STATUT_LABELS[d.statut] ?? d.statut}
-                            </Badge>
+                            <StatutBadgeInline statut={d.statut} />
                           </div>
                         ))}
                       </div>
                       {selectedDossierToAssign && (
                         <>
-                          <Textarea
+                          <textarea
                             value={noteAssignation}
                             onChange={e => setNoteAssignation(e.target.value)}
                             placeholder="Note pour le courtier (optionnel)..."
-                            className="text-xs bg-[#111] border-[#333] text-white placeholder:text-gray-600 min-h-[60px]"
+                            rows={2}
+                            style={{ ...inputStyle, width: "100%", resize: "none", fontSize: "12px" }}
+                            onFocus={e => (e.target.style.borderColor = T.gold)}
+                            onBlur={e => (e.target.style.borderColor = T.border)}
                           />
-                          <Button
-                            size="sm"
-                            className="w-full bg-[#C9A84C] hover:bg-[#b8963e] text-black font-semibold h-8 text-xs"
+                          <button
                             disabled={assignerDossier.isPending}
                             onClick={() => assignerDossier.mutate({
                               dossierFinancementId: selectedDossierToAssign,
                               courtierIds: [courtierDetail.courtier.id],
                               noteManon: noteAssignation || undefined,
                             })}
+                            className="flex items-center justify-center gap-2 w-full transition-colors duration-300"
+                            style={{ padding: "10px", borderRadius: "2px", background: T.gold, color: T.bg, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", border: "none", cursor: "pointer" }}
                           >
-                            <Send className="w-3.5 h-3.5 mr-2" />
+                            <Send className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                             {assignerDossier.isPending ? "Envoi..." : "Assigner ce dossier"}
-                          </Button>
+                          </button>
                         </>
                       )}
                     </div>
@@ -730,9 +933,9 @@ export default function ReseauDashboard() {
                 </div>
 
                 {/* Actions */}
-                <div className="border-t border-[#222] pt-4 grid grid-cols-2 gap-2">
+                <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: "20px" }} className="grid grid-cols-2 gap-3">
                   <div>
-                    <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Statut</p>
+                    <p style={{ ...labelStyle, marginBottom: "8px" }}>Statut</p>
                     <Select
                       value={courtierDetail.courtier.statutInterne}
                       onValueChange={v => updateStatutCourtier.mutate({ id: courtierDetail.courtier.id, statutInterne: v as any })}
@@ -740,57 +943,54 @@ export default function ReseauDashboard() {
                       <SelectTrigger className={`w-full h-9 text-sm border ${STATUT_COLORS[courtierDetail.courtier.statutInterne] ?? ""} bg-transparent`}>
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-[#1a1a1a] border-[#333]">
-                        <SelectItem value="en_attente" className="text-yellow-400">En attente</SelectItem>
-                        <SelectItem value="actif" className="text-green-400">Actif</SelectItem>
-                        <SelectItem value="suspendu" className="text-orange-400">Suspendu</SelectItem>
-                        <SelectItem value="resilie" className="text-red-400">Résilié</SelectItem>
+                      <SelectContent style={{ background: T.raised, border: `1px solid ${T.border}` }}>
+                        <SelectItem value="en_attente" style={{ color: T.gold, fontFamily: font.body, fontSize: "12px" }}>En attente</SelectItem>
+                        <SelectItem value="actif" style={{ color: T.success, fontFamily: font.body, fontSize: "12px" }}>Actif</SelectItem>
+                        <SelectItem value="suspendu" style={{ color: T.muted, fontFamily: font.body, fontSize: "12px" }}>Suspendu</SelectItem>
+                        <SelectItem value="resilie" style={{ color: T.destructive, fontFamily: font.body, fontSize: "12px" }}>Resilie</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="flex flex-col gap-2 justify-end">
                     {courtierDetail.courtier.contratSigneUrl && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="border-[#C9A84C]/40 text-[#C9A84C] hover:bg-[#C9A84C]/10 bg-transparent text-xs h-8"
+                      <button
                         onClick={() => window.open(courtierDetail.courtier.contratSigneUrl ?? undefined, '_blank')}
+                        className="flex items-center justify-center gap-1.5 transition-colors duration-300"
+                        style={{ padding: "8px 12px", borderRadius: "2px", border: `1px solid ${T.gold}40`, background: "transparent", color: T.gold, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", cursor: "pointer" }}
                       >
-                        <Download className="w-3.5 h-3.5 mr-1.5" />
-                        Télécharger contrat
-                      </Button>
+                        <Download className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+                        Telecharger contrat
+                      </button>
                     )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-[#333] text-gray-300 hover:text-white bg-transparent text-xs h-8"
+                    <button
                       onClick={() => renvoyerBienvenue.mutate({ id: courtierDetail.courtier.id })}
                       disabled={renvoyerBienvenue.isPending}
+                      className="flex items-center justify-center gap-1.5 transition-colors duration-300"
+                      style={{ padding: "8px 12px", borderRadius: "2px", border: `1px solid ${T.border}`, background: "transparent", color: T.fg, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", cursor: "pointer" }}
                     >
-                      <Mail className="w-3.5 h-3.5 mr-1.5" />
+                      <Mail className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                       Renvoyer email bienvenue
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="border-red-500/40 text-red-400 hover:bg-red-500/10 bg-transparent text-xs h-8"
+                    </button>
+                    <button
                       onClick={() => handleDeleteCourtier(courtierDetail.courtier.id, `${courtierDetail.courtier.prenom} ${courtierDetail.courtier.nom}`)}
                       disabled={deleteCourtier.isPending}
+                      className="flex items-center justify-center gap-1.5 transition-colors duration-300"
+                      style={{ padding: "8px 12px", borderRadius: "2px", border: `1px solid ${T.destructive}40`, background: "transparent", color: T.destructive, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", cursor: "pointer" }}
                     >
-                      <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+                      <Trash2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                       Supprimer
-                    </Button>
+                    </button>
                   </div>
                 </div>
 
                 {courtierDetail.filleulsCourtiers.length > 0 && (
                   <div>
-                    <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Filleuls courtiers ({courtierDetail.filleulsCourtiers.length})</p>
+                    <p style={{ ...labelStyle, marginBottom: "8px" }}>Filleuls courtiers ({courtierDetail.filleulsCourtiers.length})</p>
                     <div className="space-y-1">
                       {courtierDetail.filleulsCourtiers.map((f: any) => (
-                        <div key={f.id} className="flex items-center justify-between bg-[#1a1a1a] px-3 py-2">
-                          <span className="text-gray-200 text-sm">{f.prenom} {f.nom}</span>
-                          <Badge className={`text-xs border ${STATUT_COLORS[f.statutInterne] ?? ""}`}>{STATUT_LABELS[f.statutInterne]}</Badge>
+                        <div key={f.id} className="flex items-center justify-between" style={{ background: T.raised, padding: "8px 12px", borderRadius: "2px" }}>
+                          <span style={{ fontFamily: font.body, fontSize: "13px", color: T.fg }}>{f.prenom} {f.nom}</span>
+                          <StatutBadgeInline statut={f.statutInterne} />
                         </div>
                       ))}
                     </div>
@@ -801,63 +1001,78 @@ export default function ReseauDashboard() {
           </DialogContent>
         </Dialog>
 
-        {/* ONGLET LISTE AGENTS — Tableau filtrable */}
-        <TabsContent value="ambassadeurs" className="mt-4">
-          <div className="space-y-4">
+        {/* ═══════════════════════════════════════════════════════
+            ONGLET LISTE AGENTS — Tableau filtrable
+            ═══════════════════════════════════════════════════════ */}
+        <TabsContent value="ambassadeurs" className="mt-8">
+          <div className="space-y-5">
             <div className="flex gap-3">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                <Input
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: T.faint, strokeWidth: 1.5 }} />
+                <input
                   value={searchAmb}
                   onChange={e => setSearchAmb(e.target.value)}
                   placeholder="Rechercher un ambassadeur..."
-                  className="pl-9 bg-[#111] border-[#222] text-white placeholder:text-gray-600"
+                  className="w-full focus:outline-none"
+                  style={{ ...inputStyle, paddingLeft: "36px" }}
+                  onFocus={e => (e.target.style.borderColor = T.gold)}
+                  onBlur={e => (e.target.style.borderColor = T.border)}
                 />
               </div>
               <Select value={filtreStatutAmb} onValueChange={setFiltreStatutAmb}>
-                <SelectTrigger className="w-44 bg-[#111] border-[#222] text-white">
+                <SelectTrigger className="w-44" style={{ ...inputStyle }}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#111] border-[#333]">
-                  <SelectItem value="all" className="text-white">Tous les statuts</SelectItem>
-                  <SelectItem value="en_attente" className="text-white">En attente</SelectItem>
-                  <SelectItem value="actif" className="text-white">Actif</SelectItem>
-                  <SelectItem value="suspendu" className="text-white">Suspendu</SelectItem>
-                  <SelectItem value="resilie" className="text-white">Résilié</SelectItem>
+                <SelectContent style={{ background: T.surface, border: `1px solid ${T.border}` }}>
+                  <SelectItem value="all" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Tous les statuts</SelectItem>
+                  <SelectItem value="en_attente" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>En attente</SelectItem>
+                  <SelectItem value="actif" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Actif</SelectItem>
+                  <SelectItem value="suspendu" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Suspendu</SelectItem>
+                  <SelectItem value="resilie" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Resilie</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="bg-[#111] border border-[#222] overflow-hidden">
-              <table className="w-full text-sm">
+            <div style={{ ...cardStyle, overflow: "hidden" }}>
+              <table className="w-full">
                 <thead>
-                  <tr className="border-b border-[#222]">
-                    <th className="text-left p-3 text-gray-400 font-medium text-xs uppercase tracking-wider">Ambassadeur</th>
-                    <th className="text-left p-3 text-gray-400 font-medium text-xs uppercase tracking-wider">Niveau</th>
-                    <th className="text-left p-3 text-gray-400 font-medium text-xs uppercase tracking-wider">Statut</th>
-                    <th className="text-left p-3 text-gray-400 font-medium text-xs uppercase tracking-wider">Ville</th>
-                    <th className="text-left p-3 text-gray-400 font-medium text-xs uppercase tracking-wider">Inscription</th>
-                    <th className="text-left p-3 text-gray-400 font-medium text-xs uppercase tracking-wider">Dernière connexion</th>
-                    <th className="text-right p-3 text-gray-400 font-medium text-xs uppercase tracking-wider">Actions</th>
+                  <tr style={{ borderBottom: `1px solid ${T.border}` }}>
+                    {["Ambassadeur", "Niveau", "Statut", "Ville", "Inscription", "Derniere connexion", ""].map(h => (
+                      <th key={h} className={`text-left px-5 py-3 ${h === "" ? "text-right" : ""}`} style={{ ...labelStyle, background: T.headerBg }}>{h}</th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
                   {!ambassadeursList?.length ? (
                     <tr>
-                      <td colSpan={6} className="text-center py-8 text-gray-500">Aucun agent</td>
+                      <td colSpan={7} className="text-center py-12" style={{ fontFamily: font.body, fontSize: "13px", color: T.faint }}>Aucun agent</td>
                     </tr>
                   ) : ambassadeursList.map((amb: any) => (
-                    <tr key={amb.id} className="border-b border-[#1a1a1a] hover:bg-[#1a1a1a]">
-                      <td className="p-3">
-                        <p className="text-white font-medium">{amb.prenom} {amb.nom}</p>
-                        <p className="text-gray-500 text-xs">{amb.email}</p>
+                    <tr
+                      key={amb.id}
+                      className="transition-colors duration-300"
+                      style={{ borderBottom: `1px solid ${T.borderSubtle}` }}
+                      onMouseEnter={e => (e.currentTarget.style.background = T.raised)}
+                      onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                    >
+                      <td className="px-5 py-3">
+                        <p style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg }}>{amb.prenom} {amb.nom}</p>
+                        <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>{amb.email}</p>
                       </td>
-                      <td className="p-3">
-                        <Badge className={`text-xs border ${amb.niveau === "1" ? "bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/30" : "bg-blue-500/10 text-blue-400 border-blue-500/30"}`}>
+                      <td className="px-5 py-3">
+                        <span style={{
+                          display: "inline-flex", alignItems: "center",
+                          padding: "2px 8px", borderRadius: "2px",
+                          fontSize: "10px", fontFamily: font.body, fontWeight: 500,
+                          letterSpacing: "0.06em", textTransform: "uppercase",
+                          color: amb.niveau === "1" ? T.gold : T.muted,
+                          background: amb.niveau === "1" ? `${T.gold}10` : "rgba(107,101,96,0.08)",
+                          border: `1px solid ${amb.niveau === "1" ? `${T.gold}30` : "rgba(107,101,96,0.15)"}`,
+                        }}>
                           Niveau {amb.niveau} — {amb.niveau === "1" ? "10%" : "5%"}
-                        </Badge>
+                        </span>
                       </td>
-                      <td className="p-3">
+                      <td className="px-5 py-3">
                         <Select
                           value={amb.statutInterne}
                           onValueChange={v => updateStatutAmb.mutate({ id: amb.id, statut: v as any })}
@@ -865,48 +1080,48 @@ export default function ReseauDashboard() {
                           <SelectTrigger className={`w-36 h-7 text-xs border ${STATUT_COLORS[amb.statutInterne]} bg-transparent`}>
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className="bg-[#111] border-[#333]">
-                            <SelectItem value="en_attente" className="text-white text-xs">En attente</SelectItem>
-                            <SelectItem value="actif" className="text-white text-xs">Actif</SelectItem>
-                            <SelectItem value="suspendu" className="text-white text-xs">Suspendu</SelectItem>
-                            <SelectItem value="resilie" className="text-white text-xs">Résilié</SelectItem>
+                          <SelectContent style={{ background: T.surface, border: `1px solid ${T.border}` }}>
+                            <SelectItem value="en_attente" style={{ color: T.fg, fontFamily: font.body, fontSize: "11px" }}>En attente</SelectItem>
+                            <SelectItem value="actif" style={{ color: T.fg, fontFamily: font.body, fontSize: "11px" }}>Actif</SelectItem>
+                            <SelectItem value="suspendu" style={{ color: T.fg, fontFamily: font.body, fontSize: "11px" }}>Suspendu</SelectItem>
+                            <SelectItem value="resilie" style={{ color: T.fg, fontFamily: font.body, fontSize: "11px" }}>Resilie</SelectItem>
                           </SelectContent>
                         </Select>
                       </td>
-                      <td className="p-3 text-gray-300 text-xs">{amb.ville}</td>
-                      <td className="p-3 text-gray-400 text-xs">
+                      <td className="px-5 py-3" style={{ fontFamily: font.body, fontSize: "12px", color: T.muted }}>{amb.ville}</td>
+                      <td className="px-5 py-3 tabular-nums" style={{ fontFamily: font.body, fontSize: "12px", color: T.faint, fontVariantNumeric: "tabular-nums" }}>
                         {new Date(amb.createdAt).toLocaleDateString("fr-FR")}
                       </td>
-                      <td className="p-3">
+                      <td className="px-5 py-3">
                         {(amb as any).lastSignedIn ? (
                           <div>
-                            <div className="text-xs text-gray-300">{new Date((amb as any).lastSignedIn).toLocaleDateString("fr-FR")}</div>
-                            <div className="text-xs text-gray-600">{new Date((amb as any).lastSignedIn).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div>
+                            <div className="tabular-nums" style={{ fontFamily: font.body, fontSize: "12px", color: T.fg, fontVariantNumeric: "tabular-nums" }}>{new Date((amb as any).lastSignedIn).toLocaleDateString("fr-FR")}</div>
+                            <div className="tabular-nums" style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, fontVariantNumeric: "tabular-nums" }}>{new Date((amb as any).lastSignedIn).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div>
                           </div>
                         ) : (
-                          <span className="text-xs text-gray-600 italic">Jamais connecté</span>
+                          <span style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, fontStyle: "italic" }}>Jamais connecte</span>
                         )}
                       </td>
-                      <td className="p-3 text-right">
+                      <td className="px-5 py-3 text-right">
                         <div className="flex items-center justify-end gap-1">
-                          <Button
-                            size="sm"
-                            variant="ghost"
+                          <button
                             onClick={() => setSelectedAmb(amb.id)}
-                            className="text-gray-400 hover:text-[#C9A84C] h-7 px-2"
-                            title="Voir le détail"
+                            className="transition-opacity duration-300 hover:opacity-70"
+                            style={{ padding: "6px", color: T.faint, background: "transparent", border: "none", cursor: "pointer" }}
+                            title="Voir le detail"
                           >
-                            <Eye className="w-3.5 h-3.5" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
+                            <Eye className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+                          </button>
+                          <button
                             onClick={() => handleDeleteAmb(amb.id, `${amb.prenom} ${amb.nom}`)}
-                            className="text-gray-500 hover:text-red-400 h-7 px-2"
+                            className="transition-colors duration-300"
+                            style={{ padding: "6px", color: T.faint, background: "transparent", border: "none", cursor: "pointer" }}
                             title="Supprimer"
+                            onMouseEnter={e => (e.currentTarget.style.color = T.destructive)}
+                            onMouseLeave={e => (e.currentTarget.style.color = T.faint)}
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
+                            <Trash2 className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -917,113 +1132,126 @@ export default function ReseauDashboard() {
           </div>
         </TabsContent>
 
-        {/* ONGLET BIENS */}
-        <TabsContent value="biens" className="mt-4">
-          <div className="space-y-4">
+        {/* ═══════════════════════════════════════════════════════
+            ONGLET BIENS
+            ═══════════════════════════════════════════════════════ */}
+        <TabsContent value="biens" className="mt-8">
+          <div className="space-y-5">
             <div className="flex gap-3">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                <Input
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: T.faint, strokeWidth: 1.5 }} />
+                <input
                   value={searchBien}
                   onChange={e => setSearchBien(e.target.value)}
                   placeholder="Rechercher un bien..."
-                  className="pl-9 bg-[#111] border-[#222] text-white placeholder:text-gray-600"
+                  className="w-full focus:outline-none"
+                  style={{ ...inputStyle, paddingLeft: "36px" }}
+                  onFocus={e => (e.target.style.borderColor = T.gold)}
+                  onBlur={e => (e.target.style.borderColor = T.border)}
                 />
               </div>
               <Select value={filtreStatutBien} onValueChange={setFiltreStatutBien}>
-                <SelectTrigger className="w-48 bg-[#111] border-[#222] text-white">
+                <SelectTrigger className="w-48" style={{ ...inputStyle }}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#111] border-[#333]">
-                  <SelectItem value="all" className="text-white">Tous les statuts</SelectItem>
-                  <SelectItem value="en_attente_validation" className="text-white">À valider</SelectItem>
-                  <SelectItem value="publie" className="text-white">Publié</SelectItem>
-                  <SelectItem value="sous_compromis" className="text-white">Sous compromis</SelectItem>
-                  <SelectItem value="vendu" className="text-white">Vendu</SelectItem>
-                  <SelectItem value="retire" className="text-white">Retiré</SelectItem>
+                <SelectContent style={{ background: T.surface, border: `1px solid ${T.border}` }}>
+                  <SelectItem value="all" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Tous les statuts</SelectItem>
+                  <SelectItem value="en_attente_validation" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>A valider</SelectItem>
+                  <SelectItem value="publie" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Publie</SelectItem>
+                  <SelectItem value="sous_compromis" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Sous compromis</SelectItem>
+                  <SelectItem value="vendu" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Vendu</SelectItem>
+                  <SelectItem value="retire" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Retire</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={filtreSourceBien} onValueChange={(v: any) => setFiltreSourceBien(v)}>
-                <SelectTrigger className="w-48 bg-[#111] border-[#222] text-white">
+                <SelectTrigger className="w-48" style={{ ...inputStyle }}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#111] border-[#333]">
-                  <SelectItem value="all" className="text-white">Toutes sources</SelectItem>
-                  <SelectItem value="ambassadeur" className="text-white">Ambassadeurs</SelectItem>
-                  <SelectItem value="pap_scrape" className="text-white">PAP</SelectItem>
-                  <SelectItem value="off_market" className="text-white">Off Market</SelectItem>
+                <SelectContent style={{ background: T.surface, border: `1px solid ${T.border}` }}>
+                  <SelectItem value="all" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Toutes sources</SelectItem>
+                  <SelectItem value="ambassadeur" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Ambassadeurs</SelectItem>
+                  <SelectItem value="pap_scrape" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>PAP</SelectItem>
+                  <SelectItem value="off_market" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Off Market</SelectItem>
                 </SelectContent>
               </Select>
-              <Button
+              <button
                 onClick={async () => {
                   try {
                     setExportingPdf(true);
                     const result = await utils.client.portefeuille.exportPdf.mutate({});
                     window.open(result.url, "_blank");
-                    toast.success(`PDF généré — ${result.total} biens`, { description: "Le PDF s'ouvre dans un nouvel onglet" });
+                    toast.success(`PDF genere — ${result.total} biens`, { description: "Le PDF s'ouvre dans un nouvel onglet" });
                   } catch (e: any) {
-                    toast.error("Erreur lors de la génération du PDF", { description: e.message });
+                    toast.error("Erreur lors de la generation du PDF", { description: e.message });
                   } finally {
                     setExportingPdf(false);
                   }
                 }}
                 disabled={exportingPdf}
-                className="bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/30 hover:bg-[#C9A84C]/20 shrink-0"
+                className="flex items-center gap-2 shrink-0 transition-colors duration-300"
+                style={{ padding: "10px 16px", borderRadius: "2px", border: `1px solid ${T.gold}30`, background: `${T.gold}08`, color: T.gold, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", cursor: "pointer" }}
               >
                 {exportingPdf ? (
-                  <><span className="animate-spin mr-2">&#9696;</span>Génération...</>
+                  <>Generation...</>
                 ) : (
-                  <><FileDown className="mr-2 w-4 h-4" />Export PDF</>
+                  <><FileDown className="w-4 h-4" style={{ strokeWidth: 1.5 }} />Export PDF</>
                 )}
-              </Button>
+              </button>
             </div>
 
             {/* Biens Off Market */}
             {(filtreSourceBien === "all" || filtreSourceBien === "off_market") && (offMarketBiensList?.items ?? []).length > 0 && (
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">💎 Biens Off Market</span>
-                  <span className="text-xs text-gray-500">({(offMarketBiensList?.items ?? []).filter((b: any) => filtreStatutBien === 'all' || (filtreStatutBien === 'publie' && b.statut === 'disponible') || b.statut === filtreStatutBien).length})</span>
+                  <span style={{ ...labelStyle, color: T.success }}>Biens Off Market</span>
+                  <span style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>({(offMarketBiensList?.items ?? []).filter((b: any) => filtreStatutBien === 'all' || (filtreStatutBien === 'publie' && b.statut === 'disponible') || b.statut === filtreStatutBien).length})</span>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   {(offMarketBiensList?.items ?? []).filter((b: any) => filtreStatutBien === 'all' || (filtreStatutBien === 'publie' && b.statut === 'disponible') || b.statut === filtreStatutBien).map((bien: any) => (
                     <div
                       key={`om-${bien.id}`}
-                      className="bg-[#111] border border-emerald-500/20 p-5 space-y-3 hover:border-emerald-500/40 transition-colors cursor-pointer"
+                      className="cursor-pointer transition-colors duration-300"
+                      style={{ ...cardStyle, padding: "24px" }}
                       onClick={() => window.location.href = `/dashboard/off-market?id=${bien.id}`}
+                      onMouseEnter={e => (e.currentTarget.style.borderColor = `${T.success}40`)}
+                      onMouseLeave={e => (e.currentTarget.style.borderColor = T.border)}
                     >
-                      <div className="flex items-start justify-between">
+                      <div className="flex items-start justify-between mb-3">
                         <div className="min-w-0">
-                          <p className="text-white font-bold truncate">{bien.titre}</p>
-                          <p className="text-gray-400 text-xs mt-0.5 flex items-center gap-1">
-                            <MapPin className="w-3 h-3" /> {bien.region ?? bien.departement ?? '—'}
+                          <p style={{ fontFamily: font.body, fontSize: "14px", fontWeight: 500, color: T.fg, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{bien.titre}</p>
+                          <p className="flex items-center gap-1 mt-1" style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>
+                            <MapPin className="w-3 h-3" style={{ strokeWidth: 1.5 }} /> {bien.region ?? bien.departement ?? '—'}
                           </p>
                         </div>
                         <div className="flex gap-2 shrink-0">
-                          <Badge className="text-xs border bg-emerald-500/10 text-emerald-400 border-emerald-500/30">
-                            {bien.statut === 'disponible' ? 'Disponible' : bien.statut === 'sous_compromis' ? 'Sous compromis' : bien.statut === 'vendu' ? 'Vendu' : 'Archivé'}
-                          </Badge>
-                          <Badge className="text-xs border bg-emerald-900/30 text-emerald-300 border-emerald-500/20">Off Market</Badge>
+                          <StatutBadgeInline statut={bien.statut === 'disponible' ? 'publie' : bien.statut} map={STATUT_BIEN_STYLES} />
+                          <span style={{
+                            display: "inline-flex", alignItems: "center",
+                            padding: "2px 8px", borderRadius: "2px",
+                            fontSize: "10px", fontFamily: font.body, fontWeight: 500,
+                            letterSpacing: "0.06em", textTransform: "uppercase",
+                            color: T.success, background: `${T.success}10`, border: `1px solid ${T.success}20`,
+                          }}>Off Market</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-4 text-sm flex-wrap">
-                        <span className="flex items-center gap-1 text-emerald-400 font-bold">
-                          <Euro className="w-3.5 h-3.5" />
-                          {bien.prixBien ? Number(bien.prixBien).toLocaleString('fr-FR') + ' €' : '—'}
+                      <div className="flex items-center gap-4 flex-wrap">
+                        <span className="flex items-center gap-1 tabular-nums" style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 600, color: T.gold, fontVariantNumeric: "tabular-nums" }}>
+                          <Euro className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+                          {bien.prixBien ? Number(bien.prixBien).toLocaleString('fr-FR') + ' EUR' : '—'}
                         </span>
-                        {bien.surfaceTotale && <span className="flex items-center gap-1 text-gray-300"><Maximize2 className="w-3.5 h-3.5" /> {bien.surfaceTotale} m²</span>}
-                        {bien.typeBien && <span className="flex items-center gap-1 text-gray-300"><Building2 className="w-3.5 h-3.5" /> {bien.typeBien}</span>}
-                        {bien.rentabiliteBrute && <span className="bg-emerald-500/10 text-emerald-400 text-xs px-2 py-0.5 border border-emerald-500/20">{Number(bien.rentabiliteBrute).toFixed(2)}% brut</span>}
+                        {bien.surfaceTotale && <span className="flex items-center gap-1" style={bodyMutedStyle}><Maximize2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> {bien.surfaceTotale} m2</span>}
+                        {bien.typeBien && <span className="flex items-center gap-1" style={bodyMutedStyle}><Building2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> {bien.typeBien}</span>}
+                        {bien.rentabiliteBrute && <span className="tabular-nums" style={{ fontSize: "10px", fontFamily: font.body, fontWeight: 500, color: T.success, padding: "2px 8px", border: `1px solid ${T.success}20`, borderRadius: "2px", background: `${T.success}08`, fontVariantNumeric: "tabular-nums" }}>{Number(bien.rentabiliteBrute).toFixed(2)}% brut</span>}
                       </div>
-                      <div className="flex items-center justify-between pt-2 border-t border-[#1a1a1a]">
-                        <p className="text-gray-500 text-xs">Invest. total : {bien.investissementTotal ? Number(bien.investissementTotal).toLocaleString('fr-FR') + ' €' : '—'}</p>
-                        <Button
-                          size="sm"
+                      <div className="flex items-center justify-between mt-3 pt-3" style={{ borderTop: `1px solid ${T.borderSubtle}` }}>
+                        <p className="tabular-nums" style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, fontVariantNumeric: "tabular-nums" }}>Invest. total : {bien.investissementTotal ? Number(bien.investissementTotal).toLocaleString('fr-FR') + ' EUR' : '—'}</p>
+                        <button
                           onClick={(e) => { e.stopPropagation(); window.location.href = `/dashboard/off-market?id=${bien.id}`; }}
-                          className="h-7 text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"
+                          className="transition-colors duration-300"
+                          style={{ padding: "4px 12px", borderRadius: "2px", border: `1px solid ${T.border}`, background: "transparent", color: T.muted, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", cursor: "pointer" }}
                         >
                           Voir la fiche
-                        </Button>
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -1034,10 +1262,10 @@ export default function ReseauDashboard() {
             <div className="grid grid-cols-2 gap-4">
               {!biensList?.length || !biensList.filter((b: any) => filtreSourceBien === "all" || b.source === filtreSourceBien).length ? (
                 filtreSourceBien === "off_market" ? null : (
-                <div className="col-span-2 text-center py-12 text-gray-500 bg-[#111] border border-[#222]">
-                  <Home className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                  <p>Aucun bien dans le portefeuille</p>
-                  <p className="text-xs mt-1">Les agents actifs peuvent soumettre des biens</p>
+                <div className="col-span-2 text-center py-16" style={cardStyle}>
+                  <Home className="w-10 h-10 mx-auto mb-3" style={{ color: T.border, strokeWidth: 1.5 }} />
+                  <p style={{ fontFamily: font.body, fontSize: "13px", color: T.faint }}>Aucun bien dans le portefeuille</p>
+                  <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginTop: "4px" }}>Les agents actifs peuvent soumettre des biens</p>
                 </div>)
               ) : filtreSourceBien === "off_market" ? null : biensList.filter((b: any) => filtreSourceBien === "all" || b.source === filtreSourceBien).map((bien: any) => {
                 const isClickable = bien.source === "pap_scrape" && bien.urlSource;
@@ -1049,121 +1277,130 @@ export default function ReseauDashboard() {
                 <div
                   key={bien.id}
                   ref={isHighlighted ? highlightedBienRef : undefined}
-                  className={`bg-[#111] border p-5 space-y-3 hover:border-[#C9A84C]/30 transition-all ${
-                    isHighlighted
-                      ? "border-[#C9A84C] shadow-lg shadow-[#C9A84C]/20 ring-1 ring-[#C9A84C]/40"
-                      : "border-[#222]"
-                  } ${isClickable ? "cursor-pointer" : ""}`}
+                  className={`transition-colors duration-300 ${isClickable ? "cursor-pointer" : ""}`}
+                  style={{
+                    ...cardStyle,
+                    padding: "24px",
+                    borderColor: isHighlighted ? T.gold : T.border,
+                  }}
                   onClick={handleBienClick}
+                  onMouseEnter={e => { if (!isHighlighted) e.currentTarget.style.borderColor = `${T.gold}40`; }}
+                  onMouseLeave={e => { if (!isHighlighted) e.currentTarget.style.borderColor = T.border; }}
                 >
                   {bien.source === "pap_scrape" && (
-                    <div className="mb-3 h-40 bg-gradient-to-br from-[#C9A84C]/20 to-[#C9A84C]/5 border border-[#C9A84C]/20 rounded flex items-center justify-center">
+                    <div className="mb-3 flex items-center justify-center" style={{ height: "120px", background: T.headerBg, border: `1px solid ${T.border}`, borderRadius: "2px" }}>
                       <div className="text-center">
-                        <Home className="w-12 h-12 mx-auto text-[#C9A84C]/50 mb-2" />
-                        <p className="text-xs text-[#C9A84C]/70">Cliquez pour voir l'annonce PAP</p>
+                        <Home className="w-10 h-10 mx-auto mb-2" style={{ color: T.faint, strokeWidth: 1.5 }} />
+                        <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>Cliquez pour voir l'annonce PAP</p>
                       </div>
                     </div>
                   )}
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-white font-bold">{bien.titre}</p>
-                      <p className="text-gray-400 text-xs mt-0.5 flex items-center gap-1">
-                        <MapPin className="w-3 h-3" /> {bien.ville} ({bien.codePostal})
+                      <p style={{ fontFamily: font.body, fontSize: "14px", fontWeight: 500, color: T.fg }}>{bien.titre}</p>
+                      <p className="flex items-center gap-1 mt-1" style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>
+                        <MapPin className="w-3 h-3" style={{ strokeWidth: 1.5 }} /> {bien.ville} ({bien.codePostal})
                       </p>
                     </div>
                     <div className="flex gap-2">
-                      <Badge className={`text-xs border ${STATUT_BIEN_COLORS[bien.statutBien] ?? ""}`}>
-                        {STATUT_LABELS[bien.statutBien]}
-                      </Badge>
-                      <Badge className="text-xs border bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/30">
+                      <StatutBadgeInline statut={bien.statutBien} map={STATUT_BIEN_STYLES} />
+                      <span style={{
+                        display: "inline-flex", alignItems: "center",
+                        padding: "2px 8px", borderRadius: "2px",
+                        fontSize: "10px", fontFamily: font.body, fontWeight: 500,
+                        letterSpacing: "0.06em", textTransform: "uppercase",
+                        color: T.gold, background: `${T.gold}10`, border: `1px solid ${T.gold}30`,
+                      }}>
                         {bien.source === "pap_scrape" ? "PAP" : "Ambassadeur"}
-                      </Badge>
+                      </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 text-sm flex-wrap">
-                    <span className="flex items-center gap-1 text-[#C9A84C] font-bold">
-                      <Euro className="w-3.5 h-3.5" />
-                      {bien.prix?.toLocaleString("fr-FR")} € FAI
+                  <div className="flex items-center gap-4 mt-3 flex-wrap">
+                    <span className="flex items-center gap-1 tabular-nums" style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 600, color: T.gold, fontVariantNumeric: "tabular-nums" }}>
+                      <Euro className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+                      {bien.prix?.toLocaleString("fr-FR")} EUR FAI
                     </span>
-                    <span className="flex items-center gap-1 text-gray-300">
-                      <Maximize2 className="w-3.5 h-3.5" /> {bien.surface} m²
+                    <span className="flex items-center gap-1" style={bodyMutedStyle}>
+                      <Maximize2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> {bien.surface} m2
                     </span>
-                    <span className="flex items-center gap-1 text-gray-300">
-                      <Building2 className="w-3.5 h-3.5" /> {bien.typeBien}
+                    <span className="flex items-center gap-1" style={bodyMutedStyle}>
+                      <Building2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> {bien.typeBien}
                     </span>
                     {bien.dpeLettre && bien.dpeLettre !== "NC" && (
-                      <span className="bg-green-500/10 text-green-400 text-xs px-2 py-0.5 border border-green-500/20">DPE {bien.dpeLettre}</span>
+                      <span style={{ fontSize: "10px", fontFamily: font.body, fontWeight: 500, color: T.success, padding: "2px 8px", border: `1px solid ${T.success}20`, borderRadius: "2px", background: `${T.success}08` }}>DPE {bien.dpeLettre}</span>
                     )}
                   </div>
 
-                  {/* Décomposition du prix */}
+                  {/* Decomposition du prix */}
                   {(bien.prixNetVendeur || bien.honorairesAgence) && (
-                    <div className="flex items-center gap-3 text-xs bg-[#0d0d0d] border border-[#1e1e1e] px-3 py-2">
+                    <div className="flex items-center gap-3 mt-3 tabular-nums" style={{ background: T.headerBg, border: `1px solid ${T.border}`, borderRadius: "2px", padding: "8px 12px", fontSize: "11px", fontFamily: font.body, fontVariantNumeric: "tabular-nums" }}>
                       {bien.prixNetVendeur && (
-                        <span className="text-gray-400">
-                          Net vendeur : <span className="text-white font-semibold">{Number(bien.prixNetVendeur).toLocaleString("fr-FR")} €</span>
+                        <span style={{ color: T.muted }}>
+                          Net vendeur : <span style={{ color: T.fg, fontWeight: 500 }}>{Number(bien.prixNetVendeur).toLocaleString("fr-FR")} EUR</span>
                         </span>
                       )}
                       {bien.prixNetVendeur && bien.honorairesAgence && (
-                        <span className="text-gray-600">+</span>
+                        <span style={{ color: T.faint }}>+</span>
                       )}
                       {bien.honorairesAgence && (
-                        <span className="text-gray-400">
-                          Honoraires : <span className="text-white font-semibold">{Number(bien.honorairesAgence).toLocaleString("fr-FR")} €</span>
+                        <span style={{ color: T.muted }}>
+                          Honoraires : <span style={{ color: T.fg, fontWeight: 500 }}>{Number(bien.honorairesAgence).toLocaleString("fr-FR")} EUR</span>
                         </span>
                       )}
                       {bien.honorairesAgence && bien.prix && (
-                        <span className="ml-auto text-gray-600">
+                        <span style={{ marginLeft: "auto", color: T.faint }}>
                           ({Math.round((Number(bien.honorairesAgence) / Number(bien.prix)) * 100)}% honoraires)
                         </span>
                       )}
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between pt-2 border-t border-[#1a1a1a]">
-                    <p className="text-gray-500 text-xs">Réf. {bien.reference}</p>
+                  <div className="flex items-center justify-between mt-3 pt-3" style={{ borderTop: `1px solid ${T.borderSubtle}` }}>
+                    <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>Ref. {bien.reference}</p>
                     <div className="flex gap-2">
                       {bien.statutBien === "en_attente_validation" && (
-                        <Button
-                          size="sm"
+                        <button
                           onClick={() => updateStatutBien.mutate({ id: bien.id, statut: "publie" })}
-                          className="h-7 text-xs bg-green-500/10 text-green-400 border border-green-500/30 hover:bg-green-500/20"
+                          className="flex items-center gap-1 transition-colors duration-300"
+                          style={{ padding: "4px 10px", borderRadius: "2px", border: `1px solid ${T.success}30`, background: `${T.success}08`, color: T.success, fontFamily: font.body, fontSize: "11px", fontWeight: 500, cursor: "pointer" }}
                         >
-                          <CheckCircle className="mr-1 w-3 h-3" /> Valider
-                        </Button>
+                          <CheckCircle className="w-3 h-3" style={{ strokeWidth: 1.5 }} /> Valider
+                        </button>
                       )}
                       <Select
                         value={bien.statutBien}
                         onValueChange={v => updateStatutBien.mutate({ id: bien.id, statut: v as any })}
                       >
-                        <SelectTrigger className="w-36 h-7 text-xs bg-[#0d0d0d] border-[#333] text-gray-300">
+                        <SelectTrigger className="w-36 h-7 text-xs" style={{ background: T.headerBg, border: `1px solid ${T.border}`, borderRadius: "2px", color: T.muted, fontFamily: font.body, fontSize: "11px" }}>
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#111] border-[#333]">
-                          <SelectItem value="en_attente_validation" className="text-white text-xs">À valider</SelectItem>
-                          <SelectItem value="publie" className="text-white text-xs">Publié</SelectItem>
-                          <SelectItem value="sous_compromis" className="text-white text-xs">Sous compromis</SelectItem>
-                          <SelectItem value="vendu" className="text-white text-xs">Vendu</SelectItem>
-                          <SelectItem value="retire" className="text-white text-xs">Retiré</SelectItem>
+                        <SelectContent style={{ background: T.surface, border: `1px solid ${T.border}` }}>
+                          <SelectItem value="en_attente_validation" style={{ color: T.fg, fontFamily: font.body, fontSize: "11px" }}>A valider</SelectItem>
+                          <SelectItem value="publie" style={{ color: T.fg, fontFamily: font.body, fontSize: "11px" }}>Publie</SelectItem>
+                          <SelectItem value="sous_compromis" style={{ color: T.fg, fontFamily: font.body, fontSize: "11px" }}>Sous compromis</SelectItem>
+                          <SelectItem value="vendu" style={{ color: T.fg, fontFamily: font.body, fontSize: "11px" }}>Vendu</SelectItem>
+                          <SelectItem value="retire" style={{ color: T.fg, fontFamily: font.body, fontSize: "11px" }}>Retire</SelectItem>
                         </SelectContent>
                       </Select>
                       {bien.source !== "pap_scrape" && (
-                        <Button
-                          size="sm"
+                        <button
                           onClick={(e) => { e.stopPropagation(); setSelectedBienDetail(bien); }}
-                          className="h-7 text-xs bg-[#1a1a1a] text-gray-300 border border-[#333] hover:border-[#C9A84C]/40 hover:text-[#C9A84C]"
+                          className="transition-colors duration-300"
+                          style={{ padding: "4px 10px", borderRadius: "2px", border: `1px solid ${T.border}`, background: T.raised, color: T.muted, fontFamily: font.body, fontSize: "11px", fontWeight: 500, cursor: "pointer" }}
+                          onMouseEnter={e => { e.currentTarget.style.borderColor = `${T.gold}40`; e.currentTarget.style.color = T.gold; }}
+                          onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.muted; }}
                         >
-                          📄 Voir la fiche
-                        </Button>
+                          Voir la fiche
+                        </button>
                       )}
-                      <Button
-                        size="sm"
+                      <button
                         onClick={() => handleOpenProposer(bien.id)}
-                        className="h-7 text-xs bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/30 hover:bg-[#C9A84C]/20"
+                        className="transition-colors duration-300"
+                        style={{ padding: "4px 10px", borderRadius: "2px", border: `1px solid ${T.gold}30`, background: `${T.gold}08`, color: T.gold, fontFamily: font.body, fontSize: "11px", fontWeight: 500, cursor: "pointer" }}
                       >
-                        📧 Proposer à un lead
-                      </Button>
+                        Proposer a un lead
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1172,74 +1409,96 @@ export default function ReseauDashboard() {
             </div>
           </div>
         </TabsContent>
-        {/* ONGLET COURTIERSS — Liste */}
-        <TabsContent value="courtiers" className="mt-4">
-          <div className="space-y-4">
+
+        {/* ═══════════════════════════════════════════════════════
+            ONGLET COURTIERS — Liste
+            ═══════════════════════════════════════════════════════ */}
+        <TabsContent value="courtiers" className="mt-8">
+          <div className="space-y-5">
             <div className="flex gap-3">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                <Input
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: T.faint, strokeWidth: 1.5 }} />
+                <input
                   value={searchCourtier}
                   onChange={e => setSearchCourtier(e.target.value)}
                   placeholder="Rechercher un courtier..."
-                  className="pl-9 bg-[#111] border-[#222] text-white placeholder:text-gray-600"
+                  className="w-full focus:outline-none"
+                  style={{ ...inputStyle, paddingLeft: "36px" }}
+                  onFocus={e => (e.target.style.borderColor = T.gold)}
+                  onBlur={e => (e.target.style.borderColor = T.border)}
                 />
               </div>
               <Select value={filtreStatutCourtier} onValueChange={setFiltreStatutCourtier}>
-                <SelectTrigger className="w-44 bg-[#111] border-[#222] text-white">
-                  <Filter className="w-3.5 h-3.5 mr-2 text-gray-500" />
+                <SelectTrigger className="w-44" style={{ ...inputStyle }}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#1a1a1a] border-[#333]">
-                  <SelectItem value="tous" className="text-white">Tous les statuts</SelectItem>
-                  <SelectItem value="en_attente" className="text-yellow-400">En attente</SelectItem>
-                  <SelectItem value="actif" className="text-green-400">Actif</SelectItem>
-                  <SelectItem value="suspendu" className="text-orange-400">Suspendu</SelectItem>
-                  <SelectItem value="resilie" className="text-red-400">Résilié</SelectItem>
+                <SelectContent style={{ background: T.raised, border: `1px solid ${T.border}` }}>
+                  <SelectItem value="tous" style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>Tous les statuts</SelectItem>
+                  <SelectItem value="en_attente" style={{ color: T.gold, fontFamily: font.body, fontSize: "12px" }}>En attente</SelectItem>
+                  <SelectItem value="actif" style={{ color: T.success, fontFamily: font.body, fontSize: "12px" }}>Actif</SelectItem>
+                  <SelectItem value="suspendu" style={{ color: T.muted, fontFamily: font.body, fontSize: "12px" }}>Suspendu</SelectItem>
+                  <SelectItem value="resilie" style={{ color: T.destructive, fontFamily: font.body, fontSize: "12px" }}>Resilie</SelectItem>
                 </SelectContent>
               </Select>
               <a href="/inscription-courtier" target="_blank">
-                <Button className="bg-[#C9A84C] hover:bg-[#b8943d] text-black font-bold text-sm whitespace-nowrap">
-                  <Users className="mr-2 w-4 h-4" /> Inscrire un courtier
-                </Button>
+                <button style={{
+                  padding: "10px 20px",
+                  borderRadius: "2px",
+                  background: T.gold,
+                  color: T.bg,
+                  fontFamily: font.body,
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  border: "none",
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                }} className="flex items-center gap-2">
+                  <Users className="w-4 h-4" style={{ strokeWidth: 1.5 }} /> Inscrire un courtier
+                </button>
               </a>
             </div>
 
             {!courtiersList?.length ? (
-              <div className="text-center py-16 text-gray-500 bg-[#111] border border-[#222]">
-                <Building2 className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                <p>Aucun courtier trouvé</p>
+              <div className="text-center py-16" style={cardStyle}>
+                <Building2 className="w-10 h-10 mx-auto mb-3" style={{ color: T.border, strokeWidth: 1.5 }} />
+                <p style={{ fontFamily: font.body, fontSize: "13px", color: T.faint }}>Aucun courtier trouve</p>
               </div>
             ) : (
-              <div className="bg-[#111] border border-[#222] overflow-hidden">
-                <table className="w-full text-sm">
+              <div style={{ ...cardStyle, overflow: "hidden" }}>
+                <table className="w-full">
                   <thead>
-                    <tr className="border-b border-[#222]">
-                      <th className="text-left px-4 py-3 text-gray-400 text-xs uppercase tracking-wider font-medium">Courtier</th>
-                      <th className="text-left px-4 py-3 text-gray-400 text-xs uppercase tracking-wider font-medium">Contact</th>
-                      <th className="text-left px-4 py-3 text-gray-400 text-xs uppercase tracking-wider font-medium">Code parrain</th>
-                      <th className="text-left px-4 py-3 text-gray-400 text-xs uppercase tracking-wider font-medium">Statut</th>
-                      <th className="text-right px-4 py-3 text-gray-400 text-xs uppercase tracking-wider font-medium">Actions</th>
+                    <tr style={{ borderBottom: `1px solid ${T.border}` }}>
+                      {["Courtier", "Contact", "Code parrain", "Statut", ""].map(h => (
+                        <th key={h} className={`text-left px-5 py-3 ${h === "" ? "text-right" : ""}`} style={{ ...labelStyle, background: T.headerBg }}>{h}</th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
                     {courtiersList.map((c: any) => (
-                      <tr key={c.id} className="border-b border-[#1a1a1a] last:border-0 hover:bg-[#1a1a1a]">
-                        <td className="px-4 py-3">
+                      <tr
+                        key={c.id}
+                        className="transition-colors duration-300"
+                        style={{ borderBottom: `1px solid ${T.borderSubtle}` }}
+                        onMouseEnter={e => (e.currentTarget.style.background = T.raised)}
+                        onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                      >
+                        <td className="px-5 py-3">
                           <div>
-                            <p className="text-white font-semibold">{c.prenom} {c.nom}</p>
-                            {c.cabinetNom && <p className="text-gray-500 text-xs">{c.cabinetNom}</p>}
-                            <p className="text-gray-500 text-xs">{c.ville}</p>
+                            <p style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg }}>{c.prenom} {c.nom}</p>
+                            {c.cabinetNom && <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>{c.cabinetNom}</p>}
+                            <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>{c.ville}</p>
                           </div>
                         </td>
-                        <td className="px-4 py-3">
-                          <p className="text-gray-300 text-xs">{c.email}</p>
-                          <p className="text-gray-500 text-xs">{c.telephone}</p>
+                        <td className="px-5 py-3">
+                          <p style={{ fontFamily: font.body, fontSize: "12px", color: T.fg }}>{c.email}</p>
+                          <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>{c.telephone}</p>
                         </td>
-                        <td className="px-4 py-3">
-                          <span className="text-[#C9A84C] font-mono text-xs">{c.codeParrain ?? "—"}</span>
+                        <td className="px-5 py-3">
+                          <span style={{ fontFamily: font.body, fontSize: "12px", color: T.gold }}>{c.codeParrain ?? "—"}</span>
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-5 py-3">
                           <Select
                             value={c.statutInterne}
                             onValueChange={v => updateStatutCourtier.mutate({ id: c.id, statutInterne: v as any })}
@@ -1247,34 +1506,34 @@ export default function ReseauDashboard() {
                             <SelectTrigger className={`w-36 h-7 text-xs border ${STATUT_COLORS[c.statutInterne] ?? ""} bg-transparent`}>
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#1a1a1a] border-[#333]">
-                              <SelectItem value="en_attente" className="text-yellow-400 text-xs">En attente</SelectItem>
-                              <SelectItem value="actif" className="text-green-400 text-xs">Actif</SelectItem>
-                              <SelectItem value="suspendu" className="text-orange-400 text-xs">Suspendu</SelectItem>
-                              <SelectItem value="resilie" className="text-red-400 text-xs">Résilié</SelectItem>
+                            <SelectContent style={{ background: T.raised, border: `1px solid ${T.border}` }}>
+                              <SelectItem value="en_attente" style={{ color: T.gold, fontFamily: font.body, fontSize: "11px" }}>En attente</SelectItem>
+                              <SelectItem value="actif" style={{ color: T.success, fontFamily: font.body, fontSize: "11px" }}>Actif</SelectItem>
+                              <SelectItem value="suspendu" style={{ color: T.muted, fontFamily: font.body, fontSize: "11px" }}>Suspendu</SelectItem>
+                              <SelectItem value="resilie" style={{ color: T.destructive, fontFamily: font.body, fontSize: "11px" }}>Resilie</SelectItem>
                             </SelectContent>
                           </Select>
                         </td>
-                        <td className="px-4 py-3 text-right">
+                        <td className="px-5 py-3 text-right">
                           <div className="flex items-center justify-end gap-2">
-                            <Button
-                              size="sm"
-                              variant="ghost"
+                            <button
                               onClick={() => setSelectedCourtier(c.id)}
-                              className="text-gray-400 hover:text-white h-7 px-2"
-                              title="Voir le détail"
+                              className="transition-opacity duration-300 hover:opacity-70"
+                              style={{ padding: "6px", color: T.faint, background: "transparent", border: "none", cursor: "pointer" }}
+                              title="Voir le detail"
                             >
-                              <Eye className="w-3.5 h-3.5" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
+                              <Eye className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+                            </button>
+                            <button
                               onClick={() => handleDeleteCourtier(c.id, `${c.prenom} ${c.nom}`)}
-                              className="text-gray-400 hover:text-red-400 h-7 px-2"
+                              className="transition-colors duration-300"
+                              style={{ padding: "6px", color: T.faint, background: "transparent", border: "none", cursor: "pointer" }}
                               title="Supprimer"
+                              onMouseEnter={e => (e.currentTarget.style.color = T.destructive)}
+                              onMouseLeave={e => (e.currentTarget.style.color = T.faint)}
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </Button>
+                              <Trash2 className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -1286,117 +1545,119 @@ export default function ReseauDashboard() {
           </div>
         </TabsContent>
 
-        {/* ONGLET MATCHING */}
-        <TabsContent value="matching" className="mt-4">
+        {/* ═══════════════════════════════════════════════════════
+            ONGLET MATCHING
+            ═══════════════════════════════════════════════════════ */}
+        <TabsContent value="matching" className="mt-8">
           {showMatchingPipeline && matchingActiveDossier ? (
             /* ─── VUE PIPELINE DOSSIER ─── */
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div className="flex items-center justify-between">
-                <Button variant="ghost" size="sm" onClick={() => setShowMatchingPipeline(false)} className="text-gray-400 hover:text-white gap-1">
-                  <ArrowLeft className="w-4 h-4" /> Retour aux leads
-                </Button>
-                <Button variant="ghost" size="sm" onClick={() => {
+                <button onClick={() => setShowMatchingPipeline(false)} className="flex items-center gap-1.5 transition-opacity duration-300 hover:opacity-70" style={{ fontFamily: font.body, fontSize: "12px", color: T.muted, background: "transparent", border: "none", cursor: "pointer" }}>
+                  <ArrowLeft className="w-4 h-4" style={{ strokeWidth: 1.5 }} /> Retour aux leads
+                </button>
+                <button onClick={() => {
                   if (window.confirm("Supprimer ce dossier de matching ?")) deleteDossier.mutate({ id: matchingActiveDossier.id });
-                }} className="text-red-400 hover:text-red-300 gap-1">
-                  <Trash2 className="w-4 h-4" /> Supprimer le dossier
-                </Button>
+                }} className="flex items-center gap-1.5 transition-opacity duration-300 hover:opacity-70" style={{ fontFamily: font.body, fontSize: "12px", color: T.destructive, background: "transparent", border: "none", cursor: "pointer" }}>
+                  <Trash2 className="w-4 h-4" style={{ strokeWidth: 1.5 }} /> Supprimer le dossier
+                </button>
               </div>
 
-              {/* Lead info + critères mandat */}
+              {/* Lead info + criteres mandat */}
               {(() => {
                 const lead = crmLeads?.items?.find((l: any) => l.id === matchingActiveDossier.crmLeadId);
                 const mandat = (matchingLeadDetail as any)?.mandat;
                 return lead ? (
-                  <div className="bg-[#111] border border-[#222] p-4 space-y-3">
+                  <div style={{ ...cardStyle, padding: "24px" }} className="space-y-4">
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="text-white font-bold text-lg">{lead.prenom} {lead.nom}</p>
-                        <p className="text-gray-400 text-sm">{lead.email} · {lead.telephone}</p>
+                        <p style={{ fontFamily: font.display, fontSize: "20px", fontWeight: 600, color: T.fg, letterSpacing: "0.02em" }}>{lead.prenom} {lead.nom}</p>
+                        <p style={{ fontFamily: font.body, fontSize: "13px", color: T.muted, marginTop: "2px" }}>{lead.email} · {lead.telephone}</p>
                       </div>
-                      <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/30">{matchingActiveDossier.statut?.replace(/_/g, " ")}</Badge>
+                      <StatutBadgeInline statut={matchingActiveDossier.statut ?? "en_cours"} />
                     </div>
 
-                    {/* Budget & critères du mandat */}
+                    {/* Budget & criteres du mandat */}
                     {mandat ? (
-                      <div className="border-t border-[#1e1e1e] pt-3 space-y-2">
-                        <p className="text-gray-500 text-xs uppercase tracking-wider">Critères de recherche</p>
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+                      <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: "16px" }} className="space-y-3">
+                        <p style={labelStyle}>Criteres de recherche</p>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                           {mandat.budgetMax && (
                             <div className="col-span-2 flex items-center gap-2">
-                              <span className="text-gray-400">Budget max :</span>
-                              <span className="text-[#C9A84C] font-bold text-base">{Number(mandat.budgetMax).toLocaleString("fr-FR")} €</span>
+                              <span style={{ fontFamily: font.body, fontSize: "12px", color: T.muted }}>Budget max :</span>
+                              <span className="tabular-nums" style={{ fontFamily: font.display, fontSize: "18px", fontWeight: 600, color: T.gold, fontVariantNumeric: "tabular-nums" }}>{Number(mandat.budgetMax).toLocaleString("fr-FR")} EUR</span>
                               {mandat.apportPersonnel && (
-                                <span className="text-gray-500 text-xs">(apport : {Number(mandat.apportPersonnel).toLocaleString("fr-FR")} €)</span>
+                                <span className="tabular-nums" style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, fontVariantNumeric: "tabular-nums" }}>(apport : {Number(mandat.apportPersonnel).toLocaleString("fr-FR")} EUR)</span>
                               )}
                             </div>
                           )}
                           {mandat.typeBien && (
                             <div className="flex gap-1">
-                              <span className="text-gray-500">Type :</span>
-                              <span className="text-white capitalize">{mandat.typeBien.replace(/_/g, " ")}</span>
+                              <span style={{ fontFamily: font.body, fontSize: "12px", color: T.faint }}>Type :</span>
+                              <span style={{ fontFamily: font.body, fontSize: "12px", color: T.fg, textTransform: "capitalize" }}>{mandat.typeBien.replace(/_/g, " ")}</span>
                             </div>
                           )}
                           {mandat.localisation && (
                             <div className="flex gap-1">
-                              <span className="text-gray-500">Zone :</span>
-                              <span className="text-white">{mandat.localisation}</span>
+                              <span style={{ fontFamily: font.body, fontSize: "12px", color: T.faint }}>Zone :</span>
+                              <span style={{ fontFamily: font.body, fontSize: "12px", color: T.fg }}>{mandat.localisation}</span>
                             </div>
                           )}
                           {(mandat.surfaceMin || mandat.surfaceMax) && (
                             <div className="flex gap-1">
-                              <span className="text-gray-500">Surface :</span>
-                              <span className="text-white">
-                                {mandat.surfaceMin ? `${mandat.surfaceMin} m²` : ""}
+                              <span style={{ fontFamily: font.body, fontSize: "12px", color: T.faint }}>Surface :</span>
+                              <span style={{ fontFamily: font.body, fontSize: "12px", color: T.fg }}>
+                                {mandat.surfaceMin ? `${mandat.surfaceMin} m2` : ""}
                                 {mandat.surfaceMin && mandat.surfaceMax ? " – " : ""}
-                                {mandat.surfaceMax ? `${mandat.surfaceMax} m²` : ""}
+                                {mandat.surfaceMax ? `${mandat.surfaceMax} m2` : ""}
                               </span>
                             </div>
                           )}
                           {(mandat.nbPiecesMin || mandat.nbPiecesMax) && (
                             <div className="flex gap-1">
-                              <span className="text-gray-500">Pièces :</span>
-                              <span className="text-white">
+                              <span style={{ fontFamily: font.body, fontSize: "12px", color: T.faint }}>Pieces :</span>
+                              <span style={{ fontFamily: font.body, fontSize: "12px", color: T.fg }}>
                                 {mandat.nbPiecesMin ?? ""}{mandat.nbPiecesMin && mandat.nbPiecesMax ? "–" : ""}{mandat.nbPiecesMax ?? ""}
                               </span>
                             </div>
                           )}
                           {mandat.etatBien && (
                             <div className="flex gap-1">
-                              <span className="text-gray-500">État :</span>
-                              <span className="text-white capitalize">{mandat.etatBien.replace(/_/g, " ")}</span>
+                              <span style={{ fontFamily: font.body, fontSize: "12px", color: T.faint }}>Etat :</span>
+                              <span style={{ fontFamily: font.body, fontSize: "12px", color: T.fg, textTransform: "capitalize" }}>{mandat.etatBien.replace(/_/g, " ")}</span>
                             </div>
                           )}
                           {mandat.modeFinancement && (
                             <div className="flex gap-1">
-                              <span className="text-gray-500">Financement :</span>
-                              <span className="text-white capitalize">{mandat.modeFinancement}</span>
+                              <span style={{ fontFamily: font.body, fontSize: "12px", color: T.faint }}>Financement :</span>
+                              <span style={{ fontFamily: font.body, fontSize: "12px", color: T.fg, textTransform: "capitalize" }}>{mandat.modeFinancement}</span>
                             </div>
                           )}
                         </div>
-                        {/* Critères booléens */}
+                        {/* Criteres booleens */}
                         {["balconTerrasse","parkingGarage","cave","ascenseur","calme","lumineux","procheTransports","procheEcoles"].some(k => (mandat as any)[k]) && (
                           <div className="flex flex-wrap gap-1.5 pt-1">
-                            {[{k:"balconTerrasse",l:"Balcon/Terrasse"},{k:"parkingGarage",l:"Parking"},{k:"cave",l:"Cave"},{k:"ascenseur",l:"Ascenseur"},{k:"calme",l:"Calme"},{k:"lumineux",l:"Lumineux"},{k:"procheTransports",l:"Transports"},{k:"procheEcoles",l:"Écoles"}]
+                            {[{k:"balconTerrasse",l:"Balcon/Terrasse"},{k:"parkingGarage",l:"Parking"},{k:"cave",l:"Cave"},{k:"ascenseur",l:"Ascenseur"},{k:"calme",l:"Calme"},{k:"lumineux",l:"Lumineux"},{k:"procheTransports",l:"Transports"},{k:"procheEcoles",l:"Ecoles"}]
                               .filter(({k}) => (mandat as any)[k])
                               .map(({k,l}) => (
-                                <span key={k} className="text-xs bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/20 px-2 py-0.5">{l}</span>
+                                <span key={k} style={{ fontSize: "10px", fontFamily: font.body, fontWeight: 500, color: T.gold, padding: "2px 8px", border: `1px solid ${T.gold}20`, borderRadius: "2px", background: `${T.gold}08`, letterSpacing: "0.04em", textTransform: "uppercase" }}>{l}</span>
                               ))}
                           </div>
                         )}
                         {mandat.autresCriteres && (
-                          <p className="text-gray-400 text-xs italic">"{mandat.autresCriteres}"</p>
+                          <p style={{ fontFamily: font.body, fontSize: "12px", color: T.muted, fontStyle: "italic" }}>"{mandat.autresCriteres}"</p>
                         )}
                       </div>
                     ) : (
-                      <p className="text-gray-600 text-xs border-t border-[#1e1e1e] pt-2">Aucun mandat de recherche lié — les critères de matching sont basés sur les données CRM.</p>
+                      <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, borderTop: `1px solid ${T.border}`, paddingTop: "12px" }}>Aucun mandat de recherche lie — les criteres de matching sont bases sur les donnees CRM.</p>
                     )}
                   </div>
                 ) : null;
               })()}
 
               {/* Pipeline statuts */}
-              <div className="bg-[#111] border border-[#222] p-4">
-                <p className="text-gray-400 text-xs uppercase tracking-wider mb-3">Pipeline</p>
+              <div style={{ ...cardStyle, padding: "24px" }}>
+                <p style={{ ...labelStyle, marginBottom: "12px" }}>Pipeline</p>
                 <div className="flex flex-wrap gap-2">
                   {([
                     { v: "en_cours", label: "En cours" },
@@ -1406,16 +1667,25 @@ export default function ReseauDashboard() {
                     { v: "offre", label: "Offre" },
                     { v: "signature_notaire", label: "Signature notaire" },
                     { v: "vendu", label: "Bien vendu" },
-                    { v: "abandonne", label: "Abandonné" },
+                    { v: "abandonne", label: "Abandonne" },
                   ] as const).map(({ v, label }) => (
                     <button
                       key={v}
                       onClick={() => updateDossier.mutate({ id: matchingActiveDossier.id, statut: v })}
-                      className={`px-3 py-1.5 text-xs border transition-colors ${
-                        matchingActiveDossier.statut === v
-                          ? "bg-[#C9A84C] text-black border-[#C9A84C] font-bold"
-                          : "bg-transparent text-gray-400 border-[#333] hover:border-[#C9A84C]/50 hover:text-[#C9A84C]"
-                      }`}
+                      className="transition-colors duration-300"
+                      style={{
+                        padding: "6px 14px",
+                        borderRadius: "2px",
+                        fontSize: "11px",
+                        fontFamily: font.body,
+                        fontWeight: matchingActiveDossier.statut === v ? 600 : 400,
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase",
+                        border: `1px solid ${matchingActiveDossier.statut === v ? T.gold : T.border}`,
+                        background: matchingActiveDossier.statut === v ? T.gold : "transparent",
+                        color: matchingActiveDossier.statut === v ? T.bg : T.faint,
+                        cursor: "pointer",
+                      }}
                     >
                       {label}
                     </button>
@@ -1423,54 +1693,77 @@ export default function ReseauDashboard() {
                 </div>
               </div>
 
-              {/* Mode élargi + matching biens */}
-              <div className="bg-[#111] border border-[#222] p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-gray-400 text-xs uppercase tracking-wider">Biens correspondants</p>
+              {/* Mode elargi + matching biens */}
+              <div style={{ ...cardStyle, padding: "24px" }}>
+                <div className="flex items-center justify-between mb-4">
+                  <p style={labelStyle}>Biens correspondants</p>
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-500 text-xs">Mode élargi :</span>
+                    <span style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>Mode elargi :</span>
                     {[0, 1, 2].map(m => (
                       <button key={m} onClick={() => { setMatchingModeElargi(m); setSelectedLeadForMatching(matchingActiveDossier.crmLeadId); }}
-                        className={`px-2 py-0.5 text-xs border ${ matchingModeElargi === m ? "border-[#C9A84C] text-[#C9A84C] bg-[#C9A84C]/10" : "border-[#333] text-gray-500 hover:border-[#555]" }`}>
-                        {m === 0 ? "Strict" : m === 1 ? "Élargi" : "Très élargi"}
+                        className="transition-colors duration-300"
+                        style={{
+                          padding: "3px 8px",
+                          borderRadius: "2px",
+                          fontSize: "10px",
+                          fontFamily: font.body,
+                          fontWeight: 500,
+                          letterSpacing: "0.04em",
+                          textTransform: "uppercase",
+                          border: `1px solid ${matchingModeElargi === m ? T.gold : T.border}`,
+                          color: matchingModeElargi === m ? T.gold : T.faint,
+                          background: matchingModeElargi === m ? `${T.gold}0A` : "transparent",
+                          cursor: "pointer",
+                        }}>
+                        {m === 0 ? "Strict" : m === 1 ? "Elargi" : "Tres elargi"}
                       </button>
                     ))}
-                    <Button size="sm" variant="ghost" onClick={() => setSelectedLeadForMatching(matchingActiveDossier.crmLeadId)} className="text-gray-400 hover:text-white h-6 px-2">
-                      <RefreshCw className="w-3 h-3" />
-                    </Button>
+                    <button onClick={() => setSelectedLeadForMatching(matchingActiveDossier.crmLeadId)} className="transition-opacity duration-300 hover:opacity-70" style={{ padding: "4px", color: T.muted, background: "transparent", border: "none", cursor: "pointer" }}>
+                      <RefreshCw className="w-3 h-3" style={{ strokeWidth: 1.5 }} />
+                    </button>
                   </div>
                 </div>
                 {!selectedLeadForMatching ? (
-                  <Button size="sm" onClick={() => setSelectedLeadForMatching(matchingActiveDossier.crmLeadId)} className="bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/30 hover:bg-[#C9A84C]/20 text-xs">
-                    <TrendingUp className="mr-1 w-3 h-3" /> Lancer le matching
-                  </Button>
+                  <button onClick={() => setSelectedLeadForMatching(matchingActiveDossier.crmLeadId)} className="flex items-center gap-1.5 transition-colors duration-300" style={{ padding: "6px 14px", borderRadius: "2px", border: `1px solid ${T.gold}30`, background: `${T.gold}08`, color: T.gold, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", cursor: "pointer" }}>
+                    <TrendingUp className="w-3 h-3" style={{ strokeWidth: 1.5 }} /> Lancer le matching
+                  </button>
                 ) : !matchingBiens ? (
-                  <p className="text-gray-500 text-sm">Calcul en cours...</p>
+                  <p style={{ fontFamily: font.body, fontSize: "13px", color: T.faint }}>Calcul en cours...</p>
                 ) : !matchingBiens.biens?.length ? (
-                  <p className="text-gray-500 text-sm">Aucun bien correspondant. Essayez le mode Élargi.</p>
+                  <p style={{ fontFamily: font.body, fontSize: "13px", color: T.faint }}>Aucun bien correspondant. Essayez le mode Elargi.</p>
                 ) : (
                   <div className="space-y-2 max-h-96 overflow-y-auto">
                     {matchingBiens.biens.map((bien: any) => (
                       <div key={bien.id}
                         onClick={() => updateDossier.mutate({ id: matchingActiveDossier.id, bienId: bien.id })}
-                        className={`p-3 border cursor-pointer transition-colors ${ matchingActiveDossier.bienId === bien.id ? "border-[#C9A84C] bg-[#C9A84C]/5" : "border-[#222] hover:border-[#333]" }`}>
+                        className="cursor-pointer transition-colors duration-300"
+                        style={{
+                          padding: "12px 16px",
+                          borderRadius: "2px",
+                          border: `1px solid ${matchingActiveDossier.bienId === bien.id ? T.gold : T.border}`,
+                          background: matchingActiveDossier.bienId === bien.id ? `${T.gold}05` : "transparent",
+                        }}>
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <p className="text-white font-semibold text-sm">{bien.titre}</p>
-                              <Badge className={`text-xs ${ bien.pourcentage >= 70 ? "bg-green-500/10 text-green-400 border-green-500/30" : bien.pourcentage >= 40 ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/30" : "bg-red-500/10 text-red-400 border-red-500/30" }`}>
+                              <p style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg }}>{bien.titre}</p>
+                              <span style={{
+                                display: "inline-flex", padding: "1px 6px", borderRadius: "2px",
+                                fontSize: "10px", fontFamily: font.body, fontWeight: 500,
+                                color: bien.pourcentage >= 70 ? T.success : bien.pourcentage >= 40 ? T.gold : T.destructive,
+                                background: bien.pourcentage >= 70 ? `${T.success}10` : bien.pourcentage >= 40 ? `${T.gold}10` : `${T.destructive}10`,
+                                border: `1px solid ${bien.pourcentage >= 70 ? `${T.success}30` : bien.pourcentage >= 40 ? `${T.gold}30` : `${T.destructive}30`}`,
+                              }}>
                                 {bien.pourcentage}%
-                              </Badge>
-                              <Badge className={STATUT_BIEN_COLORS[bien.statutBien] ?? ""} variant="outline">
-                                {STATUT_LABELS[bien.statutBien] ?? bien.statutBien}
-                              </Badge>
+                              </span>
+                              <StatutBadgeInline statut={bien.statutBien} map={STATUT_BIEN_STYLES} />
                             </div>
-                            <p className="text-gray-400 text-xs mt-0.5">{bien.adresse}, {bien.ville} • {bien.surface}m² • {bien.nbPieces}p • {bien.prix?.toLocaleString("fr-FR")}€</p>
-                            {bien.raisons?.length > 0 && <p className="text-green-400 text-xs mt-1">✓ {bien.raisons.join(" • ")}</p>}
-                            {bien.blocages?.length > 0 && <p className="text-red-400 text-xs">✗ {bien.blocages.join(" • ")}</p>}
-                            {bien.agent && <p className="text-gray-500 text-xs mt-0.5">Agent : {bien.agent.prenom} {bien.agent.nom} • {bien.agent.telephone}</p>}
+                            <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginTop: "2px" }}>{bien.adresse}, {bien.ville} · {bien.surface}m2 · {bien.nbPieces}p · {bien.prix?.toLocaleString("fr-FR")} EUR</p>
+                            {bien.raisons?.length > 0 && <p style={{ fontFamily: font.body, fontSize: "11px", color: T.success, marginTop: "4px" }}>{bien.raisons.join(" · ")}</p>}
+                            {bien.blocages?.length > 0 && <p style={{ fontFamily: font.body, fontSize: "11px", color: T.destructive }}>{bien.blocages.join(" · ")}</p>}
+                            {bien.agent && <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginTop: "2px" }}>Agent : {bien.agent.prenom} {bien.agent.nom} · {bien.agent.telephone}</p>}
                           </div>
-                          {bien.photoPrincipaleUrl && <img src={bien.photoPrincipaleUrl} className="w-16 h-12 object-cover shrink-0" alt="" />}
+                          {bien.photoPrincipaleUrl && <img src={bien.photoPrincipaleUrl} className="w-16 h-12 object-cover shrink-0" style={{ borderRadius: "2px" }} alt="" />}
                         </div>
                       </div>
                     ))}
@@ -1479,40 +1772,53 @@ export default function ReseauDashboard() {
               </div>
 
               {/* Biens Off Market */}
-              <div className="bg-[#111] border border-[#1a1a1a] p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <p className="text-[#C9A84C] text-xs font-semibold uppercase tracking-wider">Biens Off Market</p>
-                  <Badge className="text-xs bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/30">
-                    {matchingBiens?.biensOffMarket?.length ?? 0} résultats
-                  </Badge>
+              <div style={{ ...cardStyle, padding: "24px" }}>
+                <div className="flex items-center gap-2 mb-4">
+                  <p style={{ ...labelStyle, color: T.gold }}>Biens Off Market</p>
+                  <span style={{
+                    display: "inline-flex", padding: "1px 6px", borderRadius: "2px",
+                    fontSize: "10px", fontFamily: font.body, fontWeight: 500,
+                    color: T.gold, background: `${T.gold}10`, border: `1px solid ${T.gold}30`,
+                  }}>
+                    {matchingBiens?.biensOffMarket?.length ?? 0} resultats
+                  </span>
                 </div>
                 {!matchingBiens?.biensOffMarket?.length ? (
-                  <p className="text-gray-500 text-sm">Aucun bien Off Market correspondant.</p>
+                  <p style={{ fontFamily: font.body, fontSize: "13px", color: T.faint }}>Aucun bien Off Market correspondant.</p>
                 ) : (
                   <div className="space-y-2 max-h-72 overflow-y-auto">
                     {matchingBiens.biensOffMarket.map((bien: any) => (
-                      <div key={bien.id} className="p-3 border border-[#222] hover:border-[#C9A84C]/30 transition-colors">
+                      <div key={bien.id} className="transition-colors duration-300" style={{ padding: "12px 16px", border: `1px solid ${T.border}`, borderRadius: "2px" }}
+                        onMouseEnter={e => (e.currentTarget.style.borderColor = `${T.gold}40`)}
+                        onMouseLeave={e => (e.currentTarget.style.borderColor = T.border)}
+                      >
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <p className="text-white font-semibold text-sm">{bien.titre}</p>
-                              <Badge className={`text-xs ${ bien.pourcentage >= 70 ? "bg-green-500/10 text-green-400 border-green-500/30" : bien.pourcentage >= 40 ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/30" : "bg-red-500/10 text-red-400 border-red-500/30" }`}>
+                              <p style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg }}>{bien.titre}</p>
+                              <span style={{
+                                display: "inline-flex", padding: "1px 6px", borderRadius: "2px",
+                                fontSize: "10px", fontFamily: font.body, fontWeight: 500,
+                                color: bien.pourcentage >= 70 ? T.success : bien.pourcentage >= 40 ? T.gold : T.destructive,
+                                background: bien.pourcentage >= 70 ? `${T.success}10` : bien.pourcentage >= 40 ? `${T.gold}10` : `${T.destructive}10`,
+                                border: `1px solid ${bien.pourcentage >= 70 ? `${T.success}30` : bien.pourcentage >= 40 ? `${T.gold}30` : `${T.destructive}30`}`,
+                              }}>
                                 {bien.pourcentage}%
-                              </Badge>
-                              <Badge className="text-xs bg-emerald-500/10 text-emerald-400 border-emerald-500/30">Off Market</Badge>
-                              {bien.rentabiliteBrute && <Badge className="text-xs bg-blue-500/10 text-blue-400 border-blue-500/30">{bien.rentabiliteBrute}% brut</Badge>}
+                              </span>
+                              <span style={{ display: "inline-flex", padding: "1px 6px", borderRadius: "2px", fontSize: "10px", fontFamily: font.body, fontWeight: 500, color: T.success, background: `${T.success}10`, border: `1px solid ${T.success}30` }}>Off Market</span>
+                              {bien.rentabiliteBrute && <span className="tabular-nums" style={{ display: "inline-flex", padding: "1px 6px", borderRadius: "2px", fontSize: "10px", fontFamily: font.body, fontWeight: 500, color: T.muted, background: `${T.muted}10`, border: `1px solid ${T.muted}20`, fontVariantNumeric: "tabular-nums" }}>{bien.rentabiliteBrute}% brut</span>}
                             </div>
-                            <p className="text-gray-400 text-xs mt-0.5">{bien.region} {bien.departement ? `— ${bien.departement}` : ""} • {bien.surface ? `${bien.surface}m²` : ""} • {bien.prix?.toLocaleString("fr-FR")} €</p>
-                            {bien.raisons?.length > 0 && <p className="text-green-400 text-xs mt-1">✓ {bien.raisons.join(" • ")}</p>}
-                            {bien.blocages?.length > 0 && <p className="text-red-400 text-xs">✗ {bien.blocages.join(" • ")}</p>}
+                            <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginTop: "2px" }}>{bien.region} {bien.departement ? `— ${bien.departement}` : ""} · {bien.surface ? `${bien.surface}m2` : ""} · {bien.prix?.toLocaleString("fr-FR")} EUR</p>
+                            {bien.raisons?.length > 0 && <p style={{ fontFamily: font.body, fontSize: "11px", color: T.success, marginTop: "4px" }}>{bien.raisons.join(" · ")}</p>}
+                            {bien.blocages?.length > 0 && <p style={{ fontFamily: font.body, fontSize: "11px", color: T.destructive }}>{bien.blocages.join(" · ")}</p>}
                           </div>
                           <div className="flex flex-col gap-1 shrink-0">
-                            {bien.imagePrincipale && <img src={bien.imagePrincipale} className="w-16 h-12 object-cover" alt="" />}
+                            {bien.imagePrincipale && <img src={bien.imagePrincipale} className="w-16 h-12 object-cover" style={{ borderRadius: "2px" }} alt="" />}
                             <button
                               onClick={() => window.open(`/dashboard/off-market?id=${bien.id}`, "_blank")}
-                              className="text-xs text-[#C9A84C] hover:underline text-center"
+                              style={{ fontFamily: font.body, fontSize: "11px", color: T.gold, background: "transparent", border: "none", cursor: "pointer", textAlign: "center" }}
                             >
-                              Voir la fiche ↗
+                              Voir la fiche
                             </button>
                           </div>
                         </div>
@@ -1523,68 +1829,73 @@ export default function ReseauDashboard() {
               </div>
 
               {/* Notes */}
-              <div className="bg-[#111] border border-[#222] p-4">
-                <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Notes internes</p>
+              <div style={{ ...cardStyle, padding: "24px" }}>
+                <p style={{ ...labelStyle, marginBottom: "8px" }}>Notes internes</p>
                 <textarea
                   value={matchingNotesEdit}
                   onChange={e => setMatchingNotesEdit(e.target.value)}
                   rows={3}
-                  className="w-full bg-[#0d0d0d] border border-[#333] text-white text-sm p-2 resize-none focus:outline-none focus:border-[#C9A84C]/50"
+                  style={{ ...inputStyle, width: "100%", resize: "none" }}
                   placeholder="Notes sur ce dossier..."
+                  onFocus={e => (e.target.style.borderColor = T.gold)}
+                  onBlur={e => (e.target.style.borderColor = T.border)}
                 />
-                <Button size="sm" onClick={() => updateDossier.mutate({ id: matchingActiveDossier.id, notes: matchingNotesEdit })} className="mt-2 bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/30 hover:bg-[#C9A84C]/20 text-xs">
+                <button onClick={() => updateDossier.mutate({ id: matchingActiveDossier.id, notes: matchingNotesEdit })} className="flex items-center gap-1.5 mt-3 transition-colors duration-300" style={{ padding: "6px 14px", borderRadius: "2px", border: `1px solid ${T.gold}30`, background: `${T.gold}08`, color: T.gold, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", cursor: "pointer" }}>
                   Sauvegarder les notes
-                </Button>
+                </button>
               </div>
             </div>
           ) : (
             /* ─── VUE LISTE LEADS ─── */
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div className="flex items-center gap-3">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                  <Input value={matchingLeadSearch} onChange={e => setMatchingLeadSearch(e.target.value)} placeholder="Rechercher un lead..." className="pl-9 bg-[#111] border-[#333] text-white h-9" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: T.faint, strokeWidth: 1.5 }} />
+                  <input
+                    value={matchingLeadSearch}
+                    onChange={e => setMatchingLeadSearch(e.target.value)}
+                    placeholder="Rechercher un lead..."
+                    className="w-full focus:outline-none"
+                    style={{ ...inputStyle, paddingLeft: "36px" }}
+                    onFocus={e => (e.target.style.borderColor = T.gold)}
+                    onBlur={e => (e.target.style.borderColor = T.border)}
+                  />
                 </div>
               </div>
 
               {/* Dossiers actifs */}
               {(matchingDossiers as any[]).filter((d: any) => d.statut !== "vendu" && d.statut !== "abandonne").length > 0 && (
                 <div>
-                  <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Dossiers en cours ({(matchingDossiers as any[]).filter((d: any) => d.statut !== "vendu" && d.statut !== "abandonne").length})</p>
-                  <div className="bg-[#111] border border-[#222] overflow-hidden">
-                    <table className="w-full text-sm">
-                      <thead><tr className="border-b border-[#222]">
-                        <th className="text-left p-3 text-gray-400 font-medium text-xs uppercase">Lead</th>
-                        <th className="text-left p-3 text-gray-400 font-medium text-xs uppercase">Statut pipeline</th>
-                        <th className="text-left p-3 text-gray-400 font-medium text-xs uppercase">Bien sélectionné</th>
-                        <th className="text-right p-3 text-gray-400 font-medium text-xs uppercase">Actions</th>
+                  <p style={{ ...labelStyle, marginBottom: "8px" }}>Dossiers en cours ({(matchingDossiers as any[]).filter((d: any) => d.statut !== "vendu" && d.statut !== "abandonne").length})</p>
+                  <div style={{ ...cardStyle, overflow: "hidden" }}>
+                    <table className="w-full">
+                      <thead><tr style={{ borderBottom: `1px solid ${T.border}` }}>
+                        {["Lead", "Statut pipeline", "Bien selectionne", ""].map(h => (
+                          <th key={h} className={`text-left px-5 py-3 ${h === "" ? "text-right" : ""}`} style={{ ...labelStyle, background: T.headerBg }}>{h}</th>
+                        ))}
                       </tr></thead>
                       <tbody>
                         {(matchingDossiers as any[]).filter((d: any) => d.statut !== "vendu" && d.statut !== "abandonne").map((d: any) => (
-                          <tr key={d.id} className="border-b border-[#1a1a1a] hover:bg-[#1a1a1a]">
-                            <td className="p-3">
-                              <p className="text-white font-medium">{d.lead?.prenom} {d.lead?.nom}</p>
-                              <p className="text-gray-500 text-xs">{d.lead?.email}</p>
+                          <tr key={d.id} className="transition-colors duration-300" style={{ borderBottom: `1px solid ${T.borderSubtle}` }}
+                            onMouseEnter={e => (e.currentTarget.style.background = T.raised)}
+                            onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                          >
+                            <td className="px-5 py-3">
+                              <p style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg }}>{d.lead?.prenom} {d.lead?.nom}</p>
+                              <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>{d.lead?.email}</p>
                             </td>
-                            <td className="p-3">
-                              <Badge className={`text-xs ${
-                                d.statut === "en_cours" ? "bg-blue-500/10 text-blue-400 border-blue-500/30" :
-                                d.statut === "offre" ? "bg-orange-500/10 text-orange-400 border-orange-500/30" :
-                                d.statut === "signature_notaire" ? "bg-purple-500/10 text-purple-400 border-purple-500/30" :
-                                "bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/30"
-                              }`}>
-                                {d.statut?.replace(/_/g, " ")}
-                              </Badge>
+                            <td className="px-5 py-3">
+                              <StatutBadgeInline statut={d.statut ?? "en_cours"} />
                             </td>
-                            <td className="p-3">
+                            <td className="px-5 py-3">
                               {d.bien ? (
-                                <p className="text-gray-300 text-xs">{d.bien.titre} • {d.bien.prix?.toLocaleString("fr-FR")}€</p>
-                              ) : <span className="text-gray-600 text-xs">Aucun bien sélectionné</span>}
+                                <p className="tabular-nums" style={{ fontFamily: font.body, fontSize: "12px", color: T.fg, fontVariantNumeric: "tabular-nums" }}>{d.bien.titre} · {d.bien.prix?.toLocaleString("fr-FR")} EUR</p>
+                              ) : <span style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>Aucun bien selectionne</span>}
                             </td>
-                            <td className="p-3 text-right">
-                              <Button size="sm" onClick={() => { setMatchingActiveDossier(d); setMatchingNotesEdit(d.notes ?? ""); setShowMatchingPipeline(true); }} className="h-7 text-xs bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/30 hover:bg-[#C9A84C]/20">
-                                <Eye className="mr-1 w-3 h-3" /> Ouvrir
-                              </Button>
+                            <td className="px-5 py-3 text-right">
+                              <button onClick={() => { setMatchingActiveDossier(d); setMatchingNotesEdit(d.notes ?? ""); setShowMatchingPipeline(true); }} className="flex items-center gap-1.5 transition-colors duration-300" style={{ padding: "4px 10px", borderRadius: "2px", border: `1px solid ${T.gold}30`, background: `${T.gold}08`, color: T.gold, fontFamily: font.body, fontSize: "11px", fontWeight: 500, cursor: "pointer" }}>
+                                <Eye className="w-3 h-3" style={{ strokeWidth: 1.5 }} /> Ouvrir
+                              </button>
                             </td>
                           </tr>
                         ))}
@@ -1596,53 +1907,62 @@ export default function ReseauDashboard() {
 
               {/* Tous les leads CRM */}
               <div>
-                <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Tous les leads CRM</p>
-                <div className="bg-[#111] border border-[#222] overflow-hidden">
-                  <table className="w-full text-sm">
-                    <thead><tr className="border-b border-[#222]">
-                      <th className="text-left p-3 text-gray-400 font-medium text-xs uppercase">Lead</th>
-                      <th className="text-left p-3 text-gray-400 font-medium text-xs uppercase">Étape CRM</th>
-                      <th className="text-left p-3 text-gray-400 font-medium text-xs uppercase">Dossier matching</th>
-                      <th className="text-right p-3 text-gray-400 font-medium text-xs uppercase">Actions</th>
+                <p style={{ ...labelStyle, marginBottom: "8px" }}>Tous les leads CRM</p>
+                <div style={{ ...cardStyle, overflow: "hidden" }}>
+                  <table className="w-full">
+                    <thead><tr style={{ borderBottom: `1px solid ${T.border}` }}>
+                      {["Lead", "Etape CRM", "Dossier matching", ""].map(h => (
+                        <th key={h} className={`text-left px-5 py-3 ${h === "" ? "text-right" : ""}`} style={{ ...labelStyle, background: T.headerBg }}>{h}</th>
+                      ))}
                     </tr></thead>
                     <tbody>
                       {!crmLeads?.items?.length ? (
-                        <tr><td colSpan={4} className="text-center py-8 text-gray-500">Aucun lead dans le CRM</td></tr>
+                        <tr><td colSpan={4} className="text-center py-12" style={{ fontFamily: font.body, fontSize: "13px", color: T.faint }}>Aucun lead dans le CRM</td></tr>
                       ) : crmLeads.items
                           .filter((l: any) => !matchingLeadSearch || `${l.prenom} ${l.nom} ${l.email}`.toLowerCase().includes(matchingLeadSearch.toLowerCase()))
                           .map((lead: any) => {
                             const dossierExistant = (matchingDossiers as any[]).find((d: any) => d.crmLeadId === lead.id && d.statut !== "vendu" && d.statut !== "abandonne");
                             return (
-                              <tr key={lead.id} className="border-b border-[#1a1a1a] hover:bg-[#1a1a1a]">
-                                <td className="p-3">
-                                  <p className="text-white font-medium">{lead.prenom} {lead.nom}</p>
-                                  <p className="text-gray-500 text-xs">{lead.email}</p>
+                              <tr key={lead.id} className="transition-colors duration-300" style={{ borderBottom: `1px solid ${T.borderSubtle}` }}
+                                onMouseEnter={e => (e.currentTarget.style.background = T.raised)}
+                                onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                              >
+                                <td className="px-5 py-3">
+                                  <p style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg }}>{lead.prenom} {lead.nom}</p>
+                                  <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>{lead.email}</p>
                                 </td>
-                                <td className="p-3">
-                                  <Badge className="bg-gray-500/10 text-gray-400 border-gray-500/30 text-xs">
+                                <td className="px-5 py-3">
+                                  <span style={{
+                                    display: "inline-flex", alignItems: "center",
+                                    padding: "2px 8px", borderRadius: "2px",
+                                    fontSize: "10px", fontFamily: font.body, fontWeight: 500,
+                                    letterSpacing: "0.06em", textTransform: "uppercase",
+                                    color: T.faint, background: "rgba(58,54,50,0.08)", border: "1px solid rgba(58,54,50,0.2)",
+                                  }}>
                                     {lead.etape?.replace(/_/g, " ") ?? "—"}
-                                  </Badge>
+                                  </span>
                                 </td>
-                                <td className="p-3">
+                                <td className="px-5 py-3">
                                   {dossierExistant ? (
-                                    <Badge className="bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/30 text-xs">
-                                      {dossierExistant.statut?.replace(/_/g, " ")}
-                                    </Badge>
-                                  ) : <span className="text-gray-600 text-xs">Pas de dossier</span>}
+                                    <StatutBadgeInline statut={dossierExistant.statut ?? "en_cours"} />
+                                  ) : <span style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>Pas de dossier</span>}
                                 </td>
-                                <td className="p-3 text-right">
+                                <td className="px-5 py-3 text-right">
                                   <div className="flex items-center justify-end gap-1">
-                                    <Button size="sm" onClick={() => {
+                                    <button onClick={() => {
                                       if (dossierExistant) { setMatchingActiveDossier(dossierExistant); setMatchingNotesEdit(dossierExistant.notes ?? ""); setShowMatchingPipeline(true); }
                                       else getOrCreateDossier.mutate({ crmLeadId: lead.id });
-                                    }} className="h-7 text-xs bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/30 hover:bg-[#C9A84C]/20">
-                                      <TrendingUp className="mr-1 w-3 h-3" /> {dossierExistant ? "Ouvrir" : "Créer dossier"}
-                                    </Button>
-                                    <Button size="sm" variant="ghost" onClick={() => {
+                                    }} className="flex items-center gap-1.5 transition-colors duration-300" style={{ padding: "4px 10px", borderRadius: "2px", border: `1px solid ${T.gold}30`, background: `${T.gold}08`, color: T.gold, fontFamily: font.body, fontSize: "11px", fontWeight: 500, cursor: "pointer" }}>
+                                      <TrendingUp className="w-3 h-3" style={{ strokeWidth: 1.5 }} /> {dossierExistant ? "Ouvrir" : "Creer dossier"}
+                                    </button>
+                                    <button onClick={() => {
                                       if (window.confirm(`Supprimer le lead ${lead.prenom} ${lead.nom} ?`)) deleteCrmLead.mutate({ id: lead.id });
-                                    }} className="h-7 px-2 text-gray-500 hover:text-red-400">
-                                      <Trash2 className="w-3.5 h-3.5" />
-                                    </Button>
+                                    }} className="transition-colors duration-300" style={{ padding: "6px", color: T.faint, background: "transparent", border: "none", cursor: "pointer" }}
+                                      onMouseEnter={e => (e.currentTarget.style.color = T.destructive)}
+                                      onMouseLeave={e => (e.currentTarget.style.color = T.faint)}
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+                                    </button>
                                   </div>
                                 </td>
                               </tr>
@@ -1656,96 +1976,93 @@ export default function ReseauDashboard() {
           )}
          </TabsContent>
 
-        {/* ONGLET CARTE DU RÉSEAU */}
-        <TabsContent value="carte" className="mt-4">
-          <div className="bg-[#111] border border-[#222] p-6">
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="text-white font-bold text-sm uppercase tracking-wider">Carte du réseau Sigma Factory</h3>
-              <span className="text-xs text-gray-500">Agents · Courtiers · Biens immobiliers</span>
+        {/* ═══════════════════════════════════════════════════════
+            ONGLET CARTE DU RESEAU
+            ═══════════════════════════════════════════════════════ */}
+        <TabsContent value="carte" className="mt-8">
+          <div style={{ ...cardStyle, padding: "32px" }}>
+            <div className="flex items-center justify-between mb-6">
+              <h3 style={{ fontFamily: font.display, fontSize: "18px", fontWeight: 600, color: T.fg, letterSpacing: "0.04em" }}>Carte du reseau Sigma Factory</h3>
+              <span style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>Agents · Courtiers · Biens immobiliers</span>
             </div>
             <CarteReseau isVisible={activeTab === "carte"} />
           </div>
         </TabsContent>
       </Tabs>
-      {/* Dialog détail ambassadeur */}
+
+      {/* ── Dialog detail ambassadeur ── */}
       <Dialog open={!!selectedAmb} onOpenChange={open => !open && setSelectedAmb(null)}>
-        <DialogContent className="bg-[#111] border border-[#222] text-white max-w-2xl max-h-[85vh] overflow-y-auto">
+        <DialogContent style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: "2px", color: T.fg, maxWidth: "640px", maxHeight: "85vh", overflowY: "auto" }}>
           <DialogHeader>
-            <DialogTitle className="text-white font-black text-lg">
+            <DialogTitle style={{ fontFamily: font.display, fontSize: "20px", fontWeight: 600, color: T.fg, letterSpacing: "0.02em" }}>
               {ambDetail?.prenom} {ambDetail?.nom}
-              <span className="ml-2 text-[#C9A84C] text-sm font-normal">
+              <span style={{ marginLeft: "8px", fontFamily: font.body, fontSize: "12px", fontWeight: 400, color: T.gold }}>
                 Niveau {ambDetail?.niveau} — {ambDetail?.niveau === "1" ? "10%" : "5%"}
               </span>
             </DialogTitle>
           </DialogHeader>
           {ambDetail && (
-            <div className="space-y-4 text-sm">
+            <div className="space-y-5">
               {/* Stats rapides */}
-              <div className="grid grid-cols-4 gap-2">
-                <div className="bg-[#0d0d0d] p-3 border border-[#222] text-center">
-                  <p className="text-[#C9A84C] text-xl font-black">{(ambDetail as any).stats?.totalBiens ?? ambDetail.biens?.length ?? 0}</p>
-                  <p className="text-gray-400 text-xs mt-1">Biens soumis</p>
-                </div>
-                <div className="bg-[#0d0d0d] p-3 border border-[#222] text-center">
-                  <p className="text-green-400 text-xl font-black">{(ambDetail as any).stats?.ventesConclues ?? 0}</p>
-                  <p className="text-gray-400 text-xs mt-1">Ventes conclues</p>
-                </div>
-                <div className="bg-[#0d0d0d] p-3 border border-[#222] text-center">
-                  <p className="text-blue-400 text-xl font-black">{(ambDetail as any).stats?.totalFilleuls ?? (ambDetail.filleuls?.length ?? 0)}</p>
-                  <p className="text-gray-400 text-xs mt-1">Filleuls</p>
-                </div>
-                <div className="bg-[#0d0d0d] p-3 border border-[#222] text-center">
-                  <p className="text-[#C9A84C] text-xl font-black">{((ambDetail as any).stats?.commissionsPayees ?? 0).toLocaleString("fr-FR")}€</p>
-                  <p className="text-gray-400 text-xs mt-1">Commissions payées</p>
-                </div>
+              <div className="grid grid-cols-4 gap-px" style={{ background: T.border, borderRadius: "2px" }}>
+                {[
+                  { label: "Biens soumis", value: (ambDetail as any).stats?.totalBiens ?? ambDetail.biens?.length ?? 0 },
+                  { label: "Ventes conclues", value: (ambDetail as any).stats?.ventesConclues ?? 0 },
+                  { label: "Filleuls", value: (ambDetail as any).stats?.totalFilleuls ?? (ambDetail.filleuls?.length ?? 0) },
+                  { label: "Commissions", value: `${((ambDetail as any).stats?.commissionsPayees ?? 0).toLocaleString("fr-FR")} EUR` },
+                ].map(s => (
+                  <div key={s.label} style={{ background: T.bg, padding: "16px", textAlign: "center" }}>
+                    <p className="tabular-nums" style={{ fontFamily: font.display, fontSize: "20px", fontWeight: 600, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{s.value}</p>
+                    <p style={{ ...labelStyle, marginTop: "4px", fontSize: "10px" }}>{s.label}</p>
+                  </div>
+                ))}
               </div>
               {/* Infos contact + profil */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-[#0d0d0d] p-3 border border-[#222]">
-                  <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Contact</p>
-                  <p className="text-white">{ambDetail.email}</p>
-                  <p className="text-gray-300">{ambDetail.telephone}</p>
-                  <p className="text-gray-300 text-xs mt-1">{ambDetail.adresse}, {ambDetail.codePostal} {ambDetail.ville}</p>
+                <div style={{ background: T.bg, padding: "16px", border: `1px solid ${T.border}`, borderRadius: "2px" }}>
+                  <p style={{ ...labelStyle, marginBottom: "8px" }}>Contact</p>
+                  <p style={{ fontFamily: font.body, fontSize: "13px", color: T.fg }}>{ambDetail.email}</p>
+                  <p style={{ fontFamily: font.body, fontSize: "13px", color: T.fg }}>{ambDetail.telephone}</p>
+                  <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginTop: "4px" }}>{ambDetail.adresse}, {ambDetail.codePostal} {ambDetail.ville}</p>
                 </div>
-                <div className="bg-[#0d0d0d] p-3 border border-[#222]">
-                  <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Profil</p>
-                  <p className="text-white capitalize">{ambDetail.statut?.replace(/_/g, " ")}</p>
-                  {ambDetail.siret && <p className="text-gray-300 text-xs">SIRET : {ambDetail.siret}</p>}
-                  {(ambDetail as any).codeParrain && <p className="text-[#C9A84C] text-xs mt-1">Code parrain : {(ambDetail as any).codeParrain}</p>}
-                  <p className="text-gray-400 text-xs mt-1">Inscrit le {new Date(ambDetail.createdAt).toLocaleDateString("fr-FR")}</p>
+                <div style={{ background: T.bg, padding: "16px", border: `1px solid ${T.border}`, borderRadius: "2px" }}>
+                  <p style={{ ...labelStyle, marginBottom: "8px" }}>Profil</p>
+                  <p style={{ fontFamily: font.body, fontSize: "13px", color: T.fg, textTransform: "capitalize" }}>{ambDetail.statut?.replace(/_/g, " ")}</p>
+                  {ambDetail.siret && <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>SIRET : {ambDetail.siret}</p>}
+                  {(ambDetail as any).codeParrain && <p style={{ fontFamily: font.body, fontSize: "11px", color: T.gold, marginTop: "4px" }}>Code parrain : {(ambDetail as any).codeParrain}</p>}
+                  <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginTop: "4px" }}>Inscrit le {new Date(ambDetail.createdAt).toLocaleDateString("fr-FR")}</p>
                 </div>
               </div>
               {/* Contrat + Renvoyer bienvenue */}
               <div className="flex gap-2">
                 {ambDetail.contratPdfUrl && (
                   <a href={ambDetail.contratPdfUrl} target="_blank" rel="noopener noreferrer" className="flex-1">
-                    <Button size="sm" className="w-full bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/30 hover:bg-[#C9A84C]/20">
-                      Télécharger le contrat signé
-                    </Button>
+                    <button className="w-full flex items-center justify-center gap-1.5 transition-colors duration-300" style={{ padding: "8px 12px", borderRadius: "2px", border: `1px solid ${T.gold}30`, background: `${T.gold}08`, color: T.gold, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", cursor: "pointer" }}>
+                      Telecharger le contrat signe
+                    </button>
                   </a>
                 )}
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="flex-1 border-blue-500/40 text-blue-400 hover:bg-blue-500/10"
+                <button
+                  className="flex-1 transition-colors duration-300"
                   disabled={renvoyerBienvenueAmb.isPending}
                   onClick={() => renvoyerBienvenueAmb.mutate({ id: ambDetail.id })}
+                  style={{ padding: "8px 12px", borderRadius: "2px", border: `1px solid ${T.border}`, background: "transparent", color: T.fg, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", cursor: "pointer" }}
                 >
                   {renvoyerBienvenueAmb.isPending ? "Envoi..." : "Renvoyer email bienvenue"}
-                </Button>
+                </button>
               </div>
               {/* Filleuls agents */}
               {ambDetail.filleuls?.length > 0 && (
                 <div>
-                  <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Filleuls agents ({ambDetail.filleuls.length})</p>
+                  <p style={{ ...labelStyle, marginBottom: "8px" }}>Filleuls agents ({ambDetail.filleuls.length})</p>
                   <div className="space-y-1">
                     {ambDetail.filleuls.map((f: any) => (
-                      <div key={f.id} className="bg-[#0d0d0d] p-2 border border-[#222] flex items-center justify-between">
+                      <div key={f.id} className="flex items-center justify-between" style={{ background: T.bg, padding: "8px 12px", border: `1px solid ${T.border}`, borderRadius: "2px" }}>
                         <div>
-                          <span className="text-white text-xs">{f.prenom} {f.nom}</span>
-                          <span className="text-gray-500 text-xs ml-2">{f.ville}</span>
+                          <span style={{ fontFamily: font.body, fontSize: "12px", color: T.fg }}>{f.prenom} {f.nom}</span>
+                          <span style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginLeft: "8px" }}>{f.ville}</span>
                         </div>
-                        <Badge className={`text-xs border ${STATUT_COLORS[f.statutInterne] ?? ""}`}>{STATUT_LABELS[f.statutInterne]}</Badge>
+                        <StatutBadgeInline statut={f.statutInterne} />
                       </div>
                     ))}
                   </div>
@@ -1754,15 +2071,20 @@ export default function ReseauDashboard() {
               {/* Filleuls courtiers */}
               {ambDetail.filleulsCourtiers?.length > 0 && (
                 <div>
-                  <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Filleuls courtiers ({ambDetail.filleulsCourtiers.length})</p>
+                  <p style={{ ...labelStyle, marginBottom: "8px" }}>Filleuls courtiers ({ambDetail.filleulsCourtiers.length})</p>
                   <div className="space-y-1">
                     {ambDetail.filleulsCourtiers.map((c: any) => (
-                      <div key={c.id} className="bg-[#0d0d0d] p-2 border border-[#C9A84C]/20 flex items-center justify-between">
+                      <div key={c.id} className="flex items-center justify-between" style={{ background: T.bg, padding: "8px 12px", border: `1px solid ${T.gold}20`, borderRadius: "2px" }}>
                         <div>
-                          <span className="text-white text-xs">{c.prenom} {c.nom}</span>
-                          {c.cabinetNom && <span className="text-gray-500 text-xs ml-2">— {c.cabinetNom}</span>}
+                          <span style={{ fontFamily: font.body, fontSize: "12px", color: T.fg }}>{c.prenom} {c.nom}</span>
+                          {c.cabinetNom && <span style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginLeft: "8px" }}>— {c.cabinetNom}</span>}
                         </div>
-                        <Badge className="text-xs bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/20">Courtier N1</Badge>
+                        <span style={{
+                          display: "inline-flex", padding: "2px 8px", borderRadius: "2px",
+                          fontSize: "10px", fontFamily: font.body, fontWeight: 500,
+                          letterSpacing: "0.06em", textTransform: "uppercase",
+                          color: T.gold, background: `${T.gold}10`, border: `1px solid ${T.gold}20`,
+                        }}>Courtier N1</span>
                       </div>
                     ))}
                   </div>
@@ -1771,23 +2093,23 @@ export default function ReseauDashboard() {
               {/* Biens soumis */}
               {ambDetail.biens?.length > 0 && (
                 <div>
-                  <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Biens soumis ({ambDetail.biens.length})</p>
+                  <p style={{ ...labelStyle, marginBottom: "8px" }}>Biens soumis ({ambDetail.biens.length})</p>
                   <div className="space-y-1">
                     {ambDetail.biens.map((b: any) => (
-                      <div key={b.id} className="bg-[#0d0d0d] p-2 border border-[#222] flex items-center justify-between">
+                      <div key={b.id} className="flex items-center justify-between" style={{ background: T.bg, padding: "8px 12px", border: `1px solid ${T.border}`, borderRadius: "2px" }}>
                         <div>
-                          <span className="text-white text-xs">{b.titre}</span>
-                          <span className="text-gray-500 text-xs ml-2">— {b.ville} — {b.prix?.toLocaleString("fr-FR")}€</span>
+                          <span style={{ fontFamily: font.body, fontSize: "12px", color: T.fg }}>{b.titre}</span>
+                          <span className="tabular-nums" style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginLeft: "8px", fontVariantNumeric: "tabular-nums" }}>— {b.ville} — {b.prix?.toLocaleString("fr-FR")} EUR</span>
                         </div>
-                        <Badge className={`text-xs border ${STATUT_BIEN_COLORS[b.statutBien] ?? ""}`}>{STATUT_LABELS[b.statutBien]}</Badge>
+                        <StatutBadgeInline statut={b.statutBien} map={STATUT_BIEN_STYLES} />
                       </div>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Documents bidirectionnels Élodie ↔ Agent */}
-              <div className="border-t border-[#222] pt-4">
+              {/* Documents bidirectionnels */}
+              <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: "20px" }}>
                 <PartnerDocumentsSection
                   partnerType="agent"
                   partnerId={ambDetail.id}
@@ -1801,120 +2123,140 @@ export default function ReseauDashboard() {
         </DialogContent>
       </Dialog>
 
-      {/* Dialog matching biens */}
+      {/* ── Dialog matching biens ── */}
       <Dialog open={showMatchingDialog} onOpenChange={setShowMatchingDialog}>
-        <DialogContent className="bg-[#111] border border-[#222] text-white max-w-3xl max-h-[80vh] overflow-y-auto">
+        <DialogContent style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: "2px", color: T.fg, maxWidth: "720px", maxHeight: "80vh", overflowY: "auto" }}>
           <DialogHeader>
-            <DialogTitle className="text-white font-black">
+            <DialogTitle style={{ fontFamily: font.display, fontSize: "18px", fontWeight: 600, color: T.fg, letterSpacing: "0.02em" }}>
               Proposer des biens au lead
-              <span className="ml-2 text-gray-400 text-sm font-normal">
-                {selectedBiensForLead.length}/3 sélectionnés
+              <span style={{ marginLeft: "8px", fontFamily: font.body, fontSize: "12px", fontWeight: 400, color: T.muted }}>
+                {selectedBiensForLead.length}/3 selectionnes
               </span>
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {!matchingBiens?.biens?.length ? (
-              <div className="text-center py-8 text-gray-500">
-                <Home className="w-10 h-10 mx-auto mb-2 opacity-30" />
-                <p>Aucun bien disponible correspondant aux critères</p>
+              <div className="text-center py-12">
+                <Home className="w-10 h-10 mx-auto mb-3" style={{ color: T.border, strokeWidth: 1.5 }} />
+                <p style={{ fontFamily: font.body, fontSize: "13px", color: T.faint }}>Aucun bien disponible correspondant aux criteres</p>
               </div>
             ) : matchingBiens.biens.map((bien: any) => (
               <div
                 key={bien.id}
                 onClick={() => toggleBienSelection(bien.id)}
-                className={`p-4 border cursor-pointer transition-colors ${selectedBiensForLead.includes(bien.id) ? "border-[#C9A84C] bg-[#C9A84C]/5" : "border-[#222] hover:border-[#333]"}`}
+                className="cursor-pointer transition-colors duration-300"
+                style={{
+                  padding: "16px",
+                  borderRadius: "2px",
+                  border: `1px solid ${selectedBiensForLead.includes(bien.id) ? T.gold : T.border}`,
+                  background: selectedBiensForLead.includes(bien.id) ? `${T.gold}05` : "transparent",
+                }}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <p className="text-white font-semibold">{bien.titre}</p>
+                      <p style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg }}>{bien.titre}</p>
                       {bien.score > 0 && (
-                        <Badge className="bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/30 text-xs">
+                        <span className="tabular-nums" style={{
+                          display: "inline-flex", padding: "1px 6px", borderRadius: "2px",
+                          fontSize: "10px", fontFamily: font.body, fontWeight: 500,
+                          color: T.gold, background: `${T.gold}10`, border: `1px solid ${T.gold}30`,
+                          fontVariantNumeric: "tabular-nums",
+                        }}>
                           Score {bien.score}%
-                        </Badge>
+                        </span>
                       )}
                     </div>
-                    <p className="text-gray-400 text-xs mt-0.5">{bien.adresse}, {bien.ville}</p>
-                    <div className="flex items-center gap-4 mt-2 text-sm">
-                      <span className="text-[#C9A84C] font-bold">{bien.prix?.toLocaleString("fr-FR")} €</span>
-                      <span className="text-gray-300">{bien.surface} m²</span>
-                      <span className="text-gray-300">{bien.typeBien}</span>
-                      {bien.dpeLettre && bien.dpeLettre !== "NC" && <span className="text-green-400 text-xs">DPE {bien.dpeLettre}</span>}
+                    <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginTop: "2px" }}>{bien.adresse}, {bien.ville}</p>
+                    <div className="flex items-center gap-4 mt-2">
+                      <span className="tabular-nums" style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 600, color: T.gold, fontVariantNumeric: "tabular-nums" }}>{bien.prix?.toLocaleString("fr-FR")} EUR</span>
+                      <span style={{ fontFamily: font.body, fontSize: "12px", color: T.muted }}>{bien.surface} m2</span>
+                      <span style={{ fontFamily: font.body, fontSize: "12px", color: T.muted }}>{bien.typeBien}</span>
+                      {bien.dpeLettre && bien.dpeLettre !== "NC" && <span style={{ fontFamily: font.body, fontSize: "10px", color: T.success }}>DPE {bien.dpeLettre}</span>}
                     </div>
                   </div>
-                  <div className={`w-5 h-5 border-2 flex items-center justify-center shrink-0 ${selectedBiensForLead.includes(bien.id) ? "border-[#C9A84C] bg-[#C9A84C]" : "border-[#444]"}`}>
-                    {selectedBiensForLead.includes(bien.id) && <CheckCircle className="w-3 h-3 text-black" />}
+                  <div style={{
+                    width: "20px", height: "20px",
+                    border: `2px solid ${selectedBiensForLead.includes(bien.id) ? T.gold : T.faint}`,
+                    background: selectedBiensForLead.includes(bien.id) ? T.gold : "transparent",
+                    borderRadius: "2px",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    flexShrink: 0,
+                  }}>
+                    {selectedBiensForLead.includes(bien.id) && <CheckCircle className="w-3 h-3" style={{ color: T.bg, strokeWidth: 1.5 }} />}
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          <div className="flex gap-3 pt-2">
-            <Button variant="outline" onClick={() => setShowMatchingDialog(false)} className="border-[#333] text-gray-400">
+          <div className="flex gap-3 pt-3">
+            <button onClick={() => setShowMatchingDialog(false)} style={{ padding: "10px 20px", borderRadius: "2px", border: `1px solid ${T.border}`, background: "transparent", color: T.muted, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}>
               Annuler
-            </Button>
-            <Button
+            </button>
+            <button
               disabled={selectedBiensForLead.length === 0 || proposerBiens.isPending}
               onClick={() => proposerBiens.mutate({ crmLeadId: selectedLeadForMatching!, bienIds: selectedBiensForLead })}
-              className="flex-1 bg-[#C9A84C] hover:bg-[#b8943d] text-black font-bold"
+              className="flex-1"
+              style={{ padding: "10px 20px", borderRadius: "2px", background: T.gold, color: T.bg, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", border: "none", cursor: "pointer", opacity: selectedBiensForLead.length === 0 ? 0.4 : 1 }}
             >
-              Proposer {selectedBiensForLead.length} bien{selectedBiensForLead.length > 1 ? "s" : ""} à ce lead
-            </Button>
+              Proposer {selectedBiensForLead.length} bien{selectedBiensForLead.length > 1 ? "s" : ""} a ce lead
+            </button>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Modale Proposer ce bien — prévisualisation PDF avant envoi */}
+      {/* ── Modale Proposer ce bien — previsualisation PDF avant envoi ── */}
       <Dialog open={showProposerModal} onOpenChange={(o) => { if (!o) setShowProposerModal(false); }}>
-        <DialogContent className="bg-[#111] border border-[#222] text-white max-w-2xl">
+        <DialogContent style={{ background: T.surface, border: `1px solid ${T.border}`, borderRadius: "2px", color: T.fg, maxWidth: "640px" }}>
           <DialogHeader>
-            <DialogTitle className="text-white font-black">
-              {proposerStep === "done" ? "✅ Fiche envoyée" : "📧 Proposer ce bien à un lead"}
+            <DialogTitle style={{ fontFamily: font.display, fontSize: "18px", fontWeight: 600, color: T.fg, letterSpacing: "0.02em" }}>
+              {proposerStep === "done" ? "Fiche envoyee" : "Proposer ce bien a un lead"}
             </DialogTitle>
           </DialogHeader>
 
           {proposerStep === "preview" && (
-            <div className="flex flex-col items-center gap-4 py-6">
-              <div className="w-12 h-12 border-4 border-[#C9A84C] border-t-transparent rounded-full animate-spin" />
-              <p className="text-gray-400 text-sm">Génération du PDF en cours...</p>
+            <div className="flex flex-col items-center gap-4 py-8">
+              <div style={{ width: "40px", height: "40px", border: `3px solid ${T.gold}`, borderTop: "3px solid transparent", borderRadius: "50%" }} className="animate-spin" />
+              <p style={{ fontFamily: font.body, fontSize: "13px", color: T.muted }}>Generation du PDF en cours...</p>
             </div>
           )}
 
           {proposerStep === "confirm" && proposerPdfUrl && (
-            <div className="space-y-4">
-              {/* Aperçu PDF */}
-              <div className="bg-[#0d0d0d] border border-[#222] p-4 rounded">
-                <p className="text-[#C9A84C] text-xs uppercase tracking-widest mb-3">Aperçu du PDF généré</p>
+            <div className="space-y-5">
+              {/* Apercu PDF */}
+              <div style={{ background: T.bg, border: `1px solid ${T.border}`, borderRadius: "2px", padding: "20px" }}>
+                <p style={{ ...labelStyle, marginBottom: "12px" }}>Apercu du PDF genere</p>
                 <a
                   href={proposerPdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/30 px-4 py-2 text-sm hover:bg-[#C9A84C]/20 transition-colors"
+                  className="inline-flex items-center gap-2 transition-colors duration-300"
+                  style={{ padding: "8px 16px", borderRadius: "2px", border: `1px solid ${T.gold}30`, background: `${T.gold}08`, color: T.gold, fontFamily: font.body, fontSize: "12px", fontWeight: 500, textDecoration: "none" }}
                 >
-                  📄 Ouvrir la fiche PDF (nouvel onglet)
+                  <FileText className="w-4 h-4" style={{ strokeWidth: 1.5 }} /> Ouvrir la fiche PDF (nouvel onglet)
                 </a>
-                <p className="text-gray-500 text-xs mt-2">Vérifiez le contenu avant d'envoyer au lead.</p>
+                <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginTop: "8px" }}>Verifiez le contenu avant d'envoyer au lead.</p>
               </div>
 
-              {/* Sélection du lead */}
+              {/* Selection du lead */}
               <div>
-                <p className="text-gray-300 text-sm mb-2">Lead destinataire</p>
+                <p style={{ fontFamily: font.body, fontSize: "13px", color: T.fg, marginBottom: "8px" }}>Lead destinataire</p>
                 <Select
                   value={selectedLeadForMatching ? String(selectedLeadForMatching) : ""}
                   onValueChange={(v) => setSelectedLeadForMatching(Number(v))}
                 >
-                  <SelectTrigger className="bg-[#0d0d0d] border-[#333] text-white">
-                    <SelectValue placeholder="Sélectionner un lead..." />
+                  <SelectTrigger style={{ ...inputStyle }}>
+                    <SelectValue placeholder="Selectionner un lead..." />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#111] border-[#333]">
+                  <SelectContent style={{ background: T.surface, border: `1px solid ${T.border}` }}>
                     {crmLeads?.items?.map((lead: any) => {
                       const count = getFichesCount(lead.id);
                       return (
-                        <SelectItem key={lead.id} value={String(lead.id)} className="text-white">
+                        <SelectItem key={lead.id} value={String(lead.id)} style={{ color: T.fg, fontFamily: font.body, fontSize: "12px" }}>
                           {lead.prenom} {lead.nom} — {lead.email}
                           {count > 0 && (
-                            <span className="ml-2 text-xs text-amber-400 font-semibold">
-                              ({count} fiche{count > 1 ? "s" : ""} envoyée{count > 1 ? "s" : ""})
+                            <span style={{ marginLeft: "8px", fontSize: "11px", color: T.gold, fontWeight: 500 }}>
+                              ({count} fiche{count > 1 ? "s" : ""} envoyee{count > 1 ? "s" : ""})
                             </span>
                           )}
                         </SelectItem>
@@ -1925,37 +2267,40 @@ export default function ReseauDashboard() {
 
                 {/* Alerte doublon */}
                 {doublonCheck?.alreadySent && (
-                  <div className="mt-2 bg-orange-500/10 border border-orange-500/30 rounded px-3 py-2 flex items-start gap-2">
-                    <span className="text-orange-400 text-sm">⚠️</span>
+                  <div className="flex items-start gap-2 mt-2" style={{ background: `${T.gold}08`, border: `1px solid ${T.gold}30`, borderRadius: "2px", padding: "10px 12px" }}>
+                    <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" style={{ color: T.gold, strokeWidth: 1.5 }} />
                     <div>
-                      <p className="text-orange-400 text-xs font-semibold">Ce bien a déjà été proposé à ce lead</p>
+                      <p style={{ fontFamily: font.body, fontSize: "11px", fontWeight: 500, color: T.gold }}>Ce bien a deja ete propose a ce lead</p>
                       {doublonCheck.sentAt && (
-                        <p className="text-orange-300/70 text-xs">
-                          Envoyé le {new Date(doublonCheck.sentAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                        <p style={{ fontFamily: font.body, fontSize: "11px", color: T.muted }}>
+                          Envoye le {new Date(doublonCheck.sentAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" })}
                         </p>
                       )}
-                      <p className="text-orange-300/60 text-xs mt-0.5">Vous pouvez quand même renvoyer si nécessaire.</p>
+                      <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, marginTop: "2px" }}>Vous pouvez quand meme renvoyer si necessaire.</p>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Message personnalisé */}
+              {/* Message personnalise */}
               <div>
-                <p className="text-gray-300 text-sm mb-2">Message personnalisé <span className="text-gray-600">(optionnel)</span></p>
-                <Textarea
+                <p style={{ fontFamily: font.body, fontSize: "13px", color: T.fg, marginBottom: "8px" }}>Message personnalise <span style={{ color: T.faint }}>(optionnel)</span></p>
+                <textarea
                   value={proposerMessage}
                   onChange={(e) => setProposerMessage(e.target.value)}
-                  placeholder="Suite à notre échange, voici un bien qui correspond à vos critères..."
-                  className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 min-h-[80px]"
+                  placeholder="Suite a notre echange, voici un bien qui correspond a vos criteres..."
+                  rows={3}
+                  style={{ ...inputStyle, width: "100%", resize: "none" }}
+                  onFocus={e => (e.target.style.borderColor = T.gold)}
+                  onBlur={e => (e.target.style.borderColor = T.border)}
                 />
               </div>
 
               <div className="flex gap-3 pt-2">
-                <Button variant="outline" onClick={() => setShowProposerModal(false)} className="border-[#333] text-gray-400">
+                <button onClick={() => setShowProposerModal(false)} style={{ padding: "10px 20px", borderRadius: "2px", border: `1px solid ${T.border}`, background: "transparent", color: T.muted, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}>
                   Annuler
-                </Button>
-                <Button
+                </button>
+                <button
                   disabled={!selectedLeadForMatching || proposerBienAuLead.isPending}
                   onClick={() => proposerBienAuLead.mutate({
                     bienId: proposerBienId!,
@@ -1963,78 +2308,81 @@ export default function ReseauDashboard() {
                     pdfUrl: proposerPdfUrl!,
                     messagePersonnalise: proposerMessage || undefined,
                   })}
-                  className="flex-1 bg-[#C9A84C] hover:bg-[#b8943d] text-black font-bold"
+                  className="flex-1"
+                  style={{ padding: "10px 20px", borderRadius: "2px", background: T.gold, color: T.bg, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", border: "none", cursor: "pointer", opacity: !selectedLeadForMatching ? 0.4 : 1 }}
                 >
-                  {proposerBienAuLead.isPending ? "Envoi..." : "✉️ Envoyer la fiche au lead"}
-                </Button>
+                  {proposerBienAuLead.isPending ? "Envoi..." : "Envoyer la fiche au lead"}
+                </button>
               </div>
             </div>
           )}
 
           {proposerStep === "done" && (
-            <div className="flex flex-col items-center gap-4 py-6 text-center">
-              <div className="w-14 h-14 bg-green-500/10 border border-green-500/30 rounded-full flex items-center justify-center">
-                <CheckCircle className="w-7 h-7 text-green-400" />
+            <div className="flex flex-col items-center gap-4 py-8 text-center">
+              <div style={{ width: "48px", height: "48px", background: `${T.success}10`, border: `1px solid ${T.success}30`, borderRadius: "2px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <CheckCircle className="w-6 h-6" style={{ color: T.success, strokeWidth: 1.5 }} />
               </div>
-              <p className="text-white font-semibold">Fiche bien envoyée avec succès !</p>
-              <p className="text-gray-400 text-sm">Le lead a reçu la fiche PDF par email.</p>
-              <Button onClick={() => setShowProposerModal(false)} className="bg-[#C9A84C] text-black font-bold">
+              <p style={{ fontFamily: font.display, fontSize: "18px", fontWeight: 600, color: T.fg }}>Fiche bien envoyee avec succes</p>
+              <p style={{ fontFamily: font.body, fontSize: "13px", color: T.muted }}>Le lead a recu la fiche PDF par email.</p>
+              <button onClick={() => setShowProposerModal(false)} style={{ padding: "10px 28px", borderRadius: "2px", background: T.gold, color: T.bg, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", border: "none", cursor: "pointer" }}>
                 Fermer
-              </Button>
+              </button>
             </div>
           )}
         </DialogContent>
       </Dialog>
 
-      {/* ─── PANNEAU LATÉRAL DE DÉTAIL D'UN BIEN AMBASSADEUR ─── */}
+      {/* ─── PANNEAU LATERAL DE DETAIL D'UN BIEN AMBASSADEUR ─── */}
       {selectedBienDetail && (
         <div className="fixed inset-0 z-50 flex">
           {/* Overlay */}
-          <div className="flex-1 bg-black/60" onClick={() => setSelectedBienDetail(null)} />
+          <div className="flex-1" style={{ background: "rgba(0,0,0,0.7)" }} onClick={() => setSelectedBienDetail(null)} />
           {/* Panneau */}
-          <div className="w-full max-w-xl bg-[#0d0d0d] border-l border-[#222] overflow-y-auto flex flex-col">
+          <div className="w-full overflow-y-auto flex flex-col" style={{ maxWidth: "520px", background: T.surface, borderLeft: `1px solid ${T.border}` }}>
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#1a1a1a] sticky top-0 bg-[#0d0d0d] z-10">
+            <div className="flex items-center justify-between px-6 py-4 sticky top-0 z-10" style={{ background: T.surface, borderBottom: `1px solid ${T.border}` }}>
               <div>
-                <h2 className="text-white font-bold text-lg">{selectedBienDetail.titre}</h2>
-                <p className="text-gray-400 text-sm">{selectedBienDetail.ville} ({selectedBienDetail.codePostal}) — Réf. {selectedBienDetail.reference}</p>
+                <h2 style={{ fontFamily: font.display, fontSize: "18px", fontWeight: 600, color: T.fg, letterSpacing: "0.02em" }}>{selectedBienDetail.titre}</h2>
+                <p style={{ fontFamily: font.body, fontSize: "12px", color: T.faint, marginTop: "2px" }}>{selectedBienDetail.ville} ({selectedBienDetail.codePostal}) — Ref. {selectedBienDetail.reference}</p>
               </div>
-              <button onClick={() => setSelectedBienDetail(null)} className="text-gray-500 hover:text-white text-xl">×</button>
+              <button onClick={() => setSelectedBienDetail(null)} className="transition-opacity duration-300 hover:opacity-70" style={{ color: T.muted, background: "transparent", border: "none", cursor: "pointer", fontSize: "18px" }}>
+                <span style={{ fontFamily: font.body }}>x</span>
+              </button>
             </div>
 
             <div className="flex-1 p-6 space-y-6">
               {/* Photos */}
               {bienDetailMedias && (bienDetailMedias.photos.length > 0 || bienDetailMedias.photoPrincipaleUrl) && (
                 <div>
-                  <h3 className="text-[#C9A84C] text-xs font-semibold uppercase tracking-wider mb-3">Photos</h3>
+                  <p style={{ ...labelStyle, marginBottom: "12px" }}>Photos</p>
                   <div className="grid grid-cols-2 gap-2">
                     {bienDetailMedias.photoPrincipaleUrl && (
-                      <img src={bienDetailMedias.photoPrincipaleUrl} alt="Photo principale" className="w-full h-36 object-cover border border-[#222]" />
+                      <img src={bienDetailMedias.photoPrincipaleUrl} alt="Photo principale" className="w-full h-36 object-cover" style={{ borderRadius: "2px", border: `1px solid ${T.border}` }} />
                     )}
                     {bienDetailMedias.photos.slice(0, 5).map((url: string, i: number) => (
-                      <img key={i} src={url} alt={`Photo ${i + 1}`} className="w-full h-36 object-cover border border-[#222]" />
+                      <img key={i} src={url} alt={`Photo ${i + 1}`} className="w-full h-36 object-cover" style={{ borderRadius: "2px", border: `1px solid ${T.border}` }} />
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Infos financières */}
+              {/* Infos financieres */}
               <div>
-                <h3 className="text-[#C9A84C] text-xs font-semibold uppercase tracking-wider mb-3">Informations</h3>
-                <div className="grid grid-cols-2 gap-3">
+                <p style={{ ...labelStyle, marginBottom: "12px" }}>Informations</p>
+                <div className="grid grid-cols-2 gap-2">
                   {[
-                    { label: "Prix FAI", value: selectedBienDetail.prix ? `${Number(selectedBienDetail.prix).toLocaleString("fr-FR")} €` : "—" },
-                    { label: "Net vendeur", value: selectedBienDetail.prixNetVendeur ? `${Number(selectedBienDetail.prixNetVendeur).toLocaleString("fr-FR")} €` : "—" },
-                    { label: "Honoraires", value: selectedBienDetail.honorairesAgence ? `${Number(selectedBienDetail.honorairesAgence).toLocaleString("fr-FR")} €` : "—" },
-                    { label: "Surface", value: selectedBienDetail.surface ? `${selectedBienDetail.surface} m²` : "—" },
-                    { label: "Pièces", value: selectedBienDetail.nbPieces ?? "—" },
+                    { label: "Prix FAI", value: selectedBienDetail.prix ? `${Number(selectedBienDetail.prix).toLocaleString("fr-FR")} EUR` : "—" },
+                    { label: "Net vendeur", value: selectedBienDetail.prixNetVendeur ? `${Number(selectedBienDetail.prixNetVendeur).toLocaleString("fr-FR")} EUR` : "—" },
+                    { label: "Honoraires", value: selectedBienDetail.honorairesAgence ? `${Number(selectedBienDetail.honorairesAgence).toLocaleString("fr-FR")} EUR` : "—" },
+                    { label: "Surface", value: selectedBienDetail.surface ? `${selectedBienDetail.surface} m2` : "—" },
+                    { label: "Pieces", value: selectedBienDetail.nbPieces ?? "—" },
                     { label: "Type", value: selectedBienDetail.typeBien ?? "—" },
                     { label: "DPE", value: selectedBienDetail.dpeLettre && selectedBienDetail.dpeLettre !== "NC" ? selectedBienDetail.dpeLettre : "—" },
                     { label: "Statut", value: selectedBienDetail.statutBien ?? "—" },
                   ].map(({ label, value }) => (
-                    <div key={label} className="bg-[#111] border border-[#1e1e1e] px-3 py-2">
-                      <p className="text-gray-500 text-xs">{label}</p>
-                      <p className="text-white font-semibold text-sm">{value}</p>
+                    <div key={label} style={{ background: T.bg, border: `1px solid ${T.border}`, borderRadius: "2px", padding: "10px 12px" }}>
+                      <p style={{ fontFamily: font.body, fontSize: "10px", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: T.faint }}>{label}</p>
+                      <p className="tabular-nums" style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg, marginTop: "2px", fontVariantNumeric: "tabular-nums" }}>{value}</p>
                     </div>
                   ))}
                 </div>
@@ -2043,33 +2391,33 @@ export default function ReseauDashboard() {
               {/* Description */}
               {selectedBienDetail.description && (
                 <div>
-                  <h3 className="text-[#C9A84C] text-xs font-semibold uppercase tracking-wider mb-2">Description</h3>
-                  <p className="text-gray-300 text-sm leading-relaxed">{selectedBienDetail.description}</p>
+                  <p style={{ ...labelStyle, marginBottom: "8px" }}>Description</p>
+                  <p style={{ fontFamily: font.body, fontSize: "13px", color: T.fg, lineHeight: 1.6 }}>{selectedBienDetail.description}</p>
                 </div>
               )}
 
               {/* Historique des propositions */}
               <div>
-                <h3 className="text-[#C9A84C] text-xs font-semibold uppercase tracking-wider mb-3">
+                <p style={{ ...labelStyle, marginBottom: "12px" }}>
                   Historique des propositions ({bienDetailPropositions.length})
-                </h3>
+                </p>
                 {bienDetailPropositions.length === 0 ? (
-                  <p className="text-gray-500 text-sm">Aucune proposition envoyée pour ce bien.</p>
+                  <p style={{ fontFamily: font.body, fontSize: "13px", color: T.faint }}>Aucune proposition envoyee pour ce bien.</p>
                 ) : (
                   <div className="space-y-2">
                     {bienDetailPropositions.map((prop: any) => (
-                      <div key={prop.id} className="bg-[#111] border border-[#1e1e1e] px-3 py-2 flex items-center justify-between">
+                      <div key={prop.id} className="flex items-center justify-between" style={{ background: T.bg, border: `1px solid ${T.border}`, borderRadius: "2px", padding: "10px 12px" }}>
                         <div>
-                          <p className="text-white text-sm font-medium">
+                          <p style={{ fontFamily: font.body, fontSize: "13px", fontWeight: 500, color: T.fg }}>
                             {prop.leadPrenom} {prop.leadNom}
                           </p>
-                          <p className="text-gray-500 text-xs">{prop.emailDestinataire}</p>
-                          <p className="text-gray-600 text-xs">{new Date(prop.createdAt).toLocaleDateString("fr-FR")}</p>
+                          <p style={{ fontFamily: font.body, fontSize: "11px", color: T.faint }}>{prop.emailDestinataire}</p>
+                          <p className="tabular-nums" style={{ fontFamily: font.body, fontSize: "11px", color: T.faint, fontVariantNumeric: "tabular-nums" }}>{new Date(prop.createdAt).toLocaleDateString("fr-FR")}</p>
                         </div>
                         {prop.pdfUrl && (
                           <a href={prop.pdfUrl} target="_blank" rel="noopener noreferrer"
-                            className="text-xs text-[#C9A84C] hover:underline">
-                            PDF ↗
+                            style={{ fontFamily: font.body, fontSize: "11px", color: T.gold, textDecoration: "none" }}>
+                            PDF
                           </a>
                         )}
                       </div>
@@ -2080,13 +2428,14 @@ export default function ReseauDashboard() {
             </div>
 
             {/* Footer — bouton Proposer */}
-            <div className="px-6 py-4 border-t border-[#1a1a1a] sticky bottom-0 bg-[#0d0d0d]">
-              <Button
+            <div className="px-6 py-4 sticky bottom-0" style={{ background: T.surface, borderTop: `1px solid ${T.border}` }}>
+              <button
                 onClick={() => { setSelectedBienDetail(null); handleOpenProposer(selectedBienDetail.id); }}
-                className="w-full bg-[#C9A84C] hover:bg-[#b8943d] text-black font-bold"
+                className="w-full transition-colors duration-300"
+                style={{ padding: "12px 20px", borderRadius: "2px", background: T.gold, color: T.bg, fontFamily: font.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", border: "none", cursor: "pointer" }}
               >
-                📧 Proposer à un lead
-              </Button>
+                Proposer a un lead
+              </button>
             </div>
           </div>
         </div>

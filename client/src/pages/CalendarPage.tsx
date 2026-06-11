@@ -4,6 +4,7 @@ import AdminNav from "@/components/AdminNav";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
+import { Plus, X, ChevronLeft, ChevronRight, Check, Trash2, Upload, FileText, Paperclip, ImageIcon, Clock, Loader2, Ban, Eye, EyeOff } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -37,6 +38,15 @@ const MEMBRES: { key: Membre; label: string; color: string; bg: string; dot: str
   { key: "Hanna",  label: "Hanna",  color: "text-amber-400",  bg: "bg-amber-500",  dot: "bg-amber-400" },
   { key: "Marie",  label: "Marie",  color: "text-pink-400",   bg: "bg-pink-500",   dot: "bg-pink-400" },
 ];
+
+// Couleurs membres subtiles pour le design system
+const MEMBRE_COLORS: Record<Membre, { accent: string; accentBg: string; accentBorder: string }> = {
+  Maria:  { accent: "#7A8FA6", accentBg: "rgba(122,143,166,0.08)", accentBorder: "rgba(122,143,166,0.2)" },
+  Manon:  { accent: "#9A84B0", accentBg: "rgba(154,132,176,0.08)", accentBorder: "rgba(154,132,176,0.2)" },
+  Elodie: { accent: "#6B9A7A", accentBg: "rgba(107,154,122,0.08)", accentBorder: "rgba(107,154,122,0.2)" },
+  Hanna:  { accent: "#B0996A", accentBg: "rgba(176,153,106,0.08)", accentBorder: "rgba(176,153,106,0.2)" },
+  Marie:  { accent: "#A6808A", accentBg: "rgba(166,128,138,0.08)", accentBorder: "rgba(166,128,138,0.2)" },
+};
 
 const RAPPELS = [
   { value: 0,    label: "Au moment" },
@@ -225,14 +235,14 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
       const titreL = titre.toLowerCase();
       const type = titreL.includes("welcome") ? "welcome_call" : titreL.includes("personnalis") || titreL.includes("point") ? "point_personnalise" : null;
       if (type && !DISPO_MARIA[type].jours.includes(dow)) {
-        return `⚠️ Maria n'est pas disponible le ${JOURS_FR[dow]} pour ce type de RDV (${DISPO_MARIA[type].label})`;
+        return `Maria n'est pas disponible le ${JOURS_FR[dow]} pour ce type de RDV (${DISPO_MARIA[type].label})`;
       }
       if (!type && ![1, 3, 4].includes(dow)) {
-        return `⚠️ Maria travaille Lun, Mer, Jeu uniquement`;
+        return `Maria travaille Lun, Mer, Jeu uniquement`;
       }
     }
     if (assigneA === "Elodie" && dow === 0) {
-      return `⚠️ Élodie n'est pas disponible le dimanche`;
+      return `Élodie n'est pas disponible le dimanche`;
     }
     return null;
   }
@@ -262,90 +272,168 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
 
   const isBusy = createMut.isPending || updateMut.isPending;
 
+  const STATUT_MODAL: Record<Statut, { label: string; color: string; bg: string; border: string }> = {
+    a_faire:  { label: "A faire",  color: "#C9A84C", bg: "rgba(201,168,76,0.08)",  border: "rgba(201,168,76,0.2)" },
+    en_cours: { label: "En cours", color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+    termine:  { label: "Termine",  color: "#4A7A5A", bg: "rgba(74,122,90,0.08)",   border: "rgba(74,122,90,0.2)" },
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="bg-[#111] border border-white/10 rounded-xl w-full max-w-lg shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)" }}>
+      <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", width: "100%", maxWidth: "520px" }}>
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-white/10">
-          <h2 className="text-white font-semibold text-lg">{task ? "Modifier la tâche" : "Nouvelle tâche"}</h2>
-          <button onClick={onClose} className="text-white/40 hover:text-white text-xl leading-none">×</button>
+        <div className="flex items-center justify-between px-6 pt-5 pb-4" style={{ borderBottom: "1px solid #1E1E1E" }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>
+            {task ? "Modifier la tache" : "Nouvelle tache"}
+          </h2>
+          <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }}>
+            <X className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+          </button>
         </div>
-        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4" style={{ maxHeight: "75vh", overflowY: "auto" }}>
           {/* Titre */}
           <div>
-            <label className="block text-xs text-white/50 mb-1">Titre *</label>
+            <p className="label-uppercase" style={{ marginBottom: "6px" }}>Titre *</p>
             <input
               value={titre}
               onChange={e => setTitre(e.target.value)}
               placeholder="Ex. Welcome Call — Sophie Martin"
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-amber-400/50"
+              className="w-full focus:outline-none"
+              style={{
+                background: "#161616",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                padding: "10px 14px",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                color: "#F0EDE6",
+                transition: "border-color 300ms ease",
+              }}
+              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
             />
           </div>
           {/* Assigné à */}
           <div>
-            <label className="block text-xs text-white/50 mb-1">Assignée à</label>
+            <p className="label-uppercase" style={{ marginBottom: "6px" }}>Assignee a</p>
             <div className="flex gap-2 flex-wrap">
-              {MEMBRES.map(m => (
-                <button
-                  key={m.key}
-                  type="button"
-                  onClick={() => setAssigneA(m.key)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                    assigneA === m.key
-                      ? `${m.bg} text-white border-transparent`
-                      : "bg-white/5 text-white/60 border-white/10 hover:border-white/30"
-                  }`}
-                >
-                  {m.label}
-                </button>
-              ))}
+              {MEMBRES.map(m => {
+                const mc = MEMBRE_COLORS[m.key];
+                const isSelected = assigneA === m.key;
+                return (
+                  <button
+                    key={m.key}
+                    type="button"
+                    onClick={() => setAssigneA(m.key)}
+                    className="transition-colors duration-300"
+                    style={{
+                      padding: "5px 12px",
+                      borderRadius: "2px",
+                      fontSize: "11px",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      fontWeight: 500,
+                      letterSpacing: "0.04em",
+                      textTransform: "uppercase",
+                      border: `1px solid ${isSelected ? mc.accentBorder : "#1E1E1E"}`,
+                      background: isSelected ? mc.accentBg : "transparent",
+                      color: isSelected ? mc.accent : "#3A3632",
+                    }}
+                  >
+                    {m.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
           {/* Dates */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-white/50 mb-1">Début *</label>
+              <p className="label-uppercase" style={{ marginBottom: "6px" }}>Debut *</p>
               <input
                 type="datetime-local"
                 value={dateDebut}
                 onChange={e => setDateDebut(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-amber-400/50"
+                className="w-full focus:outline-none"
+                style={{
+                  background: "#161616",
+                  border: "1px solid #1E1E1E",
+                  borderRadius: "2px",
+                  padding: "10px 14px",
+                  fontSize: "13px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  color: "#F0EDE6",
+                  transition: "border-color 300ms ease",
+                }}
+                onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
               />
             </div>
             <div>
-              <label className="block text-xs text-white/50 mb-1">Fin (optionnel)</label>
+              <p className="label-uppercase" style={{ marginBottom: "6px" }}>Fin (optionnel)</p>
               <input
                 type="datetime-local"
                 value={dateFin}
                 onChange={e => setDateFin(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-amber-400/50"
+                className="w-full focus:outline-none"
+                style={{
+                  background: "#161616",
+                  border: "1px solid #1E1E1E",
+                  borderRadius: "2px",
+                  padding: "10px 14px",
+                  fontSize: "13px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  color: "#F0EDE6",
+                  transition: "border-color 300ms ease",
+                }}
+                onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
               />
             </div>
           </div>
           {/* Avertissement hors disponibilités */}
           {dispoWarning && (
-            <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-orange-500/10 border border-orange-500/30 text-orange-300 text-xs">
-              <span className="mt-0.5 flex-shrink-0">⚠️</span>
-              <span>{dispoWarning.replace('⚠️ ', '')}</span>
+            <div className="flex items-start gap-2" style={{
+              padding: "10px 12px",
+              borderRadius: "2px",
+              background: "rgba(160,64,64,0.06)",
+              border: "1px solid rgba(160,64,64,0.2)",
+            }}>
+              <Ban className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: "#A04040", strokeWidth: 1.5 }} />
+              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#A04040" }}>
+                {dispoWarning}
+              </span>
             </div>
           )}
           {/* Toute la journée */}
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={touteJournee} onChange={e => setTouteJournee(e.target.checked)} className="accent-amber-400" />
-            <span className="text-sm text-white/70">Toute la journée</span>
+            <input type="checkbox" checked={touteJournee} onChange={e => setTouteJournee(e.target.checked)}
+              style={{ accentColor: "#C9A84C" }} />
+            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Toute la journee</span>
           </label>
           {/* Lead CRM lié */}
           <div>
-            <label className="block text-xs text-white/50 mb-1">
-              Lead CRM associé (optionnel)
-              {crmLoading && <span className="ml-2 text-amber-400/60">chargement...</span>}
-              {crmError && <span className="ml-2 text-red-400/80 text-xs">(erreur de chargement)</span>}
-              {!crmLoading && !crmError && crmLeads.length > 0 && <span className="ml-2 text-white/30">{crmLeads.length} leads</span>}
-            </label>
+            <p className="label-uppercase" style={{ marginBottom: "6px" }}>
+              Lead CRM associe
+              {crmLoading && <span style={{ marginLeft: "8px", color: "#C9A84C", opacity: 0.6 }}>chargement...</span>}
+              {crmError && <span style={{ marginLeft: "8px", color: "#A04040", fontSize: "10px" }}>(erreur)</span>}
+              {!crmLoading && !crmError && crmLeads.length > 0 && <span style={{ marginLeft: "8px", color: "#3A3632" }}>{crmLeads.length} leads</span>}
+            </p>
             <select
               value={crmLeadId}
               onChange={e => setCrmLeadId(e.target.value === "" ? "" : Number(e.target.value))}
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-amber-400/50"
+              className="w-full focus:outline-none"
+              style={{
+                background: "#161616",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                padding: "10px 14px",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                color: "#F0EDE6",
+                transition: "border-color 300ms ease",
+              }}
+              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
             >
               <option value="">{crmLoading ? "Chargement..." : "— Aucun —"}</option>
               {crmLeads.map(l => (
@@ -355,26 +443,49 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
           </div>
           {/* Description */}
           <div>
-            <label className="block text-xs text-white/50 mb-1">Notes (optionnel)</label>
+            <p className="label-uppercase" style={{ marginBottom: "6px" }}>Notes (optionnel)</p>
             <textarea
               value={description}
               onChange={e => setDescription(e.target.value)}
               rows={2}
-              placeholder="Détails, contexte..."
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-amber-400/50 resize-none"
+              placeholder="Details, contexte..."
+              className="w-full focus:outline-none"
+              style={{
+                background: "#161616",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                padding: "10px 14px",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                color: "#F0EDE6",
+                resize: "none",
+                transition: "border-color 300ms ease",
+              }}
+              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
             />
           </div>
           {/* Rappel */}
           <div className="flex items-center gap-3">
             <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" checked={rappelEmail} onChange={e => setRappelEmail(e.target.checked)} className="accent-amber-400" />
-              <span className="text-sm text-white/70">Rappel par email</span>
+              <input type="checkbox" checked={rappelEmail} onChange={e => setRappelEmail(e.target.checked)}
+                style={{ accentColor: "#C9A84C" }} />
+              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Rappel par email</span>
             </label>
             {rappelEmail && (
               <select
                 value={rappelMinutes}
                 onChange={e => setRappelMinutes(Number(e.target.value))}
-                className="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-white text-xs focus:outline-none"
+                className="focus:outline-none"
+                style={{
+                  background: "#161616",
+                  border: "1px solid #1E1E1E",
+                  borderRadius: "2px",
+                  padding: "6px 10px",
+                  fontSize: "12px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  color: "#F0EDE6",
+                }}
               >
                 {RAPPELS.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
               </select>
@@ -383,30 +494,46 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
           {/* Statut */}
           {task && (
             <div>
-              <label className="block text-xs text-white/50 mb-1">Statut</label>
-              <select
-                value={statut}
-                onChange={e => setStatut(e.target.value as Statut)}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-amber-400/50"
-              >
-                <option value="a_faire">À faire</option>
-                <option value="en_cours">En cours</option>
-                <option value="termine">Terminé</option>
-              </select>
+              <p className="label-uppercase" style={{ marginBottom: "6px" }}>Statut</p>
+              <div className="flex gap-2">
+                {(Object.entries(STATUT_MODAL) as [Statut, typeof STATUT_MODAL["a_faire"]][]).map(([key, val]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setStatut(key)}
+                    className="transition-colors duration-300"
+                    style={{
+                      padding: "6px 12px",
+                      borderRadius: "2px",
+                      fontSize: "11px",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      fontWeight: 500,
+                      letterSpacing: "0.04em",
+                      textTransform: "uppercase",
+                      border: `1px solid ${statut === key ? val.border : "#1E1E1E"}`,
+                      background: statut === key ? val.bg : "transparent",
+                      color: statut === key ? val.color : "#3A3632",
+                    }}
+                  >
+                    {val.label}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
           {/* Historique des statuts */}
           {task && history && history.length > 0 && (
-            <div className="border-t border-white/8 pt-3">
-              <p className="text-xs text-white/40 mb-2 uppercase tracking-wide">Historique</p>
+            <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "12px" }}>
+              <p className="label-uppercase" style={{ marginBottom: "8px" }}>Historique</p>
               <div className="space-y-1">
                 {history.map((h) => {
-                  const label = h.statut === "a_faire" ? "🟡 À faire" : h.statut === "en_cours" ? "🔵 En cours" : "✅ Terminé";
+                  const label = h.statut === "a_faire" ? "A faire" : h.statut === "en_cours" ? "En cours" : "Termine";
+                  const color = h.statut === "a_faire" ? "#C9A84C" : h.statut === "en_cours" ? "#F0EDE6" : "#4A7A5A";
                   const date = new Date(h.changedAt).toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Paris" });
                   return (
-                    <div key={h.id} className="flex items-center justify-between text-xs">
-                      <span className="text-white/70">{label}</span>
-                      <span className="text-white/40">{h.changedBy} — {date}</span>
+                    <div key={h.id} className="flex items-center justify-between">
+                      <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color }}>{label}</span>
+                      <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{h.changedBy} — {date}</span>
                     </div>
                   );
                 })}
@@ -415,63 +542,144 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
           )}
           {/* Pièces jointes — uniquement en mode édition */}
           {task && (
-            <div className="border-t border-white/8 pt-3">
+            <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "12px" }}>
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs text-white/40 uppercase tracking-wide">Pièces jointes</p>
-                <label className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium cursor-pointer transition-colors ${
-                  uploadingFile ? "bg-white/5 text-white/30" : "bg-amber-500/15 text-amber-400 hover:bg-amber-500/25"
-                }`}>
-                  {uploadingFile ? "⏳ Envoi..." : "+ Ajouter"}
+                <p className="label-uppercase">Pieces jointes</p>
+                <label className="flex items-center gap-1.5 cursor-pointer transition-opacity duration-300 hover:opacity-70" style={{
+                  padding: "4px 10px",
+                  borderRadius: "2px",
+                  fontSize: "11px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  color: uploadingFile ? "#3A3632" : "#C9A84C",
+                  border: `1px solid ${uploadingFile ? "#1E1E1E" : "rgba(201,168,76,0.3)"}`,
+                  background: "transparent",
+                }}>
+                  {uploadingFile ? (
+                    <><Loader2 className="w-3 h-3 animate-spin" style={{ strokeWidth: 1.5 }} /> Envoi...</>
+                  ) : (
+                    <><Upload className="w-3 h-3" style={{ strokeWidth: 1.5 }} /> Ajouter</>
+                  )}
                   <input type="file" className="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.webp" onChange={handleFileChange} disabled={uploadingFile} />
                 </label>
               </div>
               {attachments && attachments.length > 0 ? (
                 <div className="space-y-1.5">
                   {attachments.map(att => (
-                    <div key={att.id} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-white/4 border border-white/8">
-                      <span className="text-base">{att.mime_type.includes("pdf") ? "📄" : att.mime_type.includes("image") ? "🖼️" : "📎"}</span>
+                    <div key={att.id} className="flex items-center gap-2" style={{
+                      padding: "8px 10px",
+                      borderRadius: "2px",
+                      background: "#161616",
+                      border: "1px solid #1E1E1E",
+                    }}>
+                      {att.mime_type.includes("pdf") ? (
+                        <FileText className="w-4 h-4 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                      ) : att.mime_type.includes("image") ? (
+                        <ImageIcon className="w-4 h-4 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                      ) : (
+                        <Paperclip className="w-4 h-4 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                      )}
                       <div className="flex-1 min-w-0">
-                        <a href={att.file_url} target="_blank" rel="noopener noreferrer" className="text-xs text-amber-400 hover:text-amber-300 truncate block">
+                        <a href={att.file_url} target="_blank" rel="noopener noreferrer"
+                          className="block truncate transition-opacity duration-300 hover:opacity-70"
+                          style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#C9A84C", textDecoration: "none" }}>
                           {att.file_name}
                         </a>
-                        <span className="text-xs text-white/30">{formatFileSize(att.file_size)} • {att.uploaded_by}</span>
+                        <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                          {formatFileSize(att.file_size)} · {att.uploaded_by}
+                        </span>
                       </div>
                       <button
                         type="button"
                         onClick={() => { if (confirm(`Supprimer "${att.file_name}" ?`)) deleteAttMut.mutate({ attachmentId: att.id }); }}
-                        className="text-white/20 hover:text-red-400 text-sm transition-colors flex-shrink-0"
+                        className="shrink-0 transition-colors duration-300"
+                        style={{ color: "#3A3632" }}
+                        onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
+                        onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
                         title="Supprimer"
-                      >×</button>
+                      >
+                        <X className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+                      </button>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-white/25 italic">Aucun fichier joint — devis, mandat, relevé...</p>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", fontStyle: "italic" }}>
+                  Aucun fichier joint — devis, mandat, releve...
+                </p>
               )}
             </div>
           )}
           {/* Actions */}
-          <div className="flex items-center justify-between pt-2 border-t border-white/8 mt-2">
+          <div className="flex items-center justify-between pt-3 mt-2" style={{ borderTop: "1px solid #1E1E1E" }}>
             {task ? (
               <button
                 type="button"
                 disabled={deleteMut.isPending}
                 onClick={() => { if (confirm(`Supprimer "${task.titre}" ?`)) deleteMut.mutate({ id: task.id }); }}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 text-sm font-medium transition-colors disabled:opacity-50"
+                className="flex items-center gap-1.5 transition-colors duration-300 disabled:opacity-50"
+                style={{
+                  padding: "8px 14px",
+                  borderRadius: "2px",
+                  background: "rgba(160,64,64,0.06)",
+                  border: "1px solid rgba(160,64,64,0.2)",
+                  color: "#A04040",
+                  fontSize: "11px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = "rgba(160,64,64,0.12)")}
+                onMouseLeave={e => (e.currentTarget.style.background = "rgba(160,64,64,0.06)")}
               >
-                {deleteMut.isPending ? "⏳ Suppression..." : "🗑 Supprimer"}
+                <Trash2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+                {deleteMut.isPending ? "Suppression..." : "Supprimer"}
               </button>
             ) : <span />}
             <div className="flex gap-2">
-              <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg bg-white/5 text-white/60 text-sm hover:bg-white/10">
+              <button type="button" onClick={onClose}
+                className="transition-colors duration-300"
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "2px",
+                  border: "1px solid #1E1E1E",
+                  background: "transparent",
+                  color: "#6B6560",
+                  fontSize: "11px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+              >
                 Annuler
               </button>
               <button
                 type="submit"
                 disabled={isBusy}
-                className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-semibold text-sm disabled:opacity-50"
+                style={{
+                  padding: "8px 20px",
+                  borderRadius: "2px",
+                  background: isBusy ? "#8A7535" : "#C9A84C",
+                  border: "none",
+                  color: "#0A0A0A",
+                  fontSize: "11px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  cursor: isBusy ? "not-allowed" : "pointer",
+                  transition: "background 300ms ease",
+                }}
+                onMouseEnter={e => { if (!isBusy) e.currentTarget.style.background = "#D4B45A"; }}
+                onMouseLeave={e => { if (!isBusy) e.currentTarget.style.background = "#C9A84C"; }}
               >
-                {isBusy ? "⏳ Enregistrement..." : task ? "✓ Enregistrer" : "Créer"}
+                {isBusy ? "Enregistrement..." : task ? "Enregistrer" : "Creer"}
               </button>
             </div>
           </div>
@@ -494,47 +702,105 @@ function WeekView({ tasks, weekStart, onDayClick, onTaskClick, onMarquerTermine 
   const today = new Date();
 
   return (
-    <div className="grid grid-cols-7 gap-1">
+    <div className="grid grid-cols-7" style={{ gap: "1px", background: "#1E1E1E" }}>
       {days.map((day, i) => {
         const dayTasks = tasks.filter(t => isSameDay(new Date(t.dateDebut), day));
         const isToday = isSameDay(day, today);
         return (
-          <div key={i} className="min-h-[120px]">
+          <div key={i} style={{ minHeight: "140px", background: "#111111" }}>
             {/* En-tête jour */}
             <div
-              className={`text-center py-2 rounded-t-lg cursor-pointer mb-1 ${
-                isToday ? "bg-amber-500/20 border border-amber-500/40" : "bg-white/3 hover:bg-white/5"
-              }`}
+              className="cursor-pointer transition-colors duration-300"
+              style={{
+                textAlign: "center",
+                padding: "10px 4px 8px",
+                borderBottom: isToday ? "1px solid #C9A84C" : "1px solid #1E1E1E",
+              }}
               onClick={() => onDayClick(day)}
+              onMouseEnter={e => { if (!isToday) e.currentTarget.style.background = "#161616"; }}
+              onMouseLeave={e => { if (!isToday) e.currentTarget.style.background = "transparent"; }}
             >
-              <div className="text-xs text-white/40 uppercase">{day.toLocaleDateString("fr-FR", { weekday: "short" })}</div>
-              <div className={`text-lg font-semibold ${isToday ? "text-amber-400" : "text-white"}`}>
+              <div style={{
+                fontSize: "10px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontWeight: 500,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "#3A3632",
+                marginBottom: "2px",
+              }}>
+                {day.toLocaleDateString("fr-FR", { weekday: "short" })}
+              </div>
+              <div style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "20px",
+                fontWeight: 600,
+                color: isToday ? "#C9A84C" : "#F0EDE6",
+                lineHeight: 1,
+              }}>
                 {day.getDate()}
               </div>
             </div>
             {/* Tâches */}
-            <div className="space-y-1 px-0.5">
+            <div style={{ padding: "4px 3px" }} className="space-y-1">
               {dayTasks.map(t => {
-                const m = getMembre(t.assigneA);
+                const mc = MEMBRE_COLORS[t.assigneA];
                 return (
                   <div
                     key={t.id}
-                    className={`${m.bg} text-white text-xs rounded px-1 py-1 cursor-pointer hover:opacity-80 flex items-center gap-1 ${
-                      t.statut === "termine" ? "opacity-40 line-through" : ""
-                    }`}
-                    title={`${t.titre} — ${m.label}`}
+                    className="flex items-center gap-1 cursor-pointer transition-opacity duration-300 hover:opacity-80"
+                    style={{
+                      background: "#161616",
+                      border: `1px solid ${mc.accentBorder}`,
+                      borderRadius: "2px",
+                      padding: "4px 6px",
+                      opacity: t.statut === "termine" ? 0.4 : 1,
+                    }}
+                    title={`${t.titre} — ${getMembre(t.assigneA).label}`}
                   >
-                    <span className="truncate flex-1 min-w-0" onClick={() => onTaskClick(t)}>
-                      {!t.touteJournee && <span className="opacity-70">{formatTime(t.dateDebut)} </span>}
+                    <span
+                      style={{
+                        width: "3px",
+                        height: "14px",
+                        borderRadius: "1px",
+                        background: mc.accent,
+                        flexShrink: 0,
+                        marginRight: "4px",
+                      }}
+                    />
+                    <span
+                      className="truncate flex-1 min-w-0"
+                      onClick={() => onTaskClick(t)}
+                      style={{
+                        fontSize: "11px",
+                        fontFamily: "'Hanken Grotesk', sans-serif",
+                        color: t.statut === "termine" ? "#3A3632" : "#F0EDE6",
+                        textDecoration: t.statut === "termine" ? "line-through" : "none",
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {!t.touteJournee && (
+                        <span style={{ color: "#6B6560", marginRight: "3px" }}>{formatTime(t.dateDebut)}</span>
+                      )}
                       {t.titre}
                     </span>
                     {t.statut !== "termine" && onMarquerTermine && (
                       <button
                         onClick={e => { e.stopPropagation(); onMarquerTermine(t); }}
-                        className="shrink-0 w-4 h-4 rounded-full border border-white/50 hover:bg-white/30 flex items-center justify-center transition-colors"
-                        title="Marquer terminé"
+                        className="shrink-0 flex items-center justify-center transition-colors duration-300"
+                        style={{
+                          width: "16px",
+                          height: "16px",
+                          borderRadius: "2px",
+                          border: "1px solid #3A3632",
+                          background: "transparent",
+                          color: "#3A3632",
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = "#4A7A5A"; e.currentTarget.style.color = "#4A7A5A"; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = "#3A3632"; e.currentTarget.style.color = "#3A3632"; }}
+                        title="Marquer termine"
                       >
-                        <span className="text-[9px] leading-none">✓</span>
+                        <Check className="w-2.5 h-2.5" style={{ strokeWidth: 2 }} />
                       </button>
                     )}
                   </div>
@@ -542,8 +808,15 @@ function WeekView({ tasks, weekStart, onDayClick, onTaskClick, onMarquerTermine 
               })}
               {dayTasks.length === 0 && (
                 <div
-                  className="h-8 rounded border border-dashed border-white/5 cursor-pointer hover:border-white/20 transition-colors"
+                  className="cursor-pointer transition-colors duration-300"
+                  style={{
+                    height: "32px",
+                    border: "1px dashed #1E1E1E",
+                    borderRadius: "2px",
+                  }}
                   onClick={() => onDayClick(day)}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = "#3A3632")}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
                 />
               )}
             </div>
@@ -582,13 +855,13 @@ function MonthView({ tasks, currentDate, onDayClick, onTaskClick, onMarquerTermi
   return (
     <div>
       {/* En-têtes jours */}
-      <div className="grid grid-cols-7 mb-1">
+      <div className="grid grid-cols-7" style={{ marginBottom: "1px" }}>
         {weekDays.map(wd => (
-          <div key={wd} className="text-center text-xs text-white/30 py-1">{wd}</div>
+          <div key={wd} className="label-uppercase" style={{ textAlign: "center", padding: "8px 0" }}>{wd}</div>
         ))}
       </div>
       {/* Grille */}
-      <div className="grid grid-cols-7 gap-0.5">
+      <div className="grid grid-cols-7" style={{ gap: "1px", background: "#1E1E1E" }}>
         {days.map((day, i) => {
           const isCurrentMonth = day.getMonth() === currentDate.getMonth();
           const isToday = isSameDay(day, today);
@@ -597,43 +870,80 @@ function MonthView({ tasks, currentDate, onDayClick, onTaskClick, onMarquerTermi
             <div
               key={i}
               onClick={() => onDayClick(day)}
-              className={`min-h-[80px] p-1 rounded cursor-pointer transition-colors ${
-                isCurrentMonth ? "bg-white/3 hover:bg-white/6" : "bg-white/1 hover:bg-white/3"
-              } ${isToday ? "ring-1 ring-amber-400/50" : ""}`}
+              className="cursor-pointer transition-colors duration-300"
+              style={{
+                minHeight: "80px",
+                padding: "6px",
+                background: "#111111",
+                borderTop: isToday ? "2px solid #C9A84C" : "none",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+              onMouseLeave={e => (e.currentTarget.style.background = "#111111")}
             >
-              <div className={`text-xs mb-1 font-medium ${
-                isToday ? "text-amber-400" : isCurrentMonth ? "text-white/70" : "text-white/20"
-              }`}>
+              <div style={{
+                fontSize: "12px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontWeight: 500,
+                fontVariantNumeric: "tabular-nums",
+                color: isToday ? "#C9A84C" : isCurrentMonth ? "#6B6560" : "#1E1E1E",
+                marginBottom: "4px",
+              }}>
                 {day.getDate()}
               </div>
               <div className="space-y-0.5">
                 {dayTasks.slice(0, 3).map(t => {
-                  const m = getMembre(t.assigneA);
+                  const mc = MEMBRE_COLORS[t.assigneA];
                   return (
                     <div
                       key={t.id}
-                      className={`${m.dot} rounded text-white text-[10px] px-1 py-0.5 cursor-pointer hover:opacity-80 flex items-center gap-0.5 ${
-                        t.statut === "termine" ? "opacity-40" : ""
-                      }`}
+                      className="flex items-center gap-0.5 cursor-pointer transition-opacity duration-300 hover:opacity-80"
+                      style={{
+                        background: "#161616",
+                        borderRadius: "2px",
+                        padding: "2px 4px",
+                        borderLeft: `2px solid ${mc.accent}`,
+                        opacity: t.statut === "termine" ? 0.4 : 1,
+                      }}
                       title={t.titre}
                     >
-                      <span className="truncate flex-1 min-w-0" onClick={e => { e.stopPropagation(); onTaskClick(t); }}>
+                      <span
+                        className="truncate flex-1 min-w-0"
+                        onClick={e => { e.stopPropagation(); onTaskClick(t); }}
+                        style={{
+                          fontSize: "10px",
+                          fontFamily: "'Hanken Grotesk', sans-serif",
+                          color: "#F0EDE6",
+                          lineHeight: 1.3,
+                        }}
+                      >
                         {t.titre}
                       </span>
                       {t.statut !== "termine" && onMarquerTermine && (
                         <button
                           onClick={e => { e.stopPropagation(); onMarquerTermine(t); }}
-                          className="shrink-0 w-3 h-3 rounded-full border border-white/50 hover:bg-white/30 flex items-center justify-center transition-colors"
-                          title="Marquer terminé"
+                          className="shrink-0 flex items-center justify-center transition-colors duration-300"
+                          style={{
+                            width: "12px",
+                            height: "12px",
+                            borderRadius: "2px",
+                            border: "1px solid #3A3632",
+                            background: "transparent",
+                            color: "#3A3632",
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.borderColor = "#4A7A5A"; e.currentTarget.style.color = "#4A7A5A"; }}
+                          onMouseLeave={e => { e.currentTarget.style.borderColor = "#3A3632"; e.currentTarget.style.color = "#3A3632"; }}
+                          title="Marquer termine"
                         >
-                          <span className="text-[7px] leading-none">✓</span>
+                          <Check className="w-2 h-2" style={{ strokeWidth: 2 }} />
                         </button>
                       )}
                     </div>
                   );
                 })}
                 {dayTasks.length > 3 && (
-                  <div className="text-[10px] text-white/40">+{dayTasks.length - 3} autres</div>
+                  <div style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                    +{dayTasks.length - 3} autres
+                  </div>
                 )}
               </div>
             </div>
@@ -760,7 +1070,7 @@ export default function CalendarPage() {
   }
 
   const marquerTermineMut = trpc.calendar.update.useMutation({
-    onSuccess: () => { utils.calendar.list.invalidate(); toast.success("Tâche marquée terminée ✓"); },
+    onSuccess: () => { utils.calendar.list.invalidate(); toast.success("Tâche marquée terminée"); },
     onError: (e) => toast.error(e.message),
   });
 
@@ -782,8 +1092,8 @@ export default function CalendarPage() {
     : currentDate.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
 
   if (loading) return (
-    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-amber-400/30 border-t-amber-400 rounded-full animate-spin" />
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
     </div>
   );
 
@@ -792,100 +1102,202 @@ export default function CalendarPage() {
     return null;
   }
 
+  // Styles reutilisables pour inputs du panneau blocage
+  const blockInputStyle: React.CSSProperties = {
+    background: "#161616",
+    border: "1px solid #1E1E1E",
+    borderRadius: "2px",
+    padding: "8px 12px",
+    fontSize: "13px",
+    fontFamily: "'Hanken Grotesk', sans-serif",
+    color: "#F0EDE6",
+    outline: "none",
+    transition: "border-color 300ms ease",
+  };
+
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
       <AdminNav />
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "32px 20px" }}>
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4" style={{ marginBottom: "32px" }}>
           <div>
-            <h1 className="text-2xl font-bold text-white">Calendrier</h1>
-            <p className="text-white/40 text-sm mt-0.5">Tâches et rappels — Team Delivery</p>
+            <h1 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "28px",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "#F0EDE6",
+              lineHeight: 1,
+            }}>
+              Calendrier
+            </h1>
+            <p style={{
+              fontSize: "13px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              color: "#3A3632",
+              marginTop: "6px",
+            }}>
+              Taches et rappels — Team Delivery
+            </p>
           </div>
           <div className="flex gap-2">
             <button
               onClick={() => setShowBlockPanel(v => !v)}
-              className={`flex items-center gap-2 font-semibold px-4 py-2 rounded-lg text-sm transition-colors border ${
-                showBlockPanel
-                  ? "bg-red-500/20 text-red-300 border-red-500/40"
-                  : "bg-white/5 text-white/60 border-white/10 hover:border-white/20"
-              }`}
+              className="flex items-center gap-2 transition-colors duration-300"
+              style={{
+                padding: "8px 16px",
+                borderRadius: "2px",
+                fontSize: "11px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontWeight: 500,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                border: `1px solid ${showBlockPanel ? "rgba(160,64,64,0.3)" : "#1E1E1E"}`,
+                background: showBlockPanel ? "rgba(160,64,64,0.06)" : "transparent",
+                color: showBlockPanel ? "#A04040" : "#6B6560",
+              }}
+              onMouseEnter={e => { if (!showBlockPanel) { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; } }}
+              onMouseLeave={e => { if (!showBlockPanel) { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; } }}
             >
-              🚫 Bloquer créneau
+              <Ban className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+              Bloquer creneau
             </button>
             <button
               onClick={() => openNewTask()}
-              className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-black font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
+              className="flex items-center gap-2"
+              style={{
+                padding: "8px 20px",
+                borderRadius: "2px",
+                background: "#C9A84C",
+                border: "none",
+                color: "#0A0A0A",
+                fontSize: "11px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontWeight: 500,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+                transition: "background 300ms ease",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = "#D4B45A")}
+              onMouseLeave={e => (e.currentTarget.style.background = "#C9A84C")}
             >
-              <span className="text-lg leading-none">+</span>
-              Nouvelle tâche
+              <Plus className="w-3.5 h-3.5" style={{ strokeWidth: 2 }} />
+              Nouvelle tache
             </button>
           </div>
         </div>
 
         {/* Filtres membres + Vue Maria */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {MEMBRES.map(m => (
-            <button
-              key={m.key}
-              onClick={() => { setModeMaria(false); toggleMembre(m.key); }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                !modeMaria && filtresMembres.has(m.key)
-                  ? `${m.bg} text-white border-transparent`
-                  : "bg-white/5 text-white/40 border-white/10 hover:border-white/20"
-              }`}
-            >
-              <span className={`w-2 h-2 rounded-full ${!modeMaria && filtresMembres.has(m.key) ? "bg-white" : m.dot}`} />
-              {m.label}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center gap-2" style={{ marginBottom: "16px" }}>
+          {MEMBRES.map(m => {
+            const mc = MEMBRE_COLORS[m.key];
+            const isActive = !modeMaria && filtresMembres.has(m.key);
+            return (
+              <button
+                key={m.key}
+                onClick={() => { setModeMaria(false); toggleMembre(m.key); }}
+                className="flex items-center gap-1.5 transition-colors duration-300"
+                style={{
+                  padding: "5px 12px",
+                  borderRadius: "2px",
+                  fontSize: "11px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  border: `1px solid ${isActive ? mc.accentBorder : "#1E1E1E"}`,
+                  background: isActive ? mc.accentBg : "transparent",
+                  color: isActive ? mc.accent : "#3A3632",
+                }}
+              >
+                <span style={{
+                  width: "6px",
+                  height: "6px",
+                  borderRadius: "1px",
+                  background: isActive ? mc.accent : "#3A3632",
+                  flexShrink: 0,
+                }} />
+                {m.label}
+              </button>
+            );
+          })}
           {/* Séparateur + bouton Vue Maria */}
-          <div className="w-px bg-white/10 mx-1" />
+          <div style={{ width: "1px", height: "20px", background: "#1E1E1E", margin: "0 4px" }} />
           <button
             onClick={() => { setModeMaria(v => !v); setVueMaria("toutes"); }}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-              modeMaria
-                ? "bg-pink-500 text-white border-transparent"
-                : "bg-white/5 text-white/40 border-white/10 hover:border-white/20"
-            }`}
+            className="flex items-center gap-1.5 transition-colors duration-300"
+            style={{
+              padding: "5px 12px",
+              borderRadius: "2px",
+              fontSize: "11px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontWeight: 500,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              border: `1px solid ${modeMaria ? MEMBRE_COLORS.Maria.accentBorder : "#1E1E1E"}`,
+              background: modeMaria ? MEMBRE_COLORS.Maria.accentBg : "transparent",
+              color: modeMaria ? MEMBRE_COLORS.Maria.accent : "#3A3632",
+            }}
           >
-            <span className="w-2 h-2 rounded-full bg-pink-400" />
             Vue Maria
           </button>
           {/* Bouton masquer terminées */}
-          <div className="w-px bg-white/10 mx-1" />
+          <div style={{ width: "1px", height: "20px", background: "#1E1E1E", margin: "0 4px" }} />
           <button
             onClick={() => setMasquerTerminees(v => !v)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-              masquerTerminees
-                ? "bg-white/20 text-white border-white/30"
-                : "bg-white/5 text-white/40 border-white/10 hover:border-white/20"
-            }`}
+            className="flex items-center gap-1.5 transition-colors duration-300"
+            style={{
+              padding: "5px 12px",
+              borderRadius: "2px",
+              fontSize: "11px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontWeight: 500,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              border: `1px solid ${masquerTerminees ? "rgba(240,237,230,0.15)" : "#1E1E1E"}`,
+              background: masquerTerminees ? "rgba(240,237,230,0.06)" : "transparent",
+              color: masquerTerminees ? "#F0EDE6" : "#3A3632",
+            }}
           >
-            {masquerTerminees ? "👁 Afficher toutes" : "✅ Masquer terminées"}
+            {masquerTerminees ? (
+              <><Eye className="w-3 h-3" style={{ strokeWidth: 1.5 }} /> Afficher toutes</>
+            ) : (
+              <><EyeOff className="w-3 h-3" style={{ strokeWidth: 1.5 }} /> Masquer terminees</>
+            )}
           </button>
         </div>
 
         {/* Sous-filtres Vue Maria */}
         {modeMaria && (
-          <div className="flex gap-2 mb-5 pl-1">
-            <span className="text-xs text-white/40 self-center mr-1">Filtrer :</span>
+          <div className="flex items-center gap-2" style={{ marginBottom: "20px", paddingLeft: "4px" }}>
+            <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginRight: "4px" }}>Filtrer :</span>
             {([
-              { key: "toutes" as VueMaria, label: "Tous les RDV", icon: "📌" },
-              { key: "welcome_call" as VueMaria, label: "Welcome Call", icon: "👋" },
-              { key: "point_personnalise" as VueMaria, label: "Point Personnalisé", icon: "🎯" },
-            ]).map(({ key, label, icon }) => (
+              { key: "toutes" as VueMaria, label: "Tous les RDV" },
+              { key: "welcome_call" as VueMaria, label: "Welcome Call" },
+              { key: "point_personnalise" as VueMaria, label: "Point Personnalise" },
+            ]).map(({ key, label }) => (
               <button
                 key={key}
                 onClick={() => setVueMaria(key)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
-                  vueMaria === key
-                    ? "bg-pink-500/30 text-pink-300 border-pink-500/40"
-                    : "bg-white/5 text-white/40 border-white/10 hover:border-white/20"
-                }`}
+                className="transition-colors duration-300"
+                style={{
+                  padding: "5px 12px",
+                  borderRadius: "2px",
+                  fontSize: "11px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  border: `1px solid ${vueMaria === key ? MEMBRE_COLORS.Maria.accentBorder : "#1E1E1E"}`,
+                  background: vueMaria === key ? MEMBRE_COLORS.Maria.accentBg : "transparent",
+                  color: vueMaria === key ? MEMBRE_COLORS.Maria.accent : "#3A3632",
+                }}
               >
-                {icon} {label}
+                {label}
               </button>
             ))}
           </div>
@@ -893,40 +1305,79 @@ export default function CalendarPage() {
 
         {/* Panneau de blocage de créneaux */}
         {showBlockPanel && (
-          <div className="mb-4 p-4 rounded-xl border border-red-500/20 bg-red-500/5">
-            <h3 className="text-sm font-semibold text-red-300 mb-3">Bloquer un créneau</h3>
-            <div className="flex flex-wrap gap-3 mb-4">
+          <div style={{
+            marginBottom: "16px",
+            padding: "20px",
+            borderRadius: "2px",
+            border: "1px solid rgba(160,64,64,0.2)",
+            background: "rgba(160,64,64,0.04)",
+          }}>
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "16px",
+              fontWeight: 600,
+              color: "#A04040",
+              letterSpacing: "0.02em",
+              marginBottom: "16px",
+            }}>
+              Bloquer un creneau
+            </p>
+            <div className="flex flex-wrap gap-3" style={{ marginBottom: "16px" }}>
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-white/40">Date</label>
+                <p className="label-uppercase">Date</p>
                 <input type="date" value={blockDate} onChange={e => setBlockDate(e.target.value)}
-                  className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-amber-500/50" />
+                  style={blockInputStyle}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-white/40">Heure (optionnel)</label>
+                <p className="label-uppercase">Heure (optionnel)</p>
                 <input type="time" value={blockHeure} onChange={e => setBlockHeure(e.target.value)}
-                  className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-amber-500/50" />
+                  style={blockInputStyle}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-white/40">Type de RDV</label>
+                <p className="label-uppercase">Type de RDV</p>
                 <select value={blockType} onChange={e => setBlockType(e.target.value as any)}
-                  className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-amber-500/50">
+                  style={blockInputStyle}>
                   <option value="">Tous les types</option>
                   <option value="welcome_call">Welcome Call (Maria)</option>
-                  <option value="point_personnalise">Point Personnalisé (Maria)</option>
-                  <option value="point_immobilier">Point Immobilier (Élodie)</option>
+                  <option value="point_personnalise">Point Personnalise (Maria)</option>
+                  <option value="point_immobilier">Point Immobilier (Elodie)</option>
                   <option value="tous">Tous les types</option>
                 </select>
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-white/40">Raison (optionnel)</label>
-                <input type="text" placeholder="Ex: Congé, Réunion..." value={blockRaison} onChange={e => setBlockRaison(e.target.value)}
-                  className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-amber-500/50 w-48" />
+                <p className="label-uppercase">Raison (optionnel)</p>
+                <input type="text" placeholder="Ex: Conge, Reunion..." value={blockRaison} onChange={e => setBlockRaison(e.target.value)}
+                  style={{ ...blockInputStyle, width: "192px" }}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                />
               </div>
               <div className="flex flex-col gap-1 justify-end">
                 <button
                   onClick={() => { if (!blockDate) { toast.error("Veuillez sélectionner une date"); return; } addBlockedSlot.mutate({ date: blockDate, heure: blockHeure || undefined, typeRdv: (blockType || undefined) as any, raison: blockRaison || undefined }); }}
                   disabled={addBlockedSlot.isPending}
-                  className="bg-red-500 hover:bg-red-400 text-white font-semibold px-4 py-1.5 rounded-lg text-sm transition-colors disabled:opacity-50"
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "2px",
+                    background: addBlockedSlot.isPending ? "#7A3030" : "#A04040",
+                    border: "none",
+                    color: "#F0EDE6",
+                    fontSize: "11px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontWeight: 500,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    cursor: addBlockedSlot.isPending ? "not-allowed" : "pointer",
+                    transition: "background 300ms ease",
+                  }}
+                  onMouseEnter={e => { if (!addBlockedSlot.isPending) e.currentTarget.style.background = "#B04848"; }}
+                  onMouseLeave={e => { if (!addBlockedSlot.isPending) e.currentTarget.style.background = "#A04040"; }}
                 >
                   {addBlockedSlot.isPending ? "..." : "Bloquer"}
                 </button>
@@ -934,20 +1385,53 @@ export default function CalendarPage() {
             </div>
             {/* Liste des créneaux bloqués */}
             {blockedSlots.length > 0 && (
-              <div className="mt-2">
-                <p className="text-xs text-white/40 mb-2">Créneaux bloqués :</p>
+              <div style={{ marginTop: "8px" }}>
+                <p className="label-uppercase" style={{ marginBottom: "8px" }}>Creneaux bloques</p>
                 <div className="flex flex-col gap-1.5">
                   {(blockedSlots as any[]).map((slot: any) => (
-                    <div key={slot.id} className="flex items-center justify-between bg-white/5 rounded-lg px-3 py-2">
+                    <div key={slot.id} className="flex items-center justify-between" style={{
+                      background: "#161616",
+                      borderRadius: "2px",
+                      padding: "8px 12px",
+                      border: "1px solid #1E1E1E",
+                    }}>
                       <div className="flex items-center gap-3">
-                        <span className="text-sm text-white font-medium">{slot.date}</span>
-                        {slot.heure && <span className="text-xs text-amber-400">{slot.heure}</span>}
-                        {slot.typeRdv && <span className="text-xs text-white/50 bg-white/10 px-2 py-0.5 rounded-full">{slot.typeRdv === "welcome_call" ? "Welcome Call" : slot.typeRdv === "point_personnalise" ? "Point Personnalisé" : slot.typeRdv === "point_immobilier" ? "Point Immobilier" : "Tous"}</span>}
-                        {slot.raison && <span className="text-xs text-white/40 italic">{slot.raison}</span>}
+                        <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{slot.date}</span>
+                        {slot.heure && <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#C9A84C" }}>{slot.heure}</span>}
+                        {slot.typeRdv && (
+                          <span style={{
+                            fontSize: "10px",
+                            fontFamily: "'Hanken Grotesk', sans-serif",
+                            fontWeight: 500,
+                            letterSpacing: "0.04em",
+                            textTransform: "uppercase",
+                            color: "#6B6560",
+                            background: "rgba(240,237,230,0.04)",
+                            border: "1px solid #1E1E1E",
+                            borderRadius: "2px",
+                            padding: "2px 8px",
+                          }}>
+                            {slot.typeRdv === "welcome_call" ? "Welcome Call" : slot.typeRdv === "point_personnalise" ? "Point Personnalise" : slot.typeRdv === "point_immobilier" ? "Point Immobilier" : "Tous"}
+                          </span>
+                        )}
+                        {slot.raison && <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", fontStyle: "italic" }}>{slot.raison}</span>}
                       </div>
                       <button
                         onClick={() => removeBlockedSlot.mutate({ id: slot.id })}
-                        className="text-red-400 hover:text-red-300 text-xs px-2 py-1 rounded hover:bg-red-500/10 transition-colors"
+                        className="transition-colors duration-300"
+                        style={{
+                          fontSize: "11px",
+                          fontFamily: "'Hanken Grotesk', sans-serif",
+                          color: "#A04040",
+                          background: "transparent",
+                          border: "none",
+                          padding: "4px 8px",
+                          cursor: "pointer",
+                          letterSpacing: "0.04em",
+                          textTransform: "uppercase",
+                        }}
+                        onMouseEnter={e => (e.currentTarget.style.color = "#C04848")}
+                        onMouseLeave={e => (e.currentTarget.style.color = "#A04040")}
                       >
                         Supprimer
                       </button>
@@ -960,28 +1444,76 @@ export default function CalendarPage() {
         )}
 
         {/* Barre de navigation */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between" style={{ marginBottom: "16px" }}>
           <div className="flex items-center gap-2">
-            <button onClick={prev} className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors">
-              ‹
+            <button onClick={prev}
+              className="transition-colors duration-300"
+              style={{ padding: "8px", borderRadius: "2px", border: "1px solid #1E1E1E", background: "transparent", color: "#6B6560", cursor: "pointer" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
+            >
+              <ChevronLeft className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             </button>
-            <button onClick={next} className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors">
-              ›
+            <button onClick={next}
+              className="transition-colors duration-300"
+              style={{ padding: "8px", borderRadius: "2px", border: "1px solid #1E1E1E", background: "transparent", color: "#6B6560", cursor: "pointer" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
+            >
+              <ChevronRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             </button>
-            <button onClick={goToday} className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white text-sm transition-colors">
+            <button onClick={goToday}
+              className="transition-colors duration-300"
+              style={{
+                padding: "6px 14px",
+                borderRadius: "2px",
+                border: "1px solid #1E1E1E",
+                background: "transparent",
+                color: "#6B6560",
+                fontSize: "11px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontWeight: 500,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
+            >
               Aujourd'hui
             </button>
-            <span className="text-white/70 text-sm font-medium ml-2 capitalize">{navTitle}</span>
+            <span style={{
+              fontSize: "14px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontWeight: 500,
+              color: "#6B6560",
+              marginLeft: "8px",
+              textTransform: "capitalize",
+            }}>
+              {navTitle}
+            </span>
           </div>
           {/* Toggle vue */}
-          <div className="flex bg-white/5 rounded-lg p-0.5">
+          <div className="flex" style={{ border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
             {(["semaine", "mois"] as Vue[]).map(v => (
               <button
                 key={v}
                 onClick={() => setVue(v)}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors capitalize ${
-                  vue === v ? "bg-amber-500 text-black" : "text-white/50 hover:text-white"
-                }`}
+                className="transition-colors duration-300"
+                style={{
+                  padding: "6px 16px",
+                  fontSize: "11px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                  border: "none",
+                  background: vue === v ? "#C9A84C" : "transparent",
+                  color: vue === v ? "#0A0A0A" : "#3A3632",
+                }}
+                onMouseEnter={e => { if (vue !== v) e.currentTarget.style.color = "#F0EDE6"; }}
+                onMouseLeave={e => { if (vue !== v) e.currentTarget.style.color = "#3A3632"; }}
               >
                 {v}
               </button>
@@ -990,10 +1522,10 @@ export default function CalendarPage() {
         </div>
 
         {/* Calendrier */}
-        <div className="bg-[#111] border border-white/8 rounded-xl p-4">
+        <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "16px", overflow: "hidden" }}>
           {isLoading ? (
-            <div className="flex items-center justify-center h-48">
-              <div className="w-6 h-6 border-2 border-amber-400/30 border-t-amber-400 rounded-full animate-spin" />
+            <div className="flex items-center justify-center" style={{ height: "200px" }}>
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
             </div>
           ) : vue === "semaine" ? (
             <WeekView
@@ -1015,13 +1547,16 @@ export default function CalendarPage() {
         </div>
 
         {/* Légende */}
-        <div className="flex flex-wrap gap-4 mt-4">
-          {MEMBRES.map(m => (
-            <div key={m.key} className="flex items-center gap-1.5 text-xs text-white/40">
-              <span className={`w-3 h-3 rounded ${m.bg}`} />
-              {m.label}
-            </div>
-          ))}
+        <div className="flex flex-wrap gap-5" style={{ marginTop: "16px" }}>
+          {MEMBRES.map(m => {
+            const mc = MEMBRE_COLORS[m.key];
+            return (
+              <div key={m.key} className="flex items-center gap-1.5">
+                <span style={{ width: "10px", height: "3px", borderRadius: "1px", background: mc.accent }} />
+                <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{m.label}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
 

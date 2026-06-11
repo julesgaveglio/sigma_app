@@ -6,7 +6,6 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  // Ouvrir directement le formulaire mot de passe oublié si ?forgot=1 dans l'URL
   const [showForgot, setShowForgot] = useState(() => new URLSearchParams(window.location.search).get("forgot") === "1");
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotSent, setForgotSent] = useState(false);
@@ -17,13 +16,11 @@ export default function Login() {
   const loginMutation = trpc.auth.login.useMutation({
     onSuccess: async (data) => {
       await utils.auth.me.invalidate();
-      // Redirection intelligente selon le rôle et l'email
       const userEmail = data?.user?.email ?? "";
       const userRole = data?.user?.role ?? "user";
       if (userRole === "admin") {
         navigate("/dashboard");
       } else if (userRole === "direction") {
-        // Redirection personnalisée selon l'email
         if (userEmail === "assistance.direction@sigmaipf.fr") {
           navigate("/dashboard/hexa");
         } else if (userEmail === "manondubost@sigmaipf.fr") {
@@ -36,10 +33,8 @@ export default function Login() {
           navigate("/dashboard");
         }
       } else if (userRole === "agent") {
-        // Agents immobiliers → portail membre (espace agent)
         navigate("/dashboard/portail");
       } else if (userRole === "courtier") {
-        // Courtiers → espace courtier dédié
         navigate("/dashboard/courtier");
       } else {
         navigate("/dashboard/portail");
@@ -81,74 +76,64 @@ export default function Login() {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#111111",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
-      padding: "20px",
-    }}>
-      <div style={{
-        width: "100%",
-        maxWidth: "420px",
-      }}>
-        {/* Logo / Header */}
-        <div style={{ textAlign: "center", marginBottom: "40px" }}>
-          <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "64px",
-            height: "64px",
-            background: "linear-gradient(135deg, #C9A84C, #E8C96A)",
-            borderRadius: "16px",
-            marginBottom: "16px",
-          }}>
-            <span style={{ fontSize: "28px", fontWeight: "900", color: "#111", letterSpacing: "-1px" }}>Σ</span>
-          </div>
-          <h1 style={{
-            color: "#C9A84C",
-            fontSize: "22px",
-            fontWeight: "700",
-            letterSpacing: "3px",
-            margin: "0 0 4px",
-            textTransform: "uppercase",
-          }}>SIGMA FACTORY</h1>
-          <p style={{ color: "#666", fontSize: "13px", margin: 0 }}>Application interne — Accès réservé</p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center px-5"
+         style={{ background: "#0A0A0A" }}>
+      <div className="w-full" style={{ maxWidth: "380px" }}>
 
-        {/* Card */}
+        {/* ── Wordmark ── */}
+        <header className="text-center mb-16">
+          <h1 className="text-[#C9A84C] mb-3"
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "28px",
+                fontWeight: 700,
+                letterSpacing: "0.2em",
+                lineHeight: 1,
+              }}>
+            SIGMA FACTORY
+          </h1>
+          <div className="gold-rule mx-auto" style={{ width: "40px" }} />
+        </header>
+
+        {/* ── Card ── */}
         <div style={{
-          background: "#1a1a1a",
-          border: "1px solid #2a2a2a",
-          borderRadius: "16px",
-          padding: "36px 32px",
+          background: "#111111",
+          border: "1px solid #1E1E1E",
+          borderRadius: "2px",
+          padding: "40px 36px",
         }}>
           {!showForgot ? (
             <>
-              <h2 style={{ color: "#fff", fontSize: "18px", fontWeight: "600", margin: "0 0 24px", textAlign: "center" }}>
+              <h2 style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "20px",
+                fontWeight: 600,
+                color: "#F0EDE6",
+                letterSpacing: "0.04em",
+                marginBottom: "32px",
+                textAlign: "center",
+              }}>
                 Connexion
               </h2>
 
               {error && (
                 <div style={{
-                  background: "#2a1515",
-                  border: "1px solid #5a2020",
-                  borderRadius: "8px",
+                  background: "#1A1010",
+                  border: "1px solid #3A1E1E",
+                  borderRadius: "2px",
                   padding: "12px 16px",
-                  marginBottom: "20px",
-                  color: "#ff6b6b",
+                  marginBottom: "24px",
+                  color: "#C06060",
                   fontSize: "13px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
                 }}>
                   {error}
                 </div>
               )}
 
               <form onSubmit={handleLogin}>
-                <div style={{ marginBottom: "16px" }}>
-                  <label style={{ display: "block", color: "#999", fontSize: "12px", fontWeight: "500", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                <div className="mb-5">
+                  <label className="label-uppercase block mb-2">
                     Adresse email
                   </label>
                   <input
@@ -157,25 +142,23 @@ export default function Login() {
                     onChange={e => setEmail(e.target.value)}
                     placeholder="votre@email.fr"
                     autoComplete="email"
+                    className="w-full transition-colors duration-300 ease-out focus:outline-none"
                     style={{
-                      width: "100%",
-                      background: "#111",
-                      border: "1px solid #333",
-                      borderRadius: "8px",
+                      background: "#161616",
+                      border: "1px solid #1E1E1E",
+                      borderRadius: "2px",
                       padding: "12px 14px",
-                      color: "#fff",
+                      color: "#F0EDE6",
                       fontSize: "14px",
-                      outline: "none",
-                      boxSizing: "border-box",
-                      transition: "border-color 0.2s",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
                     }}
                     onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                    onBlur={e => (e.target.style.borderColor = "#333")}
+                    onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                   />
                 </div>
 
-                <div style={{ marginBottom: "24px" }}>
-                  <label style={{ display: "block", color: "#999", fontSize: "12px", fontWeight: "500", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                <div className="mb-8">
+                  <label className="label-uppercase block mb-2">
                     Mot de passe
                   </label>
                   <input
@@ -184,71 +167,88 @@ export default function Login() {
                     onChange={e => setPassword(e.target.value)}
                     placeholder="••••••••"
                     autoComplete="current-password"
+                    className="w-full transition-colors duration-300 ease-out focus:outline-none"
                     style={{
-                      width: "100%",
-                      background: "#111",
-                      border: "1px solid #333",
-                      borderRadius: "8px",
+                      background: "#161616",
+                      border: "1px solid #1E1E1E",
+                      borderRadius: "2px",
                       padding: "12px 14px",
-                      color: "#fff",
+                      color: "#F0EDE6",
                       fontSize: "14px",
-                      outline: "none",
-                      boxSizing: "border-box",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
                     }}
                     onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                    onBlur={e => (e.target.style.borderColor = "#333")}
+                    onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={loginMutation.isPending}
+                  className="w-full transition-opacity duration-300 ease-out"
                   style={{
-                    width: "100%",
-                    background: loginMutation.isPending ? "#8a7030" : "linear-gradient(135deg, #C9A84C, #E8C96A)",
-                    color: "#111",
+                    background: loginMutation.isPending ? "#8A7535" : "#C9A84C",
+                    color: "#0A0A0A",
                     border: "none",
-                    borderRadius: "8px",
-                    padding: "13px",
-                    fontSize: "15px",
-                    fontWeight: "700",
+                    borderRadius: "2px",
+                    padding: "14px",
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase" as const,
                     cursor: loginMutation.isPending ? "not-allowed" : "pointer",
-                    letterSpacing: "0.5px",
+                    opacity: loginMutation.isPending ? 0.7 : 1,
                   }}
                 >
                   {loginMutation.isPending ? "Connexion..." : "Se connecter"}
                 </button>
               </form>
 
-              <div style={{ textAlign: "center", marginTop: "20px" }}>
+              <div className="text-center mt-6">
                 <button
                   onClick={() => { setShowForgot(true); setError(""); }}
+                  className="transition-opacity duration-300 ease-out hover:opacity-70"
                   style={{
                     background: "none",
                     border: "none",
-                    color: "#C9A84C",
-                    fontSize: "13px",
-                    cursor: "pointer",
-                    textDecoration: "underline",
+                    color: "#6B6560",
+                    fontSize: "12px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    letterSpacing: "0.02em",
                     padding: 0,
                   }}
                 >
-                  Mot de passe oublié ?
+                  Mot de passe oublie
                 </button>
               </div>
 
-              <div style={{ borderTop: "1px solid #2a2a2a", marginTop: "24px", paddingTop: "20px", textAlign: "center" }}>
-                <p style={{ color: "#555", fontSize: "12px", margin: "0 0 8px" }}>Pas encore de compte ?</p>
+              <div style={{
+                borderTop: "1px solid #1E1E1E",
+                marginTop: "28px",
+                paddingTop: "24px",
+                textAlign: "center",
+              }}>
+                <p style={{
+                  color: "#3A3632",
+                  fontSize: "12px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  margin: "0 0 8px",
+                }}>
+                  Pas encore de compte
+                </p>
                 <a
                   href="/register"
+                  className="transition-opacity duration-300 ease-out hover:opacity-70"
                   style={{
-                    color: "#C9A84C",
-                    fontSize: "13px",
+                    color: "#6B6560",
+                    fontSize: "12px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
                     textDecoration: "none",
-                    fontWeight: "500",
+                    letterSpacing: "0.04em",
                   }}
                 >
-                  Créer mon compte →
+                  Creer mon compte
                 </a>
               </div>
             </>
@@ -256,57 +256,74 @@ export default function Login() {
             <>
               <button
                 onClick={() => { setShowForgot(false); setForgotSent(false); setForgotError(""); }}
+                className="transition-opacity duration-300 ease-out hover:opacity-70"
                 style={{
                   background: "none",
                   border: "none",
-                  color: "#888",
-                  fontSize: "13px",
-                  cursor: "pointer",
-                  padding: "0 0 16px",
+                  color: "#6B6560",
+                  fontSize: "12px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  padding: "0 0 20px",
                   display: "flex",
                   alignItems: "center",
-                  gap: "4px",
+                  gap: "6px",
+                  letterSpacing: "0.04em",
                 }}
               >
                 ← Retour
               </button>
 
-              <h2 style={{ color: "#fff", fontSize: "18px", fontWeight: "600", margin: "0 0 8px" }}>
-                Mot de passe oublié
+              <h2 style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "20px",
+                fontWeight: 600,
+                color: "#F0EDE6",
+                letterSpacing: "0.04em",
+                marginBottom: "8px",
+              }}>
+                Mot de passe oublie
               </h2>
-              <p style={{ color: "#666", fontSize: "13px", margin: "0 0 24px", lineHeight: "1.5" }}>
-                Entrez votre adresse email. Un mot de passe temporaire vous sera envoyé directement par email.
+              <p style={{
+                color: "#6B6560",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                margin: "0 0 28px",
+                lineHeight: "1.6",
+              }}>
+                Entrez votre adresse email. Un mot de passe temporaire vous sera envoye directement.
               </p>
 
               {forgotSent ? (
                 <div style={{
-                  background: "#0d2a1a",
-                  border: "1px solid #1a5c30",
-                  borderRadius: "8px",
+                  background: "#0D1A12",
+                  border: "1px solid #1A3A22",
+                  borderRadius: "2px",
                   padding: "16px",
-                  color: "#4caf7d",
-                  fontSize: "14px",
-                  lineHeight: "1.5",
+                  color: "#4A7A5A",
+                  fontSize: "13px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  lineHeight: "1.6",
                 }}>
-                  ✓ Demande envoyée. Vérifiez votre boîte email (et vos spams) — vous allez recevoir votre mot de passe temporaire dans quelques secondes.
+                  Demande envoyee. Verifiez votre boite email — vous allez recevoir votre mot de passe temporaire dans quelques secondes.
                 </div>
               ) : (
                 <form onSubmit={handleForgot}>
                   {forgotError && (
                     <div style={{
-                      background: "#2a1515",
-                      border: "1px solid #5a2020",
-                      borderRadius: "8px",
+                      background: "#1A1010",
+                      border: "1px solid #3A1E1E",
+                      borderRadius: "2px",
                       padding: "12px 16px",
-                      marginBottom: "16px",
-                      color: "#ff6b6b",
+                      marginBottom: "20px",
+                      color: "#C06060",
                       fontSize: "13px",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
                     }}>
                       {forgotError}
                     </div>
                   )}
-                  <div style={{ marginBottom: "16px" }}>
-                    <label style={{ display: "block", color: "#999", fontSize: "12px", fontWeight: "500", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                  <div className="mb-5">
+                    <label className="label-uppercase block mb-2">
                       Adresse email
                     </label>
                     <input
@@ -314,34 +331,37 @@ export default function Login() {
                       value={forgotEmail}
                       onChange={e => setForgotEmail(e.target.value)}
                       placeholder="votre@email.fr"
+                      className="w-full transition-colors duration-300 ease-out focus:outline-none"
                       style={{
-                        width: "100%",
-                        background: "#111",
-                        border: "1px solid #333",
-                        borderRadius: "8px",
+                        background: "#161616",
+                        border: "1px solid #1E1E1E",
+                        borderRadius: "2px",
                         padding: "12px 14px",
-                        color: "#fff",
+                        color: "#F0EDE6",
                         fontSize: "14px",
-                        outline: "none",
-                        boxSizing: "border-box",
+                        fontFamily: "'Hanken Grotesk', sans-serif",
                       }}
                       onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                      onBlur={e => (e.target.style.borderColor = "#333")}
+                      onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={resetMutation.isPending}
+                    className="w-full transition-opacity duration-300 ease-out"
                     style={{
-                      width: "100%",
-                      background: resetMutation.isPending ? "#8a7030" : "linear-gradient(135deg, #C9A84C, #E8C96A)",
-                      color: "#111",
+                      background: resetMutation.isPending ? "#8A7535" : "#C9A84C",
+                      color: "#0A0A0A",
                       border: "none",
-                      borderRadius: "8px",
-                      padding: "13px",
-                      fontSize: "15px",
-                      fontWeight: "700",
+                      borderRadius: "2px",
+                      padding: "14px",
+                      fontSize: "11px",
+                      fontWeight: 500,
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase" as const,
                       cursor: resetMutation.isPending ? "not-allowed" : "pointer",
+                      opacity: resetMutation.isPending ? 0.7 : 1,
                     }}
                   >
                     {resetMutation.isPending ? "Envoi..." : "Demander un mot de passe temporaire"}
@@ -352,8 +372,15 @@ export default function Login() {
           )}
         </div>
 
-        <p style={{ textAlign: "center", color: "#333", fontSize: "11px", marginTop: "24px" }}>
-          Sigma Factory — Application interne confidentielle
+        {/* ── Footer ── */}
+        <p className="text-center mt-10" style={{
+          color: "#1E1E1E",
+          fontSize: "10px",
+          fontFamily: "'Hanken Grotesk', sans-serif",
+          letterSpacing: "0.12em",
+          textTransform: "uppercase" as const,
+        }}>
+          Application interne confidentielle
         </p>
       </div>
     </div>

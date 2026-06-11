@@ -1,315 +1,344 @@
 import { Link } from "wouter";
-import { ArrowRight, Briefcase, Building2, Lock, Zap, TrendingUp } from "lucide-react";
+import { ArrowRight, Briefcase, Building2, Lock } from "lucide-react";
 
 const LOGO_FULL = "https://d2xsxph8kpxj0f.cloudfront.net/110243537/dS69FocN6akHjQivURfVvd/sigma-logo-full_c217e268.png";
 const BG_CITY = "https://d2xsxph8kpxj0f.cloudfront.net/110243537/dS69FocN6akHjQivURfVvd/XSTQvvt1cO08_530224bb.jpg";
 
-const GOLD = "#C9A84C";
-const GOLD_LIGHT = "#F0D080";
-
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white font-sans">
+    <div className="min-h-screen" style={{ background: "#0A0A0A", fontFamily: "'Hanken Grotesk', sans-serif" }}>
 
-      {/* ─── HERO ─── */}
-      <section
-        className="relative min-h-screen flex flex-col"
-        style={{ background: "linear-gradient(160deg, #0a0a0a 0%, #111 40%, #0f0c05 100%)" }}
-      >
+      {/* --- HERO --- */}
+      <section className="relative min-h-screen flex flex-col">
         {/* Fond ville */}
         <div
-          className="absolute inset-0 opacity-10"
+          className="absolute inset-0"
           style={{
             backgroundImage: `url(${BG_CITY})`,
             backgroundSize: "cover",
             backgroundPosition: "center bottom",
+            opacity: 0.06,
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-transparent to-[#0a0a0a] opacity-80" />
 
         {/* Header */}
-        <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6">
-          <img src={LOGO_FULL} alt="Sigma Factory" className="h-9 object-contain" />
+        <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6" style={{ maxWidth: "1280px", margin: "0 auto", width: "100%" }}>
+          <img src={LOGO_FULL} alt="Sigma Factory" className="h-8 object-contain" style={{ opacity: 0.8 }} />
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors px-4 py-2 rounded-lg border border-zinc-800 hover:border-zinc-600"
+            className="flex items-center gap-2 transition-opacity duration-300 hover:opacity-70"
+            style={{
+              fontSize: "11px",
+              fontWeight: 500,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase" as const,
+              color: "#3A3632",
+              padding: "8px 16px",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              textDecoration: "none",
+            }}
           >
-            <Lock className="w-3.5 h-3.5" />
-            <span>Espace équipe</span>
+            <Lock className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+            <span>Espace equipe</span>
           </Link>
         </header>
 
         {/* Hero content */}
         <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 py-16">
 
-          {/* Badge accrocheur */}
-          <div
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-8 border"
-            style={{
-              background: "rgba(201,168,76,0.1)",
-              borderColor: "rgba(201,168,76,0.3)",
-              color: GOLD,
-            }}
-          >
-            <Zap className="w-3 h-3" />
-            Boostez votre performance
-          </div>
-
           {/* Titre */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-tight">
-            <span className="text-white">Bienvenue chez </span>
-            <span
-              style={{
-                background: `linear-gradient(135deg, ${GOLD}, ${GOLD_LIGHT}, ${GOLD})`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Sigma Factory
-            </span>
+          <h1 style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: "clamp(36px, 6vw, 64px)",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase" as const,
+            color: "#F0EDE6",
+            lineHeight: 1.1,
+            marginBottom: "16px",
+          }}>
+            Sigma Factory
           </h1>
 
-          <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mb-12 leading-relaxed">
-            Rejoignez un réseau d'experts qui génèrent en moyenne <span style={{ color: GOLD }} className="font-semibold">+30% de chiffre d'affaires supplémentaire</span> dès la première année.
+          <div style={{ width: "40px", height: "1px", background: "#C9A84C", margin: "0 auto 32px" }} />
+
+          <p style={{
+            fontSize: "16px",
+            color: "#6B6560",
+            maxWidth: "520px",
+            lineHeight: "1.7",
+            marginBottom: "48px",
+          }}>
+            Rejoignez un reseau d'experts qui generent en moyenne <span style={{ color: "#F0EDE6", fontWeight: 500 }}>+30% de chiffre d'affaires supplementaire</span> des la premiere annee.
           </p>
 
-          {/* Deux CTA principaux */}
+          {/* Deux CTA */}
           <div className="flex flex-col sm:flex-row gap-4 mb-16">
-            <div className="flex flex-col items-center gap-1.5">
+            <div className="flex flex-col items-center gap-2">
               <Link
                 href="/inscription-courtier"
-                className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-sm transition-all hover:opacity-90 hover:scale-[1.02]"
+                className="flex items-center justify-center gap-2 transition-opacity duration-300 hover:opacity-80"
                 style={{
-                  background: `linear-gradient(135deg, ${GOLD}, ${GOLD_LIGHT})`,
-                  color: "#000",
+                  padding: "14px 28px",
+                  background: "#C9A84C",
+                  color: "#0A0A0A",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase" as const,
+                  borderRadius: "2px",
+                  textDecoration: "none",
                 }}
               >
-                <Briefcase className="w-4 h-4" />
+                <Briefcase className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                 Espace Courtier
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </Link>
-              <Link href="/login" className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
-                Déjà inscrit ? Se connecter
+              <Link href="/login" className="transition-opacity duration-300 hover:opacity-70" style={{ fontSize: "11px", color: "#3A3632", textDecoration: "none" }}>
+                Deja inscrit ? Se connecter
               </Link>
             </div>
-            <div className="flex flex-col items-center gap-1.5">
+            <div className="flex flex-col items-center gap-2">
               <Link
                 href="/ambassadeur"
-                className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-sm border transition-all hover:border-[#C9A84C] hover:text-[#C9A84C] hover:scale-[1.02]"
+                className="flex items-center justify-center gap-2 transition-colors duration-300"
                 style={{
-                  borderColor: "rgba(201,168,76,0.4)",
-                  color: "rgba(201,168,76,0.8)",
+                  padding: "14px 28px",
+                  border: "1px solid rgba(201,168,76,0.3)",
+                  color: "#C9A84C",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase" as const,
+                  borderRadius: "2px",
+                  textDecoration: "none",
+                  background: "transparent",
                 }}
               >
-                <Building2 className="w-4 h-4" />
+                <Building2 className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                 Espace Agent Immo
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </Link>
-              <Link href="/login" className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
-                Déjà inscrit ? Se connecter
+              <Link href="/login" className="transition-opacity duration-300 hover:opacity-70" style={{ fontSize: "11px", color: "#3A3632", textDecoration: "none" }}>
+                Deja inscrit ? Se connecter
               </Link>
             </div>
           </div>
 
           {/* Scroll hint */}
-          <div className="flex flex-col items-center gap-2 text-zinc-600 text-xs">
-            <span>Découvrez nos espaces</span>
-            <div className="w-px h-8 bg-gradient-to-b from-zinc-600 to-transparent" />
+          <div className="flex flex-col items-center gap-2">
+            <span className="label-uppercase" style={{ fontSize: "10px", color: "#3A3632" }}>Decouvrez nos espaces</span>
+            <div style={{ width: "1px", height: "32px", background: "#1E1E1E" }} />
           </div>
         </div>
       </section>
 
-      {/* ─── DEUX ESPACES ─── */}
-      <section className="relative bg-[#0a0a0a] px-6 md:px-12 py-20">
-        <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-16"
-          style={{ background: `linear-gradient(to bottom, ${GOLD}, transparent)` }}
-        />
-
-        <div className="max-w-4xl mx-auto">
+      {/* --- DEUX ESPACES --- */}
+      <section className="px-6 md:px-12 py-20" style={{ borderTop: "1px solid #1E1E1E" }}>
+        <div style={{ maxWidth: "960px", margin: "0 auto" }}>
           <div className="text-center mb-16">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            <h2 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "28px",
+              fontWeight: 600,
+              color: "#F0EDE6",
+              letterSpacing: "0.04em",
+              marginBottom: "8px",
+            }}>
               Votre espace professionnel
             </h2>
-            <p className="text-zinc-500 text-sm">
-              Accédez à votre tableau de bord et gérez vos dossiers en toute simplicité.
+            <p style={{ fontSize: "13px", color: "#6B6560" }}>
+              Accedez a votre tableau de bord et gerez vos dossiers en toute simplicite.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
             {/* Courtier */}
             <Link
               href="/login"
-              className="group relative block rounded-2xl border p-8 transition-all duration-300 hover:scale-[1.02]"
+              className="group block transition-colors duration-300"
               style={{
-                background: "rgba(201,168,76,0.04)",
-                borderColor: "rgba(201,168,76,0.2)",
+                background: "#111111",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                padding: "32px",
+                textDecoration: "none",
               }}
             >
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
-                style={{ background: "rgba(201,168,76,0.12)" }}
-              >
-                <Briefcase className="w-6 h-6" style={{ color: GOLD }} />
-              </div>
+              <Briefcase className="w-5 h-5 mb-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
 
-              <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: GOLD }}>
+              <p className="label-uppercase mb-2" style={{ color: "#C9A84C" }}>
                 Courtier
-              </div>
-
-              <h3 className="text-xl md:text-2xl font-bold text-white mb-3 leading-tight">
-                Accédez à vos dossiers de financement
-              </h3>
-
-              <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                Consultez les dossiers qui vous sont assignés, suivez leur avancement et communiquez directement avec l'équipe Sigma Factory.
               </p>
 
-              <div
-                className="flex items-center gap-2 text-sm font-semibold transition-all group-hover:gap-3"
-                style={{ color: GOLD }}
-              >
-                Accéder à mon espace
-                <ArrowRight className="w-4 h-4" />
-              </div>
+              <h3 style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "20px",
+                fontWeight: 600,
+                color: "#F0EDE6",
+                letterSpacing: "0.02em",
+                marginBottom: "12px",
+                lineHeight: 1.3,
+              }}>
+                Accedez a vos dossiers de financement
+              </h3>
 
-              <div
-                className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-                style={{
-                  background: "radial-gradient(ellipse at 50% 100%, rgba(201,168,76,0.08) 0%, transparent 70%)",
-                }}
-              />
+              <p style={{
+                fontSize: "13px",
+                color: "#6B6560",
+                lineHeight: "1.6",
+                marginBottom: "20px",
+              }}>
+                Consultez les dossiers qui vous sont assignes, suivez leur avancement et communiquez directement avec l'equipe Sigma Factory.
+              </p>
+
+              <div className="flex items-center gap-2 transition-opacity duration-300 group-hover:opacity-80" style={{ color: "#C9A84C", fontSize: "11px", fontWeight: 500, letterSpacing: "0.06em" }}>
+                Acceder a mon espace
+                <ArrowRight className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+              </div>
             </Link>
 
             {/* Agent Immo */}
             <Link
               href="/ambassadeur"
-              className="group relative block rounded-2xl border p-8 transition-all duration-300 hover:scale-[1.02]"
+              className="group block transition-colors duration-300"
               style={{
-                background: "rgba(201,168,76,0.04)",
-                borderColor: "rgba(201,168,76,0.2)",
+                background: "#111111",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                padding: "32px",
+                textDecoration: "none",
               }}
             >
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
-                style={{ background: "rgba(201,168,76,0.12)" }}
-              >
-                <Building2 className="w-6 h-6" style={{ color: GOLD }} />
-              </div>
+              <Building2 className="w-5 h-5 mb-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
 
-              <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: GOLD }}>
+              <p className="label-uppercase mb-2" style={{ color: "#C9A84C" }}>
                 Agent Immobilier
-              </div>
-
-              <h3 className="text-xl md:text-2xl font-bold text-white mb-3 leading-tight">
-                Gérez vos biens et vos clients
-              </h3>
-
-              <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-                Soumettez vos biens, suivez vos dossiers clients et développez votre activité avec le soutien du réseau Sigma Factory.
               </p>
 
-              <div
-                className="flex items-center gap-2 text-sm font-semibold transition-all group-hover:gap-3"
-                style={{ color: GOLD }}
-              >
-                Accéder à mon espace
-                <ArrowRight className="w-4 h-4" />
-              </div>
+              <h3 style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "20px",
+                fontWeight: 600,
+                color: "#F0EDE6",
+                letterSpacing: "0.02em",
+                marginBottom: "12px",
+                lineHeight: 1.3,
+              }}>
+                Gerez vos biens et vos clients
+              </h3>
 
-              <div
-                className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-                style={{
-                  background: "radial-gradient(ellipse at 50% 100%, rgba(201,168,76,0.08) 0%, transparent 70%)",
-                }}
-              />
+              <p style={{
+                fontSize: "13px",
+                color: "#6B6560",
+                lineHeight: "1.6",
+                marginBottom: "20px",
+              }}>
+                Soumettez vos biens, suivez vos dossiers clients et developpez votre activite avec le soutien du reseau Sigma Factory.
+              </p>
+
+              <div className="flex items-center gap-2 transition-opacity duration-300 group-hover:opacity-80" style={{ color: "#C9A84C", fontSize: "11px", fontWeight: 500, letterSpacing: "0.06em" }}>
+                Acceder a mon espace
+                <ArrowRight className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+              </div>
             </Link>
 
           </div>
         </div>
       </section>
 
-      {/* ─── STAT PERFORMANCE ─── */}
-      <section
-        className="relative py-20 px-6 md:px-12 overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0f0c05 0%, #0a0a0a 50%, #0f0c05 100%)" }}
-      >
-        <div className="relative z-10 max-w-3xl mx-auto text-center">
-          <div
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-8 border"
-            style={{
-              background: "rgba(201,168,76,0.1)",
-              borderColor: "rgba(201,168,76,0.3)",
-              color: GOLD,
-            }}
-          >
-            <TrendingUp className="w-3 h-3" />
-            Résultats partenaires
-          </div>
+      {/* --- SECTION PERFORMANCE --- */}
+      <section className="px-6 md:px-12 py-20" style={{ borderTop: "1px solid #1E1E1E" }}>
+        <div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center" as const }}>
+          <p className="label-uppercase mb-4" style={{ color: "#6B6560" }}>
+            Resultats partenaires
+          </p>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">
-            Des partenaires qui{" "}
-            <span
-              style={{
-                background: `linear-gradient(135deg, ${GOLD}, ${GOLD_LIGHT})`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              performent
-            </span>
+          <h2 style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: "28px",
+            fontWeight: 600,
+            color: "#F0EDE6",
+            letterSpacing: "0.04em",
+            marginBottom: "12px",
+          }}>
+            Des partenaires qui performent
           </h2>
 
-          <p className="text-zinc-400 text-lg mb-12 max-w-xl mx-auto">
-            Nos partenaires courtiers et agents immo bénéficient d'un flux régulier de dossiers qualifiés et d'outils pensés pour maximiser leur efficacité.
+          <p style={{
+            fontSize: "14px",
+            color: "#6B6560",
+            lineHeight: "1.7",
+            marginBottom: "40px",
+            maxWidth: "520px",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}>
+            Nos partenaires courtiers et agents immo beneficient d'un flux regulier de dossiers qualifies et d'outils penses pour maximiser leur efficacite.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/inscription-courtier"
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all hover:opacity-90"
+              className="flex items-center justify-center gap-2 transition-opacity duration-300 hover:opacity-80"
               style={{
-                background: `linear-gradient(135deg, ${GOLD}, ${GOLD_LIGHT})`,
-                color: "#000",
+                padding: "14px 24px",
+                background: "#C9A84C",
+                color: "#0A0A0A",
+                fontSize: "11px",
+                fontWeight: 500,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase" as const,
+                borderRadius: "2px",
+                textDecoration: "none",
               }}
             >
-              <Briefcase className="w-4 h-4" />
+              <Briefcase className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               Rejoindre en tant que courtier
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             </Link>
             <Link
               href="/ambassadeur"
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm border transition-all hover:border-[#C9A84C] hover:text-[#C9A84C]"
+              className="flex items-center justify-center gap-2 transition-colors duration-300"
               style={{
-                borderColor: "rgba(201,168,76,0.3)",
-                color: "rgba(201,168,76,0.7)",
+                padding: "14px 24px",
+                border: "1px solid rgba(201,168,76,0.3)",
+                color: "#C9A84C",
+                fontSize: "11px",
+                fontWeight: 500,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase" as const,
+                borderRadius: "2px",
+                textDecoration: "none",
+                background: "transparent",
               }}
             >
-              <Building2 className="w-4 h-4" />
+              <Building2 className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               Rejoindre en tant qu'agent
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ─── FOOTER ─── */}
-      <footer className="border-t border-zinc-900 py-10 px-6 md:px-12">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <img src={LOGO_FULL} alt="Sigma Factory" className="h-7 object-contain opacity-60" />
-          <div className="flex items-center gap-6 text-xs text-zinc-600">
-            <span>© {new Date().getFullYear()} Sigma Factory</span>
-            <span>·</span>
-            <span>Tous droits réservés</span>
-            <span>·</span>
-            <a href="/politique-confidentialite" className="hover:text-zinc-400 transition-colors underline underline-offset-2">Politique de confidentialité</a>
-            <span>·</span>
-            <a href="/mentions-legales" className="hover:text-zinc-400 transition-colors underline underline-offset-2">Mentions légales</a>
-            <span>·</span>
-            <a href="/login?forgot=1" className="hover:text-zinc-400 transition-colors underline underline-offset-2">Mot de passe oublié</a>
-            <span>·</span>
-            <span>ORIAS n°19000655</span>
+      {/* --- FOOTER --- */}
+      <footer style={{ borderTop: "1px solid #1E1E1E", padding: "32px 24px" }}>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6" style={{ maxWidth: "1280px", margin: "0 auto" }}>
+          <img src={LOGO_FULL} alt="Sigma Factory" className="h-6 object-contain" style={{ opacity: 0.4 }} />
+          <div className="flex items-center gap-4 flex-wrap justify-center" style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", letterSpacing: "0.04em", color: "#3A3632" }}>
+            <span>&copy; {new Date().getFullYear()} Sigma Factory</span>
+            <span style={{ color: "#1E1E1E" }}>·</span>
+            <span>Tous droits reserves</span>
+            <span style={{ color: "#1E1E1E" }}>·</span>
+            <a href="/politique-confidentialite" className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632", textDecoration: "none" }}>Politique de confidentialite</a>
+            <span style={{ color: "#1E1E1E" }}>·</span>
+            <a href="/mentions-legales" className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632", textDecoration: "none" }}>Mentions legales</a>
+            <span style={{ color: "#1E1E1E" }}>·</span>
+            <a href="/login?forgot=1" className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632", textDecoration: "none" }}>Mot de passe oublie</a>
+            <span style={{ color: "#1E1E1E" }}>·</span>
+            <span>ORIAS n&deg;19000655</span>
           </div>
         </div>
       </footer>

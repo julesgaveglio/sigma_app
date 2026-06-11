@@ -1,14 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Hanken+Grotesk:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 2px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -44,92 +44,133 @@
 }
 
 :root {
-  /* Sigma Factory — Noir & Or */
-  --radius: 0.5rem;
-  --background: oklch(0.08 0.005 280);
-  --foreground: oklch(0.95 0.01 80);
-  --card: oklch(0.12 0.005 280);
-  --card-foreground: oklch(0.95 0.01 80);
-  --popover: oklch(0.14 0.005 280);
-  --popover-foreground: oklch(0.95 0.01 80);
-  --primary: oklch(0.75 0.12 75);
-  --primary-foreground: oklch(0.08 0.005 280);
-  --secondary: oklch(0.18 0.005 280);
-  --secondary-foreground: oklch(0.85 0.01 80);
-  --muted: oklch(0.16 0.005 280);
-  --muted-foreground: oklch(0.55 0.01 80);
-  --accent: oklch(0.75 0.12 75);
-  --accent-foreground: oklch(0.08 0.005 280);
-  --destructive: oklch(0.55 0.22 25);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.22 0.005 280);
-  --input: oklch(0.16 0.005 280);
-  --ring: oklch(0.75 0.12 75);
-  --chart-1: oklch(0.75 0.12 75);
-  --chart-2: oklch(0.65 0.10 75);
-  --chart-3: oklch(0.55 0.08 75);
-  --chart-4: oklch(0.45 0.06 75);
-  --chart-5: oklch(0.35 0.04 75);
-  --sidebar: oklch(0.10 0.005 280);
-  --sidebar-foreground: oklch(0.95 0.01 80);
-  --sidebar-primary: oklch(0.75 0.12 75);
-  --sidebar-primary-foreground: oklch(0.08 0.005 280);
-  --sidebar-accent: oklch(0.16 0.005 280);
-  --sidebar-accent-foreground: oklch(0.85 0.01 80);
-  --sidebar-border: oklch(0.22 0.005 280);
-  --sidebar-ring: oklch(0.75 0.12 75);
-  /* Custom tokens */
-  --gold: oklch(0.75 0.12 75);
-  --gold-light: oklch(0.85 0.10 75);
-  --gold-dark: oklch(0.60 0.12 75);
-}
+  /* ── Sigma Factory — Institutional Dark ── */
+  --radius: 2px;
 
-.dark-unused {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-500);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.85 0.005 65);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.85 0.005 65);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.85 0.005 65);
-  --secondary: oklch(0.24 0.006 286.033);
-  --secondary-foreground: oklch(0.7 0.005 65);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground:  oklch(0.92 0.005 65);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.488 0.243 264.376);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.85 0.005 65);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground:  oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.488 0.243 264.376);
+  /* Surfaces */
+  --background: #0A0A0A;
+  --foreground: #F0EDE6;
+  --card: #111111;
+  --card-foreground: #F0EDE6;
+  --popover: #111111;
+  --popover-foreground: #F0EDE6;
+
+  /* Primary = Gold (usage rare) */
+  --primary: #C9A84C;
+  --primary-foreground: #0A0A0A;
+
+  /* Secondary = surface elevee */
+  --secondary: #161616;
+  --secondary-foreground: #D0CCC4;
+
+  /* Muted = texte secondaire */
+  --muted: #161616;
+  --muted-foreground: #6B6560;
+
+  /* Accent = gold subtil */
+  --accent: #161616;
+  --accent-foreground: #F0EDE6;
+
+  /* Destructive */
+  --destructive: #A04040;
+  --destructive-foreground: #F0EDE6;
+
+  /* Structure */
+  --border: #1E1E1E;
+  --input: #161616;
+  --ring: #C9A84C;
+
+  /* Charts — monochrome, or sur serie principale */
+  --chart-1: #C9A84C;
+  --chart-2: #4A4A4A;
+  --chart-3: #3A3A3A;
+  --chart-4: #2A2A2A;
+  --chart-5: #1A1A1A;
+
+  /* Sidebar */
+  --sidebar: #0A0A0A;
+  --sidebar-foreground: #F0EDE6;
+  --sidebar-primary: #C9A84C;
+  --sidebar-primary-foreground: #0A0A0A;
+  --sidebar-accent: #161616;
+  --sidebar-accent-foreground: #D0CCC4;
+  --sidebar-border: #1E1E1E;
+  --sidebar-ring: #C9A84C;
+
+  /* Custom tokens */
+  --gold: #C9A84C;
+  --gold-muted: #8A7535;
+  --gold-light: #D4B85C;
+  --surface: #111111;
+  --surface-raised: #161616;
+  --foreground-muted: #6B6560;
+  --foreground-faint: #3A3632;
+  --success: #4A7A5A;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
   h1, h2, h3 {
     font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
   }
+
+  h1 {
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Chiffres tabulaires globaux sur les donnees */
+  table, [data-kpi], .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Selections */
+  ::selection {
+    background: #C9A84C;
+    color: #0A0A0A;
+  }
+
+  /* Scrollbar discrete */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1E1E1E;
+    border-radius: 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2A2A2A;
+  }
+
+  /* Focus visible sobre */
+  :focus-visible {
+    outline: 1px solid #C9A84C;
+    outline-offset: 2px;
+    border-radius: 0;
+  }
+
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [type="button"]:not(:disabled),
@@ -144,24 +185,11 @@
 }
 
 @layer components {
-  /**
-   * Custom container utility that centers content and adds responsive padding.
-   *
-   * This overrides Tailwind's default container behavior to:
-   * - Auto-center content (mx-auto)
-   * - Add responsive horizontal padding
-   * - Set max-width for large screens
-   *
-   * Usage: <div className="container">...</div>
-   *
-   * For custom widths, use max-w-* utilities directly:
-   * <div className="max-w-6xl mx-auto px-4">...</div>
-   */
   .container {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1rem; /* 16px - mobile padding */
+    padding-left: 1rem;
     padding-right: 1rem;
   }
 
@@ -172,16 +200,34 @@
 
   @media (min-width: 640px) {
     .container {
-      padding-left: 1.5rem; /* 24px - tablet padding */
+      padding-left: 1.5rem;
       padding-right: 1.5rem;
     }
   }
 
   @media (min-width: 1024px) {
     .container {
-      padding-left: 2rem; /* 32px - desktop padding */
+      padding-left: 2rem;
       padding-right: 2rem;
-      max-width: 1280px; /* Standard content width */
+      max-width: 1280px;
     }
+  }
+
+  /* ── Label style institutionnel ── */
+  .label-uppercase {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--foreground-muted);
+  }
+
+  /* ── Separateur dore fin ── */
+  .gold-rule {
+    height: 1px;
+    background: var(--gold);
+    border: none;
+    opacity: 0.6;
   }
 }

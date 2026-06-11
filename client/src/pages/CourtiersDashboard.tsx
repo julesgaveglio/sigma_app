@@ -15,33 +15,55 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 
-const STATUT_COLORS: Record<string, string> = {
-  en_attente: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-  actif: "bg-green-500/10 text-green-400 border-green-500/20",
-  suspendu: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-  resilie: "bg-red-500/10 text-red-400 border-red-500/20",
+const STATUT_STYLES: Record<string, { color: string; bg: string; border: string }> = {
+  en_attente: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  actif: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  suspendu: { color: "#C9A84C", bg: "rgba(201,168,76,0.05)", border: "rgba(201,168,76,0.15)" },
+  resilie: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
 };
 const STATUT_LABELS: Record<string, string> = {
   en_attente: "En attente",
   actif: "Actif",
   suspendu: "Suspendu",
-  resilie: "Résilié",
+  resilie: "Resilie",
 };
 
-const DOSSIER_STATUT_COLORS: Record<string, string> = {
-  nouveau: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  en_cours: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-  envoye: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-  valide: "bg-green-500/10 text-green-400 border-green-500/20",
-  refuse: "bg-red-500/10 text-red-400 border-red-500/20",
+const DOSSIER_STATUT_STYLES: Record<string, { color: string; bg: string; border: string }> = {
+  nouveau: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  en_cours: { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+  envoye: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  valide: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  refuse: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
 };
 const DOSSIER_STATUT_LABELS: Record<string, string> = {
   nouveau: "Nouveau",
   en_cours: "En cours",
-  envoye: "Envoyé",
-  valide: "Validé",
-  refuse: "Refusé",
+  envoye: "Envoye",
+  valide: "Valide",
+  refuse: "Refuse",
 };
+
+function StatutBadge({ statut, map }: { statut: string; map: Record<string, { color: string; bg: string; border: string }> }) {
+  const s = map[statut] ?? { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
+  return (
+    <span style={{
+      display: "inline-flex",
+      alignItems: "center",
+      padding: "2px 8px",
+      borderRadius: "2px",
+      fontSize: "10px",
+      fontFamily: "'Hanken Grotesk', sans-serif",
+      fontWeight: 500,
+      letterSpacing: "0.06em",
+      textTransform: "uppercase" as const,
+      color: s.color,
+      background: s.bg,
+      border: `1px solid ${s.border}`,
+    }}>
+      {statut === "en_attente" ? "En attente" : statut === "en_cours" ? "En cours" : statut.charAt(0).toUpperCase() + statut.slice(1)}
+    </span>
+  );
+}
 
 // ─── Onglet Dossiers Courtage ─────────────────────────────────────────────────
 
@@ -58,7 +80,7 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
 
   const uploadDocMutation = trpc.financement.uploadDoc.useMutation({
     onSuccess: () => {
-      toast.success("Document ajouté");
+      toast.success("Document ajoute");
       utils.financement.lister.invalidate();
       onRefetch();
     },
@@ -67,7 +89,7 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
 
   const assignerMutation = trpc.financement.assigner.useMutation({
     onSuccess: (data) => {
-      toast.success(`Dossier envoyé à ${data.nbAssignations} courtier(s)`);
+      toast.success(`Dossier envoye a ${data.nbAssignations} courtier(s)`);
       setSelectedCourtiers([]);
       utils.financement.lister.invalidate();
       onRefetch();
@@ -77,7 +99,7 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
 
   const supprimerDocMutation = trpc.financement.supprimerDoc.useMutation({
     onSuccess: () => {
-      toast.success("Document supprimé");
+      toast.success("Document supprime");
       utils.financement.lister.invalidate();
       onRefetch();
     },
@@ -118,101 +140,142 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
   const courtiersActifs = courtiers.filter((c: any) => c.statutInterne === "actif");
 
   return (
-    <div className="bg-[#111] border border-gray-800 overflow-hidden">
+    <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
       {/* Ligne principale */}
       <div
-        className="flex items-center gap-4 p-4 cursor-pointer hover:bg-[#1a1a1a] transition-colors"
+        className="flex items-center gap-4 cursor-pointer transition-colors duration-300"
+        style={{ padding: "14px 20px" }}
         onClick={() => setExpanded(!expanded)}
+        onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+        onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
       >
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-white text-sm">
+          <div className="flex items-center gap-3">
+            <span style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "13px",
+              fontWeight: 500,
+              color: "#F0EDE6",
+            }}>
               {dossier.emprunteur1Prenom} {dossier.emprunteur1Nom}
             </span>
-            <Badge className={`text-xs border ${DOSSIER_STATUT_COLORS[dossier.statut] ?? ""}`}>
-              {DOSSIER_STATUT_LABELS[dossier.statut] ?? dossier.statut}
-            </Badge>
+            <StatutBadge statut={dossier.statut} map={DOSSIER_STATUT_STYLES} />
           </div>
-          <div className="text-gray-500 text-xs mt-0.5">
-            {dossier.montantProjet?.toLocaleString("fr-FR")} € · {dossier.duree} mois · {dossier.apportPersonnel?.toLocaleString("fr-FR")} € apport
+          <div className="tabular-nums" style={{
+            fontFamily: "'Hanken Grotesk', sans-serif",
+            fontSize: "11px",
+            color: "#3A3632",
+            marginTop: "2px",
+          }}>
+            {dossier.montantProjet?.toLocaleString("fr-FR")} EUR · {dossier.duree} mois · {dossier.apportPersonnel?.toLocaleString("fr-FR")} EUR apport
           </div>
         </div>
-        <div className="flex items-center gap-3 text-xs text-gray-500">
-          <span className="flex items-center gap-1">
-            <FileText className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-4" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632" }}>
+          <span className="flex items-center gap-1.5">
+            <FileText className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
             {dossier.docs?.length ?? 0} doc(s)
           </span>
-          <span className="flex items-center gap-1">
-            <Send className="w-3.5 h-3.5" />
+          <span className="flex items-center gap-1.5">
+            <Send className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
             {dossier.assignations?.length ?? 0} courtier(s)
           </span>
-          <span>{new Date(dossier.createdAt).toLocaleDateString("fr-FR")}</span>
-          {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          <span className="tabular-nums">{new Date(dossier.createdAt).toLocaleDateString("fr-FR")}</span>
+          {expanded
+            ? <ChevronUp className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+            : <ChevronDown className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+          }
         </div>
       </div>
 
-      {/* Détail expandé */}
+      {/* Detail expande */}
       {expanded && (
-        <div className="border-t border-gray-800 p-4 space-y-5 bg-[#0d0d0d]">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div>
-              <p className="text-xs text-gray-500 mb-0.5">Revenus nets/mois</p>
-              <p className="text-white text-sm font-semibold">{dossier.emprunteur1RevenusMensuelsNets?.toLocaleString("fr-FR") ?? "—"} €</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 mb-0.5">Charges mensuelles</p>
-              <p className="text-white text-sm font-semibold">{dossier.chargesMensuelles?.toLocaleString("fr-FR") ?? "—"} €</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 mb-0.5">Activité</p>
-              <p className="text-white text-sm font-semibold">{dossier.emprunteur1Activite ?? "—"}</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 mb-0.5">Situation matrimoniale</p>
-              <p className="text-white text-sm font-semibold">{dossier.emprunteur1SituationMatrimoniale ?? "—"}</p>
-            </div>
+        <div className="space-y-6" style={{ borderTop: "1px solid #1E1E1E", padding: "20px", background: "#0D0D0D" }}>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { label: "Revenus nets/mois", value: dossier.emprunteur1RevenusMensuelsNets?.toLocaleString("fr-FR") ?? "--", suffix: " EUR" },
+              { label: "Charges mensuelles", value: dossier.chargesMensuelles?.toLocaleString("fr-FR") ?? "--", suffix: " EUR" },
+              { label: "Activite", value: dossier.emprunteur1Activite ?? "--", suffix: "" },
+              { label: "Situation matrimoniale", value: dossier.emprunteur1SituationMatrimoniale ?? "--", suffix: "" },
+            ].map(item => (
+              <div key={item.label}>
+                <p className="label-uppercase" style={{ marginBottom: "4px" }}>{item.label}</p>
+                <p className="tabular-nums" style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: "#F0EDE6",
+                }}>{item.value}{item.suffix}</p>
+              </div>
+            ))}
           </div>
 
           {/* Documents joints */}
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Documents joints</p>
+            <div className="flex items-center justify-between" style={{ marginBottom: "10px" }}>
+              <p className="label-uppercase">Documents joints</p>
               <div>
                 <input ref={fileRef} type="file" className="hidden" onChange={handleFileUpload} accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx" />
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="border-[#C9A84C]/40 text-[#C9A84C] hover:bg-[#C9A84C]/10 text-xs gap-1"
+                <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
+                  className="flex items-center gap-1.5 transition-colors duration-300"
+                  style={{
+                    padding: "6px 14px",
+                    borderRadius: "2px",
+                    fontSize: "11px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontWeight: 500,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase" as const,
+                    color: "#C9A84C",
+                    border: "1px solid rgba(201,168,76,0.3)",
+                    background: "transparent",
+                    cursor: uploading ? "not-allowed" : "pointer",
+                    opacity: uploading ? 0.5 : 1,
+                  }}
+                  onMouseEnter={e => { if (!uploading) e.currentTarget.style.background = "rgba(201,168,76,0.06)"; }}
+                  onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                 >
-                  <Upload className="w-3.5 h-3.5" />
+                  <Upload className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                   {uploading ? "Envoi..." : "Ajouter un document"}
-                </Button>
+                </button>
               </div>
             </div>
             {(!dossier.docs || dossier.docs.length === 0) ? (
-              <p className="text-gray-600 text-xs italic">Aucun document joint. Ajoutez CNI, bulletins de salaire, avis d'imposition…</p>
+              <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#3A3632" }}>
+                Aucun document joint. Ajoutez CNI, bulletins de salaire, avis d'imposition...
+              </p>
             ) : (
               <div className="space-y-1">
                 {dossier.docs.map((doc: any) => (
-                  <div key={doc.id} className="flex items-center justify-between bg-black p-2 rounded">
+                  <div key={doc.id} className="flex items-center justify-between" style={{
+                    background: "#0A0A0A",
+                    border: "1px solid #1E1E1E",
+                    borderRadius: "2px",
+                    padding: "8px 12px",
+                  }}>
                     <div className="flex items-center gap-2">
-                      <FileText className="w-3.5 h-3.5 text-[#C9A84C]" />
-                      <span className="text-white text-xs">{doc.nom}</span>
-                      <span className="text-gray-600 text-xs uppercase">{doc.type}</span>
+                      <FileText className="w-3.5 h-3.5" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+                      <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#F0EDE6" }}>{doc.nom}</span>
+                      <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "10px", color: "#3A3632", textTransform: "uppercase" as const, letterSpacing: "0.04em" }}>{doc.type}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       {doc.url && (
-                        <a href={doc.url} target="_blank" rel="noopener noreferrer" className="p-1 text-gray-500 hover:text-white">
-                          <Eye className="w-3.5 h-3.5" />
+                        <a href={doc.url} target="_blank" rel="noopener noreferrer"
+                          className="p-1 transition-opacity duration-300 hover:opacity-70"
+                          style={{ color: "#6B6560" }}
+                        >
+                          <Eye className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                         </a>
                       )}
                       <button
                         onClick={() => supprimerDocMutation.mutate({ id: doc.id })}
-                        className="p-1 text-gray-600 hover:text-red-400"
+                        className="p-1 transition-colors duration-300"
+                        style={{ color: "#3A3632" }}
+                        onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
+                        onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
                       >
-                        <X className="w-3.5 h-3.5" />
+                        <X className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                       </button>
                     </div>
                   </div>
@@ -223,9 +286,11 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
 
           {/* Assignation courtiers */}
           <div>
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-2">Envoyer à des courtiers</p>
+            <p className="label-uppercase" style={{ marginBottom: "10px" }}>Envoyer a des courtiers</p>
             {courtiersActifs.length === 0 ? (
-              <p className="text-gray-600 text-xs italic">Aucun courtier actif dans le réseau.</p>
+              <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#3A3632" }}>
+                Aucun courtier actif dans le reseau.
+              </p>
             ) : (
               <div className="space-y-3">
                 <div className="flex flex-wrap gap-2">
@@ -237,33 +302,66 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
                         key={c.id}
                         onClick={() => !dejaEnvoye && toggleCourtier(c.id)}
                         disabled={dejaEnvoye}
-                        className={`px-3 py-1.5 text-xs rounded border transition-all ${
-                          dejaEnvoye
-                            ? "border-green-500/30 bg-green-500/10 text-green-400 cursor-default"
+                        className="transition-colors duration-300"
+                        style={{
+                          padding: "6px 12px",
+                          fontSize: "11px",
+                          fontFamily: "'Hanken Grotesk', sans-serif",
+                          fontWeight: 500,
+                          letterSpacing: "0.04em",
+                          borderRadius: "2px",
+                          cursor: dejaEnvoye ? "default" : "pointer",
+                          border: dejaEnvoye
+                            ? "1px solid rgba(74,122,90,0.3)"
                             : isSelected
-                            ? "border-[#C9A84C] bg-[#C9A84C]/20 text-[#C9A84C]"
-                            : "border-gray-700 text-gray-400 hover:border-gray-500"
-                        }`}
+                            ? "1px solid #C9A84C"
+                            : "1px solid #1E1E1E",
+                          background: dejaEnvoye
+                            ? "rgba(74,122,90,0.08)"
+                            : isSelected
+                            ? "rgba(201,168,76,0.1)"
+                            : "transparent",
+                          color: dejaEnvoye
+                            ? "#4A7A5A"
+                            : isSelected
+                            ? "#C9A84C"
+                            : "#6B6560",
+                        }}
                       >
-                        {dejaEnvoye && "✓ "}{c.prenom} {c.nom}
-                        {c.cabinetNom && <span className="text-gray-500 ml-1">· {c.cabinetNom}</span>}
+                        {dejaEnvoye && "OK "}{c.prenom} {c.nom}
+                        {c.cabinetNom && <span style={{ color: "#3A3632", marginLeft: "4px" }}> · {c.cabinetNom}</span>}
                       </button>
                     );
                   })}
                 </div>
                 {selectedCourtiers.length > 0 && (
-                  <Button
-                    size="sm"
-                    className="bg-[#C9A84C] hover:bg-[#b8943e] text-black font-bold gap-2"
+                  <button
+                    className="flex items-center gap-2 transition-colors duration-300"
+                    style={{
+                      padding: "10px 24px",
+                      borderRadius: "2px",
+                      fontSize: "11px",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      fontWeight: 500,
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase" as const,
+                      background: "#C9A84C",
+                      color: "#0A0A0A",
+                      border: "none",
+                      cursor: assignerMutation.isPending ? "not-allowed" : "pointer",
+                      opacity: assignerMutation.isPending ? 0.6 : 1,
+                    }}
                     onClick={() => assignerMutation.mutate({
                       dossierFinancementId: dossier.id,
                       courtierIds: selectedCourtiers,
                     })}
                     disabled={assignerMutation.isPending}
+                    onMouseEnter={e => (e.currentTarget.style.filter = "brightness(1.1)")}
+                    onMouseLeave={e => (e.currentTarget.style.filter = "brightness(1)")}
                   >
-                    <Send className="w-3.5 h-3.5" />
-                    Envoyer à {selectedCourtiers.length} courtier(s)
-                  </Button>
+                    <Send className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+                    Envoyer a {selectedCourtiers.length} courtier(s)
+                  </button>
                 )}
               </div>
             )}
@@ -272,22 +370,44 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
           {/* Assignations existantes */}
           {dossier.assignations && dossier.assignations.length > 0 && (
             <div>
-              <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-2">Suivi des envois</p>
+              <p className="label-uppercase" style={{ marginBottom: "10px" }}>Suivi des envois</p>
               <div className="space-y-1">
                 {dossier.assignations.map((a: any) => {
                   const courtier = courtiers.find((c: any) => c.id === a.courtierId);
-                  const statutColors: Record<string, string> = {
-                    en_attente: "text-yellow-400",
-                    en_cours: "text-blue-400",
-                    valide: "text-green-400",
-                    refuse: "text-red-400",
-                  };
+                  const statutStyle = DOSSIER_STATUT_STYLES[a.statut] ?? { color: "#3A3632" };
                   return (
-                    <div key={a.id} className="flex items-center justify-between bg-black p-2 rounded text-xs">
-                      <span className="text-white">{courtier ? `${courtier.prenom} ${courtier.nom}` : `Courtier #${a.courtierId}`}</span>
-                      <div className="flex items-center gap-2">
-                        {a.noteCourtier && <span className="text-gray-500 italic max-w-48 truncate">"{a.noteCourtier}"</span>}
-                        <span className={`font-semibold ${statutColors[a.statut] ?? "text-gray-400"}`}>
+                    <div key={a.id} className="flex items-center justify-between" style={{
+                      background: "#0A0A0A",
+                      border: "1px solid #1E1E1E",
+                      borderRadius: "2px",
+                      padding: "8px 12px",
+                    }}>
+                      <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#F0EDE6" }}>
+                        {courtier ? `${courtier.prenom} ${courtier.nom}` : `Courtier #${a.courtierId}`}
+                      </span>
+                      <div className="flex items-center gap-3">
+                        {a.noteCourtier && (
+                          <span style={{
+                            fontFamily: "'Hanken Grotesk', sans-serif",
+                            fontSize: "11px",
+                            color: "#3A3632",
+                            fontStyle: "italic",
+                            maxWidth: "192px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap" as const,
+                          }}>
+                            "{a.noteCourtier}"
+                          </span>
+                        )}
+                        <span style={{
+                          fontFamily: "'Hanken Grotesk', sans-serif",
+                          fontSize: "10px",
+                          fontWeight: 500,
+                          letterSpacing: "0.06em",
+                          textTransform: "uppercase" as const,
+                          color: statutStyle.color,
+                        }}>
                           {DOSSIER_STATUT_LABELS[a.statut] ?? a.statut}
                         </span>
                       </div>
@@ -317,14 +437,14 @@ export default function CourtiersDashboard() {
   const { data: retardsCourtiers = [], refetch: refetchRetards } = trpc.triggers.checkRetardsCourtiers.useQuery();
   const declencherTrigger = trpc.triggers.declencherTriggerCourtier.useMutation({
     onSuccess: (data) => {
-      toast.success(data.message ?? "Courtier suspendu et Manon notifiée");
+      toast.success(data.message ?? "Courtier suspendu et Manon notifiee");
       refetch();
       refetchRetards();
     },
     onError: (e) => toast.error(e.message),
   });
   const reactiverCourtier = trpc.triggers.reactiverCourtier.useMutation({
-    onSuccess: () => { toast.success("Courtier réactivé"); refetch(); refetchRetards(); },
+    onSuccess: () => { toast.success("Courtier reactive"); refetch(); refetchRetards(); },
     onError: (e) => toast.error(e.message),
   });
 
@@ -354,23 +474,23 @@ export default function CourtiersDashboard() {
   );
 
   const updateStatut = trpc.courtiers.updateStatut.useMutation({
-    onSuccess: () => { toast.success("Statut mis à jour"); refetch(); },
+    onSuccess: () => { toast.success("Statut mis a jour"); refetch(); },
     onError: (e) => toast.error(e.message),
   });
 
   const renvoyerBienvenue = trpc.courtiers.renvoyerEmailBienvenue.useMutation({
-    onSuccess: (res) => toast.success(res.message ?? "Email de bienvenue envoyé !"),
+    onSuccess: (res) => toast.success(res.message ?? "Email de bienvenue envoye !"),
     onError: (e) => toast.error(e.message),
   });
 
   const deleteCourtier = trpc.courtiers.delete.useMutation({
-    onSuccess: () => { toast.success("Courtier supprimé"); refetch(); setSelectedCourtier(null); },
+    onSuccess: () => { toast.success("Courtier supprime"); refetch(); setSelectedCourtier(null); },
     onError: (e) => toast.error(e.message),
   });
 
   const handleDelete = (e: React.MouseEvent, id: number, nom: string) => {
     e.stopPropagation();
-    if (window.confirm(`Supprimer le courtier ${nom} ? Cette action est irréversible.`)) {
+    if (window.confirm(`Supprimer le courtier ${nom} ? Cette action est irreversible.`)) {
       deleteCourtier.mutate({ id });
     }
   };
@@ -390,41 +510,95 @@ export default function CourtiersDashboard() {
 
   return (
     <DashboardLayout>
-      <div className="p-6 space-y-6">
+      <div style={{ padding: "32px 24px" }}>
+
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between" style={{ marginBottom: "32px" }}>
           <div>
-            <h1 className="text-2xl font-black text-white">Courtage</h1>
-            <p className="text-gray-500 text-sm mt-1">Réseau courtiers & dossiers de financement</p>
+            <h1 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "28px",
+              fontWeight: 700,
+              color: "#F0EDE6",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase" as const,
+              lineHeight: 1,
+            }}>
+              Courtage
+            </h1>
+            <p style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "13px",
+              color: "#3A3632",
+              marginTop: "6px",
+            }}>
+              Reseau courtiers & dossiers de financement
+            </p>
           </div>
           <Link href="/inscription-courtier">
-            <Button className="bg-[#C9A84C] hover:bg-[#b8943e] text-black font-bold gap-2">
-              <Plus className="w-4 h-4" />
+            <button
+              className="flex items-center gap-2 transition-colors duration-300"
+              style={{
+                padding: "12px 24px",
+                borderRadius: "2px",
+                fontSize: "11px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontWeight: 500,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase" as const,
+                background: "#C9A84C",
+                color: "#0A0A0A",
+                border: "none",
+                cursor: "pointer",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.filter = "brightness(1.1)")}
+              onMouseLeave={e => (e.currentTarget.style.filter = "brightness(1)")}
+            >
+              <Plus className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               Lien d'inscription
-            </Button>
+            </button>
           </Link>
         </div>
 
         {/* Onglets */}
-        <div className="flex gap-1 border-b border-gray-800">
+        <div className="flex gap-1" style={{ borderBottom: "1px solid #1E1E1E", marginBottom: "32px" }}>
           {[
-            { key: "reseau", label: "Réseau Courtiers", icon: <Users className="w-4 h-4" /> },
-            { key: "dossiers", label: "Dossiers Courtage", icon: <FolderOpen className="w-4 h-4" /> },
-            { key: "compteur", label: "Compteur Courtiers", icon: <CheckCircle className="w-4 h-4" /> },
+            { key: "reseau", label: "Reseau Courtiers", Icon: Users },
+            { key: "dossiers", label: "Dossiers Courtage", Icon: FolderOpen },
+            { key: "compteur", label: "Compteur Courtiers", Icon: CheckCircle },
           ].map(tab => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key as any)}
-              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors -mb-px ${
-                activeTab === tab.key
-                  ? "border-[#C9A84C] text-[#C9A84C]"
-                  : "border-transparent text-gray-500 hover:text-gray-300"
-              }`}
+              className="flex items-center gap-2 transition-colors duration-300"
+              style={{
+                padding: "10px 20px",
+                fontSize: "11px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontWeight: 500,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase" as const,
+                border: "none",
+                borderBottom: activeTab === tab.key ? "1px solid #C9A84C" : "1px solid transparent",
+                background: "transparent",
+                color: activeTab === tab.key ? "#C9A84C" : "#3A3632",
+                marginBottom: "-1px",
+                cursor: "pointer",
+              }}
             >
-              {tab.icon}
+              <tab.Icon className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               {tab.label}
               {tab.key === "dossiers" && dossierStats.nouveaux > 0 && (
-                <span className="bg-blue-500 text-white text-xs rounded-full px-1.5 py-0.5 min-w-5 text-center">
+                <span style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "10px",
+                  fontWeight: 500,
+                  color: "#F0EDE6",
+                  background: "rgba(201,168,76,0.2)",
+                  border: "1px solid rgba(201,168,76,0.3)",
+                  borderRadius: "2px",
+                  padding: "1px 6px",
+                }}>
                   {dossierStats.nouveaux}
                 </span>
               )}
@@ -432,51 +606,95 @@ export default function CourtiersDashboard() {
           ))}
         </div>
 
-        {/* ── Onglet Réseau Courtiers ── */}
+        {/* ── Onglet Reseau Courtiers ── */}
         {activeTab === "reseau" && (
-          <>
+          <div className="space-y-8">
             {/* ── Panneau alertes retard ── */}
             {retardsCourtiers.length > 0 && (
-              <div className="border border-red-500/40 bg-red-500/5 p-4 space-y-3">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle className="w-5 h-5 text-red-400" />
-                  <h3 className="text-red-400 font-bold text-sm">{retardsCourtiers.length} courtier(s) en retard — dossier(s) non traité(s) depuis plus de 72h</h3>
+              <div style={{
+                border: "1px solid rgba(160,64,64,0.3)",
+                borderRadius: "2px",
+                background: "rgba(160,64,64,0.04)",
+                padding: "20px",
+              }}>
+                <div className="flex items-center gap-2" style={{ marginBottom: "12px" }}>
+                  <AlertTriangle className="w-4 h-4" style={{ color: "#A04040", strokeWidth: 1.5 }} />
+                  <span style={{
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    color: "#A04040",
+                  }}>
+                    {retardsCourtiers.length} courtier(s) en retard — dossier(s) non traite(s) depuis plus de 72h
+                  </span>
                 </div>
                 <div className="space-y-2">
                   {retardsCourtiers.map((r: any) => {
                     const heuresRetard = Math.floor((Date.now() - r.ancienneAssignationMs) / (1000 * 60 * 60));
                     return (
-                      <div key={r.courtierId} className="flex items-center justify-between bg-red-500/10 border border-red-500/20 p-3">
+                      <div key={r.courtierId} className="flex items-center justify-between" style={{
+                        background: "rgba(160,64,64,0.06)",
+                        border: "1px solid rgba(160,64,64,0.15)",
+                        borderRadius: "2px",
+                        padding: "12px 16px",
+                      }}>
                         <div className="flex items-center gap-3">
-                          <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#A04040", strokeWidth: 1.5 }} />
                           <div>
-                            <div className="text-white font-semibold text-sm">{r.courtierNom}</div>
-                            <div className="text-red-300 text-xs">{r.nbDossiersEnRetard} dossier(s) · {heuresRetard}h de retard · {r.courtierEmail}</div>
+                            <div style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", fontWeight: 500, color: "#F0EDE6" }}>
+                              {r.courtierNom}
+                            </div>
+                            <div className="tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#A04040" }}>
+                              {r.nbDossiersEnRetard} dossier(s) · {heuresRetard}h de retard · {r.courtierEmail}
+                            </div>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
                           {r.statutInterne !== "suspendu" && (
-                            <Button
-                              size="sm"
+                            <button
                               onClick={() => declencherTrigger.mutate({ courtierId: r.courtierId })}
                               disabled={declencherTrigger.isPending}
-                              className="bg-red-600 hover:bg-red-700 text-white text-xs gap-1"
+                              className="flex items-center gap-1.5 transition-colors duration-300"
+                              style={{
+                                padding: "6px 14px",
+                                borderRadius: "2px",
+                                fontSize: "11px",
+                                fontFamily: "'Hanken Grotesk', sans-serif",
+                                fontWeight: 500,
+                                letterSpacing: "0.04em",
+                                textTransform: "uppercase" as const,
+                                background: "#A04040",
+                                color: "#F0EDE6",
+                                border: "none",
+                                cursor: declencherTrigger.isPending ? "not-allowed" : "pointer",
+                              }}
                             >
-                              <AlertTriangle className="w-3.5 h-3.5" />
+                              <AlertTriangle className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                               Suspendre + Notifier Manon
-                            </Button>
+                            </button>
                           )}
                           {r.statutInterne === "suspendu" && (
-                            <Button
-                              size="sm"
-                              variant="outline"
+                            <button
                               onClick={() => reactiverCourtier.mutate({ courtierId: r.courtierId })}
                               disabled={reactiverCourtier.isPending}
-                              className="border-green-500/40 text-green-400 hover:bg-green-500/10 text-xs gap-1"
+                              className="flex items-center gap-1.5 transition-colors duration-300"
+                              style={{
+                                padding: "6px 14px",
+                                borderRadius: "2px",
+                                fontSize: "11px",
+                                fontFamily: "'Hanken Grotesk', sans-serif",
+                                fontWeight: 500,
+                                letterSpacing: "0.04em",
+                                textTransform: "uppercase" as const,
+                                background: "transparent",
+                                color: "#4A7A5A",
+                                border: "1px solid rgba(74,122,90,0.3)",
+                                cursor: reactiverCourtier.isPending ? "not-allowed" : "pointer",
+                              }}
                             >
-                              <RefreshCw className="w-3.5 h-3.5" />
-                              Réactiver
-                            </Button>
+                              <RefreshCw className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+                              Reactiver
+                            </button>
                           )}
                         </div>
                       </div>
@@ -486,118 +704,169 @@ export default function CourtiersDashboard() {
               </div>
             )}
 
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-[#111] border border-gray-800 p-4">
-                <div className="flex items-center gap-3">
-                  <Users className="w-8 h-8 text-[#C9A84C]" />
-                  <div>
-                    <div className="text-2xl font-black text-white">{stats.total}</div>
-                    <div className="text-gray-500 text-xs">Courtiers total</div>
-                  </div>
+            {/* KPIs */}
+            <div className="grid grid-cols-3 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+              {[
+                { label: "Courtiers total", value: stats.total, accent: true },
+                { label: "Actifs", value: stats.actifs, accent: false },
+                { label: "En attente de validation", value: stats.enAttente, accent: false },
+              ].map(s => (
+                <div key={s.label} className="p-5" style={{ background: "#0A0A0A" }}>
+                  <p className="tabular-nums" style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: "32px",
+                    fontWeight: 600,
+                    color: s.accent ? "#C9A84C" : "#F0EDE6",
+                    lineHeight: 1,
+                    letterSpacing: "0.02em",
+                  }}>
+                    {s.value}
+                  </p>
+                  <p className="label-uppercase mt-2">{s.label}</p>
                 </div>
-              </div>
-              <div className="bg-[#111] border border-gray-800 p-4">
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="w-8 h-8 text-green-400" />
-                  <div>
-                    <div className="text-2xl font-black text-white">{stats.actifs}</div>
-                    <div className="text-gray-500 text-xs">Actifs</div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-[#111] border border-gray-800 p-4">
-                <div className="flex items-center gap-3">
-                  <Clock className="w-8 h-8 text-yellow-400" />
-                  <div>
-                    <div className="text-2xl font-black text-white">{stats.enAttente}</div>
-                    <div className="text-gray-500 text-xs">En attente de validation</div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
 
             <div className="grid grid-cols-3 gap-6">
               <div className="col-span-2 space-y-4">
+                {/* Filtres */}
                 <div className="flex gap-3">
                   <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                    <Input
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                    <input
+                      type="text"
                       placeholder="Rechercher un courtier..."
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      className="bg-[#111] border-gray-700 text-white pl-9"
+                      className="w-full transition-colors duration-300 focus:outline-none"
+                      style={{
+                        background: "#111111",
+                        border: "1px solid #1E1E1E",
+                        borderRadius: "2px",
+                        paddingLeft: "36px",
+                        paddingRight: "14px",
+                        paddingTop: "10px",
+                        paddingBottom: "10px",
+                        fontSize: "13px",
+                        fontFamily: "'Hanken Grotesk', sans-serif",
+                        color: "#F0EDE6",
+                      }}
+                      onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                      onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                     />
                   </div>
-                  <Select value={statutFilter} onValueChange={setStatutFilter}>
-                    <SelectTrigger className="bg-[#111] border-gray-700 text-white w-40">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#111] border-gray-700">
-                      <SelectItem value="tous">Tous</SelectItem>
-                      <SelectItem value="en_attente">En attente</SelectItem>
-                      <SelectItem value="actif">Actifs</SelectItem>
-                      <SelectItem value="suspendu">Suspendus</SelectItem>
-                      <SelectItem value="resilie">Résiliés</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <select
+                    value={statutFilter}
+                    onChange={e => setStatutFilter(e.target.value)}
+                    style={{
+                      background: "#111111",
+                      border: "1px solid #1E1E1E",
+                      borderRadius: "2px",
+                      padding: "10px 14px",
+                      fontSize: "13px",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      color: "#F0EDE6",
+                      outline: "none",
+                      minWidth: "160px",
+                    }}
+                  >
+                    <option value="tous">Tous</option>
+                    <option value="en_attente">En attente</option>
+                    <option value="actif">Actifs</option>
+                    <option value="suspendu">Suspendus</option>
+                    <option value="resilie">Resilies</option>
+                  </select>
                 </div>
-                <div className="bg-[#111] border border-gray-800 overflow-hidden">
+
+                {/* Table courtiers */}
+                <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-gray-800">
-                        <th className="text-left text-xs text-gray-500 font-medium p-3">Courtier</th>
-                        <th className="text-left text-xs text-gray-500 font-medium p-3">Cabinet</th>
-                        <th className="text-left text-xs text-gray-500 font-medium p-3">ORIAS</th>
-                        <th className="text-left text-xs text-gray-500 font-medium p-3">Statut</th>
-                        <th className="text-left text-xs text-gray-500 font-medium p-3">Niveau</th>
-                        <th className="text-left text-xs text-gray-500 font-medium p-3">Dernière connexion</th>
-                        <th className="p-3"></th>
+                      <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                        {["Courtier", "Cabinet", "ORIAS", "Statut", "Niveau", "Derniere connexion", ""].map(h => (
+                          <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "#0D0D0D" }}>{h}</th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
                       {courtiers.length === 0 && (
                         <tr>
-                          <td colSpan={6} className="text-center text-gray-600 py-12">Aucun courtier inscrit</td>
+                          <td colSpan={7} className="text-center py-16">
+                            <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#3A3632" }}>Aucun courtier inscrit</p>
+                          </td>
                         </tr>
                       )}
                       {courtiers.map((c: any) => (
                         <tr
                           key={c.id}
                           onClick={() => setSelectedCourtier(c.id)}
-                          className={`border-b border-gray-800/50 cursor-pointer hover:bg-[#1a1a1a] transition-colors ${selectedCourtier === c.id ? "bg-[#1a1a1a]" : ""}`}
+                          className="cursor-pointer transition-colors duration-300"
+                          style={{
+                            borderBottom: "1px solid #151515",
+                            background: selectedCourtier === c.id ? "#161616" : "transparent",
+                          }}
+                          onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                          onMouseLeave={e => (e.currentTarget.style.background = selectedCourtier === c.id ? "#161616" : "transparent")}
                         >
-                          <td className="p-3">
-                            <div className="font-semibold text-white text-sm">{c.prenom} {c.nom}</div>
-                            <div className="text-gray-500 text-xs">{c.email}</div>
+                          <td className="px-5 py-3">
+                            <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", fontWeight: 500, color: "#F0EDE6" }}>
+                              {c.prenom} {c.nom}
+                            </p>
+                            <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
+                              {c.email}
+                            </p>
                           </td>
-                          <td className="p-3 text-gray-400 text-sm">{c.cabinetNom || "—"}</td>
-                          <td className="p-3 text-gray-400 text-sm font-mono">{c.numeroOrias || "—"}</td>
-                          <td className="p-3">
-                            <Badge className={`text-xs border ${STATUT_COLORS[c.statutInterne] || ""}`}>
-                              {STATUT_LABELS[c.statutInterne] || c.statutInterne}
-                            </Badge>
+                          <td className="px-5 py-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#6B6560" }}>
+                            {c.cabinetNom || "--"}
                           </td>
-                          <td className="p-3">
-                            <Badge className="bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/20 text-xs">N{c.niveau}</Badge>
+                          <td className="px-5 py-3 tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#6B6560", fontVariantNumeric: "tabular-nums" }}>
+                            {c.numeroOrias || "--"}
                           </td>
-                          <td className="p-3">
+                          <td className="px-5 py-3">
+                            <StatutBadge statut={c.statutInterne} map={STATUT_STYLES} />
+                          </td>
+                          <td className="px-5 py-3">
+                            <span style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              padding: "2px 8px",
+                              borderRadius: "2px",
+                              fontSize: "10px",
+                              fontFamily: "'Hanken Grotesk', sans-serif",
+                              fontWeight: 500,
+                              letterSpacing: "0.06em",
+                              color: "#6B6560",
+                              background: "rgba(107,101,96,0.08)",
+                              border: "1px solid rgba(107,101,96,0.15)",
+                            }}>
+                              N{c.niveau}
+                            </span>
+                          </td>
+                          <td className="px-5 py-3">
                             {c.lastSignedIn ? (
                               <div>
-                                <div className="text-xs text-gray-300">{new Date(c.lastSignedIn).toLocaleDateString("fr-FR")}</div>
-                                <div className="text-xs text-gray-600">{new Date(c.lastSignedIn).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div>
+                                <div className="tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#6B6560" }}>
+                                  {new Date(c.lastSignedIn).toLocaleDateString("fr-FR")}
+                                </div>
+                                <div className="tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632" }}>
+                                  {new Date(c.lastSignedIn).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                                </div>
                               </div>
                             ) : (
-                              <span className="text-xs text-gray-600 italic">Jamais connecté</span>
+                              <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632" }}>Jamais connecte</span>
                             )}
                           </td>
-                          <td className="p-3">
+                          <td className="px-5 py-3">
                             <div className="flex items-center gap-1">
-                              <ChevronRight className="w-4 h-4 text-gray-600" />
+                              <ChevronRight className="w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
                               <button
                                 onClick={(e) => handleDelete(e, c.id, `${c.prenom} ${c.nom}`)}
-                                className="p-1 rounded hover:bg-red-500/10 text-gray-600 hover:text-red-400 transition-colors"
+                                className="p-1 transition-colors duration-300"
+                                style={{ color: "#3A3632" }}
+                                onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
+                                onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
                               >
-                                <Trash2 className="w-3.5 h-3.5" />
+                                <Trash2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                               </button>
                             </div>
                           </td>
@@ -607,48 +876,102 @@ export default function CourtiersDashboard() {
                   </table>
                 </div>
               </div>
+
+              {/* Panel detail courtier */}
               <div className="space-y-4">
                 {!selectedCourtier && (
-                  <div className="bg-[#111] border border-gray-800 p-6 text-center text-gray-600">
-                    <Users className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                    <p className="text-sm">Sélectionnez un courtier</p>
+                  <div style={{
+                    background: "#111111",
+                    border: "1px solid #1E1E1E",
+                    borderRadius: "2px",
+                    padding: "32px",
+                    textAlign: "center",
+                  }}>
+                    <Users className="w-6 h-6 mx-auto" style={{ color: "#1E1E1E", strokeWidth: 1.5, marginBottom: "8px" }} />
+                    <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#3A3632" }}>
+                      Selectionnez un courtier
+                    </p>
                   </div>
                 )}
                 {detail && (
-                  <div className="bg-[#111] border border-gray-800 p-4 space-y-4">
-                    <div>
-                      <h3 className="font-black text-white">{detail.courtier.prenom} {detail.courtier.nom}</h3>
-                      <p className="text-gray-500 text-xs">{detail.courtier.email}</p>
-                      {detail.courtier.cabinetNom && <p className="text-[#C9A84C] text-xs mt-1">{detail.courtier.cabinetNom}</p>}
+                  <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+                    <div style={{ marginBottom: "20px" }}>
+                      <h3 style={{
+                        fontFamily: "'Cormorant Garamond', serif",
+                        fontSize: "18px",
+                        fontWeight: 600,
+                        color: "#F0EDE6",
+                        letterSpacing: "0.02em",
+                      }}>
+                        {detail.courtier.prenom} {detail.courtier.nom}
+                      </h3>
+                      <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632", marginTop: "2px" }}>
+                        {detail.courtier.email}
+                      </p>
+                      {detail.courtier.cabinetNom && (
+                        <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#6B6560", marginTop: "4px" }}>
+                          {detail.courtier.cabinetNom}
+                        </p>
+                      )}
                     </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="bg-black p-3 text-center">
-                        <div className="text-xl font-black text-white">{detail.stats.totalDossiers}</div>
-                        <div className="text-gray-600 text-xs">Dossiers</div>
+
+                    {/* Stats mini */}
+                    <div className="grid grid-cols-2 gap-px" style={{ background: "#1E1E1E", borderRadius: "2px", marginBottom: "20px" }}>
+                      <div className="p-4 text-center" style={{ background: "#0A0A0A" }}>
+                        <div className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", lineHeight: 1 }}>
+                          {detail.stats.totalDossiers}
+                        </div>
+                        <p className="label-uppercase mt-1" style={{ fontSize: "10px" }}>Dossiers</p>
                       </div>
-                      <div className="bg-black p-3 text-center">
-                        <div className="text-xl font-black text-[#C9A84C]">{detail.stats.totalFilleuls}</div>
-                        <div className="text-gray-600 text-xs">Filleuls</div>
+                      <div className="p-4 text-center" style={{ background: "#0A0A0A" }}>
+                        <div className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#C9A84C", lineHeight: 1 }}>
+                          {detail.stats.totalFilleuls}
+                        </div>
+                        <p className="label-uppercase mt-1" style={{ fontSize: "10px" }}>Filleuls</p>
                       </div>
                     </div>
+
                     {detail.courtier.conventionPdfUrl && (
-                      <a href={detail.courtier.conventionPdfUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[#C9A84C] text-sm hover:underline">
-                        <FileText className="w-4 h-4" />
-                        Voir la convention signée
+                      <a href={detail.courtier.conventionPdfUrl} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-2 transition-opacity duration-300 hover:opacity-70"
+                        style={{
+                          fontFamily: "'Hanken Grotesk', sans-serif",
+                          fontSize: "12px",
+                          color: "#6B6560",
+                          textDecoration: "none",
+                          marginBottom: "16px",
+                        }}
+                      >
+                        <FileText className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+                        Voir la convention signee
                       </a>
                     )}
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="w-full border-blue-500/40 text-blue-400 hover:bg-blue-500/10 hover:border-blue-400 text-xs"
+
+                    <button
+                      className="flex items-center justify-center gap-2 w-full transition-colors duration-300"
                       disabled={renvoyerBienvenue.isPending}
                       onClick={() => renvoyerBienvenue.mutate({ id: detail.courtier.id })}
+                      style={{
+                        padding: "10px",
+                        borderRadius: "2px",
+                        fontSize: "11px",
+                        fontFamily: "'Hanken Grotesk', sans-serif",
+                        fontWeight: 500,
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase" as const,
+                        background: "transparent",
+                        color: "#6B6560",
+                        border: "1px solid #1E1E1E",
+                        cursor: renvoyerBienvenue.isPending ? "not-allowed" : "pointer",
+                        marginBottom: "20px",
+                      }}
                     >
-                      <Send className="w-3 h-3 mr-2" />
+                      <Send className="w-3 h-3" style={{ strokeWidth: 1.5 }} />
                       {renvoyerBienvenue.isPending ? "Envoi en cours..." : "Renvoyer l'email de bienvenue"}
-                    </Button>
-                    {/* Documents bidirectionnels Manon ↔ Courtier */}
-                    <div className="border-t border-gray-800 pt-4">
+                    </button>
+
+                    {/* Documents bidirectionnels */}
+                    <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "20px", marginBottom: "20px" }}>
                       <PartnerDocumentsSection
                         partnerType="courtier"
                         partnerId={detail.courtier.id}
@@ -658,135 +981,209 @@ export default function CourtiersDashboard() {
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <p className="text-gray-500 text-xs font-medium uppercase tracking-wider">Changer le statut</p>
+                    <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "20px" }}>
+                      <p className="label-uppercase" style={{ marginBottom: "10px" }}>Changer le statut</p>
                       <div className="grid grid-cols-2 gap-2">
-                        {["en_attente", "actif", "suspendu", "resilie"].map(s => (
-                          <Button
-                            key={s}
-                            size="sm"
-                            variant="outline"
-                            disabled={detail.courtier.statutInterne === s}
-                            onClick={() => updateStatut.mutate({ id: detail.courtier.id, statutInterne: s as any })}
-                            className={`text-xs border-gray-700 ${detail.courtier.statutInterne === s ? "opacity-50" : "hover:border-[#C9A84C] hover:text-[#C9A84C]"}`}
-                          >
-                            {STATUT_LABELS[s]}
-                          </Button>
-                        ))}
+                        {(["en_attente", "actif", "suspendu", "resilie"] as const).map(s => {
+                          const isActive = detail.courtier.statutInterne === s;
+                          return (
+                            <button
+                              key={s}
+                              disabled={isActive}
+                              onClick={() => updateStatut.mutate({ id: detail.courtier.id, statutInterne: s as any })}
+                              className="transition-colors duration-300"
+                              style={{
+                                padding: "8px 12px",
+                                borderRadius: "2px",
+                                fontSize: "11px",
+                                fontFamily: "'Hanken Grotesk', sans-serif",
+                                fontWeight: 500,
+                                letterSpacing: "0.04em",
+                                textTransform: "uppercase" as const,
+                                border: "1px solid #1E1E1E",
+                                background: "transparent",
+                                color: isActive ? "#3A3632" : "#6B6560",
+                                cursor: isActive ? "not-allowed" : "pointer",
+                                opacity: isActive ? 0.4 : 1,
+                              }}
+                              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = "rgba(201,168,76,0.4)"; e.currentTarget.style.color = "#C9A84C"; } }}
+                              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; } }}
+                            >
+                              {STATUT_LABELS[s]}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
                 )}
               </div>
             </div>
-          </>
+          </div>
         )}
 
         {/* ── Onglet Compteur Courtiers ── */}
         {activeTab === "compteur" && (
-          <>
-            <div className="grid grid-cols-3 gap-4">
+          <div className="space-y-8">
+            {/* KPIs */}
+            <div className="grid grid-cols-3 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
               {[
-                { label: "Courtiers avec dossiers", value: statsCourtiers.filter((s: any) => s.total > 0).length, color: "text-white" },
-                { label: "Total dossiers envoyés", value: statsCourtiers.reduce((acc: number, s: any) => acc + s.total, 0), color: "text-[#C9A84C]" },
-                { label: "Dossiers validés", value: statsCourtiers.reduce((acc: number, s: any) => acc + s.valide, 0), color: "text-green-400" },
+                { label: "Courtiers avec dossiers", value: statsCourtiers.filter((s: any) => s.total > 0).length, accent: false },
+                { label: "Total dossiers envoyes", value: statsCourtiers.reduce((acc: number, s: any) => acc + s.total, 0), accent: true },
+                { label: "Dossiers valides", value: statsCourtiers.reduce((acc: number, s: any) => acc + s.valide, 0), accent: false },
               ].map(s => (
-                <div key={s.label} className="bg-[#111] border border-gray-800 p-4 text-center">
-                  <div className={`text-2xl font-black ${s.color}`}>{s.value}</div>
-                  <div className="text-gray-500 text-xs mt-0.5">{s.label}</div>
+                <div key={s.label} className="p-5" style={{ background: "#0A0A0A" }}>
+                  <p className="tabular-nums" style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: "32px",
+                    fontWeight: 600,
+                    color: s.accent ? "#C9A84C" : "#F0EDE6",
+                    lineHeight: 1,
+                    letterSpacing: "0.02em",
+                  }}>
+                    {s.value}
+                  </p>
+                  <p className="label-uppercase mt-2">{s.label}</p>
                 </div>
               ))}
             </div>
 
             {/* Alerte globale quota */}
             {statsCourtiers.some((s: any) => s.hebdo >= 10) && (
-              <div className="flex items-center gap-3 bg-orange-500/10 border border-orange-500/30 rounded-lg p-4">
-                <span className="text-orange-400 text-xl">⚠️</span>
+              <div className="flex items-center gap-3" style={{
+                background: "rgba(201,168,76,0.04)",
+                border: "1px solid rgba(201,168,76,0.2)",
+                borderRadius: "2px",
+                padding: "16px 20px",
+              }}>
+                <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#C9A84C", strokeWidth: 1.5 }} />
                 <div>
-                  <p className="text-orange-300 font-semibold text-sm">Quota hebdomadaire atteint</p>
-                  <p className="text-orange-400/70 text-xs mt-0.5">
-                    {statsCourtiers.filter((s: any) => s.hebdo >= 10).map((s: any) => s.courtierNom).join(", ")} — 10 dossiers assignés cette semaine. Vous pouvez continuer mais restez vigilant(e).
+                  <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", fontWeight: 500, color: "#C9A84C" }}>
+                    Quota hebdomadaire atteint
+                  </p>
+                  <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#6B6560", marginTop: "2px" }}>
+                    {statsCourtiers.filter((s: any) => s.hebdo >= 10).map((s: any) => s.courtierNom).join(", ")} — 10 dossiers assignes cette semaine.
                   </p>
                 </div>
               </div>
             )}
 
-            <div className="bg-[#111] border border-gray-800 overflow-hidden">
+            {/* Table compteur */}
+            <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-800">
-                    <th className="text-left text-xs text-gray-500 font-medium p-3">Courtier</th>
-                    <th className="text-left text-xs text-gray-500 font-medium p-3">Cabinet</th>
-                    <th className="text-left text-xs text-gray-500 font-medium p-3">Statut</th>
-                    <th className="text-left text-xs text-gray-500 font-medium p-3">Régions</th>
-                    <th className="text-center text-xs text-orange-400/80 font-medium p-3">Cette semaine</th>
-                    <th className="text-center text-xs text-gray-500 font-medium p-3">Total</th>
-                    <th className="text-center text-xs text-yellow-400/70 font-medium p-3">En attente</th>
-                    <th className="text-center text-xs text-blue-400/70 font-medium p-3">En cours</th>
-                    <th className="text-center text-xs text-green-400/70 font-medium p-3">Validés</th>
-                    <th className="text-center text-xs text-red-400/70 font-medium p-3">Refusés</th>
+                  <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                    {["Courtier", "Cabinet", "Statut", "Regions", "Cette semaine", "Total", "En attente", "En cours", "Valides", "Refuses"].map(h => (
+                      <th key={h} className={`${["Cette semaine", "Total", "En attente", "En cours", "Valides", "Refuses"].includes(h) ? "text-center" : "text-left"} px-5 py-3 label-uppercase`} style={{ background: "#0D0D0D" }}>{h}</th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
                   {statsCourtiers.length === 0 && (
-                    <tr><td colSpan={10} className="text-center text-gray-600 py-12">Aucun courtier inscrit</td></tr>
+                    <tr><td colSpan={10} className="text-center py-16">
+                      <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#3A3632" }}>Aucun courtier inscrit</p>
+                    </td></tr>
                   )}
                   {statsCourtiers.map((s: any) => {
                     const quotaAtteint = s.hebdo >= 10;
                     return (
-                    <tr key={s.courtierId} className={`border-b border-gray-800/50 hover:bg-[#1a1a1a] transition-colors ${quotaAtteint ? "bg-orange-500/5" : ""}`}>
-                      <td className="p-3">
-                        <div className="font-semibold text-white text-sm">{s.courtierNom}</div>
-                        <div className="text-gray-500 text-xs">{s.courtierEmail}</div>
+                    <tr key={s.courtierId}
+                      className="transition-colors duration-300"
+                      style={{ borderBottom: "1px solid #151515" }}
+                      onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                      onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                    >
+                      <td className="px-5 py-3">
+                        <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", fontWeight: 500, color: "#F0EDE6" }}>{s.courtierNom}</p>
+                        <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632" }}>{s.courtierEmail}</p>
                       </td>
-                      <td className="p-3 text-gray-400 text-sm">{s.cabinetNom || "—"}</td>
-                      <td className="p-3">
-                        <Badge className={`text-xs border ${STATUT_COLORS[s.statutInterne] || ""}`}>
-                          {STATUT_LABELS[s.statutInterne] || s.statutInterne}
-                        </Badge>
+                      <td className="px-5 py-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#6B6560" }}>
+                        {s.cabinetNom || "--"}
                       </td>
-                      <td className="p-3">
+                      <td className="px-5 py-3">
+                        <StatutBadge statut={s.statutInterne} map={STATUT_STYLES} />
+                      </td>
+                      <td className="px-5 py-3">
                         {s.regions && s.regions.length > 0 ? (
                           <div className="flex flex-wrap gap-1">
                             {s.regions.slice(0, 3).map((r: string) => (
-                              <span key={r} className="bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/20 rounded-full px-2 py-0.5 text-xs">{r}</span>
+                              <span key={r} style={{
+                                fontFamily: "'Hanken Grotesk', sans-serif",
+                                fontSize: "10px",
+                                fontWeight: 500,
+                                letterSpacing: "0.04em",
+                                color: "#6B6560",
+                                background: "rgba(107,101,96,0.08)",
+                                border: "1px solid rgba(107,101,96,0.15)",
+                                borderRadius: "2px",
+                                padding: "2px 8px",
+                              }}>{r}</span>
                             ))}
-                            {s.regions.length > 3 && <span className="text-gray-500 text-xs">+{s.regions.length - 3}</span>}
+                            {s.regions.length > 3 && (
+                              <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "10px", color: "#3A3632" }}>+{s.regions.length - 3}</span>
+                            )}
                           </div>
-                        ) : <span className="text-gray-700 text-xs italic">Non renseigné</span>}
+                        ) : <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632" }}>Non renseigne</span>}
                       </td>
-                      <td className="p-3 text-center">
+                      <td className="px-5 py-3 text-center">
                         {quotaAtteint ? (
-                          <span className="inline-flex items-center gap-1 bg-orange-500/20 text-orange-300 border border-orange-500/40 rounded px-2 py-0.5 text-xs font-bold">
-                            ⚠️ {s.hebdo}
+                          <span className="tabular-nums" style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "4px",
+                            padding: "2px 8px",
+                            borderRadius: "2px",
+                            fontSize: "11px",
+                            fontFamily: "'Hanken Grotesk', sans-serif",
+                            fontWeight: 600,
+                            color: "#C9A84C",
+                            background: "rgba(201,168,76,0.08)",
+                            border: "1px solid rgba(201,168,76,0.2)",
+                          }}>
+                            {s.hebdo}
                           </span>
                         ) : (
-                          <span className={`font-bold text-sm ${s.hebdo > 0 ? "text-orange-400" : "text-gray-600"}`}>{s.hebdo || "—"}</span>
+                          <span className="tabular-nums" style={{
+                            fontFamily: "'Hanken Grotesk', sans-serif",
+                            fontSize: "13px",
+                            fontWeight: 500,
+                            color: s.hebdo > 0 ? "#F0EDE6" : "#3A3632",
+                          }}>{s.hebdo || "--"}</span>
                         )}
                       </td>
-                      <td className="p-3 text-center">
-                        <span className={`font-black text-lg ${s.total > 0 ? "text-[#C9A84C]" : "text-gray-600"}`}>{s.total}</span>
+                      <td className="px-5 py-3 text-center">
+                        <span className="tabular-nums" style={{
+                          fontFamily: "'Cormorant Garamond', serif",
+                          fontSize: "20px",
+                          fontWeight: 600,
+                          color: s.total > 0 ? "#C9A84C" : "#3A3632",
+                        }}>{s.total}</span>
                       </td>
-                      <td className="p-3 text-center">
-                        {s.enAttente > 0 ? (
-                          <span className="inline-flex items-center justify-center w-7 h-7 bg-yellow-500/10 text-yellow-400 text-xs font-bold border border-yellow-500/20">{s.enAttente}</span>
-                        ) : <span className="text-gray-700 text-sm">—</span>}
-                      </td>
-                      <td className="p-3 text-center">
-                        {s.enCours > 0 ? (
-                          <span className="inline-flex items-center justify-center w-7 h-7 bg-blue-500/10 text-blue-400 text-xs font-bold border border-blue-500/20">{s.enCours}</span>
-                        ) : <span className="text-gray-700 text-sm">—</span>}
-                      </td>
-                      <td className="p-3 text-center">
-                        {s.valide > 0 ? (
-                          <span className="inline-flex items-center justify-center w-7 h-7 bg-green-500/10 text-green-400 text-xs font-bold border border-green-500/20">{s.valide}</span>
-                        ) : <span className="text-gray-700 text-sm">—</span>}
-                      </td>
-                      <td className="p-3 text-center">
-                        {s.refuse > 0 ? (
-                          <span className="inline-flex items-center justify-center w-7 h-7 bg-red-500/10 text-red-400 text-xs font-bold border border-red-500/20">{s.refuse}</span>
-                        ) : <span className="text-gray-700 text-sm">—</span>}
-                      </td>
+                      {[
+                        { val: s.enAttente, style: DOSSIER_STATUT_STYLES.en_cours },
+                        { val: s.enCours, style: DOSSIER_STATUT_STYLES.envoye },
+                        { val: s.valide, style: DOSSIER_STATUT_STYLES.valide },
+                        { val: s.refuse, style: DOSSIER_STATUT_STYLES.refuse },
+                      ].map((cell, i) => (
+                        <td key={i} className="px-5 py-3 text-center">
+                          {cell.val > 0 ? (
+                            <span className="tabular-nums" style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: "28px",
+                              height: "28px",
+                              borderRadius: "2px",
+                              fontSize: "11px",
+                              fontFamily: "'Hanken Grotesk', sans-serif",
+                              fontWeight: 600,
+                              color: cell.style.color,
+                              background: cell.style.bg,
+                              border: `1px solid ${cell.style.border}`,
+                            }}>{cell.val}</span>
+                          ) : <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#3A3632" }}>--</span>}
+                        </td>
+                      ))}
                     </tr>
                     );
                   })}
@@ -795,64 +1192,112 @@ export default function CourtiersDashboard() {
             </div>
 
             {statsCourtiers.length > 0 && (
-              <p className="text-gray-600 text-xs text-right">
-                Tri par nombre total de dossiers reçus (décroissant)
+              <p style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "11px",
+                color: "#3A3632",
+                textAlign: "right",
+              }}>
+                Tri par nombre total de dossiers recus (decroissant)
               </p>
             )}
-          </>
+          </div>
         )}
 
         {/* ── Onglet Dossiers Courtage ── */}
         {activeTab === "dossiers" && (
-          <>
-            {/* Stats dossiers */}
-            <div className="grid grid-cols-4 gap-4">
+          <div className="space-y-8">
+            {/* KPIs dossiers */}
+            <div className="grid grid-cols-4 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
               {[
-                { label: "Total", value: dossierStats.total, color: "text-white" },
-                { label: "Nouveaux", value: dossierStats.nouveaux, color: "text-blue-400" },
-                { label: "Envoyés", value: dossierStats.envoyes, color: "text-purple-400" },
-                { label: "Validés", value: dossierStats.valides, color: "text-green-400" },
-              ].map(s => (
-                <div key={s.label} className="bg-[#111] border border-gray-800 p-4 text-center">
-                  <div className={`text-2xl font-black ${s.color}`}>{s.value}</div>
-                  <div className="text-gray-500 text-xs mt-0.5">{s.label}</div>
+                { label: "Total", value: dossierStats.total, accent: false },
+                { label: "Nouveaux", value: dossierStats.nouveaux, accent: true },
+                { label: "Envoyes", value: dossierStats.envoyes, accent: false },
+                { label: "Valides", value: dossierStats.valides, accent: false },
+              ].map((s, i) => (
+                <div key={s.label} className="p-5" style={{ background: "#0A0A0A" }}>
+                  <p className="tabular-nums" style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: "32px",
+                    fontWeight: 600,
+                    color: s.accent ? "#C9A84C" : "#F0EDE6",
+                    lineHeight: 1,
+                    letterSpacing: "0.02em",
+                  }}>
+                    {s.value}
+                  </p>
+                  <p className="label-uppercase mt-2">{s.label}</p>
                 </div>
               ))}
             </div>
 
             {/* Filtres */}
             <div className="flex gap-3">
-              <div className="relative flex-1 max-w-xs">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                <Input
+              <div className="relative flex-1" style={{ maxWidth: "320px" }}>
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                <input
+                  type="text"
                   placeholder="Rechercher un lead..."
                   value={dossierSearch}
                   onChange={(e) => setDossierSearch(e.target.value)}
-                  className="bg-[#111] border-gray-700 text-white pl-9"
+                  className="w-full transition-colors duration-300 focus:outline-none"
+                  style={{
+                    background: "#111111",
+                    border: "1px solid #1E1E1E",
+                    borderRadius: "2px",
+                    paddingLeft: "36px",
+                    paddingRight: "14px",
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                    fontSize: "13px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    color: "#F0EDE6",
+                  }}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                 />
               </div>
-              <Select value={dossierStatut} onValueChange={setDossierStatut}>
-                <SelectTrigger className="bg-[#111] border-gray-700 text-white w-40">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-[#111] border-gray-700">
-                  <SelectItem value="tous">Tous les statuts</SelectItem>
-                  <SelectItem value="nouveau">Nouveaux</SelectItem>
-                  <SelectItem value="en_cours">En cours</SelectItem>
-                  <SelectItem value="envoye">Envoyés</SelectItem>
-                  <SelectItem value="valide">Validés</SelectItem>
-                  <SelectItem value="refuse">Refusés</SelectItem>
-                </SelectContent>
-              </Select>
+              <select
+                value={dossierStatut}
+                onChange={e => setDossierStatut(e.target.value)}
+                style={{
+                  background: "#111111",
+                  border: "1px solid #1E1E1E",
+                  borderRadius: "2px",
+                  padding: "10px 14px",
+                  fontSize: "13px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  color: "#F0EDE6",
+                  outline: "none",
+                  minWidth: "160px",
+                }}
+              >
+                <option value="tous">Tous les statuts</option>
+                <option value="nouveau">Nouveaux</option>
+                <option value="en_cours">En cours</option>
+                <option value="envoye">Envoyes</option>
+                <option value="valide">Valides</option>
+                <option value="refuse">Refuses</option>
+              </select>
             </div>
 
             {/* Liste dossiers */}
             <div className="space-y-2">
               {dossiers.length === 0 ? (
-                <div className="bg-[#111] border border-gray-800 p-12 text-center">
-                  <FolderOpen className="w-10 h-10 mx-auto mb-3 text-gray-700" />
-                  <p className="text-gray-500">Aucun dossier de courtage reçu</p>
-                  <p className="text-gray-600 text-xs mt-1">Les dossiers apparaissent ici quand les leads remplissent le Tableau de Courtage</p>
+                <div style={{
+                  background: "#111111",
+                  border: "1px solid #1E1E1E",
+                  borderRadius: "2px",
+                  padding: "48px 32px",
+                  textAlign: "center",
+                }}>
+                  <FolderOpen className="w-8 h-8 mx-auto" style={{ color: "#1E1E1E", strokeWidth: 1.5, marginBottom: "12px" }} />
+                  <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#6B6560" }}>
+                    Aucun dossier de courtage recu
+                  </p>
+                  <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632", marginTop: "4px" }}>
+                    Les dossiers apparaissent ici quand les leads remplissent le Tableau de Courtage
+                  </p>
                 </div>
               ) : (
                 dossiers.map((d: any) => (
@@ -865,7 +1310,7 @@ export default function CourtiersDashboard() {
                 ))
               )}
             </div>
-          </>
+          </div>
         )}
       </div>
     </DashboardLayout>

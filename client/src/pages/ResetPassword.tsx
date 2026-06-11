@@ -52,134 +52,165 @@ export default function ResetPassword() {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#111111",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
-      padding: "20px",
-    }}>
-      <div style={{ width: "100%", maxWidth: "420px" }}>
-        {/* Logo / Header */}
-        <div style={{ textAlign: "center", marginBottom: "40px" }}>
-          <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "64px",
-            height: "64px",
-            background: "linear-gradient(135deg, #C9A84C, #E8C96A)",
-            borderRadius: "16px",
-            marginBottom: "16px",
-          }}>
-            <span style={{ fontSize: "28px", fontWeight: "900", color: "#111", letterSpacing: "-1px" }}>Σ</span>
-          </div>
-          <h1 style={{
-            color: "#C9A84C",
-            fontSize: "22px",
-            fontWeight: "700",
-            letterSpacing: "3px",
-            margin: "0 0 4px",
-            textTransform: "uppercase",
-          }}>SIGMA FACTORY</h1>
-          <p style={{ color: "#666", fontSize: "13px", margin: 0 }}>Réinitialisation du mot de passe</p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center px-5"
+         style={{ background: "#0A0A0A" }}>
+      <div className="w-full" style={{ maxWidth: "380px" }}>
 
-        {/* Card */}
+        {/* ── Wordmark ── */}
+        <header className="text-center mb-16">
+          <h1 className="text-[#C9A84C] mb-3"
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "28px",
+                fontWeight: 700,
+                letterSpacing: "0.2em",
+                lineHeight: 1,
+              }}>
+            SIGMA FACTORY
+          </h1>
+          <div className="gold-rule mx-auto" style={{ width: "40px" }} />
+        </header>
+
+        {/* ── Card ── */}
         <div style={{
-          background: "#1a1a1a",
-          border: "1px solid #2a2a2a",
-          borderRadius: "16px",
-          padding: "36px 32px",
+          background: "#111111",
+          border: "1px solid #1E1E1E",
+          borderRadius: "2px",
+          padding: "40px 36px",
         }}>
           {invalidToken ? (
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: "40px", marginBottom: "16px" }}>⚠️</div>
-              <h2 style={{ color: "#fff", fontSize: "18px", fontWeight: "600", margin: "0 0 12px" }}>
+              <h2 style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "20px",
+                fontWeight: 600,
+                color: "#F0EDE6",
+                letterSpacing: "0.04em",
+                marginBottom: "12px",
+              }}>
                 Lien invalide
               </h2>
-              <p style={{ color: "#888", fontSize: "14px", lineHeight: "1.6", margin: "0 0 24px" }}>
+              <p style={{
+                color: "#6B6560",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                lineHeight: "1.6",
+                margin: "0 0 28px",
+              }}>
                 Ce lien de réinitialisation est invalide ou a expiré. Veuillez faire une nouvelle demande.
               </p>
               <a
                 href="/login"
+                className="transition-opacity duration-300 ease-out hover:opacity-80"
                 style={{
                   display: "inline-block",
-                  background: "linear-gradient(135deg, #C9A84C, #E8C96A)",
-                  color: "#111",
+                  background: "#C9A84C",
+                  color: "#0A0A0A",
                   textDecoration: "none",
-                  borderRadius: "8px",
-                  padding: "12px 28px",
-                  fontSize: "14px",
-                  fontWeight: "700",
+                  borderRadius: "2px",
+                  padding: "14px 28px",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase" as const,
                 }}
               >
-                Retour à la connexion
+                Retour a la connexion
               </a>
             </div>
           ) : success ? (
             <div style={{ textAlign: "center" }}>
-              <div style={{
-                width: "56px",
-                height: "56px",
-                background: "linear-gradient(135deg, #C9A84C, #E8C96A)",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 20px",
-                fontSize: "24px",
-              }}>✓</div>
-              <h2 style={{ color: "#fff", fontSize: "18px", fontWeight: "600", margin: "0 0 12px" }}>
-                Mot de passe modifié !
+              <h2 style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "20px",
+                fontWeight: 600,
+                color: "#F0EDE6",
+                letterSpacing: "0.04em",
+                marginBottom: "12px",
+              }}>
+                Mot de passe modifie
               </h2>
-              <p style={{ color: "#888", fontSize: "14px", lineHeight: "1.6", margin: "0 0 24px" }}>
-                Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter.
+              <p style={{
+                color: "#6B6560",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                lineHeight: "1.6",
+                margin: "0 0 8px",
+              }}>
+                Votre mot de passe a été réinitialisé avec succès.
+              </p>
+              <p style={{
+                color: "#6B6560",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                lineHeight: "1.6",
+                margin: "0 0 28px",
+              }}>
+                Vous pouvez maintenant vous connecter.
               </p>
               <a
                 href="/login"
+                className="transition-opacity duration-300 ease-out hover:opacity-80"
                 style={{
                   display: "inline-block",
-                  background: "linear-gradient(135deg, #C9A84C, #E8C96A)",
-                  color: "#111",
+                  background: "#C9A84C",
+                  color: "#0A0A0A",
                   textDecoration: "none",
-                  borderRadius: "8px",
-                  padding: "12px 28px",
-                  fontSize: "14px",
-                  fontWeight: "700",
+                  borderRadius: "2px",
+                  padding: "14px 28px",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase" as const,
                 }}
               >
-                Se connecter →
+                Se connecter
               </a>
             </div>
           ) : (
             <>
-              <h2 style={{ color: "#fff", fontSize: "18px", fontWeight: "600", margin: "0 0 8px", textAlign: "center" }}>
+              <h2 style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "20px",
+                fontWeight: 600,
+                color: "#F0EDE6",
+                letterSpacing: "0.04em",
+                marginBottom: "8px",
+                textAlign: "center",
+              }}>
                 Nouveau mot de passe
               </h2>
-              <p style={{ color: "#555", fontSize: "12px", textAlign: "center", margin: "0 0 24px" }}>
-                Choisissez un mot de passe sécurisé (8 caractères minimum)
+              <p style={{
+                color: "#6B6560",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                textAlign: "center",
+                margin: "0 0 32px",
+                lineHeight: "1.6",
+              }}>
+                Choisissez un mot de passe securise (8 caracteres minimum)
               </p>
 
               {error && (
                 <div style={{
-                  background: "#2a1515",
-                  border: "1px solid #5a2020",
-                  borderRadius: "8px",
+                  background: "#1A1010",
+                  border: "1px solid #3A1E1E",
+                  borderRadius: "2px",
                   padding: "12px 16px",
-                  marginBottom: "20px",
-                  color: "#ff6b6b",
+                  marginBottom: "24px",
+                  color: "#C06060",
                   fontSize: "13px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
                 }}>
                   {error}
                 </div>
               )}
 
               <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: "14px" }}>
-                  <label style={{ display: "block", color: "#999", fontSize: "12px", fontWeight: "500", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                <div className="mb-5">
+                  <label className="label-uppercase block mb-2">
                     Nouveau mot de passe
                   </label>
                   <input
@@ -188,24 +219,23 @@ export default function ResetPassword() {
                     onChange={e => setPassword(e.target.value)}
                     placeholder="8 caractères minimum"
                     autoComplete="new-password"
+                    className="w-full transition-colors duration-300 ease-out focus:outline-none"
                     style={{
-                      width: "100%",
-                      background: "#111",
-                      border: "1px solid #333",
-                      borderRadius: "8px",
+                      background: "#161616",
+                      border: "1px solid #1E1E1E",
+                      borderRadius: "2px",
                       padding: "12px 14px",
-                      color: "#fff",
+                      color: "#F0EDE6",
                       fontSize: "14px",
-                      outline: "none",
-                      boxSizing: "border-box",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
                     }}
                     onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                    onBlur={e => (e.target.style.borderColor = "#333")}
+                    onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                   />
                 </div>
 
-                <div style={{ marginBottom: "24px" }}>
-                  <label style={{ display: "block", color: "#999", fontSize: "12px", fontWeight: "500", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                <div className="mb-8">
+                  <label className="label-uppercase block mb-2">
                     Confirmer le mot de passe
                   </label>
                   <input
@@ -214,47 +244,77 @@ export default function ResetPassword() {
                     onChange={e => setConfirm(e.target.value)}
                     placeholder="••••••••"
                     autoComplete="new-password"
+                    className="w-full transition-colors duration-300 ease-out focus:outline-none"
                     style={{
-                      width: "100%",
-                      background: "#111",
-                      border: "1px solid #333",
-                      borderRadius: "8px",
+                      background: "#161616",
+                      border: "1px solid #1E1E1E",
+                      borderRadius: "2px",
                       padding: "12px 14px",
-                      color: "#fff",
+                      color: "#F0EDE6",
                       fontSize: "14px",
-                      outline: "none",
-                      boxSizing: "border-box",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
                     }}
                     onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                    onBlur={e => (e.target.style.borderColor = "#333")}
+                    onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={resetMutation.isPending}
+                  className="w-full transition-opacity duration-300 ease-out"
                   style={{
-                    width: "100%",
-                    background: resetMutation.isPending ? "#8a7030" : "linear-gradient(135deg, #C9A84C, #E8C96A)",
-                    color: "#111",
+                    background: resetMutation.isPending ? "#8A7535" : "#C9A84C",
+                    color: "#0A0A0A",
                     border: "none",
-                    borderRadius: "8px",
-                    padding: "13px",
-                    fontSize: "15px",
-                    fontWeight: "700",
+                    borderRadius: "2px",
+                    padding: "14px",
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase" as const,
                     cursor: resetMutation.isPending ? "not-allowed" : "pointer",
-                    letterSpacing: "0.5px",
+                    opacity: resetMutation.isPending ? 0.7 : 1,
                   }}
                 >
-                  {resetMutation.isPending ? "Réinitialisation..." : "Réinitialiser le mot de passe"}
+                  {resetMutation.isPending ? "Reinitialisation..." : "Reinitialiser le mot de passe"}
                 </button>
               </form>
+
+              <div style={{
+                borderTop: "1px solid #1E1E1E",
+                marginTop: "28px",
+                paddingTop: "24px",
+                textAlign: "center",
+              }}>
+                <a
+                  href="/login"
+                  className="transition-opacity duration-300 ease-out hover:opacity-70"
+                  style={{
+                    color: "#6B6560",
+                    fontSize: "12px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    textDecoration: "none",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  Retour a la connexion
+                </a>
+              </div>
             </>
           )}
         </div>
 
-        <p style={{ textAlign: "center", color: "#333", fontSize: "11px", marginTop: "24px" }}>
-          Sigma Factory — Application interne confidentielle
+        {/* ── Footer ── */}
+        <p className="text-center mt-10" style={{
+          color: "#1E1E1E",
+          fontSize: "10px",
+          fontFamily: "'Hanken Grotesk', sans-serif",
+          letterSpacing: "0.12em",
+          textTransform: "uppercase" as const,
+        }}>
+          Application interne confidentielle
         </p>
       </div>
     </div>

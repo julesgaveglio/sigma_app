@@ -6,39 +6,62 @@ import {
   Loader2, Search, X, ChevronRight, Download, RefreshCw,
   Phone, Mail, Clock, AlertTriangle, CheckCircle2,
   MessageSquare, User, Calendar, Paperclip, Upload,
-  FileText, Image, File, Trash2, ExternalLink
+  FileText, Image, File, Trash2, ExternalLink, ChevronLeft
 } from "lucide-react";
 import AdminNav from "@/components/AdminNav";
 import { AssigneeSelect } from "@/components/AssigneeSelect";
 
-const LOGO_FULL = "https://d2xsxph8kpxj0f.cloudfront.net/110243537/dS69FocN6akHjQivURfVvd/sigma-logo-full_c217e268.png";
-
 // ─── Configs ─────────────────────────────────────────────────────────────────
 
 const STATUTS = [
-  { value: "toutes", label: "Toutes", color: "text-zinc-300", dot: "bg-zinc-400" },
-  { value: "nouvelle", label: "Nouvelle", color: "text-blue-400", dot: "bg-blue-400" },
-  { value: "en_cours", label: "En cours", color: "text-yellow-400", dot: "bg-yellow-400" },
-  { value: "en_attente_retour", label: "En attente retour", color: "text-orange-400", dot: "bg-orange-400" },
-  { value: "standby", label: "Standby", color: "text-purple-400", dot: "bg-purple-400" },
-  { value: "effectuee", label: "Effectuée", color: "text-green-400", dot: "bg-green-400" },
-  { value: "annulee", label: "Annulée", color: "text-red-400", dot: "bg-red-400" },
+  { value: "toutes", label: "Toutes" },
+  { value: "nouvelle", label: "Nouvelle" },
+  { value: "en_cours", label: "En cours" },
+  { value: "en_attente_retour", label: "En attente retour" },
+  { value: "standby", label: "Standby" },
+  { value: "effectuee", label: "Effectuee" },
+  { value: "annulee", label: "Annulee" },
 ];
+
+const STATUT_STYLES: Record<string, { color: string; bg: string; border: string }> = {
+  nouvelle:          { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  en_cours:          { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+  en_attente_retour: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  standby:           { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  effectuee:         { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  annulee:           { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+};
 
 const PRIORITES_CONFIG = [
-  { value: "hyper_urgent", label: "Hyper Urgent", color: "text-red-400", bg: "bg-red-500/15 border-red-500/30", dot: "bg-red-500" },
-  { value: "tres_urgent", label: "Très Urgent", color: "text-orange-400", bg: "bg-orange-400/15 border-orange-400/30", dot: "bg-orange-400" },
-  { value: "urgent", label: "Urgent", color: "text-yellow-400", bg: "bg-yellow-400/15 border-yellow-400/30", dot: "bg-yellow-400" },
-  { value: "normal", label: "Normal", color: "text-green-400", bg: "bg-green-400/15 border-green-400/30", dot: "bg-green-400" },
-  { value: "faible", label: "Faible", color: "text-zinc-400", bg: "bg-zinc-400/10 border-zinc-400/20", dot: "bg-zinc-400" },
+  { value: "hyper_urgent", label: "Hyper Urgent" },
+  { value: "tres_urgent", label: "Tres Urgent" },
+  { value: "urgent", label: "Urgent" },
+  { value: "normal", label: "Normal" },
+  { value: "faible", label: "Faible" },
 ];
 
-function getPriorite(value: string) {
-  return PRIORITES_CONFIG.find(p => p.value === value) ?? PRIORITES_CONFIG[3];
+const PRIORITE_STYLES: Record<string, { color: string; bg: string; border: string }> = {
+  hyper_urgent: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+  tres_urgent:  { color: "#A04040", bg: "rgba(160,64,64,0.06)", border: "rgba(160,64,64,0.15)" },
+  urgent:       { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  normal:       { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  faible:       { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" },
+};
+
+function getPrioriteStyle(value: string) {
+  return PRIORITE_STYLES[value] ?? PRIORITE_STYLES.normal;
 }
 
-function getStatut(value: string) {
-  return STATUTS.find(s => s.value === value) ?? STATUTS[1];
+function getPrioriteLabel(value: string) {
+  return PRIORITES_CONFIG.find(p => p.value === value)?.label ?? "Normal";
+}
+
+function getStatutStyle(value: string) {
+  return STATUT_STYLES[value] ?? { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
+}
+
+function getStatutLabel(value: string) {
+  return STATUTS.find(s => s.value === value)?.label ?? value;
 }
 
 function formatDate(d: Date | string) {
@@ -52,9 +75,9 @@ function formatFileSize(bytes: number): string {
 }
 
 function getFileIcon(mimeType: string) {
-  if (mimeType.startsWith("image/")) return <Image className="w-4 h-4 text-blue-400 flex-shrink-0" />;
-  if (mimeType === "application/pdf") return <FileText className="w-4 h-4 text-red-400 flex-shrink-0" />;
-  return <File className="w-4 h-4 text-zinc-400 flex-shrink-0" />;
+  if (mimeType.startsWith("image/")) return <Image className="w-4 h-4 shrink-0" style={{ color: "#6B6560", strokeWidth: 1.5 }} />;
+  if (mimeType === "application/pdf") return <FileText className="w-4 h-4 shrink-0" style={{ color: "#6B6560", strokeWidth: 1.5 }} />;
+  return <File className="w-4 h-4 shrink-0" style={{ color: "#6B6560", strokeWidth: 1.5 }} />;
 }
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -74,6 +97,52 @@ function fileToBase64(file: File): Promise<string> {
   });
 }
 
+// ─── Badge Components ────────────────────────────────────────────────────────
+
+function StatutBadge({ statut }: { statut: string }) {
+  const s = getStatutStyle(statut);
+  return (
+    <span style={{
+      display: "inline-flex",
+      alignItems: "center",
+      padding: "2px 8px",
+      borderRadius: "2px",
+      fontSize: "10px",
+      fontFamily: "'Hanken Grotesk', sans-serif",
+      fontWeight: 500,
+      letterSpacing: "0.06em",
+      textTransform: "uppercase" as const,
+      color: s.color,
+      background: s.bg,
+      border: `1px solid ${s.border}`,
+    }}>
+      {getStatutLabel(statut)}
+    </span>
+  );
+}
+
+function PrioriteBadge({ priorite }: { priorite: string }) {
+  const s = getPrioriteStyle(priorite);
+  return (
+    <span style={{
+      display: "inline-flex",
+      alignItems: "center",
+      padding: "2px 8px",
+      borderRadius: "2px",
+      fontSize: "10px",
+      fontFamily: "'Hanken Grotesk', sans-serif",
+      fontWeight: 500,
+      letterSpacing: "0.06em",
+      textTransform: "uppercase" as const,
+      color: s.color,
+      background: s.bg,
+      border: `1px solid ${s.border}`,
+    }}>
+      {getPrioriteLabel(priorite)}
+    </span>
+  );
+}
+
 // ─── Documents Section ────────────────────────────────────────────────────────
 
 function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demandeNom: string }) {
@@ -82,7 +151,7 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
   const uploadMutation = trpc.demandes.uploadDocument.useMutation({
     onSuccess: () => {
       utils.demandes.listDocuments.invalidate({ demandeId });
-      toast.success("Document envoyé avec succès");
+      toast.success("Document envoye avec succes");
       setUploadFiles([]);
       setUploading(false);
     },
@@ -91,7 +160,7 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
   const deleteMutation = trpc.demandes.deleteDocument.useMutation({
     onSuccess: () => {
       utils.demandes.listDocuments.invalidate({ demandeId });
-      toast.success("Document supprimé");
+      toast.success("Document supprime");
     },
     onError: (e) => toast.error(e.message),
   });
@@ -105,8 +174,8 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
     if (!files) return;
     const newFiles: File[] = [];
     for (const file of Array.from(files)) {
-      if (file.size > MAX_FILE_SIZE) { toast.error(`${file.name} dépasse 10 Mo`); continue; }
-      if (!ACCEPTED_TYPES.includes(file.type)) { toast.error(`${file.name} : format non supporté`); continue; }
+      if (file.size > MAX_FILE_SIZE) { toast.error(`${file.name} depasse 10 Mo`); continue; }
+      if (!ACCEPTED_TYPES.includes(file.type)) { toast.error(`${file.name} : format non supporte`); continue; }
       newFiles.push(file);
     }
     setUploadFiles(prev => [...prev, ...newFiles]);
@@ -140,52 +209,49 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
   const hannaDocs = docs?.filter(d => d.envoyePar === "hanna") ?? [];
 
   return (
-    <div className="border-t border-zinc-800 pt-5 space-y-4">
-      <div className="flex items-center gap-2">
-        <Paperclip className="w-4 h-4 text-[#C9A84C]" />
-        <span className="text-[#C9A84C] text-xs font-semibold uppercase tracking-widest">Documents</span>
+    <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "20px" }}>
+      <div className="flex items-center gap-2 mb-4">
+        <Paperclip className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+        <span className="label-uppercase" style={{ color: "#F0EDE6" }}>Documents</span>
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-4">
-          <Loader2 className="w-5 h-5 animate-spin text-[#C9A84C]" />
+          <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
         </div>
       ) : (
-        <>
-          {/* Documents reçus du lead */}
+        <div className="space-y-5">
+          {/* Documents recus du lead */}
           <div>
-            <div className="text-zinc-500 text-xs font-medium mb-2 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-blue-400 inline-block" />
-              Documents reçus du lead ({leadDocs.length})
-            </div>
+            <p className="label-uppercase mb-2" style={{ fontSize: "10px" }}>
+              Documents recus du lead ({leadDocs.length})
+            </p>
             {leadDocs.length === 0 ? (
-              <p className="text-zinc-600 text-xs italic">Aucun document joint par le lead</p>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun document joint par le lead</p>
             ) : (
               <div className="space-y-2">
                 {leadDocs.map(doc => (
-                  <div key={doc.id} className="flex items-center gap-3 bg-[#1a1a1a] rounded-lg px-3 py-2.5 border border-zinc-800">
+                  <div key={doc.id} className="flex items-center gap-3 p-3"
+                    style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
                     {getFileIcon(doc.mimeType)}
                     <div className="flex-1 min-w-0">
-                      <p className="text-zinc-200 text-xs truncate font-medium">{doc.nom}</p>
-                      <p className="text-zinc-500 text-xs">{formatFileSize(doc.taille)} · {new Date(doc.uploadedAt).toLocaleDateString("fr-FR")}</p>
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{doc.nom}</p>
+                      <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{formatFileSize(doc.taille)} · {new Date(doc.uploadedAt).toLocaleDateString("fr-FR")}</p>
                     </div>
-                    <a
-                      href={doc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#C9A84C] hover:text-[#F0D080] flex-shrink-0"
-                      title="Ouvrir"
-                    >
-                      <ExternalLink className="w-4 h-4" />
+                    <a href={doc.url} target="_blank" rel="noopener noreferrer"
+                      className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }} title="Ouvrir">
+                      <ExternalLink className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                     </a>
                     <button
                       onClick={() => {
                         if (window.confirm(`Supprimer "${doc.nom}" ?`)) deleteMutation.mutate({ documentId: doc.id });
                       }}
-                      className="text-zinc-600 hover:text-red-400 flex-shrink-0"
+                      className="transition-colors duration-300" style={{ color: "#3A3632" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
                       title="Supprimer"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                     </button>
                   </div>
                 ))}
@@ -193,40 +259,37 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
             )}
           </div>
 
-          {/* Documents envoyés par Hanna */}
+          {/* Documents envoyes par Hanna */}
           <div>
-            <div className="text-zinc-500 text-xs font-medium mb-2 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#C9A84C] inline-block" />
-              Documents envoyés par Hanna ({hannaDocs.length})
-            </div>
+            <p className="label-uppercase mb-2" style={{ fontSize: "10px" }}>
+              Documents envoyes par Hanna ({hannaDocs.length})
+            </p>
             {hannaDocs.length === 0 ? (
-              <p className="text-zinc-600 text-xs italic">Aucun document envoyé</p>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun document envoye</p>
             ) : (
               <div className="space-y-2">
                 {hannaDocs.map(doc => (
-                  <div key={doc.id} className="flex items-center gap-3 bg-[#1a1a1a] rounded-lg px-3 py-2.5 border border-[#C9A84C]/20">
+                  <div key={doc.id} className="flex items-center gap-3 p-3"
+                    style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
                     {getFileIcon(doc.mimeType)}
                     <div className="flex-1 min-w-0">
-                      <p className="text-zinc-200 text-xs truncate font-medium">{doc.nom}</p>
-                      <p className="text-zinc-500 text-xs">{formatFileSize(doc.taille)} · {new Date(doc.uploadedAt).toLocaleDateString("fr-FR")}</p>
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{doc.nom}</p>
+                      <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{formatFileSize(doc.taille)} · {new Date(doc.uploadedAt).toLocaleDateString("fr-FR")}</p>
                     </div>
-                    <a
-                      href={doc.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#C9A84C] hover:text-[#F0D080] flex-shrink-0"
-                      title="Ouvrir"
-                    >
-                      <ExternalLink className="w-4 h-4" />
+                    <a href={doc.url} target="_blank" rel="noopener noreferrer"
+                      className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }} title="Ouvrir">
+                      <ExternalLink className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                     </a>
                     <button
                       onClick={() => {
                         if (window.confirm(`Supprimer "${doc.nom}" ?`)) deleteMutation.mutate({ documentId: doc.id });
                       }}
-                      className="text-zinc-600 hover:text-red-400 flex-shrink-0"
+                      className="transition-colors duration-300" style={{ color: "#3A3632" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
                       title="Supprimer"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                     </button>
                   </div>
                 ))}
@@ -235,19 +298,29 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
           </div>
 
           {/* Zone d'envoi de documents par Hanna */}
-          <div className="bg-[#1a1a1a] rounded-xl p-4 border border-[#C9A84C]/10 space-y-3">
-            <div className="text-zinc-300 text-xs font-semibold flex items-center gap-2">
-              <Upload className="w-3.5 h-3.5 text-[#C9A84C]" />
-              Envoyer un document à {demandeNom}
+          <div style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "16px" }}>
+            <div className="flex items-center gap-2 mb-3">
+              <Upload className="w-3.5 h-3.5" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                Envoyer un document a {demandeNom}
+              </span>
             </div>
 
             {/* Drop zone */}
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border border-dashed border-zinc-700 rounded-lg p-4 text-center cursor-pointer hover:border-[#C9A84C]/50 hover:bg-[#C9A84C]/5 transition-all"
+              className="cursor-pointer transition-colors duration-300"
+              style={{
+                border: "1px dashed #1E1E1E",
+                borderRadius: "2px",
+                padding: "16px",
+                textAlign: "center",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = "#3A3632")}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
             >
-              <Upload className="w-5 h-5 text-zinc-500 mx-auto mb-1" />
-              <p className="text-zinc-500 text-xs">Cliquez ou glissez un fichier</p>
+              <Upload className="w-4 h-4 mx-auto mb-1" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Cliquez ou glissez un fichier</p>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -258,19 +331,22 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
               />
             </div>
 
-            {/* Fichiers sélectionnés */}
+            {/* Fichiers selectionnes */}
             {uploadFiles.length > 0 && (
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 mt-3">
                 {uploadFiles.map((file, i) => (
-                  <div key={i} className="flex items-center gap-2 bg-[#111] rounded-lg px-3 py-2 border border-zinc-800">
+                  <div key={i} className="flex items-center gap-2 p-2"
+                    style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
                     {getFileIcon(file.type)}
-                    <span className="flex-1 text-zinc-300 text-xs truncate">{file.name}</span>
-                    <span className="text-zinc-500 text-xs flex-shrink-0">{formatFileSize(file.size)}</span>
+                    <span className="flex-1 min-w-0" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{file.name}</span>
+                    <span className="tabular-nums shrink-0" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{formatFileSize(file.size)}</span>
                     <button
                       onClick={() => setUploadFiles(prev => prev.filter((_, j) => j !== i))}
-                      className="text-zinc-600 hover:text-red-400"
+                      className="transition-colors duration-300" style={{ color: "#3A3632" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                     </button>
                   </div>
                 ))}
@@ -279,17 +355,21 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
 
             {/* Progression */}
             {uploading && (
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2 text-xs text-zinc-400">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#C9A84C]" />
-                  Envoi en cours... ({uploadProgress.done}/{uploadProgress.total})
+              <div className="mt-3 space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "#6B6560" }} />
+                  <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>
+                    Envoi en cours... ({uploadProgress.done}/{uploadProgress.total})
+                  </span>
                 </div>
-                <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
+                <div style={{ height: "2px", background: "#1E1E1E", borderRadius: "1px", overflow: "hidden" }}>
                   <div
-                    className="h-full rounded-full transition-all"
+                    className="transition-all duration-300"
                     style={{
+                      height: "100%",
+                      borderRadius: "1px",
                       width: `${uploadProgress.total > 0 ? (uploadProgress.done / uploadProgress.total) * 100 : 0}%`,
-                      background: "linear-gradient(90deg, #C9A84C, #F0D080)",
+                      background: "#C9A84C",
                     }}
                   />
                 </div>
@@ -299,20 +379,31 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
             <button
               onClick={handleSendDocs}
               disabled={uploadFiles.length === 0 || uploading}
-              className="w-full py-2.5 rounded-lg font-semibold text-black text-xs flex items-center justify-center gap-1.5 disabled:opacity-40"
-              style={{ background: "linear-gradient(135deg, #C9A84C, #F0D080, #C9A84C)" }}
+              className="w-full flex items-center justify-center gap-1.5 mt-3 transition-colors duration-300 disabled:cursor-not-allowed"
+              style={{
+                padding: "10px 20px",
+                background: uploadFiles.length === 0 || uploading ? "#8A7535" : "#C9A84C",
+                color: "#0A0A0A",
+                fontSize: "11px",
+                fontWeight: 500,
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase" as const,
+                borderRadius: "2px",
+                border: "none",
+              }}
             >
               {uploading ? (
                 <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Envoi...</>
               ) : (
-                <><Upload className="w-3.5 h-3.5" /> Envoyer {uploadFiles.length > 0 ? `${uploadFiles.length} fichier${uploadFiles.length > 1 ? "s" : ""}` : "les fichiers"}</>
+                <><Upload className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> Envoyer {uploadFiles.length > 0 ? `${uploadFiles.length} fichier${uploadFiles.length > 1 ? "s" : ""}` : "les fichiers"}</>
               )}
             </button>
-            <p className="text-zinc-600 text-xs text-center">
-              Un email sera automatiquement envoyé à {demandeNom}
+            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", textAlign: "center", marginTop: "8px" }}>
+              Un email sera automatiquement envoye a {demandeNom}
             </p>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
@@ -330,7 +421,7 @@ function DetailPanel({ id, onClose }: { id: number; onClose: () => void }) {
 
   const updateMutation = trpc.demandes.updateStatut.useMutation({
     onSuccess: () => {
-      toast.success("Demande mise à jour");
+      toast.success("Demande mise a jour");
       utils.demandes.list.invalidate();
       utils.demandes.byId.invalidate({ id });
       setSaving(false);
@@ -350,87 +441,133 @@ function DetailPanel({ id, onClose }: { id: number; onClose: () => void }) {
     updateMutation.mutate({ id, statut, notesInternes: notes, assigneA: assigne });
   };
 
-  const prioriteInfo = getPriorite(demande?.priorite ?? "normal");
-
   return (
-    <div className="fixed inset-0 z-50 flex">
-      {/* Backdrop */}
-      <div className="flex-1 bg-black/60" onClick={onClose} />
-      {/* Panel */}
-      <div className="w-full max-w-lg bg-[#0f0f0f] border-l border-[#C9A84C]/20 flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-start justify-end" style={{ background: "rgba(0,0,0,0.7)" }} onClick={onClose}>
+      <div className="w-full h-full overflow-y-auto flex flex-col" style={{ maxWidth: "520px", background: "#111111", borderLeft: "1px solid #1E1E1E" }} onClick={e => e.stopPropagation()}>
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800">
-          <h2 className="text-white font-bold text-lg">Détail de la demande</h2>
-          <button onClick={onClose} className="text-zinc-400 hover:text-white">
-            <X className="w-5 h-5" />
+        <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between" style={{ background: "#111111", borderBottom: "1px solid #1E1E1E" }}>
+          <div>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>
+              Detail de la demande
+            </h2>
+            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>
+              Fiche #{id}
+            </p>
+          </div>
+          <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }}>
+            <X className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </button>
         </div>
 
         {isLoading ? (
           <div className="flex-1 flex items-center justify-center">
-            <Loader2 className="w-8 h-8 animate-spin text-[#C9A84C]" />
+            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
           </div>
         ) : demande ? (
-          <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
-            {/* Priorité badge */}
-            <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-semibold ${prioriteInfo.bg} ${prioriteInfo.color}`}>
-              <span className={`w-2 h-2 rounded-full ${prioriteInfo.dot}`} />
-              {prioriteInfo.label}
+          <div className="p-6 space-y-8">
+            {/* Priorite */}
+            <div>
+              <p className="label-uppercase mb-2">Priorite</p>
+              <PrioriteBadge priorite={demande.priorite} />
             </div>
 
             {/* Lead info */}
-            <div className="bg-[#1a1a1a] rounded-xl p-4 space-y-2">
-              <div className="flex items-center gap-2 text-white font-semibold text-base">
-                <User className="w-4 h-4 text-[#C9A84C]" />
-                {demande.prenom} {demande.nom}
-              </div>
-              <div className="flex items-center gap-2 text-zinc-400 text-sm">
-                <Phone className="w-3.5 h-3.5" />
-                <a href={`tel:${demande.telephone}`} className="hover:text-[#C9A84C]">{demande.telephone}</a>
-              </div>
-              <div className="flex items-center gap-2 text-zinc-400 text-sm">
-                <Mail className="w-3.5 h-3.5" />
-                <a href={`mailto:${demande.email}`} className="hover:text-[#C9A84C]">{demande.email}</a>
-              </div>
-              <div className="flex items-center gap-2 text-zinc-500 text-xs">
-                <Calendar className="w-3.5 h-3.5" />
-                {formatDate(demande.createdAt)}
-              </div>
-              {demande.createdBy && (
-                <div className="flex items-center gap-2 text-zinc-500 text-xs">
-                  <User className="w-3.5 h-3.5" />
-                  Créé par : {demande.createdBy}
+            <div>
+              <p className="label-uppercase mb-3">Contact</p>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <User className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                  <div>
+                    <p className="label-uppercase" style={{ marginBottom: "2px" }}>Nom complet</p>
+                    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{demande.prenom} {demande.nom}</p>
+                  </div>
                 </div>
-              )}
+                <div className="flex items-start gap-3">
+                  <Phone className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                  <div>
+                    <p className="label-uppercase" style={{ marginBottom: "2px" }}>Telephone</p>
+                    <a href={`tel:${demande.telephone}`} style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", textDecoration: "none" }}
+                      className="transition-opacity duration-300 hover:opacity-70">{demande.telephone}</a>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Mail className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                  <div>
+                    <p className="label-uppercase" style={{ marginBottom: "2px" }}>Email</p>
+                    <a href={`mailto:${demande.email}`} style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", textDecoration: "none" }}
+                      className="transition-opacity duration-300 hover:opacity-70">{demande.email}</a>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Calendar className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                  <div>
+                    <p className="label-uppercase" style={{ marginBottom: "2px" }}>Date de creation</p>
+                    <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{formatDate(demande.createdAt)}</p>
+                  </div>
+                </div>
+                {demande.createdBy && (
+                  <div className="flex items-start gap-3">
+                    <User className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                    <div>
+                      <p className="label-uppercase" style={{ marginBottom: "2px" }}>Cree par</p>
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{demande.createdBy}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Sujet & demande */}
-            <div className="space-y-2">
-              <div className="text-[#C9A84C] text-xs font-semibold uppercase tracking-widest">Sujet</div>
-              <div className="text-white font-medium">{demande.sujet}</div>
+            <div>
+              <p className="label-uppercase mb-2">Sujet</p>
+              <p style={{ fontSize: "14px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{demande.sujet}</p>
             </div>
-            <div className="space-y-2">
-              <div className="text-[#C9A84C] text-xs font-semibold uppercase tracking-widest">Description</div>
-              <div className="text-zinc-300 text-sm leading-relaxed bg-[#1a1a1a] rounded-xl p-4 whitespace-pre-wrap">{demande.demande}</div>
+            <div>
+              <p className="label-uppercase mb-2">Description</p>
+              <div style={{
+                background: "#161616",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                padding: "16px",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                color: "#F0EDE6",
+                lineHeight: "1.6",
+                whiteSpace: "pre-wrap" as const,
+              }}>
+                {demande.demande}
+              </div>
             </div>
 
-            {/* ─── SECTION DOCUMENTS ─── */}
+            {/* Documents */}
             <DocumentsSection
               demandeId={id}
               demandeNom={`${demande.prenom} ${demande.nom}`}
             />
 
             {/* Gestion */}
-            <div className="border-t border-zinc-800 pt-5 space-y-4">
-              <div className="text-[#C9A84C] text-xs font-semibold uppercase tracking-widest">Gestion Hanna</div>
+            <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "20px" }}>
+              <p className="label-uppercase mb-4">Gestion Hanna</p>
 
               {/* Statut */}
-              <div>
-                <label className="block text-zinc-400 text-xs mb-1.5">Statut</label>
+              <div className="mb-4">
+                <p className="label-uppercase mb-1.5" style={{ fontSize: "10px" }}>Statut</p>
                 <select
                   value={statut}
                   onChange={e => setStatut(e.target.value)}
-                  className="w-full bg-[#1a1a1a] border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-[#C9A84C]"
+                  style={{
+                    width: "100%",
+                    background: "#161616",
+                    border: "1px solid #1E1E1E",
+                    borderRadius: "2px",
+                    padding: "10px 14px",
+                    fontSize: "13px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    color: "#F0EDE6",
+                    outline: "none",
+                  }}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                 >
                   {STATUTS.filter(s => s.value !== "toutes").map(s => (
                     <option key={s.value} value={s.value}>{s.label}</option>
@@ -438,42 +575,68 @@ function DetailPanel({ id, onClose }: { id: number; onClose: () => void }) {
                 </select>
               </div>
 
-              {/* Assigné à */}
-              <div>
-                <label className="block text-zinc-400 text-xs mb-1.5">Assigné à</label>
+              {/* Assigne a */}
+              <div className="mb-4">
+                <p className="label-uppercase mb-1.5" style={{ fontSize: "10px" }}>Assigne a</p>
                 <AssigneeSelect
                   mode="team"
                   value={assigne}
                   onChange={(val) => setAssigne(val)}
-                  placeholder="— Sélectionner un membre —"
+                  placeholder="-- Selectionner un membre --"
                   className="w-full"
                 />
               </div>
 
               {/* Notes internes */}
-              <div>
-                <label className="block text-zinc-400 text-xs mb-1.5">Notes internes</label>
+              <div className="mb-4">
+                <p className="label-uppercase mb-1.5" style={{ fontSize: "10px" }}>Notes internes</p>
                 <textarea
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
                   rows={4}
                   placeholder="Ajouter une note interne..."
-                  className="w-full bg-[#1a1a1a] border border-zinc-700 rounded-lg px-3 py-2.5 text-white text-sm placeholder-zinc-500 focus:outline-none focus:border-[#C9A84C] resize-none"
+                  style={{
+                    width: "100%",
+                    background: "#161616",
+                    border: "1px solid #1E1E1E",
+                    borderRadius: "2px",
+                    padding: "10px 12px",
+                    fontSize: "13px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    color: "#F0EDE6",
+                    resize: "none",
+                    outline: "none",
+                  }}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                 />
               </div>
 
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full py-3 rounded-lg font-semibold text-black text-sm flex items-center justify-center gap-2 disabled:opacity-60"
-                style={{ background: "linear-gradient(135deg, #C9A84C, #F0D080, #C9A84C)" }}
+                className="w-full flex items-center justify-center gap-2 transition-colors duration-300 disabled:cursor-not-allowed"
+                style={{
+                  padding: "14px 28px",
+                  background: saving ? "#8A7535" : "#C9A84C",
+                  color: "#0A0A0A",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase" as const,
+                  borderRadius: "2px",
+                  border: "none",
+                }}
               >
                 {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Enregistrement...</> : "Enregistrer les modifications"}
               </button>
             </div>
           </div>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-zinc-500">Demande introuvable</div>
+          <div className="flex-1 flex items-center justify-center">
+            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Demande introuvable</p>
+          </div>
         )}
       </div>
     </div>
@@ -496,7 +659,7 @@ export default function CustomCareDashboard() {
   });
   const handleDelete = (e: React.MouseEvent, id: number, nom: string) => {
     e.stopPropagation();
-    if (window.confirm(`Supprimer la demande de ${nom} ? Cette action est irréversible.`)) {
+    if (window.confirm(`Supprimer la demande de ${nom} ? Cette action est irreversible.`)) {
       deleteMutation.mutate({ id });
     }
   };
@@ -515,7 +678,7 @@ export default function CustomCareDashboard() {
     const result = await exportQuery.refetch();
     if (!result.data) return;
     const rows = result.data;
-    const headers = ["ID", "Nom", "Prénom", "Téléphone", "Email", "Sujet", "Priorité", "Statut", "Assigné à", "Notes", "Date"];
+    const headers = ["ID", "Nom", "Prenom", "Telephone", "Email", "Sujet", "Priorite", "Statut", "Assigne a", "Notes", "Date"];
     const csv = [
       headers.join(";"),
       ...rows.map(r => [
@@ -535,212 +698,300 @@ export default function CustomCareDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#C9A84C]" />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
       </div>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center gap-6 px-4">
-        <img src={LOGO_FULL} alt="Sigma Factory" className="h-14 object-contain" />
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-2">Accès réservé</h1>
-          <p className="text-zinc-400 mb-6">Connectez-vous pour accéder au dashboard Custom Care</p>
-          <a href="/login" className="inline-block px-6 py-3 rounded-lg font-semibold text-black"
-            style={{ background: "linear-gradient(135deg, #C9A84C, #F0D080, #C9A84C)" }}>
-            Se connecter
-          </a>
-        </div>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-6" style={{ background: "#0A0A0A" }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.04em" }}>Acces reserve</h2>
+        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Connectez-vous pour acceder au dashboard Custom Care.</p>
+        <a href="/login" style={{
+          padding: "12px 28px",
+          background: "#C9A84C",
+          color: "#0A0A0A",
+          fontSize: "11px",
+          fontWeight: 500,
+          fontFamily: "'Hanken Grotesk', sans-serif",
+          letterSpacing: "0.1em",
+          textTransform: "uppercase" as const,
+          textDecoration: "none",
+          borderRadius: "2px",
+        }}>Se connecter</a>
       </div>
     );
   }
 
   const total = data?.total ?? 0;
   const items = data?.items ?? [];
-
-  // Stats rapides
-  const stats = [
-    { label: "Total", value: total, icon: MessageSquare, color: "text-zinc-300" },
-    { label: "Nouvelles", value: items.filter(i => i.statut === "nouvelle").length, icon: AlertTriangle, color: "text-blue-400" },
-    { label: "En cours", value: items.filter(i => i.statut === "en_cours").length, icon: Clock, color: "text-yellow-400" },
-    { label: "Effectuées", value: items.filter(i => i.statut === "effectuee").length, icon: CheckCircle2, color: "text-green-400" },
-  ];
+  const totalPages = Math.ceil(total / LIMIT);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
       <AdminNav />
+
       {/* Toolbar */}
-      <div className="border-b border-zinc-800 bg-[#0f0f0f]">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-end gap-3">
-          <button onClick={() => refetch()} className="p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800">
-            <RefreshCw className="w-4 h-4" />
-          </button>
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#C9A84C]/30 text-[#C9A84C] text-sm font-medium hover:bg-[#C9A84C]/10"
+      <div style={{ borderBottom: "1px solid #1E1E1E" }}>
+        <div className="flex items-center justify-end gap-2 px-5 py-2.5" style={{ maxWidth: "1280px", margin: "0 auto" }}>
+          <button onClick={() => refetch()} className="p-2 transition-colors duration-300"
+            style={{ color: "#3A3632", border: "1px solid #1E1E1E", borderRadius: "2px", background: "transparent" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#6B6560"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#3A3632"; }}
           >
-            <Download className="w-4 h-4" />
-            Export CSV
+            <RefreshCw className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+          </button>
+          <button onClick={handleExport} className="flex items-center gap-2 px-4 py-2 transition-colors duration-300"
+            style={{
+              fontSize: "11px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontWeight: 500,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase" as const,
+              color: "#6B6560",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              background: "transparent",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
+          >
+            <Download className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> Export CSV
           </button>
           <a
             href="/customcare"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-black text-sm"
-            style={{ background: "linear-gradient(135deg, #C9A84C, #F0D080, #C9A84C)" }}
+            style={{
+              padding: "8px 20px",
+              background: "#C9A84C",
+              color: "#0A0A0A",
+              fontSize: "11px",
+              fontWeight: 500,
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase" as const,
+              textDecoration: "none",
+              borderRadius: "2px",
+            }}
           >
             + Nouvelle demande
           </a>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
-        {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {stats.map(s => (
-            <div key={s.label} className="bg-[#111] border border-zinc-800 rounded-xl p-4 flex items-center gap-3">
-              <s.icon className={`w-8 h-8 ${s.color}`} />
-              <div>
-                <div className="text-2xl font-bold text-white">{s.value}</div>
-                <div className="text-zinc-500 text-xs">{s.label}</div>
-              </div>
+      <div className="px-5 py-8" style={{ maxWidth: "1280px", margin: "0 auto" }}>
+
+        {/* KPIs */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mb-10" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+          {[
+            { label: "Total demandes", value: total, highlight: true },
+            { label: "Nouvelles", value: items.filter(i => i.statut === "nouvelle").length, highlight: false },
+            { label: "En cours", value: items.filter(i => i.statut === "en_cours").length, highlight: false },
+            { label: "Effectuees", value: items.filter(i => i.statut === "effectuee").length, highlight: false },
+          ].map((stat) => (
+            <div key={stat.label} className="p-5" style={{ background: "#0A0A0A" }}>
+              <p className="tabular-nums" style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "32px",
+                fontWeight: 600,
+                color: stat.highlight ? "#C9A84C" : "#F0EDE6",
+                lineHeight: 1,
+                letterSpacing: "0.02em",
+              }}>
+                {stat.value}
+              </p>
+              <p className="label-uppercase mt-2">{stat.label}</p>
             </div>
           ))}
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-3 items-center">
-          <div className="relative flex-1 min-w-48">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+        {/* Filtres */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-5">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
             <input
               value={search}
               onChange={e => { setSearch(e.target.value); setPage(0); }}
               placeholder="Rechercher un lead, sujet..."
-              className="w-full bg-[#111] border border-zinc-700 rounded-lg pl-9 pr-4 py-2.5 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-[#C9A84C]"
+              className="w-full transition-colors duration-300 focus:outline-none"
+              style={{
+                background: "#111111",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                paddingLeft: "36px",
+                paddingRight: "14px",
+                paddingTop: "10px",
+                paddingBottom: "10px",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                color: "#F0EDE6",
+              }}
+              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
             />
             {search && (
-              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white">
-                <X className="w-4 h-4" />
+              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632" }}>
+                <X className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </button>
             )}
           </div>
           <select
             value={statutFilter}
             onChange={e => { setStatutFilter(e.target.value); setPage(0); }}
-            className="bg-[#111] border border-zinc-700 rounded-lg px-3 py-2.5 text-zinc-300 text-sm focus:outline-none focus:border-[#C9A84C]"
+            style={{
+              background: "#111111",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              padding: "10px 14px",
+              fontSize: "13px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              color: "#F0EDE6",
+              outline: "none",
+            }}
           >
             {STATUTS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
           <select
             value={prioriteFilter}
             onChange={e => { setPrioriteFilter(e.target.value); setPage(0); }}
-            className="bg-[#111] border border-zinc-700 rounded-lg px-3 py-2.5 text-zinc-300 text-sm focus:outline-none focus:border-[#C9A84C]"
+            style={{
+              background: "#111111",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              padding: "10px 14px",
+              fontSize: "13px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              color: "#F0EDE6",
+              outline: "none",
+            }}
           >
-            <option value="toutes">Toutes priorités</option>
+            <option value="toutes">Toutes priorites</option>
             {PRIORITES_CONFIG.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
           </select>
         </div>
 
-        {/* Table */}
-        <div className="bg-[#111] border border-zinc-800 rounded-xl overflow-hidden">
+        {/* Tableau */}
+        <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
           {isLoading ? (
-            <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-8 h-8 animate-spin text-[#C9A84C]" />
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
             </div>
           ) : items.length === 0 ? (
-            <div className="text-center py-16 text-zinc-500">
-              <MessageSquare className="w-10 h-10 mx-auto mb-3 opacity-30" />
-              <p>Aucune demande trouvée</p>
+            <div className="text-center py-20">
+              <MessageSquare className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
+              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucune demande trouvee</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-zinc-800 text-left">
-                    <th className="px-4 py-3 text-zinc-500 text-xs font-semibold uppercase tracking-wider">Lead</th>
-                    <th className="px-4 py-3 text-zinc-500 text-xs font-semibold uppercase tracking-wider">Sujet</th>
-                    <th className="px-4 py-3 text-zinc-500 text-xs font-semibold uppercase tracking-wider">Priorité</th>
-                    <th className="px-4 py-3 text-zinc-500 text-xs font-semibold uppercase tracking-wider">Statut</th>
-                    <th className="px-4 py-3 text-zinc-500 text-xs font-semibold uppercase tracking-wider">Assigné</th>
-                    <th className="px-4 py-3 text-zinc-500 text-xs font-semibold uppercase tracking-wider">Date</th>
-                    <th className="px-4 py-3"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-800/50">
-                  {items.map(item => {
-                    const prio = getPriorite(item.priorite);
-                    const stat = getStatut(item.statut);
-                    return (
+            <>
+              {/* Desktop table */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                      {["Lead", "Sujet", "Priorite", "Statut", "Assigne", "Date", ""].map(h => (
+                        <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "#0D0D0D" }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map(item => (
                       <tr
                         key={item.id}
                         onClick={() => setSelectedId(item.id)}
-                        className="hover:bg-zinc-800/30 cursor-pointer transition-colors"
+                        className="cursor-pointer transition-colors duration-300"
+                        style={{ borderBottom: "1px solid #151515" }}
+                        onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                        onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                       >
-                        <td className="px-4 py-3.5">
-                          <div className="text-white font-medium text-sm">{item.prenom} {item.nom}</div>
-                          <div className="text-zinc-500 text-xs">{item.telephone}</div>
+                        <td className="px-5 py-3">
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{item.prenom} {item.nom}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{item.telephone}</p>
                         </td>
-                        <td className="px-4 py-3.5">
-                          <div className="text-zinc-300 text-sm max-w-[200px] truncate">{item.sujet}</div>
+                        <td className="px-5 py-3">
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{item.sujet}</p>
                         </td>
-                        <td className="px-4 py-3.5">
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium ${prio.bg} ${prio.color}`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${prio.dot}`} />
-                            {prio.label}
-                          </span>
+                        <td className="px-5 py-3">
+                          <PrioriteBadge priorite={item.priorite} />
                         </td>
-                        <td className="px-4 py-3.5">
-                          <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${stat.color}`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${stat.dot}`} />
-                            {stat.label}
-                          </span>
+                        <td className="px-5 py-3">
+                          <StatutBadge statut={item.statut} />
                         </td>
-                        <td className="px-4 py-3.5">
-                          <span className="text-zinc-400 text-xs">{item.assigneA || "—"}</span>
+                        <td className="px-5 py-3">
+                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{item.assigneA || "—"}</span>
                         </td>
-                        <td className="px-4 py-3.5">
-                          <span className="text-zinc-500 text-xs">{new Date(item.createdAt).toLocaleDateString("fr-FR")}</span>
+                        <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                          {new Date(item.createdAt).toLocaleDateString("fr-FR")}
                         </td>
-                        <td className="px-4 py-3.5">
-                          <div className="flex items-center gap-2">
-                            <ChevronRight className="w-4 h-4 text-zinc-600" />
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-1">
+                            <button onClick={(e) => { e.stopPropagation(); setSelectedId(item.id); }} className="p-1.5 transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632" }}>
+                              <ChevronRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+                            </button>
                             <button
                               onClick={(e) => handleDelete(e, item.id, `${item.prenom} ${item.nom}`)}
-                              className="p-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 rounded-lg transition"
+                              className="p-1.5 transition-colors duration-300" style={{ color: "#3A3632" }}
+                              onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
+                              onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
                               title="Supprimer"
                             >
-                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                             </button>
                           </div>
                         </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile cards */}
+              <div className="md:hidden">
+                {items.map(item => (
+                  <div key={item.id}
+                    className="p-4 cursor-pointer transition-colors duration-300"
+                    style={{ borderBottom: "1px solid #151515" }}
+                    onClick={() => setSelectedId(item.id)}
+                    onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                    onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{item.prenom} {item.nom}</p>
+                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>{item.sujet}</p>
+                      </div>
+                      <StatutBadge statut={item.statut} />
+                    </div>
+                    <div className="flex items-center gap-3 mt-2">
+                      <PrioriteBadge priorite={item.priorite} />
+                      <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{new Date(item.createdAt).toLocaleDateString("fr-FR")}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
 
         {/* Pagination */}
-        {total > LIMIT && (
-          <div className="flex items-center justify-between text-sm text-zinc-400">
-            <span>{total} demandes au total</span>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setPage(p => Math.max(0, p - 1))}
-                disabled={page === 0}
-                className="px-3 py-1.5 rounded-lg border border-zinc-700 disabled:opacity-40 hover:border-[#C9A84C] hover:text-[#C9A84C]"
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-5">
+            <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+              {page * LIMIT + 1}–{Math.min((page + 1) * LIMIT, total)} sur {total}
+            </p>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}
+                className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
+                style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px" }}
               >
-                ← Précédent
+                <ChevronLeft className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </button>
-              <span className="px-3 py-1.5 text-zinc-300">{page + 1} / {Math.ceil(total / LIMIT)}</span>
-              <button
-                onClick={() => setPage(p => p + 1)}
-                disabled={(page + 1) * LIMIT >= total}
-                className="px-3 py-1.5 rounded-lg border border-zinc-700 disabled:opacity-40 hover:border-[#C9A84C] hover:text-[#C9A84C]"
+              <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", padding: "0 8px" }}>{page + 1} / {totalPages}</span>
+              <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1}
+                className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
+                style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px" }}
               >
-                Suivant →
+                <ChevronRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </button>
             </div>
           </div>

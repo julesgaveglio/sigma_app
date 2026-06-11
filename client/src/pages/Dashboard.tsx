@@ -6,37 +6,52 @@ import { Search, Download, Eye, ChevronLeft, ChevronRight, X, FileText, Phone, M
 import AdminNav from "@/components/AdminNav";
 import { toast } from "sonner";
 
-const SIGMA_LOGO = "https://d2xsxph8kpxj0f.cloudfront.net/110243537/dS69FocN6akHjQivURfVvd/sigma-logo_004dfdd3.png";
-
-const STATUT_LABELS: Record<string, { label: string; color: string }> = {
-  nouveau: { label: "Nouveau", color: "text-[var(--gold)] bg-[var(--gold)]/10 border-[var(--gold)]/30" },
-  en_cours: { label: "En cours", color: "text-blue-400 bg-blue-400/10 border-blue-400/30" },
-  traite: { label: "Traité", color: "text-green-400 bg-green-400/10 border-green-400/30" },
-  archive: { label: "Archivé", color: "text-muted-foreground bg-muted/50 border-border" },
+const STATUT_LABELS: Record<string, { label: string; style: { color: string; bg: string; border: string } }> = {
+  nouveau: { label: "Nouveau", style: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" } },
+  en_cours: { label: "En cours", style: { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" } },
+  traite: { label: "Traite", style: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" } },
+  archive: { label: "Archive", style: { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } },
 };
 
 const SITUATION_LABELS: Record<string, string> = {
-  celibataire: "Célibataire", marie: "Marié(e)", divorce: "Divorcé(e)",
+  celibataire: "Celibataire", marie: "Marie(e)", divorce: "Divorce(e)",
   instance_divorce: "Instance de divorce", pacs: "PACS", veuf: "Veuf/Veuve",
 };
 
 const NATIONALITE_LABELS: Record<string, string> = {
-  francais: "Français(e)", francais_etranger: "Français(e) à l'étranger", etranger: "Étranger(ère)",
+  francais: "Francais(e)", francais_etranger: "Francais(e) a l'etranger", etranger: "Etranger(ere)",
 };
 
 function StatutBadge({ statut }: { statut: string }) {
-  const s = STATUT_LABELS[statut] ?? { label: statut, color: "text-muted-foreground bg-muted/50 border-border" };
-  return <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${s.color}`}>{s.label}</span>;
+  const s = STATUT_LABELS[statut] ?? { label: statut, style: { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } };
+  return (
+    <span style={{
+      display: "inline-flex",
+      alignItems: "center",
+      padding: "2px 8px",
+      borderRadius: "2px",
+      fontSize: "10px",
+      fontFamily: "'Hanken Grotesk', sans-serif",
+      fontWeight: 500,
+      letterSpacing: "0.06em",
+      textTransform: "uppercase" as const,
+      color: s.style.color,
+      background: s.style.bg,
+      border: `1px solid ${s.style.border}`,
+    }}>
+      {s.label}
+    </span>
+  );
 }
 
 function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value?: string | null }) {
   if (!value) return null;
   return (
     <div className="flex items-start gap-3">
-      <Icon className="w-4 h-4 text-[var(--gold)] mt-0.5 shrink-0" />
+      <Icon className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
       <div>
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="text-sm text-foreground">{value}</p>
+        <p className="label-uppercase" style={{ marginBottom: "2px" }}>{label}</p>
+        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{value}</p>
       </div>
     </div>
   );
@@ -50,13 +65,13 @@ const TYPE_BIEN_LABELS: Record<string, string> = {
 function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void }) {
   const { data, isLoading } = trpc.leads.byId.useQuery({ id: leadId });
   const { data: mandats } = trpc.mandats.byLeadId.useQuery({ leadId }, { enabled: !!leadId });
-  const updateStatut = trpc.leads.updateStatut.useMutation({ onSuccess: () => toast.success("Statut mis à jour") });
+  const updateStatut = trpc.leads.updateStatut.useMutation({ onSuccess: () => toast.success("Statut mis a jour") });
   const utils = trpc.useUtils();
   const [notes, setNotes] = useState("");
 
   if (isLoading) return (
     <div className="flex items-center justify-center h-64">
-      <Loader2 className="w-6 h-6 animate-spin text-[var(--gold)]" />
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
     </div>
   );
 
@@ -70,25 +85,43 @@ function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-end bg-black/60 backdrop-blur-sm" onClick={onClose}>
-      <div className="w-full max-w-xl h-full bg-card border-l border-border overflow-y-auto" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-start justify-end" style={{ background: "rgba(0,0,0,0.7)" }} onClick={onClose}>
+      <div className="w-full h-full overflow-y-auto" style={{ maxWidth: "520px", background: "#111111", borderLeft: "1px solid #1E1E1E" }} onClick={e => e.stopPropagation()}>
         {/* Header */}
-        <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between z-10">
+        <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between" style={{ background: "#111111", borderBottom: "1px solid #1E1E1E" }}>
           <div>
-            <h2 className="font-bold text-foreground text-lg">{lead.nom} {lead.prenoms}</h2>
-            <p className="text-xs text-muted-foreground">Fiche #{lead.id} — {new Date(lead.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}</p>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>
+              {lead.nom} {lead.prenoms}
+            </h2>
+            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>
+              Fiche #{lead.id} — {new Date(lead.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
+            </p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-muted transition-colors"><X className="w-4 h-4" /></button>
+          <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }}>
+            <X className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+          </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-6 space-y-8">
           {/* Statut */}
-          <div className="bg-[oklch(0.10_0.005_280)] rounded-xl p-4">
-            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--gold)] mb-3">Statut du dossier</p>
+          <div>
+            <p className="label-uppercase mb-3">Statut du dossier</p>
             <div className="flex flex-wrap gap-2 mb-3">
               {Object.entries(STATUT_LABELS).map(([key, val]) => (
                 <button key={key} onClick={() => handleStatutChange(key)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${lead.statut === key ? val.color + " opacity-100" : "border-border text-muted-foreground hover:border-[var(--gold)]/40"}`}>
+                  className="transition-colors duration-300"
+                  style={{
+                    padding: "6px 12px",
+                    borderRadius: "2px",
+                    fontSize: "11px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontWeight: 500,
+                    letterSpacing: "0.04em",
+                    textTransform: "uppercase" as const,
+                    border: `1px solid ${lead.statut === key ? val.style.border : "#1E1E1E"}`,
+                    background: lead.statut === key ? val.style.bg : "transparent",
+                    color: lead.statut === key ? val.style.color : "#3A3632",
+                  }}>
                   {val.label}
                 </button>
               ))}
@@ -98,13 +131,26 @@ function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void 
               defaultValue={lead.notes ?? ""}
               onChange={e => setNotes(e.target.value)}
               rows={2}
-              className="w-full bg-[oklch(0.16_0.005_280)] border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--gold)] resize-none"
+              style={{
+                width: "100%",
+                background: "#161616",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                padding: "10px 12px",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                color: "#F0EDE6",
+                resize: "none",
+                outline: "none",
+              }}
+              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
             />
           </div>
 
-          {/* Identité */}
+          {/* Identite */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--gold)] mb-3">Identité</p>
+            <p className="label-uppercase mb-3">Identite</p>
             <div className="space-y-3">
               <InfoRow icon={User} label="Nom complet" value={`${lead.nom}${lead.nomJeuneFille ? ` (${lead.nomJeuneFille})` : ""} ${lead.prenoms}`} />
               <InfoRow icon={Calendar} label="Date de naissance" value={lead.dateNaissance ?? undefined} />
@@ -120,7 +166,7 @@ function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void 
           {/* Conjoint */}
           {lead.conjointNom && (
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--gold)] mb-3">Conjoint(e)</p>
+              <p className="label-uppercase mb-3">Conjoint(e)</p>
               <div className="space-y-3">
                 <InfoRow icon={User} label="Nom complet" value={`${lead.conjointNom} ${lead.conjointPrenoms ?? ""}`} />
                 <InfoRow icon={Calendar} label="Date de naissance" value={lead.conjointDateNaissance ?? undefined} />
@@ -132,57 +178,48 @@ function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void 
 
           {/* Situation */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-[var(--gold)] mb-3">Situation familiale</p>
+            <p className="label-uppercase mb-3">Situation familiale</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Situation :</span>
-                <span className="text-sm text-foreground">{SITUATION_LABELS[lead.situationFamiliale ?? ""] ?? "—"}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Situation :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{SITUATION_LABELS[lead.situationFamiliale ?? ""] ?? "—"}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Nationalité :</span>
-                <span className="text-sm text-foreground">{NATIONALITE_LABELS[lead.nationalite ?? ""] ?? "—"}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Nationalite :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{NATIONALITE_LABELS[lead.nationalite ?? ""] ?? "—"}</span>
               </div>
-              {lead.communeMariage && <div className="flex items-center gap-2"><span className="text-sm text-muted-foreground">Mariage :</span><span className="text-sm text-foreground">{lead.communeMariage} {lead.dateMariage ? `— ${lead.dateMariage}` : ""}</span></div>}
-              {lead.contratMariage && <div className="flex items-center gap-2"><span className="text-sm text-muted-foreground">Contrat :</span><span className="text-sm text-foreground">{lead.regimeMatrimonial ?? "Oui"}</span></div>}
+              {lead.communeMariage && <div className="flex items-center gap-2"><span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Mariage :</span><span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.communeMariage} {lead.dateMariage ? `— ${lead.dateMariage}` : ""}</span></div>}
+              {lead.contratMariage && <div className="flex items-center gap-2"><span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Contrat :</span><span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.regimeMatrimonial ?? "Oui"}</span></div>}
             </div>
           </div>
 
-          {/* Mandats de Recherche associés */}
+          {/* Mandats */}
           {mandats && mandats.length > 0 && (
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--gold)] mb-3">Mandats de Recherche ({mandats.length})</p>
+              <p className="label-uppercase mb-3">Mandats de Recherche ({mandats.length})</p>
               <div className="space-y-2">
                 {mandats.map((m: any) => (
-                  <a
-                    key={m.id}
-                    href={`/dashboard/mandats`}
-                    className="flex items-center gap-3 p-3 bg-[oklch(0.10_0.005_280)] rounded-lg hover:bg-[oklch(0.14_0.005_280)] transition-colors group"
+                  <a key={m.id} href="/dashboard/mandats"
+                    className="flex items-center gap-3 p-3 transition-colors duration-300"
+                    style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", textDecoration: "none" }}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
                   >
-                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-                      <FileText className="w-4 h-4 text-[var(--gold)]" />
-                    </div>
+                    <FileText className="w-4 h-4 shrink-0" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-foreground font-medium">{TYPE_BIEN_LABELS[m.typeBien] ?? m.typeBien} — {m.localisation}</p>
-                      <p className="text-xs text-muted-foreground">{m.budgetMax?.toLocaleString("fr-FR")} € · {new Date(m.createdAt).toLocaleDateString("fr-FR")}</p>
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{TYPE_BIEN_LABELS[m.typeBien] ?? m.typeBien} — {m.localisation}</p>
+                      <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{m.budgetMax?.toLocaleString("fr-FR")} EUR · {new Date(m.createdAt).toLocaleDateString("fr-FR")}</p>
                     </div>
-                    <span className={`text-xs px-2 py-0.5 rounded-full border ${
-                      m.statut === "traite" ? "text-green-400 bg-green-400/10 border-green-400/30" :
-                      m.statut === "en_cours" ? "text-amber-400 bg-amber-400/10 border-amber-400/30" :
-                      "text-zinc-400 bg-zinc-400/10 border-zinc-400/30"
-                    }`}>{m.statut?.replace("_", " ")}</span>
                   </a>
                 ))}
               </div>
             </div>
           )}
           {mandats && mandats.length === 0 && (
-            <div className="flex items-center justify-between p-3 bg-[oklch(0.10_0.005_280)] rounded-xl border border-dashed border-[var(--gold)]/20">
-              <p className="text-xs text-muted-foreground">Aucun mandat de recherche associé</p>
-              <a
-                href={`/mandat?leadId=${leadId}`}
-                className="text-xs text-[var(--gold)] hover:underline font-medium"
-              >
-                + Créer un mandat
+            <div className="flex items-center justify-between p-3" style={{ background: "#0D0D0D", border: "1px dashed #1E1E1E", borderRadius: "2px" }}>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun mandat de recherche associe</p>
+              <a href={`/mandat?leadId=${leadId}`} style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#C9A84C", textDecoration: "none", letterSpacing: "0.04em" }}>
+                + Creer un mandat
               </a>
             </div>
           )}
@@ -190,17 +227,21 @@ function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void 
           {/* Documents */}
           {documents.length > 0 && (
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--gold)] mb-3">Documents ({documents.length})</p>
+              <p className="label-uppercase mb-3">Documents ({documents.length})</p>
               <div className="space-y-2">
                 {documents.map(doc => (
                   <a key={doc.id} href={doc.url} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3 bg-[oklch(0.10_0.005_280)] rounded-lg hover:bg-[oklch(0.14_0.005_280)] transition-colors group">
-                    <FileText className="w-4 h-4 text-[var(--gold)] shrink-0" />
+                    className="flex items-center gap-3 p-3 transition-colors duration-300"
+                    style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", textDecoration: "none" }}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                  >
+                    <FileText className="w-4 h-4 shrink-0" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-foreground truncate">{doc.filename}</p>
-                      <p className="text-xs text-muted-foreground">{doc.type.replace("_", " ")} — {doc.size ? `${Math.round(doc.size / 1024)} Ko` : "—"}</p>
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{doc.filename}</p>
+                      <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{doc.type.replace("_", " ")} — {doc.size ? `${Math.round(doc.size / 1024)} Ko` : "—"}</p>
                     </div>
-                    <Eye className="w-4 h-4 text-muted-foreground group-hover:text-[var(--gold)] transition-colors" />
+                    <Eye className="w-4 h-4 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
                   </a>
                 ))}
               </div>
@@ -225,7 +266,7 @@ export default function Dashboard() {
   });
   const handleDelete = (e: React.MouseEvent, id: number, nom: string) => {
     e.stopPropagation();
-    if (window.confirm(`Supprimer le dossier de ${nom} ? Cette action est irréversible.`)) {
+    if (window.confirm(`Supprimer le dossier de ${nom} ? Cette action est irreversible.`)) {
       deleteMutation.mutate({ id });
     }
   };
@@ -237,32 +278,40 @@ export default function Dashboard() {
 
   const exportQuery = trpc.leads.exportCsv.useQuery(undefined, { enabled: false });
 
-  // ⚠️ Ce hook DOIT être avant tous les return conditionnels (règle des hooks React)
   const { data: avisStats } = trpc.marie.statsAvis.useQuery(
     undefined,
     { enabled: isAuthenticated && (user?.role === "admin" || user?.role === "direction") }
   );
 
   if (loading) return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <Loader2 className="w-8 h-8 animate-spin text-[var(--gold)]" />
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
     </div>
   );
 
   if (!isAuthenticated) return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
-      <img src={SIGMA_LOGO} alt="Sigma Factory" className="h-16 object-contain mb-4" />
-      <h2 className="text-2xl font-bold text-foreground">Accès réservé</h2>
-      <p className="text-muted-foreground">Connectez-vous pour accéder au tableau de bord.</p>
-      <a href="/login" className="px-6 py-3 bg-[var(--gold)] text-[oklch(0.08_0.005_280)] font-semibold rounded-lg hover:bg-[var(--gold-light)] transition-all">Se connecter</a>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-6" style={{ background: "#0A0A0A" }}>
+      <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.04em" }}>Acces reserve</h2>
+      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Connectez-vous pour acceder au tableau de bord.</p>
+      <a href="/login" style={{
+        padding: "12px 28px",
+        background: "#C9A84C",
+        color: "#0A0A0A",
+        fontSize: "11px",
+        fontWeight: 500,
+        fontFamily: "'Hanken Grotesk', sans-serif",
+        letterSpacing: "0.1em",
+        textTransform: "uppercase" as const,
+        textDecoration: "none",
+        borderRadius: "2px",
+      }}>Se connecter</a>
     </div>
   );
 
   if (user?.role !== "admin" && user?.role !== "direction") return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
-      <img src={SIGMA_LOGO} alt="Sigma Factory" className="h-16 object-contain mb-4" />
-      <h2 className="text-2xl font-bold text-foreground">Accès refusé</h2>
-      <p className="text-muted-foreground">Vous n'avez pas les droits pour accéder à cette page.</p>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: "#0A0A0A" }}>
+      <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.04em" }}>Acces refuse</h2>
+      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Vous n'avez pas les droits pour acceder a cette page.</p>
     </div>
   );
 
@@ -270,9 +319,9 @@ export default function Dashboard() {
     const result = await exportQuery.refetch();
     if (!result.data) return;
     const leads = result.data;
-    if (!leads.length) { toast.info("Aucune donnée à exporter."); return; }
+    if (!leads.length) { toast.info("Aucune donnee a exporter."); return; }
 
-    const headers = ["ID", "Nom", "Prénoms", "Email", "Portable", "Profession", "Date naissance", "Situation", "Nationalité", "Statut", "Date soumission"];
+    const headers = ["ID", "Nom", "Prenoms", "Email", "Portable", "Profession", "Date naissance", "Situation", "Nationalite", "Statut", "Date soumission"];
     const rows = leads.map(l => [
       l.id, l.nom, l.prenoms, l.email ?? "", l.telephonePortable ?? "",
       l.profession ?? "", l.dateNaissance ?? "", l.situationFamiliale ?? "",
@@ -285,94 +334,142 @@ export default function Dashboard() {
     const a = document.createElement("a");
     a.href = url; a.download = `sigma-leads-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click(); URL.revokeObjectURL(url);
-    toast.success("Export CSV téléchargé !");
+    toast.success("Export CSV telecharge !");
   };
 
   const totalPages = Math.ceil((data?.total ?? 0) / LIMIT);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
       <AdminNav />
+
       {/* Toolbar */}
-      <div className="border-b border-border bg-card/50">
-        <div className="container py-3 flex items-center justify-end gap-2">
-          <button onClick={() => refetch()} className="p-2 rounded-lg border border-border hover:border-[var(--gold)]/50 text-muted-foreground hover:text-[var(--gold)] transition-all">
-            <RefreshCw className="w-4 h-4" />
+      <div style={{ borderBottom: "1px solid #1E1E1E" }}>
+        <div className="flex items-center justify-end gap-2 px-5 py-2.5" style={{ maxWidth: "1280px", margin: "0 auto" }}>
+          <button onClick={() => refetch()} className="p-2 transition-colors duration-300"
+            style={{ color: "#3A3632", border: "1px solid #1E1E1E", borderRadius: "2px", background: "transparent" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#6B6560"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#3A3632"; }}
+          >
+            <RefreshCw className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </button>
-          <button onClick={handleExport} className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--gold)]/40 text-[var(--gold)] text-sm font-medium hover:bg-[var(--gold)]/10 transition-all">
-            <Download className="w-4 h-4" /> Export CSV
+          <button onClick={handleExport} className="flex items-center gap-2 px-4 py-2 transition-colors duration-300"
+            style={{
+              fontSize: "11px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontWeight: 500,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase" as const,
+              color: "#C9A84C",
+              border: "1px solid rgba(201,168,76,0.3)",
+              borderRadius: "2px",
+              background: "transparent",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(201,168,76,0.06)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+          >
+            <Download className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> Export CSV
           </button>
         </div>
       </div>
 
-      <div className="container py-6 max-w-6xl mx-auto">
-        {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      <div className="px-5 py-8" style={{ maxWidth: "1280px", margin: "0 auto" }}>
+
+        {/* KPIs */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mb-10" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
           {[
-            { label: "Total leads", value: data?.total ?? 0, color: "text-[var(--gold)]" },
-            { label: "Nouveaux", value: data?.items.filter(l => l.statut === "nouveau").length ?? 0, color: "text-[var(--gold)]" },
-            { label: "En cours", value: data?.items.filter(l => l.statut === "en_cours").length ?? 0, color: "text-blue-400" },
-            { label: "Traités", value: data?.items.filter(l => l.statut === "traite").length ?? 0, color: "text-green-400" },
-          ].map(stat => (
-            <div key={stat.label} className="bg-card border border-border rounded-xl p-4">
-              <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
+            { label: "Total leads", value: data?.total ?? 0 },
+            { label: "Nouveaux", value: data?.items.filter(l => l.statut === "nouveau").length ?? 0 },
+            { label: "En cours", value: data?.items.filter(l => l.statut === "en_cours").length ?? 0 },
+            { label: "Traites", value: data?.items.filter(l => l.statut === "traite").length ?? 0 },
+          ].map((stat, i) => (
+            <div key={stat.label} className="p-5" style={{ background: "#0A0A0A" }}>
+              <p className="tabular-nums" style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "32px",
+                fontWeight: 600,
+                color: i === 0 ? "#C9A84C" : "#F0EDE6",
+                lineHeight: 1,
+                letterSpacing: "0.02em",
+              }}>
+                {stat.value}
+              </p>
+              <p className="label-uppercase mt-2">{stat.label}</p>
             </div>
           ))}
         </div>
 
-        {/* Bloc Avis & Témoignages Marie */}
+        {/* Avis Marie */}
         {avisStats && (
-          <div className="mb-6 bg-card border border-border rounded-2xl p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <Star className="w-4 h-4 text-amber-400" />
-              <h2 className="text-sm font-semibold text-foreground">Avis & Témoignages — Marie</h2>
-              <span className="ml-auto text-xs text-muted-foreground">
-                Ce mois : <span className="text-amber-400 font-semibold">{avisStats.montageOkCeMois}</span> finalisés
-              </span>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-amber-400/5 border border-amber-400/20 rounded-xl p-3">
-                <p className="text-xl font-bold text-amber-400">{avisStats.aFaire}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">À contacter</p>
+          <div className="mb-10 p-5" style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Star className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+                <span className="label-uppercase" style={{ color: "#F0EDE6" }}>Avis & Temoignages</span>
               </div>
-              <div className="bg-emerald-400/5 border border-emerald-400/20 rounded-xl p-3">
-                <p className="text-xl font-bold text-emerald-400">{avisStats.effectue}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Avis effectué</p>
-              </div>
-              <div className="bg-blue-400/5 border border-blue-400/20 rounded-xl p-3">
-                <p className="text-xl font-bold text-blue-400">{avisStats.enMontage + avisStats.montageOk}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">En montage / OK</p>
-              </div>
-              <div className="bg-purple-400/5 border border-purple-400/20 rounded-xl p-3">
-                <p className="text-xl font-bold text-purple-400">{avisStats.tauxConversion}%</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Taux finalisation</p>
-              </div>
-            </div>
-            <div className="flex gap-3 mt-3 pt-3 border-t border-border">
-              <span className="text-xs text-muted-foreground">
-                Sources : <span className="text-purple-300">{avisStats.courtage} Courtage</span> · <span className="text-emerald-300">{avisStats.immo} Immo</span>
-              </span>
-              <a href="/dashboard/avis-pipe" className="ml-auto text-xs text-amber-400 hover:text-amber-300 transition-colors">
+              <a href="/dashboard/avis-pipe" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", textDecoration: "none", letterSpacing: "0.04em" }}
+                className="transition-opacity duration-300 hover:opacity-70"
+              >
                 Voir le pipe →
               </a>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px" style={{ background: "#1E1E1E", borderRadius: "2px" }}>
+              {[
+                { label: "A contacter", value: avisStats.aFaire },
+                { label: "Avis effectue", value: avisStats.effectue },
+                { label: "En montage / OK", value: avisStats.enMontage + avisStats.montageOk },
+                { label: "Taux finalisation", value: `${avisStats.tauxConversion}%` },
+              ].map(s => (
+                <div key={s.label} className="p-4" style={{ background: "#111111" }}>
+                  <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, color: "#F0EDE6", lineHeight: 1 }}>{s.value}</p>
+                  <p className="label-uppercase mt-1.5" style={{ fontSize: "10px" }}>{s.label}</p>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-3 mt-3 pt-3" style={{ borderTop: "1px solid #1E1E1E" }}>
+              <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                Sources : {avisStats.courtage} Courtage · {avisStats.immo} Immo · Ce mois : {avisStats.montageOkCeMois} finalises
+              </span>
             </div>
           </div>
         )}
 
         {/* Filtres */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="flex flex-col sm:flex-row gap-3 mb-5">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
             <input
-              type="text" placeholder="Rechercher par nom, email, téléphone..."
+              type="text" placeholder="Rechercher par nom, email, telephone..."
               value={search} onChange={e => { setSearch(e.target.value); setPage(0); }}
-              className="w-full bg-card border border-border rounded-lg pl-9 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[var(--gold)] transition-colors"
+              className="w-full transition-colors duration-300 focus:outline-none"
+              style={{
+                background: "#111111",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                paddingLeft: "36px",
+                paddingRight: "14px",
+                paddingTop: "10px",
+                paddingBottom: "10px",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                color: "#F0EDE6",
+              }}
+              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
             />
           </div>
           <select
             value={statut} onChange={e => { setStatut(e.target.value); setPage(0); }}
-            className="bg-card border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-[var(--gold)] transition-colors"
+            style={{
+              background: "#111111",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              padding: "10px 14px",
+              fontSize: "13px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              color: "#F0EDE6",
+              outline: "none",
+            }}
           >
             <option value="tous">Tous les statuts</option>
             {Object.entries(STATUT_LABELS).map(([key, val]) => <option key={key} value={key}>{val.label}</option>)}
@@ -380,15 +477,15 @@ export default function Dashboard() {
         </div>
 
         {/* Tableau */}
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
+        <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-6 h-6 animate-spin text-[var(--gold)]" />
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
             </div>
           ) : !data?.items.length ? (
             <div className="text-center py-20">
-              <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground">Aucune fiche trouvée</p>
+              <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
+              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucune fiche trouvee</p>
             </div>
           ) : (
             <>
@@ -396,33 +493,43 @@ export default function Dashboard() {
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-border bg-[oklch(0.10_0.005_280)]">
-                      {["Nom / Prénom", "Contact", "Situation", "Statut", "Date", ""].map(h => (
-                        <th key={h} className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{h}</th>
+                    <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                      {["Nom / Prenom", "Contact", "Situation", "Statut", "Date", ""].map(h => (
+                        <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "#0D0D0D" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {data.items.map((lead, i) => (
-                      <tr key={lead.id} className={`border-b border-border/50 hover:bg-[oklch(0.10_0.005_280)] transition-colors cursor-pointer ${i % 2 === 0 ? "" : "bg-[oklch(0.09_0.005_280)]"}`} onClick={() => setSelectedId(lead.id)}>
-                        <td className="px-4 py-3">
-                          <p className="font-medium text-foreground text-sm">{lead.nom} {lead.prenoms}</p>
-                          <p className="text-xs text-muted-foreground">{lead.profession ?? "—"}</p>
+                    {data.items.map((lead) => (
+                      <tr key={lead.id}
+                        className="cursor-pointer transition-colors duration-300"
+                        style={{ borderBottom: "1px solid #151515" }}
+                        onClick={() => setSelectedId(lead.id)}
+                        onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                        onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                      >
+                        <td className="px-5 py-3">
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{lead.nom} {lead.prenoms}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{lead.profession ?? "—"}</p>
                         </td>
-                        <td className="px-4 py-3">
-                          <p className="text-sm text-foreground">{lead.telephonePortable ?? "—"}</p>
-                          <p className="text-xs text-muted-foreground truncate max-w-[160px]">{lead.email ?? "—"}</p>
+                        <td className="px-5 py-3">
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.telephonePortable ?? "—"}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lead.email ?? "—"}</p>
                         </td>
-                        <td className="px-4 py-3 text-sm text-foreground">{SITUATION_LABELS[lead.situationFamiliale ?? ""] ?? "—"}</td>
-                        <td className="px-4 py-3"><StatutBadge statut={lead.statut} /></td>
-                        <td className="px-4 py-3 text-xs text-muted-foreground">{new Date(lead.createdAt).toLocaleDateString("fr-FR")}</td>
-                        <td className="px-4 py-3">
+                        <td className="px-5 py-3" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{SITUATION_LABELS[lead.situationFamiliale ?? ""] ?? "—"}</td>
+                        <td className="px-5 py-3"><StatutBadge statut={lead.statut} /></td>
+                        <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{new Date(lead.createdAt).toLocaleDateString("fr-FR")}</td>
+                        <td className="px-5 py-3">
                           <div className="flex items-center gap-1">
-                            <button onClick={(e) => { e.stopPropagation(); setSelectedId(lead.id); }} className="p-1.5 rounded-lg hover:bg-[var(--gold)]/10 text-muted-foreground hover:text-[var(--gold)] transition-colors">
-                              <Eye className="w-4 h-4" />
+                            <button onClick={(e) => { e.stopPropagation(); setSelectedId(lead.id); }} className="p-1.5 transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632" }}>
+                              <Eye className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                             </button>
-                            <button onClick={(e) => handleDelete(e, lead.id, `${lead.nom} ${lead.prenoms}`)} className="p-1.5 rounded-lg hover:bg-red-500/10 text-muted-foreground hover:text-red-400 transition-colors" title="Supprimer">
-                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            <button onClick={(e) => handleDelete(e, lead.id, `${lead.nom} ${lead.prenoms}`)} className="p-1.5 transition-colors duration-300" style={{ color: "#3A3632" }}
+                              onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
+                              onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                              title="Supprimer"
+                            >
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                             </button>
                           </div>
                         </td>
@@ -433,19 +540,25 @@ export default function Dashboard() {
               </div>
 
               {/* Mobile cards */}
-              <div className="md:hidden divide-y divide-border">
+              <div className="md:hidden">
                 {data.items.map(lead => (
-                  <div key={lead.id} className="p-4 hover:bg-[oklch(0.10_0.005_280)] transition-colors cursor-pointer" onClick={() => setSelectedId(lead.id)}>
+                  <div key={lead.id}
+                    className="p-4 cursor-pointer transition-colors duration-300"
+                    style={{ borderBottom: "1px solid #151515" }}
+                    onClick={() => setSelectedId(lead.id)}
+                    onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                    onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                  >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p className="font-medium text-foreground">{lead.nom} {lead.prenoms}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">{lead.telephonePortable ?? lead.email ?? "—"}</p>
+                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{lead.nom} {lead.prenoms}</p>
+                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>{lead.telephonePortable ?? lead.email ?? "—"}</p>
                       </div>
                       <StatutBadge statut={lead.statut} />
                     </div>
-                    <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-                      <span>{SITUATION_LABELS[lead.situationFamiliale ?? ""] ?? "—"}</span>
-                      <span>{new Date(lead.createdAt).toLocaleDateString("fr-FR")}</span>
+                    <div className="flex items-center gap-4 mt-2">
+                      <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{SITUATION_LABELS[lead.situationFamiliale ?? ""] ?? "—"}</span>
+                      <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{new Date(lead.createdAt).toLocaleDateString("fr-FR")}</span>
                     </div>
                   </div>
                 ))}
@@ -456,19 +569,23 @@ export default function Dashboard() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-4">
-            <p className="text-sm text-muted-foreground">
-              {page * LIMIT + 1}–{Math.min((page + 1) * LIMIT, data?.total ?? 0)} sur {data?.total ?? 0} résultats
+          <div className="flex items-center justify-between mt-5">
+            <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+              {page * LIMIT + 1}–{Math.min((page + 1) * LIMIT, data?.total ?? 0)} sur {data?.total ?? 0}
             </p>
             <div className="flex items-center gap-2">
               <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}
-                className="p-2 rounded-lg border border-border hover:border-[var(--gold)]/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
-                <ChevronLeft className="w-4 h-4" />
+                className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
+                style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px" }}
+              >
+                <ChevronLeft className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </button>
-              <span className="text-sm text-foreground px-2">{page + 1} / {totalPages}</span>
+              <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", padding: "0 8px" }}>{page + 1} / {totalPages}</span>
               <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1}
-                className="p-2 rounded-lg border border-border hover:border-[var(--gold)]/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
-                <ChevronRight className="w-4 h-4" />
+                className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
+                style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px" }}
+              >
+                <ChevronRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </button>
             </div>
           </div>

@@ -62,67 +62,160 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const STEPS = [
-  { id: 1, label: "Identité", icon: User },
+  { id: 1, label: "Identite", icon: User },
   { id: 2, label: "Conjoint", icon: Users },
   { id: 3, label: "Mariage", icon: Heart },
   { id: 4, label: "Situation", icon: AlertCircle },
-  { id: 5, label: "Nationalité", icon: Globe },
+  { id: 5, label: "Nationalite", icon: Globe },
 ];
+
+/* ── Shared inline style objects ── */
+
+const fonts = {
+  heading: "'Cormorant Garamond', serif",
+  body: "'Hanken Grotesk', sans-serif",
+};
+
+const colors = {
+  bg: "#0A0A0A",
+  surface: "#111111",
+  surfaceRaised: "#161616",
+  border: "#1E1E1E",
+  fg: "#F0EDE6",
+  muted: "#6B6560",
+  faint: "#3A3632",
+  gold: "#C9A84C",
+  goldMuted: "#8A7535",
+  destructive: "#A04040",
+  success: "#4A7A5A",
+};
+
+const labelStyle: React.CSSProperties = {
+  fontFamily: fonts.body,
+  fontSize: "11px",
+  fontWeight: 500,
+  textTransform: "uppercase",
+  letterSpacing: "0.08em",
+  color: colors.muted,
+  marginBottom: "8px",
+  display: "block",
+};
+
+const inputStyle: React.CSSProperties = {
+  background: colors.surfaceRaised,
+  border: `1px solid ${colors.border}`,
+  borderRadius: "2px",
+  padding: "12px 14px",
+  color: colors.fg,
+  fontSize: "14px",
+  fontFamily: fonts.body,
+  width: "100%",
+  outline: "none",
+  transition: "border-color 300ms ease",
+};
+
+const selectStyle: React.CSSProperties = {
+  ...inputStyle,
+  appearance: "none" as const,
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6560' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "right 14px center",
+  paddingRight: "36px",
+};
+
+const textareaStyle: React.CSSProperties = {
+  ...inputStyle,
+  resize: "none" as const,
+};
+
+const errorStyle: React.CSSProperties = {
+  fontSize: "12px",
+  color: colors.destructive,
+  fontFamily: fonts.body,
+  marginTop: "4px",
+};
+
+/* ── Sub-components (visual only) ── */
 
 function SigmaInput({ label, error, required, ...props }: { label: string; error?: string; required?: boolean } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-foreground/80">
-        {label}{required && <span className="text-[var(--gold)] ml-1">*</span>}
+    <div>
+      <label style={labelStyle}>
+        {label}{required && <span style={{ color: colors.gold, marginLeft: "4px" }}>*</span>}
       </label>
       <input
         {...props}
-        className={`bg-[oklch(0.16_0.005_280)] border rounded-md px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition-all ${error ? "border-destructive focus:ring-destructive/30" : "border-border focus:border-[var(--gold)] focus:ring-[var(--gold)]/20"}`}
+        style={{
+          ...inputStyle,
+          borderColor: error ? colors.destructive : colors.border,
+        }}
+        onFocus={e => { e.target.style.borderColor = error ? colors.destructive : colors.gold; }}
+        onBlur={e => { e.target.style.borderColor = error ? colors.destructive : colors.border; }}
+        placeholder={props.placeholder}
       />
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p style={errorStyle}>{error}</p>}
     </div>
   );
 }
 
 function SigmaSelect({ label, error, required, children, ...props }: { label: string; error?: string; required?: boolean } & React.SelectHTMLAttributes<HTMLSelectElement>) {
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-foreground/80">
-        {label}{required && <span className="text-[var(--gold)] ml-1">*</span>}
+    <div>
+      <label style={labelStyle}>
+        {label}{required && <span style={{ color: colors.gold, marginLeft: "4px" }}>*</span>}
       </label>
       <select
         {...props}
-        className={`bg-[oklch(0.16_0.005_280)] border rounded-md px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 transition-all ${error ? "border-destructive focus:ring-destructive/30" : "border-border focus:border-[var(--gold)] focus:ring-[var(--gold)]/20"}`}
+        style={{
+          ...selectStyle,
+          borderColor: error ? colors.destructive : colors.border,
+        }}
+        onFocus={e => { e.target.style.borderColor = error ? colors.destructive : colors.gold; }}
+        onBlur={e => { e.target.style.borderColor = error ? colors.destructive : colors.border; }}
       >
         {children}
       </select>
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p style={errorStyle}>{error}</p>}
     </div>
   );
 }
 
 function SigmaTextarea({ label, error, required, ...props }: { label: string; error?: string; required?: boolean } & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-foreground/80">
-        {label}{required && <span className="text-[var(--gold)] ml-1">*</span>}
+    <div>
+      <label style={labelStyle}>
+        {label}{required && <span style={{ color: colors.gold, marginLeft: "4px" }}>*</span>}
       </label>
       <textarea
         {...props}
         rows={3}
-        className={`bg-[oklch(0.16_0.005_280)] border rounded-md px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition-all resize-none ${error ? "border-destructive focus:ring-destructive/30" : "border-border focus:border-[var(--gold)] focus:ring-[var(--gold)]/20"}`}
+        style={{
+          ...textareaStyle,
+          borderColor: error ? colors.destructive : colors.border,
+        }}
+        onFocus={e => { e.target.style.borderColor = error ? colors.destructive : colors.gold; }}
+        onBlur={e => { e.target.style.borderColor = error ? colors.destructive : colors.border; }}
       />
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p style={errorStyle}>{error}</p>}
     </div>
   );
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-3 mb-6">
-      <div className="h-px flex-1 bg-border" />
-      <h3 className="text-xs font-semibold uppercase tracking-widest text-[var(--gold)]">{children}</h3>
-      <div className="h-px flex-1 bg-border" />
+    <div style={{ display: "flex", alignItems: "center", gap: "16px", margin: "32px 0 24px" }}>
+      <div style={{ flex: 1, height: "1px", background: colors.border }} />
+      <span style={{
+        fontFamily: fonts.body,
+        fontSize: "10px",
+        fontWeight: 500,
+        textTransform: "uppercase",
+        letterSpacing: "0.12em",
+        color: colors.muted,
+      }}>
+        {children}
+      </span>
+      <div style={{ flex: 1, height: "1px", background: colors.border }} />
     </div>
   );
 }
@@ -190,36 +283,117 @@ export default function FormEtatCivil() {
     }
   };
 
+  /* ── Success / Upload screen ── */
   if (submitted && leadId) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
-        <div className="w-full max-w-lg text-center">
-          <img src={SIGMA_LOGO} alt="Sigma Factory" className="h-16 mx-auto mb-8 object-contain" />
-          <div className="bg-card border border-border rounded-2xl p-8">
-            <CheckCircle className="w-16 h-16 text-[var(--gold)] mx-auto mb-4" />
-            <h2 className="text-3xl font-bold text-foreground mb-2">Fiche reçue !</h2>
-            <p className="text-muted-foreground mb-6">Votre fiche d'état civil a bien été enregistrée. Notre équipe vous contactera prochainement.</p>
+      <div style={{
+        minHeight: "100vh",
+        background: colors.bg,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "24px 16px",
+      }}>
+        <div style={{ width: "100%", maxWidth: "520px", textAlign: "center" }}>
+          <img src={SIGMA_LOGO} alt="Sigma Factory" style={{ height: "40px", margin: "0 auto 48px", display: "block", objectFit: "contain" }} />
 
-            <div className="bg-[oklch(0.10_0.005_280)] rounded-xl p-5 mb-6 text-left">
-              <p className="text-sm font-semibold text-[var(--gold)] mb-3 uppercase tracking-wider">Documents à joindre</p>
-              <p className="text-sm text-muted-foreground mb-4">Vous pouvez dès maintenant uploader vos justificatifs d'identité :</p>
-              <div className="space-y-3">
+          <div style={{
+            background: colors.surface,
+            border: `1px solid ${colors.border}`,
+            borderRadius: "2px",
+            padding: "48px 40px",
+          }}>
+            <CheckCircle size={40} strokeWidth={1.5} style={{ color: colors.gold, margin: "0 auto 20px", display: "block" }} />
+            <h2 style={{
+              fontFamily: fonts.heading,
+              fontSize: "26px",
+              fontWeight: 600,
+              color: colors.fg,
+              letterSpacing: "0.04em",
+              marginBottom: "8px",
+            }}>
+              Fiche recue
+            </h2>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: "14px",
+              color: colors.muted,
+              lineHeight: "1.6",
+              marginBottom: "36px",
+            }}>
+              Votre fiche d'etat civil a bien ete enregistree. Notre equipe vous contactera prochainement.
+            </p>
+
+            {/* Upload zone */}
+            <div style={{
+              background: colors.surfaceRaised,
+              border: `1px solid ${colors.border}`,
+              borderRadius: "2px",
+              padding: "28px 24px",
+              marginBottom: "24px",
+              textAlign: "left",
+            }}>
+              <p style={{
+                ...labelStyle,
+                marginBottom: "16px",
+              }}>
+                Documents a joindre
+              </p>
+              <p style={{
+                fontFamily: fonts.body,
+                fontSize: "13px",
+                color: colors.muted,
+                marginBottom: "20px",
+                lineHeight: "1.6",
+              }}>
+                Vous pouvez des maintenant uploader vos justificatifs d'identite :
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 {[
-                  { type: "cni" as const, label: "Carte nationale d'identité (recto-verso)" },
-                  { type: "passeport" as const, label: "Passeport (premières pages)" },
-                  { type: "titre_sejour" as const, label: "Titre de séjour (recto-verso)" },
+                  { type: "cni" as const, label: "Carte nationale d'identite (recto-verso)" },
+                  { type: "passeport" as const, label: "Passeport (premieres pages)" },
+                  { type: "titre_sejour" as const, label: "Titre de sejour (recto-verso)" },
                 ].map(({ type, label }) => (
-                  <label key={type} className="flex items-center gap-3 cursor-pointer group">
-                    <div className="flex-1">
-                      <p className="text-sm text-foreground/80">{label}</p>
+                  <label key={type} style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    cursor: "pointer",
+                    padding: "10px 12px",
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "2px",
+                    transition: "border-color 300ms ease",
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = colors.faint; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = colors.border; }}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.fg, margin: 0 }}>{label}</p>
                       {uploadedFiles.find(f => f.type === type) && (
-                        <p className="text-xs text-[var(--gold)]">✓ {uploadedFiles.find(f => f.type === type)?.name}</p>
+                        <p style={{ fontFamily: fonts.body, fontSize: "11px", color: colors.gold, margin: "4px 0 0" }}>
+                          {uploadedFiles.find(f => f.type === type)?.name}
+                        </p>
                       )}
                     </div>
-                    <div className="relative">
-                      <input type="file" accept=".pdf,.jpg,.jpeg,.png" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onChange={(e) => handleFileUpload(e, type)} disabled={uploading} />
-                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--gold)]/40 text-[var(--gold)] text-xs group-hover:bg-[var(--gold)]/10 transition-colors">
-                        {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Upload className="w-3 h-3" />}
+                    <div style={{ position: "relative" }}>
+                      <input type="file" accept=".pdf,.jpg,.jpeg,.png" style={{ position: "absolute", inset: 0, opacity: 0, cursor: "pointer", width: "100%", height: "100%" }} onChange={(e) => handleFileUpload(e, type)} disabled={uploading} />
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        padding: "6px 12px",
+                        border: `1px solid ${colors.border}`,
+                        borderRadius: "2px",
+                        fontFamily: fonts.body,
+                        fontSize: "11px",
+                        fontWeight: 500,
+                        color: colors.muted,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                        transition: "border-color 300ms ease, color 300ms ease",
+                      }}>
+                        {uploading ? <Loader2 size={12} strokeWidth={1.5} className="animate-spin" /> : <Upload size={12} strokeWidth={1.5} />}
                         Uploader
                       </div>
                     </div>
@@ -227,19 +401,52 @@ export default function FormEtatCivil() {
                 ))}
               </div>
             </div>
-            <p className="text-xs text-muted-foreground">Formats acceptés : PDF, JPG, PNG — Taille max : 10 Mo</p>
+            <p style={{ fontFamily: fonts.body, fontSize: "11px", color: colors.faint, margin: 0 }}>
+              Formats acceptes : PDF, JPG, PNG — Taille max : 10 Mo
+            </p>
           </div>
 
-          {/* Lien vers le Mandat de Recherche */}
-          <div className="mt-6 p-5 rounded-xl border border-[var(--gold)]/30 bg-[var(--gold)]/5">
-            <p className="text-sm font-semibold text-[var(--gold)] mb-2">Compléter votre dossier</p>
-            <p className="text-sm text-muted-foreground mb-4">Souhaitez-vous également remplir un <strong className="text-foreground">Mandat de Recherche</strong> pour que notre équipe commence à chercher votre bien ?</p>
+          {/* Mandat link */}
+          <div style={{
+            marginTop: "32px",
+            padding: "28px 24px",
+            border: `1px solid ${colors.border}`,
+            borderRadius: "2px",
+            background: colors.surface,
+            textAlign: "left",
+          }}>
+            <p style={{ ...labelStyle, marginBottom: "8px" }}>
+              Completer votre dossier
+            </p>
+            <p style={{
+              fontFamily: fonts.body,
+              fontSize: "13px",
+              color: colors.muted,
+              lineHeight: "1.6",
+              margin: "0 0 20px",
+            }}>
+              Souhaitez-vous egalement remplir un <span style={{ color: colors.fg }}>Mandat de Recherche</span> pour que notre equipe commence a chercher votre bien ?
+            </p>
             <a
               href={`/mandat?leadId=${leadId}&nom=${encodeURIComponent(nomValue ?? "")}&prenoms=${encodeURIComponent(prenomsValue ?? "")}&email=${encodeURIComponent(emailValue ?? "")}&telephone=${encodeURIComponent(telephoneValue ?? "")}`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm transition"
-              style={{ background: "linear-gradient(135deg, #C9A84C, #F0D080, #C9A84C)", color: "#0f0f0f" }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "14px 28px",
+                background: colors.gold,
+                color: colors.bg,
+                borderRadius: "2px",
+                fontFamily: fonts.body,
+                fontSize: "11px",
+                fontWeight: 500,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                textDecoration: "none",
+                transition: "opacity 300ms ease",
+              }}
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
               Remplir mon Mandat de Recherche
             </a>
           </div>
@@ -248,178 +455,334 @@ export default function FormEtatCivil() {
     );
   }
 
+  /* ── Main form ── */
   return (
-    <div className="min-h-screen bg-background">
+    <div style={{ minHeight: "100vh", background: colors.bg }}>
+
       {/* Header */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container py-4 flex items-center justify-between">
-          <img src={SIGMA_LOGO} alt="Sigma Factory" className="h-10 object-contain" />
-          <p className="text-xs text-muted-foreground hidden sm:block">Fiche d'état civil — Confidentiel</p>
+      <div style={{
+        borderBottom: `1px solid ${colors.border}`,
+        background: colors.bg,
+        position: "sticky",
+        top: 0,
+        zIndex: 10,
+      }}>
+        <div style={{
+          maxWidth: "720px",
+          margin: "0 auto",
+          padding: "16px 24px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
+          <img src={SIGMA_LOGO} alt="Sigma Factory" style={{ height: "32px", objectFit: "contain" }} />
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: "10px",
+            fontWeight: 500,
+            color: colors.faint,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            margin: 0,
+          }}>
+            Fiche d'etat civil
+          </p>
         </div>
       </div>
 
-      <div className="container py-8 max-w-3xl mx-auto">
-        {/* Titre */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">Fiche de Renseignements</h1>
-          <p className="text-[var(--gold)] text-lg font-medium tracking-wide">D'État Civil</p>
-          <p className="text-muted-foreground text-sm mt-2">Toutes vos informations sont traitées de manière strictement confidentielle.</p>
+      <div style={{ maxWidth: "640px", margin: "0 auto", padding: "48px 24px" }}>
+
+        {/* Title */}
+        <div style={{ textAlign: "center", marginBottom: "48px" }}>
+          <h1 style={{
+            fontFamily: fonts.heading,
+            fontSize: "32px",
+            fontWeight: 700,
+            color: colors.fg,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            margin: "0 0 6px",
+            lineHeight: 1.1,
+          }}>
+            Fiche de Renseignements
+          </h1>
+          <p style={{
+            fontFamily: fonts.heading,
+            fontSize: "18px",
+            fontWeight: 400,
+            color: colors.muted,
+            letterSpacing: "0.04em",
+            margin: "0 0 12px",
+          }}>
+            D'Etat Civil
+          </p>
+          <div style={{ width: "40px", height: "1px", background: colors.gold, margin: "0 auto 16px" }} />
+          <p style={{
+            fontFamily: fonts.body,
+            fontSize: "12px",
+            color: colors.faint,
+            letterSpacing: "0.02em",
+            margin: 0,
+          }}>
+            Toutes vos informations sont traitees de maniere strictement confidentielle.
+          </p>
         </div>
 
         {/* Stepper */}
-        <div className="flex items-center justify-between mb-8 px-2">
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          marginBottom: "40px",
+          gap: "0",
+        }}>
           {STEPS.map((step, i) => {
-            const Icon = step.icon;
             const isActive = currentStep === step.id;
             const isDone = currentStep > step.id;
             return (
-              <div key={step.id} className="flex items-center flex-1">
-                <div className="flex flex-col items-center gap-1">
-                  <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all ${isActive ? "bg-[var(--gold)] text-[oklch(0.08_0.005_280)] shadow-lg shadow-[var(--gold)]/30" : isDone ? "bg-[var(--gold-dark)] text-[oklch(0.08_0.005_280)]" : "bg-muted text-muted-foreground"}`}>
-                    {isDone ? <CheckCircle className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
+              <div key={step.id} style={{ display: "flex", alignItems: "center", flex: 1 }}>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", minWidth: "48px" }}>
+                  <div style={{
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "2px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: `1px solid ${isActive ? colors.gold : isDone ? colors.goldMuted : colors.border}`,
+                    background: isActive ? colors.gold : "transparent",
+                    transition: "all 300ms ease",
+                  }}>
+                    {isDone ? (
+                      <CheckCircle size={14} strokeWidth={1.5} style={{ color: colors.goldMuted }} />
+                    ) : (
+                      <step.icon size={14} strokeWidth={1.5} style={{ color: isActive ? colors.bg : colors.faint }} />
+                    )}
                   </div>
-                  <span className={`text-xs hidden sm:block ${isActive ? "text-[var(--gold)] font-semibold" : isDone ? "text-[var(--gold-dark)]" : "text-muted-foreground"}`}>{step.label}</span>
+                  <span style={{
+                    fontFamily: fonts.body,
+                    fontSize: "9px",
+                    fontWeight: 500,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    color: isActive ? colors.fg : isDone ? colors.muted : colors.faint,
+                    transition: "color 300ms ease",
+                  }}>
+                    {step.label}
+                  </span>
                 </div>
-                {i < STEPS.length - 1 && <div className={`flex-1 h-px mx-2 ${isDone ? "bg-[var(--gold-dark)]" : "bg-border"}`} />}
+                {i < STEPS.length - 1 && (
+                  <div style={{
+                    flex: 1,
+                    height: "1px",
+                    margin: "0 8px",
+                    marginBottom: "20px",
+                    background: isDone ? colors.goldMuted : colors.border,
+                    transition: "background 300ms ease",
+                  }} />
+                )}
               </div>
             );
           })}
         </div>
 
-        {/* Formulaire */}
+        {/* Form card */}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="bg-card border border-border rounded-2xl p-6 sm:p-8">
+          <div style={{
+            background: colors.surface,
+            border: `1px solid ${colors.border}`,
+            borderRadius: "2px",
+            padding: "40px 36px",
+          }}>
 
-            {/* ÉTAPE 1 — IDENTITÉ */}
+            {/* STEP 1 — IDENTITY */}
             {currentStep === 1 && (
-              <div className="space-y-5">
+              <div>
                 <SectionTitle>Vous concernant</SectionTitle>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <SigmaInput label="Nom" required placeholder="Nom de famille" error={errors.nom?.message} {...register("nom")} />
-                  <SigmaInput label="Nom de jeune fille" placeholder="Si différent du nom actuel" {...register("nomJeuneFille")} />
+                  <SigmaInput label="Nom de jeune fille" placeholder="Si different du nom actuel" {...register("nomJeuneFille")} />
                 </div>
-                <SigmaInput label="Prénoms" required placeholder="Tous les prénoms dans l'ordre de l'état civil" error={errors.prenoms?.message} {...register("prenoms")} />
-                <SigmaInput label="Profession" placeholder="Votre profession actuelle" {...register("profession")} />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div style={{ marginBottom: "16px" }}>
+                  <SigmaInput label="Prenoms" required placeholder="Tous les prenoms dans l'ordre de l'etat civil" error={errors.prenoms?.message} {...register("prenoms")} />
+                </div>
+                <div style={{ marginBottom: "16px" }}>
+                  <SigmaInput label="Profession" placeholder="Votre profession actuelle" {...register("profession")} />
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <SigmaInput label="Date de naissance" type="date" {...register("dateNaissance")} />
-                  <SigmaInput label="Lieu de naissance" placeholder="Ville, département" {...register("lieuNaissance")} />
+                  <SigmaInput label="Lieu de naissance" placeholder="Ville, departement" {...register("lieuNaissance")} />
                 </div>
-                <SigmaTextarea label="Adresse" placeholder="Numéro et rue" {...register("adresse")} />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div style={{ marginBottom: "16px" }}>
+                  <SigmaTextarea label="Adresse" placeholder="Numero et rue" {...register("adresse")} />
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "0" }}>
                   <SigmaInput label="Code postal" placeholder="75001" maxLength={10} {...register("codePostal")} />
                   <SigmaInput label="Ville" placeholder="Paris" {...register("ville")} />
                 </div>
-                <SectionTitle>Coordonnées</SectionTitle>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <SigmaInput label="Téléphone domicile" type="tel" placeholder="01 XX XX XX XX" {...register("telephoneDomicile")} />
-                  <SigmaInput label="Téléphone travail" type="tel" placeholder="01 XX XX XX XX" {...register("telephoneTravail")} />
-                  <SigmaInput label="Téléphone portable" type="tel" placeholder="06 XX XX XX XX" {...register("telephonePortable")} />
+                <SectionTitle>Coordonnees</SectionTitle>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <SigmaInput label="Telephone domicile" type="tel" placeholder="01 XX XX XX XX" {...register("telephoneDomicile")} />
+                  <SigmaInput label="Telephone travail" type="tel" placeholder="01 XX XX XX XX" {...register("telephoneTravail")} />
+                  <SigmaInput label="Telephone portable" type="tel" placeholder="06 XX XX XX XX" {...register("telephonePortable")} />
                   <SigmaInput label="Adresse e-mail" type="email" placeholder="votre@email.com" {...register("email")} />
                 </div>
               </div>
             )}
 
-            {/* ÉTAPE 2 — CONJOINT */}
+            {/* STEP 2 — SPOUSE */}
             {currentStep === 2 && (
-              <div className="space-y-5">
+              <div>
                 <SectionTitle>Conjoint(e)</SectionTitle>
-                <p className="text-sm text-muted-foreground -mt-2 mb-4">Remplissez cette section uniquement si vous êtes marié(e) ou pacsé(e).</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <p style={{
+                  fontFamily: fonts.body,
+                  fontSize: "13px",
+                  color: colors.muted,
+                  lineHeight: "1.6",
+                  margin: "0 0 20px",
+                }}>
+                  Remplissez cette section uniquement si vous etes marie(e) ou pacse(e).
+                </p>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <SigmaInput label="Nom" placeholder="Nom de famille du conjoint" {...register("conjointNom")} />
-                  <SigmaInput label="Nom de jeune fille" placeholder="Si différent" {...register("conjointNomJeuneFille")} />
+                  <SigmaInput label="Nom de jeune fille" placeholder="Si different" {...register("conjointNomJeuneFille")} />
                 </div>
-                <SigmaInput label="Prénoms" placeholder="Tous les prénoms dans l'ordre de l'état civil" {...register("conjointPrenoms")} />
-                <SigmaInput label="Profession" placeholder="Profession du conjoint" {...register("conjointProfession")} />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div style={{ marginBottom: "16px" }}>
+                  <SigmaInput label="Prenoms" placeholder="Tous les prenoms dans l'ordre de l'etat civil" {...register("conjointPrenoms")} />
+                </div>
+                <div style={{ marginBottom: "16px" }}>
+                  <SigmaInput label="Profession" placeholder="Profession du conjoint" {...register("conjointProfession")} />
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
                   <SigmaInput label="Date de naissance" type="date" {...register("conjointDateNaissance")} />
-                  <SigmaInput label="Lieu de naissance" placeholder="Ville, département" {...register("conjointLieuNaissance")} />
+                  <SigmaInput label="Lieu de naissance" placeholder="Ville, departement" {...register("conjointLieuNaissance")} />
                 </div>
-                <SigmaTextarea label="Adresse" placeholder="Adresse complète (si différente de la vôtre)" {...register("conjointAdresse")} />
-                <SectionTitle>Coordonnées du conjoint</SectionTitle>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <SigmaInput label="Téléphone domicile" type="tel" {...register("conjointTelephoneDomicile")} />
-                  <SigmaInput label="Téléphone travail" type="tel" {...register("conjointTelephoneTravail")} />
-                  <SigmaInput label="Téléphone portable" type="tel" {...register("conjointTelephonePortable")} />
+                <div style={{ marginBottom: "0" }}>
+                  <SigmaTextarea label="Adresse" placeholder="Adresse complete (si differente de la votre)" {...register("conjointAdresse")} />
+                </div>
+                <SectionTitle>Coordonnees du conjoint</SectionTitle>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <SigmaInput label="Telephone domicile" type="tel" {...register("conjointTelephoneDomicile")} />
+                  <SigmaInput label="Telephone travail" type="tel" {...register("conjointTelephoneTravail")} />
+                  <SigmaInput label="Telephone portable" type="tel" {...register("conjointTelephonePortable")} />
                   <SigmaInput label="Adresse e-mail" type="email" {...register("conjointEmail")} />
                 </div>
               </div>
             )}
 
-                {/* ÉTAPE 3 — MARIAGE */}
+            {/* STEP 3 — MARRIAGE */}
             {currentStep === 3 && (
-              <div className="space-y-5">
+              <div>
                 <SectionTitle>Informations sur le mariage</SectionTitle>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <SigmaInput label="Commune du mariage" placeholder="Ville où le mariage a été célébré" {...register("communeMariage")} />
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
+                  <SigmaInput label="Commune du mariage" placeholder="Ville ou le mariage a ete celebre" {...register("communeMariage")} />
                   <SigmaInput label="Date du mariage" type="date" {...register("dateMariage")} />
                 </div>
 
-                {/* Régime matrimonial — visible dès l'étape mariage */}
-                <div className="space-y-3">
-                  <SigmaSelect label="Régime matrimonial" {...register("regimeMatrimonialType")}>
-                    <option value="">— Sélectionner un régime —</option>
-                    <option value="communaute_reduite_acquets">Communauté réduite aux acquêts (régime légal)</option>
-                    <option value="communaute_universelle">Communauté universelle</option>
-                    <option value="separation_biens">Séparation de biens</option>
-                    <option value="participation_acquets">Participation aux acquêts</option>
-                    <option value="autre">Autre régime</option>
+                <div style={{ marginBottom: "20px" }}>
+                  <SigmaSelect label="Regime matrimonial" {...register("regimeMatrimonialType")}>
+                    <option value="">-- Selectionner un regime --</option>
+                    <option value="communaute_reduite_acquets">Communaute reduite aux acquets (regime legal)</option>
+                    <option value="communaute_universelle">Communaute universelle</option>
+                    <option value="separation_biens">Separation de biens</option>
+                    <option value="participation_acquets">Participation aux acquets</option>
+                    <option value="autre">Autre regime</option>
                   </SigmaSelect>
 
                   {regimeMatrimonialType === "separation_biens" && (
-                    <div className="bg-[oklch(0.10_0.005_280)] rounded-xl p-4 border border-[var(--gold)]/20">
-                      <p className="text-sm font-medium text-foreground mb-3">Dans le cadre de votre projet immobilier, vous investissez :</p>
-                      <div className="flex gap-4">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input type="radio" value="seul" {...register("projetSeulOuDeux")} className="w-4 h-4 accent-[var(--gold)]" />
-                          <span className="text-sm text-foreground">Seul(e)</span>
+                    <div style={{
+                      background: colors.surfaceRaised,
+                      border: `1px solid ${colors.border}`,
+                      borderRadius: "2px",
+                      padding: "20px",
+                      marginTop: "16px",
+                    }}>
+                      <p style={{
+                        fontFamily: fonts.body,
+                        fontSize: "13px",
+                        color: colors.fg,
+                        margin: "0 0 12px",
+                      }}>
+                        Dans le cadre de votre projet immobilier, vous investissez :
+                      </p>
+                      <div style={{ display: "flex", gap: "24px" }}>
+                        <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+                          <input type="radio" value="seul" {...register("projetSeulOuDeux")} style={{ accentColor: colors.gold }} />
+                          <span style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.fg }}>Seul(e)</span>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input type="radio" value="a_deux" {...register("projetSeulOuDeux")} className="w-4 h-4 accent-[var(--gold)]" />
-                          <span className="text-sm text-foreground">À deux (avec mon conjoint)</span>
+                        <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+                          <input type="radio" value="a_deux" {...register("projetSeulOuDeux")} style={{ accentColor: colors.gold }} />
+                          <span style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.fg }}>A deux (avec mon conjoint)</span>
                         </label>
                       </div>
                     </div>
                   )}
 
                   {regimeMatrimonialType === "autre" && (
-                    <SigmaInput label="Précisez le régime" placeholder="Décrivez votre régime matrimonial" {...register("regimeMatrimonial")} />
+                    <div style={{ marginTop: "16px" }}>
+                      <SigmaInput label="Precisez le regime" placeholder="Decrivez votre regime matrimonial" {...register("regimeMatrimonial")} />
+                    </div>
                   )}
                 </div>
 
-                <div className="bg-[oklch(0.10_0.005_280)] rounded-xl p-4">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" {...register("contratMariage")} className="w-4 h-4 accent-[var(--gold)]" />
-                    <span className="text-sm font-medium text-foreground">Existence d'un contrat de mariage</span>
+                <div style={{
+                  background: colors.surfaceRaised,
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: "2px",
+                  padding: "16px 20px",
+                  marginBottom: "20px",
+                }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer" }}>
+                    <input type="checkbox" {...register("contratMariage")} style={{ accentColor: colors.gold }} />
+                    <span style={{ fontFamily: fonts.body, fontSize: "13px", fontWeight: 500, color: colors.fg }}>Existence d'un contrat de mariage</span>
                   </label>
                 </div>
 
                 {contratMariage && (
-                  <div className="space-y-4 pl-4 border-l-2 border-[var(--gold)]/30">
-                    <SigmaInput label="Nom du notaire ayant rédigé le contrat" {...register("notaireContratNom")} />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <SigmaInput label="Lieu de l'étude" placeholder="Ville du notaire" {...register("notaireContratLieu")} />
+                  <div style={{
+                    paddingLeft: "20px",
+                    borderLeft: `1px solid ${colors.border}`,
+                    marginBottom: "20px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                  }}>
+                    <SigmaInput label="Nom du notaire ayant redige le contrat" {...register("notaireContratNom")} />
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                      <SigmaInput label="Lieu de l'etude" placeholder="Ville du notaire" {...register("notaireContratLieu")} />
                       <SigmaInput label="Date du contrat" type="date" {...register("notaireContratDate")} />
                     </div>
                   </div>
                 )}
 
-                <SectionTitle>Changement de régime matrimonial</SectionTitle>
-                <div className="bg-[oklch(0.10_0.005_280)] rounded-xl p-4">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" {...register("changementRegime")} className="w-4 h-4 accent-[var(--gold)]" />
-                    <span className="text-sm font-medium text-foreground">Changement de régime matrimonial</span>
+                <SectionTitle>Changement de regime matrimonial</SectionTitle>
+                <div style={{
+                  background: colors.surfaceRaised,
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: "2px",
+                  padding: "16px 20px",
+                  marginBottom: "20px",
+                }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: "12px", cursor: "pointer" }}>
+                    <input type="checkbox" {...register("changementRegime")} style={{ accentColor: colors.gold }} />
+                    <span style={{ fontFamily: fonts.body, fontSize: "13px", fontWeight: 500, color: colors.fg }}>Changement de regime matrimonial</span>
                   </label>
                 </div>
 
                 {changementRegime && (
-                  <div className="space-y-4 pl-4 border-l-2 border-[var(--gold)]/30">
-                    <SigmaInput label="Nouveau régime adopté" {...register("nouveauRegime")} />
-                    <SigmaInput label="Nom du notaire ayant rédigé l'acte" {...register("notaireChangementNom")} />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <SigmaInput label="Lieu de l'étude" {...register("notaireChangementLieu")} />
+                  <div style={{
+                    paddingLeft: "20px",
+                    borderLeft: `1px solid ${colors.border}`,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                  }}>
+                    <SigmaInput label="Nouveau regime adopte" {...register("nouveauRegime")} />
+                    <SigmaInput label="Nom du notaire ayant redige l'acte" {...register("notaireChangementNom")} />
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                      <SigmaInput label="Lieu de l'etude" {...register("notaireChangementLieu")} />
                       <SigmaInput label="Date de l'acte" type="date" {...register("notaireChangementDate")} />
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                       <SigmaInput label="Tribunal Judiciaire (homologation)" {...register("tribunalHomologation")} />
                       <SigmaInput label="Date du jugement d'homologation" type="date" {...register("dateHomologation")} />
                     </div>
@@ -428,37 +791,57 @@ export default function FormEtatCivil() {
               </div>
             )}
 
-            {/* ÉTAPE 4 — SITUATION FAMILIALE */}
+            {/* STEP 4 — FAMILY STATUS */}
             {currentStep === 4 && (
-              <div className="space-y-5">
+              <div>
                 <SectionTitle>Situation familiale</SectionTitle>
-                <SigmaSelect label="Votre situation actuelle" {...register("situationFamiliale")}>
-                  <option value="celibataire">Célibataire</option>
-                  <option value="marie">Marié(e)</option>
-                  <option value="divorce">Divorcé(e)</option>
-                  <option value="instance_divorce">En instance de divorce</option>
-                  <option value="pacs">Lié(e) par un PACS</option>
-                  <option value="veuf">Veuf / Veuve</option>
-                </SigmaSelect>
+                <div style={{ marginBottom: "20px" }}>
+                  <SigmaSelect label="Votre situation actuelle" {...register("situationFamiliale")}>
+                    <option value="celibataire">Celibataire</option>
+                    <option value="marie">Marie(e)</option>
+                    <option value="divorce">Divorce(e)</option>
+                    <option value="instance_divorce">En instance de divorce</option>
+                    <option value="pacs">Lie(e) par un PACS</option>
+                    <option value="veuf">Veuf / Veuve</option>
+                  </SigmaSelect>
+                </div>
 
                 {situationFamiliale === "instance_divorce" && (
-                  <div className="space-y-4 pl-4 border-l-2 border-[var(--gold)]/30">
+                  <div style={{
+                    paddingLeft: "20px",
+                    borderLeft: `1px solid ${colors.border}`,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                  }}>
                     <SectionTitle>Instance de divorce</SectionTitle>
-                    <SigmaTextarea label="Nom et adresse de votre avocat" placeholder="Maître ..., adresse complète" {...register("avocatNomAdresse")} />
+                    <SigmaTextarea label="Nom et adresse de votre avocat" placeholder="Maitre ..., adresse complete" {...register("avocatNomAdresse")} />
                   </div>
                 )}
 
                 {situationFamiliale === "divorce" && (
-                  <div className="space-y-4 pl-4 border-l-2 border-[var(--gold)]/30">
+                  <div style={{
+                    paddingLeft: "20px",
+                    borderLeft: `1px solid ${colors.border}`,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                  }}>
                     <SectionTitle>Informations sur le divorce</SectionTitle>
                     <SigmaInput label="Tribunal Judiciaire de" placeholder="Ville du tribunal" {...register("tribunalDivorce")} />
                     <SigmaInput label="Date du jugement de divorce" type="date" {...register("dateDivorce")} />
-                    <SigmaInput label="Nom et prénom de l'ex-conjoint(e)" {...register("exConjointNomPrenom")} />
+                    <SigmaInput label="Nom et prenom de l'ex-conjoint(e)" {...register("exConjointNomPrenom")} />
                   </div>
                 )}
 
                 {situationFamiliale === "pacs" && (
-                  <div className="space-y-4 pl-4 border-l-2 border-[var(--gold)]/30">
+                  <div style={{
+                    paddingLeft: "20px",
+                    borderLeft: `1px solid ${colors.border}`,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                  }}>
                     <SectionTitle>PACS</SectionTitle>
                     <SigmaInput label="Date du PACS" type="date" {...register("datePacs")} />
                     <SigmaInput label="Nom du/de la partenaire" {...register("partenairePacs")} />
@@ -467,91 +850,207 @@ export default function FormEtatCivil() {
               </div>
             )}
 
-            {/* ÉTAPE 5 — NATIONALITÉ */}
+            {/* STEP 5 — NATIONALITY */}
             {currentStep === 5 && (
-              <div className="space-y-5">
-                <SectionTitle>Nationalité</SectionTitle>
-                <SigmaSelect label="Votre situation" {...register("nationalite")}>
-                  <option value="francais">Français(e) résidant en France</option>
-                  <option value="francais_etranger">Français(e) résidant à l'étranger</option>
-                  <option value="etranger">Ressortissant(e) étranger(ère)</option>
-                </SigmaSelect>
+              <div>
+                <SectionTitle>Nationalite</SectionTitle>
+                <div style={{ marginBottom: "20px" }}>
+                  <SigmaSelect label="Votre situation" {...register("nationalite")}>
+                    <option value="francais">Francais(e) residant en France</option>
+                    <option value="francais_etranger">Francais(e) residant a l'etranger</option>
+                    <option value="etranger">Ressortissant(e) etranger(ere)</option>
+                  </SigmaSelect>
+                </div>
 
                 {nationalite === "francais_etranger" && (
-                  <div className="bg-[oklch(0.10_0.005_280)] rounded-xl p-4 border border-[var(--gold)]/20">
-                    <p className="text-sm text-foreground/80">
-                      <span className="text-[var(--gold)] font-semibold">Document requis :</span> Joindre une photocopie de votre carte nationale d'identité ou passeport.
+                  <div style={{
+                    background: colors.surfaceRaised,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "2px",
+                    padding: "20px",
+                    marginBottom: "20px",
+                  }}>
+                    <p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted, margin: 0, lineHeight: "1.6" }}>
+                      <span style={{ color: colors.gold, fontWeight: 500 }}>Document requis :</span> Joindre une photocopie de votre carte nationale d'identite ou passeport.
                     </p>
                   </div>
                 )}
 
                 {nationalite === "etranger" && (
-                  <div className="bg-[oklch(0.10_0.005_280)] rounded-xl p-4 border border-[var(--gold)]/20">
-                    <p className="text-sm text-foreground/80">
-                      <span className="text-[var(--gold)] font-semibold">Document requis :</span> Joindre une photocopie de votre titre de séjour (recto-verso).
+                  <div style={{
+                    background: colors.surfaceRaised,
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "2px",
+                    padding: "20px",
+                    marginBottom: "20px",
+                  }}>
+                    <p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted, margin: 0, lineHeight: "1.6" }}>
+                      <span style={{ color: colors.gold, fontWeight: 500 }}>Document requis :</span> Joindre une photocopie de votre titre de sejour (recto-verso).
                     </p>
                   </div>
                 )}
 
-                <div className="bg-[oklch(0.10_0.005_280)] rounded-xl p-5 border border-border mt-4">
-                  <p className="text-sm font-semibold text-[var(--gold)] mb-2 uppercase tracking-wider">Récapitulatif</p>
-                  <p className="text-sm text-muted-foreground">En cliquant sur "Soumettre ma fiche", vous confirmez que les informations renseignées sont exactes et complètes. Vos données sont traitées de manière strictement confidentielle par Sigma Factory.</p>
+                <div style={{
+                  background: colors.surfaceRaised,
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: "2px",
+                  padding: "24px",
+                  marginTop: "24px",
+                }}>
+                  <p style={{ ...labelStyle, marginBottom: "8px" }}>Recapitulatif</p>
+                  <p style={{
+                    fontFamily: fonts.body,
+                    fontSize: "13px",
+                    color: colors.muted,
+                    lineHeight: "1.6",
+                    margin: 0,
+                  }}>
+                    En cliquant sur "Soumettre ma fiche", vous confirmez que les informations renseignees sont exactes et completes. Vos donnees sont traitees de maniere strictement confidentielle par Sigma Factory.
+                  </p>
                 </div>
               </div>
             )}
 
-            {/* RGPD consent — visible uniquement à la dernière étape */}
+            {/* RGPD consent — last step only */}
             {currentStep === STEPS.length && (
-              <div className="mt-6 pt-4 border-t border-border">
-                <label className="flex items-start gap-3 cursor-pointer">
+              <div style={{
+                marginTop: "28px",
+                paddingTop: "20px",
+                borderTop: `1px solid ${colors.border}`,
+              }}>
+                <label style={{ display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer" }}>
                   <input
                     type="checkbox"
                     checked={consentementRgpd}
                     onChange={e => { setConsentementRgpd(e.target.checked); if (e.target.checked) setRgpdError(false); }}
-                    className="mt-0.5 w-4 h-4 accent-[var(--gold)] flex-shrink-0"
+                    style={{ accentColor: colors.gold, marginTop: "2px", flexShrink: 0 }}
                   />
-                  <span className="text-xs text-[var(--text-muted)] leading-relaxed">
-                    J'accepte que mes données personnelles soient traitées par Sigma Factory dans le cadre de ma demande, conformément à la{" "}
-                    <a href="/politique-confidentialite" target="_blank" rel="noreferrer" className="text-[var(--gold)] underline">politique de confidentialité</a>.
+                  <span style={{
+                    fontFamily: fonts.body,
+                    fontSize: "12px",
+                    color: colors.muted,
+                    lineHeight: "1.6",
+                  }}>
+                    J'accepte que mes donnees personnelles soient traitees par Sigma Factory dans le cadre de ma demande, conformement a la{" "}
+                    <a href="/politique-confidentialite" target="_blank" rel="noreferrer" style={{ color: colors.gold, textDecoration: "underline" }}>politique de confidentialite</a>.
                   </span>
                 </label>
-                {rgpdError && <p className="text-red-400 text-xs mt-2 ml-7">Vous devez accepter la politique de confidentialité pour continuer.</p>}
+                {rgpdError && <p style={{ color: colors.destructive, fontSize: "12px", fontFamily: fonts.body, marginTop: "8px", marginLeft: "28px" }}>Vous devez accepter la politique de confidentialite pour continuer.</p>}
               </div>
             )}
 
             {/* Navigation */}
-            <div className="flex items-center justify-between mt-6 pt-4 border-t border-border">
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginTop: "32px",
+              paddingTop: "24px",
+              borderTop: `1px solid ${colors.border}`,
+            }}>
               <button
                 type="button"
                 onClick={() => setCurrentStep(s => Math.max(1, s - 1))}
                 disabled={currentStep === 1}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border text-sm font-medium text-foreground/70 hover:text-foreground hover:border-[var(--gold)]/50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "12px 20px",
+                  background: "transparent",
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: "2px",
+                  fontFamily: fonts.body,
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  color: currentStep === 1 ? colors.faint : colors.muted,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  cursor: currentStep === 1 ? "not-allowed" : "pointer",
+                  opacity: currentStep === 1 ? 0.4 : 1,
+                  transition: "all 300ms ease",
+                }}
               >
-                <ChevronLeft className="w-4 h-4" /> Précédent
+                <ChevronLeft size={14} strokeWidth={1.5} /> Precedent
               </button>
 
-              <span className="text-xs text-muted-foreground">{currentStep} / {STEPS.length}</span>
+              <span style={{
+                fontFamily: fonts.body,
+                fontSize: "11px",
+                color: colors.faint,
+                letterSpacing: "0.04em",
+              }}>
+                {currentStep} / {STEPS.length}
+              </span>
 
               {currentStep < STEPS.length ? (
                 <button
                   type="button"
                   onClick={() => setCurrentStep(s => Math.min(STEPS.length, s + 1))}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--gold)] text-[oklch(0.08_0.005_280)] text-sm font-semibold hover:bg-[var(--gold-light)] transition-all shadow-lg shadow-[var(--gold)]/20"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    padding: "12px 24px",
+                    background: "transparent",
+                    border: `1px solid ${colors.border}`,
+                    borderRadius: "2px",
+                    fontFamily: fonts.body,
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    color: colors.fg,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    cursor: "pointer",
+                    transition: "all 300ms ease",
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = colors.gold; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = colors.border; }}
                 >
-                  Suivant <ChevronRight className="w-4 h-4" />
+                  Suivant <ChevronRight size={14} strokeWidth={1.5} />
                 </button>
               ) : (
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[var(--gold)] text-[oklch(0.08_0.005_280)] text-sm font-semibold hover:bg-[var(--gold-light)] disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-lg shadow-[var(--gold)]/20"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "14px 28px",
+                    background: isSubmitting ? colors.goldMuted : colors.gold,
+                    border: "none",
+                    borderRadius: "2px",
+                    fontFamily: fonts.body,
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    color: colors.bg,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    cursor: isSubmitting ? "not-allowed" : "pointer",
+                    opacity: isSubmitting ? 0.7 : 1,
+                    transition: "opacity 300ms ease",
+                  }}
                 >
-                  {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Envoi en cours...</> : <><CheckCircle className="w-4 h-4" /> Soumettre ma fiche</>}
+                  {isSubmitting ? <><Loader2 size={14} strokeWidth={1.5} className="animate-spin" /> Envoi en cours...</> : <><CheckCircle size={14} strokeWidth={1.5} /> Soumettre ma fiche</>}
                 </button>
               )}
             </div>
           </div>
         </form>
+
+        {/* Footer */}
+        <p style={{
+          textAlign: "center",
+          marginTop: "48px",
+          fontFamily: fonts.body,
+          fontSize: "10px",
+          color: colors.border,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+        }}>
+          Document confidentiel — Sigma Factory
+        </p>
       </div>
     </div>
   );

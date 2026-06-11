@@ -2,8 +2,6 @@ import { useState } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Mail, Send, Eye, ArrowLeft, ExternalLink } from "lucide-react";
 import { Link } from "wouter";
@@ -14,7 +12,7 @@ export default function MailPreviewPointImmobilier() {
   const [testNom, setTestNom] = useState("Jean Dupont");
 
   const sendTestMutation = trpc.crm.sendPointImmobilierEmailTest.useMutation({
-    onSuccess: (data) => toast.success(`Email de test envoyé à ${data.email} ✓`),
+    onSuccess: (data) => toast.success(`Email de test envoye a ${data.email}`),
     onError: (err) => toast.error(err.message),
   });
 
@@ -24,7 +22,6 @@ export default function MailPreviewPointImmobilier() {
     return null;
   }
 
-  // HTML du mail (identique à mailer.ts)
   const rdvUrl = "https://www.sigmafactory.org/rdv/point-immobilier";
   const nomLead = testNom || "Jean Dupont";
 
@@ -38,149 +35,159 @@ export default function MailPreviewPointImmobilier() {
     <div style="color:#888;font-size:11px;letter-spacing:2px;margin-top:4px;text-transform:uppercase">Pole Immobilier</div>
   </div>
   <div style="padding:36px">
-    <h2 style="margin:0 0 6px;color:#fff">Félicitations, votre financement est validé !</h2>
-    <p style="color:#C9A84C;font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin:0 0 24px">Prochaine étape — Recherche de bien</p>
+    <h2 style="margin:0 0 6px;color:#fff">Felicitations, votre financement est valide !</h2>
+    <p style="color:#C9A84C;font-size:11px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin:0 0 24px">Prochaine etape — Recherche de bien</p>
     <p style="color:#aaa;font-size:14px;line-height:1.7;margin:0 0 20px">
       Bonjour ${nomLead},<br><br>
-      Votre enveloppe de financement a été validée. Vous passez maintenant à l'étape <strong style="color:#fff">Recherche de Bien</strong> avec <strong style="color:#C9A84C">Élodie</strong>, votre conseillère immobilière dédiée chez Sigma Factory.<br><br>
-      Élodie va vous accompagner dans la recherche du bien idéal correspondant à votre projet et à votre budget.
+      Votre enveloppe de financement a ete validee. Vous passez maintenant a l'etape <strong style="color:#fff">Recherche de Bien</strong> avec <strong style="color:#C9A84C">Elodie</strong>, votre conseillere immobiliere dediee chez Sigma Factory.<br><br>
+      Elodie va vous accompagner dans la recherche du bien ideal correspondant a votre projet et a votre budget.
     </p>
     <div style="background:#0a0a0a;border:1px solid rgba(201,168,76,0.3);padding:18px 22px;margin:20px 0">
-      <div style="color:#C9A84C;font-size:10px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Votre prochaine étape</div>
-      <div style="color:#fff;font-size:15px;font-weight:bold">Point Immobilier avec Élodie</div>
-      <div style="color:#aaa;font-size:13px;margin-top:6px">Premier échange pour lancer votre recherche de bien — 45 min</div>
+      <div style="color:#C9A84C;font-size:10px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Votre prochaine etape</div>
+      <div style="color:#fff;font-size:15px;font-weight:bold">Point Immobilier avec Elodie</div>
+      <div style="color:#aaa;font-size:13px;margin-top:6px">Premier echange pour lancer votre recherche de bien — 45 min</div>
     </div>
     <div style="text-align:center;margin:28px 0">
       <a href="${rdvUrl}" style="background:#C9A84C;color:#000;text-decoration:none;padding:14px 32px;font-weight:900;font-size:15px;letter-spacing:1px;display:inline-block">PRENDRE MON RENDEZ-VOUS</a>
     </div>
     <p style="color:#555;font-size:12px;line-height:1.6">En cas de question : <a href="mailto:elodie@sigmafactory.fr" style="color:#C9A84C">elodie@sigmafactory.fr</a></p>
   </div>
-  <div style="padding:16px 36px;border-top:1px solid #222;color:#444;font-size:11px;text-align:center">Sigma Factory — Pôle Immobilier</div>
+  <div style="padding:16px 36px;border-top:1px solid #222;color:#444;font-size:11px;text-align:center">Sigma Factory — Pole Immobilier</div>
 </div>
 </body>
 </html>`;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
       {/* Header */}
-      <div className="bg-black border-b border-[#C9A84C]/20 px-6 py-4">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
+      <div style={{ borderBottom: "1px solid #1E1E1E", padding: "16px 24px" }}>
+        <div className="flex items-center justify-between" style={{ maxWidth: "1024px", margin: "0 auto" }}>
           <div className="flex items-center gap-4">
             <Link href="/dashboard/recherche-bien">
-              <button className="text-gray-400 hover:text-white transition-colors flex items-center gap-1.5 text-sm">
-                <ArrowLeft className="w-4 h-4" />
+              <button className="flex items-center gap-1.5 transition-opacity duration-300 hover:opacity-70" style={{ background: "none", border: "none", color: "#6B6560", fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif" }}>
+                <ArrowLeft className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                 Retour
               </button>
             </Link>
             <div>
-              <div className="text-xs font-bold tracking-[4px] text-[#C9A84C] uppercase mb-0.5">Sigma Factory</div>
-              <h1 className="text-lg font-black text-white flex items-center gap-2">
-                <Eye className="w-4 h-4 text-[#C9A84C]" />
-                Aperçu — Mail Point Immobilier
+              <p className="label-uppercase" style={{ marginBottom: "4px" }}>Sigma Factory</p>
+              <h1 className="flex items-center gap-2" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>
+                <Eye className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+                Apercu — Mail Point Immobilier
               </h1>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <a
-              href="/rdv/point-immobilier"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs text-[#C9A84C] hover:underline"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              Voir la page RDV
-            </a>
-          </div>
+          <a href="/rdv/point-immobilier" target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-1.5 transition-opacity duration-300 hover:opacity-70"
+            style={{ color: "#6B6560", fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", textDecoration: "none", letterSpacing: "0.04em" }}>
+            <ExternalLink className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
+            Voir la page RDV
+          </a>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Panneau gauche — Test d'envoi */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-6 py-8" style={{ maxWidth: "1024px", margin: "0 auto" }}>
+        {/* Panneau gauche */}
         <div className="space-y-5">
           {/* Info */}
-          <div className="bg-[#111] border border-[#C9A84C]/20 p-5">
-            <h2 className="text-sm font-bold text-[#C9A84C] uppercase tracking-widest mb-3 flex items-center gap-2">
-              <Mail className="w-4 h-4" />
+          <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+            <h2 className="flex items-center gap-2 label-uppercase mb-4">
+              <Mail className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               Informations
             </h2>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-3">
+              {[
+                { label: "Expediteur", value: "Sigma Factory" },
+                { label: "De", value: "noreply@fa.sigma-factory.fr" },
+                { label: "Objet", value: "Votre financement est valide — Prenez votre Point Immobilier avec Elodie" },
+                { label: "Declencheur", value: 'Lead passe a l\'etape "Recherche de Bien"' },
+              ].map(item => (
+                <div key={item.label}>
+                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{item.label} :</span>
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", marginLeft: "8px" }}>{item.value}</span>
+                </div>
+              ))}
               <div>
-                <span className="text-gray-500">Expéditeur :</span>
-                <span className="text-white ml-2">Sigma Factory</span>
-              </div>
-              <div>
-                <span className="text-gray-500">De :</span>
-                <span className="text-white ml-2 font-mono text-xs">noreply@fa.sigma-factory.fr</span>
-              </div>
-              <div>
-                <span className="text-gray-500">Objet :</span>
-                <span className="text-white ml-2 text-xs">Votre financement est validé — Prenez votre Point Immobilier avec Élodie</span>
-              </div>
-              <div>
-                <span className="text-gray-500">Déclencheur :</span>
-                <span className="text-white ml-2 text-xs">Lead passe à l'étape "Recherche de Bien" dans le Pipeline</span>
-              </div>
-              <div>
-                <span className="text-gray-500">Lien RDV :</span>
-                <a href={rdvUrl} target="_blank" rel="noopener noreferrer" className="text-[#C9A84C] ml-2 text-xs hover:underline">/rdv/point-immobilier</a>
+                <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Lien RDV :</span>
+                <a href={rdvUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#C9A84C", marginLeft: "8px", textDecoration: "none" }}>/rdv/point-immobilier</a>
               </div>
             </div>
           </div>
 
           {/* Test d'envoi */}
-          <div className="bg-[#111] border border-[#C9A84C]/20 p-5">
-            <h2 className="text-sm font-bold text-[#C9A84C] uppercase tracking-widest mb-4 flex items-center gap-2">
-              <Send className="w-4 h-4" />
+          <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+            <h2 className="flex items-center gap-2 label-uppercase mb-4">
+              <Send className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               Test d'envoi
             </h2>
             <div className="space-y-3">
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">Nom du destinataire</label>
-                <Input
+                <label className="label-uppercase block mb-2">Nom du destinataire</label>
+                <input
                   value={testNom}
                   onChange={(e) => setTestNom(e.target.value)}
                   placeholder="Jean Dupont"
-                  className="bg-[#0a0a0a] border-gray-700 text-white text-sm h-9"
+                  className="w-full transition-colors duration-300 focus:outline-none"
+                  style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "10px 12px", color: "#F0EDE6", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">Email de test *</label>
-                <Input
+                <label className="label-uppercase block mb-2">Email de test</label>
+                <input
                   type="email"
                   value={testEmail}
                   onChange={(e) => setTestEmail(e.target.value)}
                   placeholder="votre@email.com"
-                  className="bg-[#0a0a0a] border-gray-700 text-white text-sm h-9"
+                  className="w-full transition-colors duration-300 focus:outline-none"
+                  style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "10px 12px", color: "#F0EDE6", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}
+                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
                 />
               </div>
-              <Button
+              <button
                 onClick={() => {
                   if (!testEmail) { toast.error("Entrez un email de test"); return; }
                   sendTestMutation.mutate({ email: testEmail, nom: testNom || "Jean Dupont" });
                 }}
                 disabled={sendTestMutation.isPending || !testEmail}
-                className="w-full bg-[#C9A84C] hover:bg-[#b8943e] text-black font-bold text-sm h-9 gap-2"
+                className="w-full flex items-center justify-center gap-2 transition-opacity duration-300"
+                style={{
+                  background: (sendTestMutation.isPending || !testEmail) ? "#8A7535" : "#C9A84C",
+                  color: "#0A0A0A",
+                  border: "none",
+                  borderRadius: "2px",
+                  padding: "12px",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase" as const,
+                  cursor: (sendTestMutation.isPending || !testEmail) ? "not-allowed" : "pointer",
+                  opacity: (sendTestMutation.isPending || !testEmail) ? 0.7 : 1,
+                }}
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                 {sendTestMutation.isPending ? "Envoi en cours..." : "Envoyer un email de test"}
-              </Button>
-              <p className="text-xs text-gray-600 text-center">L'email sera envoyé avec le nom saisi ci-dessus</p>
+              </button>
+              <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", textAlign: "center" }}>L'email sera envoye avec le nom saisi ci-dessus</p>
             </div>
           </div>
         </div>
 
-        {/* Aperçu du mail */}
+        {/* Apercu du mail */}
         <div className="lg:col-span-2">
-          <div className="bg-[#111] border border-gray-800 p-4 mb-3 flex items-center justify-between">
-            <span className="text-xs text-gray-400 font-bold uppercase tracking-widest">Aperçu du mail</span>
-            <span className="text-xs text-gray-600">Rendu HTML réel</span>
+          <div className="flex items-center justify-between mb-3" style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "12px 16px" }}>
+            <span className="label-uppercase">Apercu du mail</span>
+            <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Rendu HTML reel</span>
           </div>
-          <div className="border border-gray-800 overflow-hidden">
+          <div style={{ border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
             <iframe
               srcDoc={mailHtml}
-              title="Aperçu mail Point Immobilier"
+              title="Apercu mail Point Immobilier"
               className="w-full"
-              style={{ height: "600px", border: "none", background: "#111" }}
+              style={{ height: "600px", border: "none", background: "#111111" }}
             />
           </div>
         </div>

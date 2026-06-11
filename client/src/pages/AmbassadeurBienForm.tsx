@@ -1,51 +1,76 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 import {
-  CheckCircle, Home, MapPin, Euro, Maximize2, Camera, ChevronRight, ChevronLeft,
-  AlertCircle, TrendingUp, Plus, Upload, X, FileText, Image, Trash2,
+  CheckCircle, Home, Euro, Camera, ChevronRight, ChevronLeft,
+  AlertCircle, TrendingUp, Plus, X, FileText, Image, Trash2, Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 
-const DPE_COLORS: Record<string, string> = {
-  A: "bg-green-600", B: "bg-green-400", C: "bg-yellow-400",
-  D: "bg-orange-400", E: "bg-orange-600", F: "bg-red-500", G: "bg-red-700", NC: "bg-gray-500",
+/* ── Design tokens ── */
+const fonts = { heading: "'Cormorant Garamond', serif", body: "'Hanken Grotesk', sans-serif" };
+const colors = {
+  bg: "#0A0A0A", surface: "#111111", surfaceRaised: "#161616", border: "#1E1E1E",
+  fg: "#F0EDE6", muted: "#6B6560", faint: "#3A3632", gold: "#C9A84C", goldMuted: "#8A7535", destructive: "#A04040", success: "#4A7A5A",
 };
+const labelStyle: React.CSSProperties = {
+  fontFamily: fonts.body, fontSize: "11px", fontWeight: 500, textTransform: "uppercase",
+  letterSpacing: "0.08em", color: colors.muted, marginBottom: "8px", display: "block",
+};
+const inputStyle: React.CSSProperties = {
+  background: colors.surfaceRaised, border: `1px solid ${colors.border}`, borderRadius: "2px",
+  padding: "12px 14px", color: colors.fg, fontSize: "14px", fontFamily: fonts.body,
+  width: "100%", outline: "none", transition: "border-color 300ms ease",
+};
+const selectStyle: React.CSSProperties = {
+  ...inputStyle, appearance: "none" as const,
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6560' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+  backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center", paddingRight: "36px",
+};
+const btnPrimary: React.CSSProperties = {
+  padding: "14px 28px", background: colors.gold, color: colors.bg, border: "none", borderRadius: "2px",
+  fontFamily: fonts.body, fontSize: "11px", fontWeight: 500, textTransform: "uppercase",
+  letterSpacing: "0.1em", cursor: "pointer", transition: "opacity 300ms ease",
+  display: "inline-flex", alignItems: "center", gap: "8px", justifyContent: "center",
+};
+const btnSecondary: React.CSSProperties = {
+  padding: "12px 20px", background: "transparent", border: `1px solid ${colors.border}`, borderRadius: "2px",
+  fontFamily: fonts.body, fontSize: "11px", fontWeight: 500, color: colors.muted,
+  textTransform: "uppercase", letterSpacing: "0.06em", cursor: "pointer", transition: "all 300ms ease",
+  display: "inline-flex", alignItems: "center", gap: "6px",
+};
+const errorText = (msg?: string) => msg ? <p style={{ fontSize: "12px", color: colors.destructive, fontFamily: fonts.body, marginTop: "4px" }}>{msg}</p> : null;
 
-// ─── Types médias ─────────────────────────────────────────────────────────────
-type MediaCategorie = "photo" | "titre_propriete" | "taxe_fonciere" | "diagnostic" | "plan" | "autre";
-
-interface MediaFile {
-  id: string;
-  file: File;
-  preview?: string;   // URL.createObjectURL pour les images
-  categorie: MediaCategorie;
-  status: "pending" | "uploading" | "done" | "error";
-  url?: string;
+function SInput({ value, onChange, placeholder, type = "text", style: extra }: {
+  value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; placeholder?: string; type?: string; style?: React.CSSProperties;
+}) {
+  return <input type={type} value={value} onChange={onChange} placeholder={placeholder}
+    className="w-full focus:outline-none [color-scheme:dark]" style={{ ...inputStyle, ...extra }}
+    onFocus={e => { e.target.style.borderColor = colors.gold; }} onBlur={e => { e.target.style.borderColor = colors.border; }} />;
+}
+function SSelect({ value, onChange, children }: { value: string; onChange: (v: string) => void; children: React.ReactNode }) {
+  return <select value={value} onChange={e => onChange(e.target.value)} className="w-full focus:outline-none" style={selectStyle}
+    onFocus={e => { e.target.style.borderColor = colors.gold; }} onBlur={e => { e.target.style.borderColor = colors.border; }}>{children}</select>;
+}
+function SectionDivider({ children }: { children: React.ReactNode }) {
+  return <div style={{ display: "flex", alignItems: "center", gap: "16px", margin: "28px 0 20px" }}>
+    <div style={{ flex: 1, height: "1px", background: colors.border }} />
+    <span style={{ fontFamily: fonts.body, fontSize: "10px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.12em", color: colors.muted }}>{children}</span>
+    <div style={{ flex: 1, height: "1px", background: colors.border }} />
+  </div>;
 }
 
+// ─── Types medias ─────────────────────────────────────────────────────────────
+type MediaCategorie = "photo" | "titre_propriete" | "taxe_fonciere" | "diagnostic" | "plan" | "autre";
+interface MediaFile { id: string; file: File; preview?: string; categorie: MediaCategorie; status: "pending" | "uploading" | "done" | "error"; url?: string; }
 const CATEGORIE_LABELS: Record<MediaCategorie, string> = {
-  photo: "Photo du bien",
-  titre_propriete: "Titre de propriété",
-  taxe_fonciere: "Taxe foncière",
-  diagnostic: "Diagnostic (DPE/amiante…)",
-  plan: "Plan du bien",
-  autre: "Autre document",
+  photo: "Photo du bien", titre_propriete: "Titre de propriete", taxe_fonciere: "Taxe fonciere",
+  diagnostic: "Diagnostic (DPE/amiante...)", plan: "Plan du bien", autre: "Autre document",
 };
 
 function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      resolve(result.split(",")[1]); // strip data:...;base64,
-    };
+    reader.onload = () => { resolve((reader.result as string).split(",")[1]); };
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
@@ -54,7 +79,6 @@ function fileToBase64(file: File): Promise<string> {
 export default function AmbassadeurBienForm() {
   const params = new URLSearchParams(window.location.search);
   const ambFromUrl = parseInt(params.get("amb") ?? "0");
-  // Auto-détection du profil agent si pas d'ID en URL (cas Elodie / direction)
   const { data: monProfil } = trpc.ambassadeurs.monProfil.useQuery(undefined, { enabled: !ambFromUrl });
   const ambassadeurId = ambFromUrl || (monProfil?.id ?? 0);
   const [mainTab, setMainTab] = useState<"bien" | "commissions">("bien");
@@ -67,18 +91,14 @@ export default function AmbassadeurBienForm() {
   const prevSigma = montantHon - prevAgent;
   const prevParrainN1 = Math.round(prevSigma * 0.10);
   const prevParrainN2 = Math.round(prevSigma * 0.05);
-  const prevSigmaNet = prevSigma - prevParrainN1 - prevParrainN2;
 
-  const { data: mesTransactions = [], refetch: refetchTrans } = trpc.commissions.listTransactionsImmo.useQuery(
-    { agentId: ambassadeurId },
-    { enabled: !!ambassadeurId }
-  );
+  const { data: mesTransactions = [], refetch: refetchTrans } = trpc.commissions.listTransactionsImmo.useQuery({ agentId: ambassadeurId }, { enabled: !!ambassadeurId });
   const creerTransImmoMut = trpc.commissions.creerTransactionImmo.useMutation({
-    onSuccess: () => { toast.success("Transaction déclarée !"); setShowDeclImmo(false); setImmoForm({ adresseBien: "", typeTransaction: "vente", montantHonoraires: "" }); refetchTrans(); },
+    onSuccess: () => { toast.success("Transaction declaree"); setShowDeclImmo(false); setImmoForm({ adresseBien: "", typeTransaction: "vente", montantHonoraires: "" }); refetchTrans(); },
     onError: (e) => toast.error(e.message),
   });
 
-  // ─── Étapes formulaire bien ───
+  // ─── Etapes formulaire bien ───
   const [step, setStep] = useState<"localisation" | "caracteristiques" | "prix" | "medias" | "recap" | "confirmation">("localisation");
   const [form, setForm] = useState({
     titre: "", adresse: "", codePostal: "", ville: "", departement: "", region: "",
@@ -96,286 +116,183 @@ export default function AmbassadeurBienForm() {
   const [bienId, setBienId] = useState<number | null>(null);
   const [reference, setReference] = useState<string | null>(null);
 
-  // ─── Médias ───────────────────────────────────────────────────────────────
+  // ─── Medias ───
   const [medias, setMedias] = useState<MediaFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadingAll, setUploadingAll] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const uploadBienMedia = trpc.ambassadeurs.uploadBienMedia.useMutation();
 
   const addFiles = useCallback((files: FileList | File[]) => {
-    const arr = Array.from(files);
-    const newMedias: MediaFile[] = arr.map(file => {
-      const isImage = file.type.startsWith("image/");
-      return {
-        id: Math.random().toString(36).slice(2),
-        file,
-        preview: isImage ? URL.createObjectURL(file) : undefined,
-        categorie: isImage ? "photo" : "autre",
-        status: "pending",
-      };
-    });
+    const newMedias: MediaFile[] = Array.from(files).map(file => ({
+      id: Math.random().toString(36).slice(2), file,
+      preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined,
+      categorie: file.type.startsWith("image/") ? "photo" : "autre", status: "pending",
+    }));
     setMedias(prev => [...prev, ...newMedias]);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    if (e.dataTransfer.files.length > 0) addFiles(e.dataTransfer.files);
-  }, [addFiles]);
+  const handleDrop = useCallback((e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); if (e.dataTransfer.files.length > 0) addFiles(e.dataTransfer.files); }, [addFiles]);
+  const removeMedia = (id: string) => { setMedias(prev => { const m = prev.find(x => x.id === id); if (m?.preview) URL.revokeObjectURL(m.preview); return prev.filter(x => x.id !== id); }); };
+  const setCategorieMedia = (id: string, categorie: MediaCategorie) => { setMedias(prev => prev.map(m => m.id === id ? { ...m, categorie } : m)); };
 
-  const removeMedia = (id: string) => {
-    setMedias(prev => {
-      const m = prev.find(x => x.id === id);
-      if (m?.preview) URL.revokeObjectURL(m.preview);
-      return prev.filter(x => x.id !== id);
-    });
-  };
-
-  const setCategorieMedia = (id: string, categorie: MediaCategorie) => {
-    setMedias(prev => prev.map(m => m.id === id ? { ...m, categorie } : m));
-  };
-
-  // Upload tous les médias en attente vers S3
   const uploadAllMedias = async (currentBienId: number): Promise<boolean> => {
     const pending = medias.filter(m => m.status === "pending");
     if (pending.length === 0) return true;
-
-    setUploadingAll(true);
-    let allOk = true;
-
+    setUploadingAll(true); let allOk = true;
     for (const media of pending) {
       setMedias(prev => prev.map(m => m.id === media.id ? { ...m, status: "uploading" } : m));
       try {
         const base64 = await fileToBase64(media.file);
-        const result = await uploadBienMedia.mutateAsync({
-          bienId: currentBienId,
-          ambassadeurId,
-          fileBase64: base64,
-          fileName: media.file.name,
-          mimeType: media.file.type || "application/octet-stream",
-          categorie: media.categorie,
-        });
+        const result = await uploadBienMedia.mutateAsync({ bienId: currentBienId, ambassadeurId, fileBase64: base64, fileName: media.file.name, mimeType: media.file.type || "application/octet-stream", categorie: media.categorie });
         setMedias(prev => prev.map(m => m.id === media.id ? { ...m, status: "done", url: result.url } : m));
-      } catch (e) {
-        console.error("[uploadBienMedia]", e);
-        setMedias(prev => prev.map(m => m.id === media.id ? { ...m, status: "error" } : m));
-        allOk = false;
-      }
+      } catch { setMedias(prev => prev.map(m => m.id === media.id ? { ...m, status: "error" } : m)); allOk = false; }
     }
-
-    setUploadingAll(false);
-    return allOk;
+    setUploadingAll(false); return allOk;
   };
 
-  // ─── Soumission du bien ───────────────────────────────────────────────────
   const creerBien = trpc.ambassadeurs.creerBien.useMutation({
     onSuccess: async (data) => {
-      setBienId(data.bienId);
-      setReference(data.reference);
-      // Uploader les médias maintenant qu'on a le bienId
-      if (medias.length > 0) {
-        const ok = await uploadAllMedias(data.bienId);
-        if (!ok) toast.warning("Certains fichiers n'ont pas pu être uploadés. Le bien a quand même été soumis.");
-      }
+      setBienId(data.bienId); setReference(data.reference);
+      if (medias.length > 0) { const ok = await uploadAllMedias(data.bienId); if (!ok) toast.warning("Certains fichiers n'ont pas pu etre uploades."); }
       setStep("confirmation");
     },
     onError: (e) => toast.error(e.message),
   });
 
-  const set = (key: string, value: string | boolean) => {
-    setForm(f => ({ ...f, [key]: value }));
-    setErrors(e => ({ ...e, [key]: "" }));
-  };
-
+  const set = (key: string, value: string | boolean) => { setForm(f => ({ ...f, [key]: value })); setErrors(e => ({ ...e, [key]: "" })); };
   const validateStep = (s: string) => {
     const e: Record<string, string> = {};
-    if (s === "localisation") {
-      if (!form.titre) e.titre = "Requis";
-      if (!form.adresse) e.adresse = "Requis";
-      if (!form.codePostal) e.codePostal = "Requis";
-      if (!form.ville) e.ville = "Requis";
-    }
-    if (s === "caracteristiques") {
-      if (!form.surface) e.surface = "Requis";
-    }
-    if (s === "prix") {
-      if (!form.prixNetVendeur) e.prixNetVendeur = "Requis";
-    }
-    setErrors(e);
-    return Object.keys(e).length === 0;
+    if (s === "localisation") { if (!form.titre) e.titre = "Requis"; if (!form.adresse) e.adresse = "Requis"; if (!form.codePostal) e.codePostal = "Requis"; if (!form.ville) e.ville = "Requis"; }
+    if (s === "caracteristiques") { if (!form.surface) e.surface = "Requis"; }
+    if (s === "prix") { if (!form.prixNetVendeur) e.prixNetVendeur = "Requis"; }
+    setErrors(e); return Object.keys(e).length === 0;
   };
 
   const handleSubmit = () => {
     creerBien.mutate({
-      ambassadeurId,
-      titre: form.titre,
-      typeBien: form.typeBien,
-      transaction: form.transaction,
-      usage: form.usage,
-      adresse: form.adresse,
-      codePostal: form.codePostal,
-      ville: form.ville,
-      departement: form.departement || undefined,
-      region: form.region || undefined,
-      surface: parseInt(form.surface),
-      surfaceTerrain: form.surfaceTerrain ? parseInt(form.surfaceTerrain) : undefined,
-      nbPieces: form.nbPieces ? parseInt(form.nbPieces) : undefined,
-      nbChambres: form.nbChambres ? parseInt(form.nbChambres) : undefined,
-      nbSallesBain: form.nbSallesBain ? parseInt(form.nbSallesBain) : undefined,
-      nbEtages: form.nbEtages ? parseInt(form.nbEtages) : undefined,
-      etage: form.etage ? parseInt(form.etage) : undefined,
-      anneeConstruction: form.anneeConstruction ? parseInt(form.anneeConstruction) : undefined,
-      etatBien: form.etatBien,
-      travauxEstimes: form.travauxEstimes ? parseInt(form.travauxEstimes) : undefined,
-      dpeLettre: form.dpeLettre,
-      dpeValeur: form.dpeValeur ? parseInt(form.dpeValeur) : undefined,
-      gesLettre: form.gesLettre,
-      gesValeur: form.gesValeur ? parseInt(form.gesValeur) : undefined,
-      balcon: form.balcon, terrasse: form.terrasse, jardin: form.jardin,
-      parking: form.parking, garage: form.garage, cave: form.cave,
-      ascenseur: form.ascenseur, gardien: form.gardien, piscine: form.piscine,
+      ambassadeurId, titre: form.titre, typeBien: form.typeBien, transaction: form.transaction,
+      usage: form.usage, adresse: form.adresse, codePostal: form.codePostal, ville: form.ville,
+      departement: form.departement || undefined, region: form.region || undefined,
+      surface: parseInt(form.surface), surfaceTerrain: form.surfaceTerrain ? parseInt(form.surfaceTerrain) : undefined,
+      nbPieces: form.nbPieces ? parseInt(form.nbPieces) : undefined, nbChambres: form.nbChambres ? parseInt(form.nbChambres) : undefined,
+      nbSallesBain: form.nbSallesBain ? parseInt(form.nbSallesBain) : undefined, nbEtages: form.nbEtages ? parseInt(form.nbEtages) : undefined,
+      etage: form.etage ? parseInt(form.etage) : undefined, anneeConstruction: form.anneeConstruction ? parseInt(form.anneeConstruction) : undefined,
+      etatBien: form.etatBien, travauxEstimes: form.travauxEstimes ? parseInt(form.travauxEstimes) : undefined,
+      dpeLettre: form.dpeLettre, dpeValeur: form.dpeValeur ? parseInt(form.dpeValeur) : undefined,
+      gesLettre: form.gesLettre, gesValeur: form.gesValeur ? parseInt(form.gesValeur) : undefined,
+      balcon: form.balcon, terrasse: form.terrasse, jardin: form.jardin, parking: form.parking,
+      garage: form.garage, cave: form.cave, ascenseur: form.ascenseur, gardien: form.gardien, piscine: form.piscine,
       prix: (parseInt(form.prixNetVendeur) || 0) + (parseInt(form.honorairesAgence) || 0) || parseInt(form.prix) || 0,
       prixNetVendeur: form.prixNetVendeur ? parseInt(form.prixNetVendeur) : undefined,
       honorairesAgence: form.honorairesAgence ? parseInt(form.honorairesAgence) : undefined,
-      prixNegociable: form.prixNegociable,
-      chargesAnnuelles: form.chargesAnnuelles ? parseInt(form.chargesAnnuelles) : undefined,
+      prixNegociable: form.prixNegociable, chargesAnnuelles: form.chargesAnnuelles ? parseInt(form.chargesAnnuelles) : undefined,
       taxeFonciere: form.taxeFonciere ? parseInt(form.taxeFonciere) : undefined,
-      exposition: form.exposition || undefined,
-      description: form.description || undefined,
-      pointsForts: form.pointsForts || undefined,
+      exposition: form.exposition || undefined, description: form.description || undefined, pointsForts: form.pointsForts || undefined,
     });
   };
 
   const steps = ["localisation", "caracteristiques", "prix", "medias", "recap"];
   const stepIndex = steps.indexOf(step);
 
-  // Chargement en cours (monProfil pas encore répondu)
   if (!ambassadeurId && !ambFromUrl) {
-    return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="w-8 h-8 border-2 border-[#C9A84C] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-gray-400 text-sm">Chargement de votre profil...</p>
-        </div>
-      </div>
-    );
+    return <div style={{ minHeight: "100vh", background: colors.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <Loader2 size={24} strokeWidth={1.5} className="animate-spin" style={{ color: colors.gold }} />
+    </div>;
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div style={{ minHeight: "100vh", background: colors.bg }}>
       {/* Header */}
-      <header className="border-b border-[#C9A84C]/20 bg-[#0d0d0d]">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+      <header style={{ borderBottom: `1px solid ${colors.border}` }}>
+        <div style={{ maxWidth: "720px", margin: "0 auto", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
-            <h1 className="text-xl font-black text-white tracking-widest">
-              SIGMA <span className="text-[#C9A84C]">FACTORY</span>
-            </h1>
-            <p className="text-xs text-gray-500 tracking-widest mt-0.5">SOUMETTRE UN BIEN</p>
+            <h1 style={{ fontFamily: fonts.heading, fontSize: "18px", fontWeight: 700, letterSpacing: "0.15em", color: colors.gold, margin: 0 }}>SIGMA FACTORY</h1>
+            <p style={{ fontFamily: fonts.body, fontSize: "10px", color: colors.faint, letterSpacing: "0.08em", textTransform: "uppercase", margin: "2px 0 0" }}>Soumettre un bien</p>
           </div>
-          <Badge className="bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/30 text-xs">
+          <span style={{ fontFamily: fonts.body, fontSize: "10px", color: colors.faint, letterSpacing: "0.06em", padding: "6px 14px", border: `1px solid ${colors.border}`, borderRadius: "2px" }}>
             Ambassadeur #{ambassadeurId}
-          </Badge>
+          </span>
         </div>
-        {/* Onglets */}
-        <div className="max-w-3xl mx-auto px-6 flex gap-0 border-t border-[#222] mt-2">
-          {[
-            { key: "bien", label: "Soumettre un bien", icon: <Home className="w-3.5 h-3.5" /> },
-            { key: "commissions", label: "Mes commissions", icon: <Euro className="w-3.5 h-3.5" /> },
-          ].map(tab => (
+        <div style={{ maxWidth: "720px", margin: "0 auto", padding: "0 24px", display: "flex", gap: 0, borderTop: `1px solid ${colors.border}` }}>
+          {[{ key: "bien", label: "Soumettre un bien" }, { key: "commissions", label: "Mes commissions" }].map(tab => (
             <button key={tab.key} onClick={() => setMainTab(tab.key as any)}
-              className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors -mb-px ${
-                mainTab === tab.key ? "border-[#C9A84C] text-[#C9A84C]" : "border-transparent text-gray-500 hover:text-gray-300"
-              }`}>
-              {tab.icon}{tab.label}
+              style={{ padding: "10px 16px", fontFamily: fonts.body, fontSize: "11px", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase",
+                borderBottom: `2px solid ${mainTab === tab.key ? colors.gold : "transparent"}`,
+                color: mainTab === tab.key ? colors.gold : colors.faint, background: "none", border: "none",
+                borderBottomStyle: "solid", cursor: "pointer", transition: "all 300ms ease", marginBottom: "-1px" }}>
+              {tab.label}
             </button>
           ))}
         </div>
       </header>
 
-      {/* Progress */}
+      {/* Stepper */}
       {mainTab === "bien" && step !== "confirmation" && (
-        <div className="max-w-3xl mx-auto px-6 pt-6">
-          <div className="flex items-center gap-2">
-            {["Localisation", "Caractéristiques", "Prix & DPE", "Photos & Docs", "Validation"].map((label, i) => (
-              <div key={i} className="flex items-center gap-2 flex-1">
-                <div className={`w-6 h-6 flex items-center justify-center text-xs font-bold shrink-0 ${i <= stepIndex ? "bg-[#C9A84C] text-black" : "bg-[#222] text-gray-500"}`}>
-                  {i < stepIndex ? "✓" : i + 1}
+        <div style={{ maxWidth: "720px", margin: "0 auto", padding: "24px 24px 0" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+            {["Localisation", "Caracteristiques", "Prix & DPE", "Photos & Docs", "Validation"].map((label, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: "4px", flex: 1 }}>
+                <div style={{
+                  width: "24px", height: "24px", borderRadius: "2px", display: "flex", alignItems: "center", justifyContent: "center",
+                  background: i <= stepIndex ? colors.gold : "transparent", border: `1px solid ${i <= stepIndex ? colors.gold : colors.border}`,
+                  fontFamily: fonts.body, fontSize: "10px", fontWeight: 600, color: i <= stepIndex ? colors.bg : colors.faint, flexShrink: 0,
+                }}>
+                  {i < stepIndex ? <CheckCircle size={12} strokeWidth={1.5} /> : i + 1}
                 </div>
-                <span className={`text-xs ${i <= stepIndex ? "text-[#C9A84C]" : "text-gray-600"} hidden sm:block`}>{label}</span>
-                {i < 4 && <div className={`flex-1 h-px ${i < stepIndex ? "bg-[#C9A84C]" : "bg-[#222]"}`} />}
+                <span style={{ fontFamily: fonts.body, fontSize: "9px", color: i <= stepIndex ? colors.gold : colors.faint, textTransform: "uppercase", letterSpacing: "0.06em", display: "none" }} className="sm:inline">{label}</span>
+                {i < 4 && <div style={{ flex: 1, height: "1px", background: i < stepIndex ? colors.goldMuted : colors.border }} />}
               </div>
             ))}
           </div>
         </div>
       )}
 
-      <main className="max-w-3xl mx-auto px-6 py-8">
+      <main style={{ maxWidth: "720px", margin: "0 auto", padding: "32px 24px" }}>
 
-        {/* ── Onglet Mes commissions ── */}
+        {/* Commissions */}
         {mainTab === "commissions" && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-white font-bold text-lg">Mes commissions immobilières</h3>
-              <button onClick={() => setShowDeclImmo(v => !v)} className="flex items-center gap-1.5 bg-[#C9A84C] text-black text-sm font-bold px-4 py-2 hover:bg-[#b8943d]">
-                <Plus className="w-4 h-4" /> Déclarer une transaction
-              </button>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
+              <h3 style={{ fontFamily: fonts.heading, fontSize: "22px", fontWeight: 600, color: colors.fg, margin: 0 }}>Mes commissions immobilieres</h3>
+              <button onClick={() => setShowDeclImmo(v => !v)} style={btnPrimary}><Plus size={14} strokeWidth={1.5} /> Declarer</button>
             </div>
             {showDeclImmo && (
-              <div className="bg-[#111] border border-[#C9A84C]/30 p-4 space-y-3">
-                <h4 className="text-[#C9A84C] font-semibold text-sm">Nouvelle transaction</h4>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="col-span-2">
-                    <label className="text-gray-400 text-xs block mb-1">Adresse du bien</label>
-                    <input value={immoForm.adresseBien} onChange={e => setImmoForm(f => ({ ...f, adresseBien: e.target.value }))} placeholder="Ex: 12 rue de la Paix, 75001 Paris" className="w-full bg-black border border-gray-700 text-white text-sm px-3 py-2" />
-                  </div>
-                  <div>
-                    <label className="text-gray-400 text-xs block mb-1">Type de transaction</label>
-                    <select value={immoForm.typeTransaction} onChange={e => setImmoForm(f => ({ ...f, typeTransaction: e.target.value as any }))} className="w-full bg-black border border-gray-700 text-white text-sm px-3 py-2">
-                      <option value="vente">Vente</option>
-                      <option value="location">Location</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-gray-400 text-xs block mb-1">Honoraires totaux (€ HT)</label>
-                    <input type="number" value={immoForm.montantHonoraires} onChange={e => setImmoForm(f => ({ ...f, montantHonoraires: e.target.value }))} placeholder="Ex: 8000" className="w-full bg-black border border-gray-700 text-white text-sm px-3 py-2" />
-                  </div>
+              <div style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: "2px", padding: "24px", marginBottom: "20px" }}>
+                <p style={{ ...labelStyle, marginBottom: "16px" }}>Nouvelle transaction</p>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "16px" }}>
+                  <div style={{ gridColumn: "1 / -1" }}><label style={labelStyle}>Adresse du bien</label><input value={immoForm.adresseBien} onChange={e => setImmoForm(f => ({ ...f, adresseBien: e.target.value }))} placeholder="Ex: 12 rue de la Paix, 75001 Paris" className="w-full focus:outline-none" style={inputStyle} onFocus={e => { e.target.style.borderColor = colors.gold; }} onBlur={e => { e.target.style.borderColor = colors.border; }} /></div>
+                  <div><label style={labelStyle}>Type de transaction</label><select value={immoForm.typeTransaction} onChange={e => setImmoForm(f => ({ ...f, typeTransaction: e.target.value as any }))} className="w-full focus:outline-none" style={selectStyle}><option value="vente">Vente</option><option value="location">Location</option></select></div>
+                  <div><label style={labelStyle}>Honoraires totaux (EUR HT)</label><input type="number" value={immoForm.montantHonoraires} onChange={e => setImmoForm(f => ({ ...f, montantHonoraires: e.target.value }))} placeholder="Ex: 8000" className="w-full focus:outline-none" style={inputStyle} onFocus={e => { e.target.style.borderColor = colors.gold; }} onBlur={e => { e.target.style.borderColor = colors.border; }} /></div>
                 </div>
                 {montantHon > 0 && (
-                  <div className="bg-[#0d0d0d] border border-[#222] p-3 text-xs space-y-1">
-                    <p className="text-gray-400 font-semibold mb-2">Répartition estimée :</p>
-                    <div className="flex justify-between"><span className="text-gray-400">Votre part (50%)</span><span className="text-[#C9A84C] font-bold">{prevAgent.toLocaleString("fr-FR")} €</span></div>
-                    <div className="flex justify-between"><span className="text-gray-400">Part Sigma (50%)</span><span className="text-gray-300">{prevSigma.toLocaleString("fr-FR")} €</span></div>
-                    {prevParrainN1 > 0 && <div className="flex justify-between text-gray-500"><span>↳ Rétro parrain N1 (10%)</span><span>{prevParrainN1.toLocaleString("fr-FR")} €</span></div>}
-                    {prevParrainN2 > 0 && <div className="flex justify-between text-gray-500"><span>↳ Rétro parrain N2 (5%)</span><span>{prevParrainN2.toLocaleString("fr-FR")} €</span></div>}
+                  <div style={{ background: colors.surfaceRaised, border: `1px solid ${colors.border}`, borderRadius: "2px", padding: "16px", fontFamily: fonts.body, fontSize: "12px", marginBottom: "16px" }}>
+                    <p style={{ color: colors.muted, fontWeight: 500, marginBottom: "8px" }}>Repartition estimee :</p>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}><span style={{ color: colors.muted }}>Votre part (50%)</span><span style={{ color: colors.gold, fontWeight: 600 }}>{prevAgent.toLocaleString("fr-FR")} EUR</span></div>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}><span style={{ color: colors.muted }}>Part Sigma (50%)</span><span style={{ color: colors.fg }}>{prevSigma.toLocaleString("fr-FR")} EUR</span></div>
+                    {prevParrainN1 > 0 && <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}><span style={{ color: colors.faint }}>Retro parrain N1 (10%)</span><span style={{ color: colors.faint }}>{prevParrainN1.toLocaleString("fr-FR")} EUR</span></div>}
+                    {prevParrainN2 > 0 && <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ color: colors.faint }}>Retro parrain N2 (5%)</span><span style={{ color: colors.faint }}>{prevParrainN2.toLocaleString("fr-FR")} EUR</span></div>}
                   </div>
                 )}
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => setShowDeclImmo(false)} className="border-[#333] text-gray-400 hover:bg-[#111]">Annuler</Button>
-                  <Button onClick={() => creerTransImmoMut.mutate({ agentId: ambassadeurId, adresseBien: immoForm.adresseBien, typeTransaction: immoForm.typeTransaction, montantHonoraires: montantHon })} disabled={creerTransImmoMut.isPending || !immoForm.adresseBien || !montantHon} className="bg-[#C9A84C] hover:bg-[#b8943d] text-black font-bold">
-                    {creerTransImmoMut.isPending ? "Envoi…" : "Déclarer"}
-                  </Button>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <button onClick={() => setShowDeclImmo(false)} style={btnSecondary}>Annuler</button>
+                  <button onClick={() => creerTransImmoMut.mutate({ agentId: ambassadeurId, adresseBien: immoForm.adresseBien, typeTransaction: immoForm.typeTransaction, montantHonoraires: montantHon })} disabled={creerTransImmoMut.isPending || !immoForm.adresseBien || !montantHon} style={{ ...btnPrimary, opacity: (creerTransImmoMut.isPending || !immoForm.adresseBien || !montantHon) ? 0.5 : 1 }}>
+                    {creerTransImmoMut.isPending ? "Envoi..." : "Declarer"}
+                  </button>
                 </div>
               </div>
             )}
             {mesTransactions.length === 0 ? (
-              <div className="bg-[#111] border border-[#222] p-8 text-center">
-                <TrendingUp className="w-8 h-8 text-gray-600 mx-auto mb-3" />
-                <p className="text-gray-500 text-sm">Aucune transaction déclarée pour l'instant.</p>
+              <div style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: "2px", padding: "48px", textAlign: "center" }}>
+                <TrendingUp size={24} strokeWidth={1.5} style={{ color: colors.faint, margin: "0 auto 12px", display: "block" }} />
+                <p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.faint }}>Aucune transaction declaree pour l'instant.</p>
               </div>
             ) : (
-              <div className="space-y-2">
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 {mesTransactions.map((t: any) => (
-                  <div key={t.id} className="bg-[#111] border border-[#222] p-4 flex items-center justify-between">
-                    <div>
-                      <p className="text-white text-sm font-semibold">{t.adresseBien || "Bien sans adresse"}</p>
-                      <p className="text-gray-400 text-xs mt-0.5">{t.typeTransaction === "vente" ? "Vente" : "Location"} — {new Date(t.createdAt).toLocaleDateString("fr-FR")}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[#C9A84C] font-bold">{(t.partAgent ?? 0).toLocaleString("fr-FR")} €</p>
-                      <p className="text-gray-500 text-xs">Votre part</p>
-                    </div>
+                  <div key={t.id} style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: "2px", padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div><p style={{ fontFamily: fonts.body, fontSize: "14px", fontWeight: 500, color: colors.fg, margin: "0 0 2px" }}>{t.adresseBien || "Bien sans adresse"}</p><p style={{ fontFamily: fonts.body, fontSize: "11px", color: colors.faint, margin: 0 }}>{t.typeTransaction === "vente" ? "Vente" : "Location"} — {new Date(t.createdAt).toLocaleDateString("fr-FR")}</p></div>
+                    <div style={{ textAlign: "right" }}><p style={{ fontFamily: fonts.body, fontSize: "14px", fontWeight: 600, color: colors.gold, margin: "0 0 2px" }}>{(t.partAgent ?? 0).toLocaleString("fr-FR")} EUR</p><p style={{ fontFamily: fonts.body, fontSize: "10px", color: colors.faint, margin: 0 }}>Votre part</p></div>
                   </div>
                 ))}
               </div>
@@ -385,526 +302,229 @@ export default function AmbassadeurBienForm() {
 
         {mainTab === "bien" && (
           <>
-            {/* ÉTAPE 1 — LOCALISATION */}
+            {/* LOCALISATION */}
             {step === "localisation" && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-xl font-black text-white">Localisation du bien</h2>
-                  <p className="text-gray-400 text-sm mt-1">Informations d'identification et d'adresse</p>
-                </div>
-
-                <div className="bg-[#111] border border-[#222] p-6 space-y-5">
-                  <div className="space-y-2">
-                    <Label className="text-gray-300 text-sm">Titre de l'annonce *</Label>
-                    <Input value={form.titre} onChange={e => set("titre", e.target.value)} placeholder="Ex: Appartement 3 pièces lumineux centre-ville" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                    {errors.titre && <p className="text-red-400 text-xs">{errors.titre}</p>}
+              <div>
+                <h2 style={{ fontFamily: fonts.heading, fontSize: "22px", fontWeight: 600, color: colors.fg, marginBottom: "4px" }}>Localisation du bien</h2>
+                <p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted, marginBottom: "24px" }}>Informations d'identification et d'adresse</p>
+                <div style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: "2px", padding: "32px", marginBottom: "24px" }}>
+                  <div style={{ marginBottom: "16px" }}><label style={labelStyle}>Titre de l'annonce <span style={{ color: colors.gold }}>*</span></label><SInput value={form.titre} onChange={e => set("titre", e.target.value)} placeholder="Ex: Appartement 3 pieces lumineux centre-ville" />{errorText(errors.titre)}</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                    <div><label style={labelStyle}>Type de bien</label><SSelect value={form.typeBien} onChange={v => set("typeBien", v)}>{["appartement","maison","villa","terrain","local_commercial","autre"].map(v => <option key={v} value={v}>{v.replace("_"," ")}</option>)}</SSelect></div>
+                    <div><label style={labelStyle}>Transaction</label><SSelect value={form.transaction} onChange={v => set("transaction", v)}><option value="vente">Vente</option><option value="location">Location</option></SSelect></div>
                   </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Type de bien</Label>
-                      <Select value={form.typeBien} onValueChange={v => set("typeBien", v)}>
-                        <SelectTrigger className="bg-[#0d0d0d] border-[#333] text-white focus:border-[#C9A84C]">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1a1a1a] border-[#333]">
-                          {["appartement", "maison", "villa", "terrain", "local_commercial", "autre"].map(v => (
-                            <SelectItem key={v} value={v} className="text-white hover:bg-[#222] capitalize">{v.replace("_", " ")}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Transaction</Label>
-                      <Select value={form.transaction} onValueChange={v => set("transaction", v)}>
-                        <SelectTrigger className="bg-[#0d0d0d] border-[#333] text-white focus:border-[#C9A84C]">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1a1a1a] border-[#333]">
-                          <SelectItem value="vente" className="text-white hover:bg-[#222]">Vente</SelectItem>
-                          <SelectItem value="location" className="text-white hover:bg-[#222]">Location</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div style={{ marginBottom: "16px" }}><label style={labelStyle}>Adresse <span style={{ color: colors.gold }}>*</span></label><SInput value={form.adresse} onChange={e => set("adresse", e.target.value)} placeholder="Numero et nom de rue" />{errorText(errors.adresse)}</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "16px", marginBottom: "16px" }}>
+                    <div><label style={labelStyle}>Code postal <span style={{ color: colors.gold }}>*</span></label><SInput value={form.codePostal} onChange={e => set("codePostal", e.target.value)} placeholder="75001" />{errorText(errors.codePostal)}</div>
+                    <div><label style={labelStyle}>Ville <span style={{ color: colors.gold }}>*</span></label><SInput value={form.ville} onChange={e => set("ville", e.target.value)} placeholder="Paris" />{errorText(errors.ville)}</div>
                   </div>
-
-                  <div className="space-y-2">
-                    <Label className="text-gray-300 text-sm">Adresse *</Label>
-                    <Input value={form.adresse} onChange={e => set("adresse", e.target.value)} placeholder="Numéro et nom de rue" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                    {errors.adresse && <p className="text-red-400 text-xs">{errors.adresse}</p>}
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Code postal *</Label>
-                      <Input value={form.codePostal} onChange={e => set("codePostal", e.target.value)} placeholder="75001" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                      {errors.codePostal && <p className="text-red-400 text-xs">{errors.codePostal}</p>}
-                    </div>
-                    <div className="space-y-2 col-span-2">
-                      <Label className="text-gray-300 text-sm">Ville *</Label>
-                      <Input value={form.ville} onChange={e => set("ville", e.target.value)} placeholder="Paris" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                      {errors.ville && <p className="text-red-400 text-xs">{errors.ville}</p>}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Département</Label>
-                      <Input value={form.departement} onChange={e => set("departement", e.target.value)} placeholder="Île-de-France" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Usage</Label>
-                      <Select value={form.usage} onValueChange={v => set("usage", v)}>
-                        <SelectTrigger className="bg-[#0d0d0d] border-[#333] text-white focus:border-[#C9A84C]">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1a1a1a] border-[#333]">
-                          <SelectItem value="residence_principale" className="text-white hover:bg-[#222]">Résidence principale</SelectItem>
-                          <SelectItem value="residence_secondaire" className="text-white hover:bg-[#222]">Résidence secondaire</SelectItem>
-                          <SelectItem value="investissement_locatif" className="text-white hover:bg-[#222]">Investissement locatif</SelectItem>
-                          <SelectItem value="professionnel" className="text-white hover:bg-[#222]">Professionnel</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                    <div><label style={labelStyle}>Departement</label><SInput value={form.departement} onChange={e => set("departement", e.target.value)} placeholder="Ile-de-France" /></div>
+                    <div><label style={labelStyle}>Usage</label><SSelect value={form.usage} onChange={v => set("usage", v)}><option value="residence_principale">Residence principale</option><option value="residence_secondaire">Residence secondaire</option><option value="investissement_locatif">Investissement locatif</option><option value="professionnel">Professionnel</option></SSelect></div>
                   </div>
                 </div>
-
-                <Button onClick={() => { if (validateStep("localisation")) setStep("caracteristiques"); }} className="w-full bg-[#C9A84C] hover:bg-[#b8943d] text-black font-bold h-12">
-                  Continuer <ChevronRight className="ml-2 w-4 h-4" />
-                </Button>
+                <button onClick={() => { if (validateStep("localisation")) setStep("caracteristiques"); }} style={{ ...btnPrimary, width: "100%" }}>Continuer <ChevronRight size={14} strokeWidth={1.5} /></button>
               </div>
             )}
 
-            {/* ÉTAPE 2 — CARACTÉRISTIQUES */}
+            {/* CARACTERISTIQUES */}
             {step === "caracteristiques" && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-xl font-black text-white">Caractéristiques</h2>
-                  <p className="text-gray-400 text-sm mt-1">Dimensions, état et équipements</p>
+              <div>
+                <h2 style={{ fontFamily: fonts.heading, fontSize: "22px", fontWeight: 600, color: colors.fg, marginBottom: "4px" }}>Caracteristiques</h2>
+                <p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted, marginBottom: "24px" }}>Dimensions, etat et equipements</p>
+                <div style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: "2px", padding: "32px", marginBottom: "24px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                    <div><label style={labelStyle}>Surface (m2) <span style={{ color: colors.gold }}>*</span></label><SInput type="number" value={form.surface} onChange={e => set("surface", e.target.value)} placeholder="75" />{errorText(errors.surface)}</div>
+                    <div><label style={labelStyle}>Surface terrain (m2)</label><SInput type="number" value={form.surfaceTerrain} onChange={e => set("surfaceTerrain", e.target.value)} placeholder="0" /></div>
+                    <div><label style={labelStyle}>Nb pieces</label><SInput type="number" value={form.nbPieces} onChange={e => set("nbPieces", e.target.value)} placeholder="3" /></div>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                    <div><label style={labelStyle}>Chambres</label><SInput type="number" value={form.nbChambres} onChange={e => set("nbChambres", e.target.value)} placeholder="2" /></div>
+                    <div><label style={labelStyle}>Salle(s) de bain</label><SInput type="number" value={form.nbSallesBain} onChange={e => set("nbSallesBain", e.target.value)} placeholder="1" /></div>
+                    <div><label style={labelStyle}>Annee construction</label><SInput type="number" value={form.anneeConstruction} onChange={e => set("anneeConstruction", e.target.value)} placeholder="1990" /></div>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "20px" }}>
+                    <div><label style={labelStyle}>Etat du bien</label><SSelect value={form.etatBien} onChange={v => set("etatBien", v)}><option value="neuf">Neuf</option><option value="bon_etat">Bon etat</option><option value="a_rafraichir">A rafraichir</option><option value="a_renover">A renover</option></SSelect></div>
+                    <div><label style={labelStyle}>Travaux estimes (EUR)</label><SInput type="number" value={form.travauxEstimes} onChange={e => set("travauxEstimes", e.target.value)} placeholder="0" /></div>
+                  </div>
+                  <SectionDivider>Equipements</SectionDivider>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px", marginBottom: "20px" }}>
+                    {[{k:"balcon",l:"Balcon"},{k:"terrasse",l:"Terrasse"},{k:"jardin",l:"Jardin"},{k:"parking",l:"Parking"},{k:"garage",l:"Garage"},{k:"cave",l:"Cave"},{k:"ascenseur",l:"Ascenseur"},{k:"gardien",l:"Gardien"},{k:"piscine",l:"Piscine"}].map(({k,l}) => (
+                      <label key={k} style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+                        <input type="checkbox" checked={(form as any)[k]} onChange={e => set(k, e.target.checked)} style={{ accentColor: colors.gold }} />
+                        <span style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.fg }}>{l}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <div><label style={labelStyle}>Description</label><textarea value={form.description} onChange={e => set("description", e.target.value)} placeholder="Decrivez le bien, ses atouts, son environnement..." rows={4} className="w-full focus:outline-none" style={{ ...inputStyle, resize: "none" as const }} onFocus={e => { e.target.style.borderColor = colors.gold; }} onBlur={e => { e.target.style.borderColor = colors.border; }} /></div>
                 </div>
-
-                <div className="bg-[#111] border border-[#222] p-6 space-y-5">
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Surface (m²) *</Label>
-                      <Input type="number" value={form.surface} onChange={e => set("surface", e.target.value)} placeholder="75" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                      {errors.surface && <p className="text-red-400 text-xs">{errors.surface}</p>}
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Surface terrain (m²)</Label>
-                      <Input type="number" value={form.surfaceTerrain} onChange={e => set("surfaceTerrain", e.target.value)} placeholder="0" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Nb pièces</Label>
-                      <Input type="number" value={form.nbPieces} onChange={e => set("nbPieces", e.target.value)} placeholder="3" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Chambres</Label>
-                      <Input type="number" value={form.nbChambres} onChange={e => set("nbChambres", e.target.value)} placeholder="2" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Salle(s) de bain</Label>
-                      <Input type="number" value={form.nbSallesBain} onChange={e => set("nbSallesBain", e.target.value)} placeholder="1" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Année construction</Label>
-                      <Input type="number" value={form.anneeConstruction} onChange={e => set("anneeConstruction", e.target.value)} placeholder="1990" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">État du bien</Label>
-                      <Select value={form.etatBien} onValueChange={v => set("etatBien", v)}>
-                        <SelectTrigger className="bg-[#0d0d0d] border-[#333] text-white focus:border-[#C9A84C]">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1a1a1a] border-[#333]">
-                          <SelectItem value="neuf" className="text-white hover:bg-[#222]">Neuf</SelectItem>
-                          <SelectItem value="bon_etat" className="text-white hover:bg-[#222]">Bon état</SelectItem>
-                          <SelectItem value="a_rafraichir" className="text-white hover:bg-[#222]">À rafraîchir</SelectItem>
-                          <SelectItem value="a_renover" className="text-white hover:bg-[#222]">À rénover</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Travaux estimés (€)</Label>
-                      <Input type="number" value={form.travauxEstimes} onChange={e => set("travauxEstimes", e.target.value)} placeholder="0" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                    </div>
-                  </div>
-
-                  {/* Équipements */}
-                  <div className="border-t border-[#222] pt-4">
-                    <p className="text-gray-300 text-sm font-semibold mb-3">Équipements</p>
-                    <div className="grid grid-cols-3 gap-3">
-                      {[
-                        { key: "balcon", label: "Balcon" }, { key: "terrasse", label: "Terrasse" },
-                        { key: "jardin", label: "Jardin" }, { key: "parking", label: "Parking" },
-                        { key: "garage", label: "Garage" }, { key: "cave", label: "Cave" },
-                        { key: "ascenseur", label: "Ascenseur" }, { key: "gardien", label: "Gardien" },
-                        { key: "piscine", label: "Piscine" },
-                      ].map(({ key, label }) => (
-                        <div key={key} className="flex items-center gap-2">
-                          <Checkbox
-                            id={key}
-                            checked={(form as any)[key]}
-                            onCheckedChange={v => set(key, !!v)}
-                            className="border-[#444] data-[state=checked]:bg-[#C9A84C] data-[state=checked]:border-[#C9A84C]"
-                          />
-                          <label htmlFor={key} className="text-gray-300 text-sm cursor-pointer">{label}</label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label className="text-gray-300 text-sm">Description</Label>
-                    <Textarea value={form.description} onChange={e => set("description", e.target.value)} placeholder="Décrivez le bien, ses atouts, son environnement..." rows={4} className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C] resize-none" />
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <Button variant="outline" onClick={() => setStep("localisation")} className="border-[#333] text-gray-400 hover:bg-[#111]">
-                    <ChevronLeft className="mr-2 w-4 h-4" /> Retour
-                  </Button>
-                  <Button onClick={() => { if (validateStep("caracteristiques")) setStep("prix"); }} className="flex-1 bg-[#C9A84C] hover:bg-[#b8943d] text-black font-bold h-12">
-                    Continuer <ChevronRight className="ml-2 w-4 h-4" />
-                  </Button>
+                <div style={{ display: "flex", gap: "12px" }}>
+                  <button onClick={() => setStep("localisation")} style={btnSecondary}><ChevronLeft size={14} strokeWidth={1.5} /> Retour</button>
+                  <button onClick={() => { if (validateStep("caracteristiques")) setStep("prix"); }} style={{ ...btnPrimary, flex: 1 }}>Continuer <ChevronRight size={14} strokeWidth={1.5} /></button>
                 </div>
               </div>
             )}
 
-            {/* ÉTAPE 3 — PRIX & DPE */}
+            {/* PRIX & DPE */}
             {step === "prix" && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-xl font-black text-white">Prix & Diagnostic énergétique</h2>
-                  <p className="text-gray-400 text-sm mt-1">Informations financières et DPE</p>
-                </div>
-
-                <div className="bg-[#111] border border-[#222] p-6 space-y-5">
-                  {/* Détail du prix */}
-                  <div>
-                    <p className="text-[#C9A84C] text-xs font-bold tracking-widest uppercase mb-3">Détail du prix</p>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label className="text-gray-300 text-sm">Prix net vendeur (€) *</Label>
-                        <Input type="number" value={form.prixNetVendeur} onChange={e => {
-                          const nv = parseInt(e.target.value) || 0;
-                          const ha = parseInt(form.honorairesAgence) || 0;
-                          set("prixNetVendeur", e.target.value);
-                          set("prix", String(nv + ha));
-                        }} placeholder="330000" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C] text-lg font-bold" />
-                        {errors.prixNetVendeur && <p className="text-red-400 text-xs">{errors.prixNetVendeur}</p>}
-                        <p className="text-gray-500 text-xs">Sans frais d'agence</p>
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-gray-300 text-sm">Honoraires d'agence (€)</Label>
-                        <Input type="number" value={form.honorairesAgence} onChange={e => {
-                          const ha = parseInt(e.target.value) || 0;
-                          const nv = parseInt(form.prixNetVendeur) || 0;
-                          set("honorairesAgence", e.target.value);
-                          set("prix", String(nv + ha));
-                        }} placeholder="20000" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                        <p className="text-gray-500 text-xs">Frais à la charge de l'acquéreur</p>
-                      </div>
-                    </div>
-                    {(form.prixNetVendeur || form.honorairesAgence) && (
-                      <div className="mt-3 bg-[#C9A84C]/10 border border-[#C9A84C]/30 p-3 flex items-center justify-between">
-                        <span className="text-gray-300 text-sm">Prix FAI total (calculé automatiquement)</span>
-                        <span className="text-[#C9A84C] font-black text-lg">
-                          {((parseInt(form.prixNetVendeur) || 0) + (parseInt(form.honorairesAgence) || 0)).toLocaleString("fr-FR")} €
-                        </span>
-                      </div>
-                    )}
+              <div>
+                <h2 style={{ fontFamily: fonts.heading, fontSize: "22px", fontWeight: 600, color: colors.fg, marginBottom: "4px" }}>Prix & Diagnostic energetique</h2>
+                <p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted, marginBottom: "24px" }}>Informations financieres et DPE</p>
+                <div style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: "2px", padding: "32px", marginBottom: "24px" }}>
+                  <SectionDivider>Detail du prix</SectionDivider>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                    <div><label style={labelStyle}>Prix net vendeur (EUR) <span style={{ color: colors.gold }}>*</span></label><SInput type="number" value={form.prixNetVendeur} onChange={e => { const nv = parseInt(e.target.value) || 0; const ha = parseInt(form.honorairesAgence) || 0; set("prixNetVendeur", e.target.value); set("prix", String(nv + ha)); }} placeholder="330000" style={{ fontSize: "16px", fontWeight: 600 }} />{errorText(errors.prixNetVendeur)}<p style={{ fontFamily: fonts.body, fontSize: "11px", color: colors.faint, marginTop: "4px" }}>Sans frais d'agence</p></div>
+                    <div><label style={labelStyle}>Honoraires d'agence (EUR)</label><SInput type="number" value={form.honorairesAgence} onChange={e => { const ha = parseInt(e.target.value) || 0; const nv = parseInt(form.prixNetVendeur) || 0; set("honorairesAgence", e.target.value); set("prix", String(nv + ha)); }} placeholder="20000" /><p style={{ fontFamily: fonts.body, fontSize: "11px", color: colors.faint, marginTop: "4px" }}>Frais a la charge de l'acquereur</p></div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Charges annuelles (€)</Label>
-                      <Input type="number" value={form.chargesAnnuelles} onChange={e => set("chargesAnnuelles", e.target.value)} placeholder="2400" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
+                  {(form.prixNetVendeur || form.honorairesAgence) && (
+                    <div style={{ background: colors.surfaceRaised, border: `1px solid ${colors.border}`, borderRadius: "2px", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+                      <span style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted }}>Prix FAI total</span>
+                      <span style={{ fontFamily: fonts.body, fontSize: "16px", fontWeight: 700, color: colors.gold }}>{((parseInt(form.prixNetVendeur) || 0) + (parseInt(form.honorairesAgence) || 0)).toLocaleString("fr-FR")} EUR</span>
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-gray-300 text-sm">Taxe foncière (€/an)</Label>
-                      <Input type="number" value={form.taxeFonciere} onChange={e => set("taxeFonciere", e.target.value)} placeholder="1200" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                    </div>
-                    <div className="flex items-end pb-2">
-                      <div className="flex items-center gap-2">
-                        <Checkbox id="negociable" checked={form.prixNegociable} onCheckedChange={v => set("prixNegociable", !!v)} className="border-[#444] data-[state=checked]:bg-[#C9A84C] data-[state=checked]:border-[#C9A84C]" />
-                        <label htmlFor="negociable" className="text-gray-300 text-sm cursor-pointer">Prix négociable</label>
-                      </div>
-                    </div>
+                  )}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                    <div><label style={labelStyle}>Charges annuelles (EUR)</label><SInput type="number" value={form.chargesAnnuelles} onChange={e => set("chargesAnnuelles", e.target.value)} placeholder="2400" /></div>
+                    <div><label style={labelStyle}>Taxe fonciere (EUR/an)</label><SInput type="number" value={form.taxeFonciere} onChange={e => set("taxeFonciere", e.target.value)} placeholder="1200" /></div>
                   </div>
-
-                  {/* DPE */}
-                  <div className="border-t border-[#222] pt-4">
-                    <p className="text-gray-300 text-sm font-semibold mb-3">Diagnostic de Performance Énergétique (DPE)</p>
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-3">
-                        <Label className="text-gray-300 text-sm">Classe DPE</Label>
-                        <div className="flex gap-2 flex-wrap">
-                          {["A", "B", "C", "D", "E", "F", "G", "NC"].map(l => (
-                            <button key={l} type="button" onClick={() => set("dpeLettre", l)}
-                              className={`w-9 h-9 font-black text-sm transition-all ${form.dpeLettre === l ? `${DPE_COLORS[l]} text-white ring-2 ring-white` : "bg-[#222] text-gray-400 hover:bg-[#333]"}`}>
-                              {l}
-                            </button>
+                  <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", marginBottom: "24px" }}>
+                    <input type="checkbox" checked={form.prixNegociable} onChange={e => set("prixNegociable", e.target.checked)} style={{ accentColor: colors.gold }} />
+                    <span style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.fg }}>Prix negociable</span>
+                  </label>
+                  <SectionDivider>Diagnostic de Performance Energetique (DPE)</SectionDivider>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+                    {[{ label: "Classe DPE", field: "dpeLettre", valField: "dpeValeur", placeholder: "kWh/m2/an" }, { label: "Classe GES", field: "gesLettre", valField: "gesValeur", placeholder: "kg CO2/m2/an" }].map(({ label, field, valField, placeholder }) => (
+                      <div key={field}>
+                        <label style={labelStyle}>{label}</label>
+                        <div style={{ display: "flex", gap: "4px", flexWrap: "wrap", marginBottom: "12px" }}>
+                          {["A","B","C","D","E","F","G","NC"].map(l => (
+                            <button key={l} type="button" onClick={() => set(field, l)} style={{
+                              width: "32px", height: "32px", borderRadius: "2px", fontFamily: fonts.body, fontSize: "11px", fontWeight: 700,
+                              border: `1px solid ${(form as any)[field] === l ? colors.gold : colors.border}`,
+                              background: (form as any)[field] === l ? colors.gold : "transparent",
+                              color: (form as any)[field] === l ? colors.bg : colors.faint,
+                              cursor: "pointer", transition: "all 300ms ease",
+                            }}>{l}</button>
                           ))}
                         </div>
-                        <Input type="number" value={form.dpeValeur} onChange={e => set("dpeValeur", e.target.value)} placeholder="kWh/m²/an" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
+                        <SInput type="number" value={(form as any)[valField]} onChange={e => set(valField, e.target.value)} placeholder={placeholder} />
                       </div>
-                      <div className="space-y-3">
-                        <Label className="text-gray-300 text-sm">Classe GES</Label>
-                        <div className="flex gap-2 flex-wrap">
-                          {["A", "B", "C", "D", "E", "F", "G", "NC"].map(l => (
-                            <button key={l} type="button" onClick={() => set("gesLettre", l)}
-                              className={`w-9 h-9 font-black text-sm transition-all ${form.gesLettre === l ? `${DPE_COLORS[l]} text-white ring-2 ring-white` : "bg-[#222] text-gray-400 hover:bg-[#333]"}`}>
-                              {l}
-                            </button>
-                          ))}
-                        </div>
-                        <Input type="number" value={form.gesValeur} onChange={e => set("gesValeur", e.target.value)} placeholder="kg CO₂/m²/an" className="bg-[#0d0d0d] border-[#333] text-white placeholder:text-gray-600 focus:border-[#C9A84C]" />
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
-
-                <div className="flex gap-3">
-                  <Button variant="outline" onClick={() => setStep("caracteristiques")} className="border-[#333] text-gray-400 hover:bg-[#111]">
-                    <ChevronLeft className="mr-2 w-4 h-4" /> Retour
-                  </Button>
-                  <Button onClick={() => { if (validateStep("prix")) setStep("medias"); }} className="flex-1 bg-[#C9A84C] hover:bg-[#b8943d] text-black font-bold h-12">
-                    Continuer <ChevronRight className="ml-2 w-4 h-4" />
-                  </Button>
+                <div style={{ display: "flex", gap: "12px" }}>
+                  <button onClick={() => setStep("caracteristiques")} style={btnSecondary}><ChevronLeft size={14} strokeWidth={1.5} /> Retour</button>
+                  <button onClick={() => { if (validateStep("prix")) setStep("medias"); }} style={{ ...btnPrimary, flex: 1 }}>Continuer <ChevronRight size={14} strokeWidth={1.5} /></button>
                 </div>
               </div>
             )}
 
-            {/* ÉTAPE 4 — PHOTOS & DOCUMENTS */}
+            {/* PHOTOS & DOCUMENTS */}
             {step === "medias" && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-xl font-black text-white">Photos & Documents</h2>
-                  <p className="text-gray-400 text-sm mt-1">Ajoutez des photos et documents du bien (optionnel, vous pourrez en ajouter après la soumission)</p>
+              <div>
+                <h2 style={{ fontFamily: fonts.heading, fontSize: "22px", fontWeight: 600, color: colors.fg, marginBottom: "4px" }}>Photos & Documents</h2>
+                <p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted, marginBottom: "24px" }}>Ajoutez des photos et documents du bien (optionnel)</p>
+                <div onDragOver={e => { e.preventDefault(); setIsDragging(true); }} onDragLeave={() => setIsDragging(false)} onDrop={handleDrop} onClick={() => fileInputRef.current?.click()}
+                  style={{ border: `1px dashed ${isDragging ? colors.gold : colors.border}`, borderRadius: "2px", padding: "40px", textAlign: "center", cursor: "pointer", transition: "border-color 300ms ease", marginBottom: "20px", background: isDragging ? `${colors.gold}08` : colors.surface }}>
+                  <input ref={fileInputRef} type="file" multiple accept="image/*,.pdf,.doc,.docx" style={{ display: "none" }} onChange={e => { if (e.target.files) addFiles(e.target.files); e.target.value = ""; }} />
+                  <Camera size={28} strokeWidth={1.5} style={{ color: colors.faint, margin: "0 auto 8px", display: "block" }} />
+                  <p style={{ fontFamily: fonts.body, fontSize: "13px", fontWeight: 500, color: colors.fg, margin: "0 0 4px" }}>Glissez vos fichiers ici ou cliquez pour selectionner</p>
+                  <p style={{ fontFamily: fonts.body, fontSize: "11px", color: colors.faint, margin: 0 }}>Photos (JPG, PNG, WebP), PDF, documents Word — max 10 Mo par fichier</p>
                 </div>
-
-                {/* Zone de dépôt */}
-                <div
-                  onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
-                  onDragLeave={() => setIsDragging(false)}
-                  onDrop={handleDrop}
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`border-2 border-dashed rounded-none p-8 text-center cursor-pointer transition-colors ${
-                    isDragging ? "border-[#C9A84C] bg-[#C9A84C]/5" : "border-[#333] hover:border-[#C9A84C]/50 bg-[#111]"
-                  }`}
-                >
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    multiple
-                    accept="image/*,.pdf,.doc,.docx"
-                    className="hidden"
-                    onChange={e => { if (e.target.files) addFiles(e.target.files); e.target.value = ""; }}
-                  />
-                  <Camera className="w-10 h-10 text-[#C9A84C]/50 mx-auto mb-3" />
-                  <p className="text-white font-semibold text-sm">Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                  <p className="text-gray-500 text-xs mt-1">Photos (JPG, PNG, WebP), PDF, documents Word — max 10 Mo par fichier</p>
-                </div>
-
-                {/* Liste des fichiers */}
                 {medias.length > 0 && (
-                  <div className="space-y-2">
-                    <p className="text-gray-400 text-xs uppercase tracking-wider font-semibold">{medias.length} fichier{medias.length > 1 ? "s" : ""} sélectionné{medias.length > 1 ? "s" : ""}</p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "20px" }}>
+                    <p style={{ ...labelStyle }}>{medias.length} fichier{medias.length > 1 ? "s" : ""} selectionne{medias.length > 1 ? "s" : ""}</p>
                     {medias.map(media => (
-                      <div key={media.id} className="bg-[#111] border border-[#222] p-3 flex items-center gap-3">
-                        {/* Miniature ou icône */}
-                        {media.preview ? (
-                          <img src={media.preview} alt="" className="w-14 h-14 object-cover shrink-0 border border-[#333]" />
-                        ) : (
-                          <div className="w-14 h-14 bg-[#1a1a1a] border border-[#333] flex items-center justify-center shrink-0">
-                            <FileText className="w-6 h-6 text-gray-500" />
-                          </div>
-                        )}
-
-                        {/* Infos + catégorie */}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-white text-sm font-medium truncate">{media.file.name}</p>
-                          <p className="text-gray-500 text-xs">{(media.file.size / 1024).toFixed(0)} Ko</p>
-                          <select
-                            value={media.categorie}
-                            onChange={e => setCategorieMedia(media.id, e.target.value as MediaCategorie)}
-                            className="mt-1.5 bg-[#0d0d0d] border border-[#333] text-gray-300 text-xs px-2 py-1 w-full"
-                          >
-                            {(Object.entries(CATEGORIE_LABELS) as [MediaCategorie, string][]).map(([val, label]) => (
-                              <option key={val} value={val}>{label}</option>
-                            ))}
+                      <div key={media.id} style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: "2px", padding: "12px", display: "flex", alignItems: "center", gap: "12px" }}>
+                        {media.preview ? <img src={media.preview} alt="" style={{ width: "48px", height: "48px", objectFit: "cover", borderRadius: "2px", border: `1px solid ${colors.border}`, flexShrink: 0 }} /> : <div style={{ width: "48px", height: "48px", background: colors.surfaceRaised, border: `1px solid ${colors.border}`, borderRadius: "2px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><FileText size={16} strokeWidth={1.5} style={{ color: colors.faint }} /></div>}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ fontFamily: fonts.body, fontSize: "13px", fontWeight: 500, color: colors.fg, margin: "0 0 2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{media.file.name}</p>
+                          <p style={{ fontFamily: fonts.body, fontSize: "10px", color: colors.faint, margin: "0 0 6px" }}>{(media.file.size / 1024).toFixed(0)} Ko</p>
+                          <select value={media.categorie} onChange={e => setCategorieMedia(media.id, e.target.value as MediaCategorie)} className="focus:outline-none" style={{ ...selectStyle, fontSize: "11px", padding: "4px 28px 4px 8px" }}>
+                            {(Object.entries(CATEGORIE_LABELS) as [MediaCategorie, string][]).map(([val, label]) => <option key={val} value={val}>{label}</option>)}
                           </select>
                         </div>
-
-                        {/* Statut + suppression */}
-                        <div className="flex items-center gap-2 shrink-0">
-                          {media.status === "done" && <CheckCircle className="w-4 h-4 text-green-400" />}
-                          {media.status === "error" && <AlertCircle className="w-4 h-4 text-red-400" />}
-                          {media.status === "uploading" && (
-                            <div className="w-4 h-4 border-2 border-[#C9A84C] border-t-transparent rounded-full animate-spin" />
-                          )}
-                          <button onClick={() => removeMedia(media.id)} className="text-gray-500 hover:text-red-400 transition-colors">
-                            <X className="w-4 h-4" />
-                          </button>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
+                          {media.status === "done" && <CheckCircle size={14} strokeWidth={1.5} style={{ color: colors.success }} />}
+                          {media.status === "error" && <AlertCircle size={14} strokeWidth={1.5} style={{ color: colors.destructive }} />}
+                          {media.status === "uploading" && <Loader2 size={14} strokeWidth={1.5} className="animate-spin" style={{ color: colors.gold }} />}
+                          <button onClick={() => removeMedia(media.id)} style={{ background: "none", border: "none", cursor: "pointer", color: colors.faint, transition: "color 300ms ease" }} onMouseEnter={e => { e.currentTarget.style.color = colors.destructive; }} onMouseLeave={e => { e.currentTarget.style.color = colors.faint; }}><X size={14} strokeWidth={1.5} /></button>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
-
-                <div className="bg-[#111] border border-[#C9A84C]/20 p-4 flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-[#C9A84C] shrink-0 mt-0.5" />
-                  <p className="text-gray-400 text-sm">
-                    Les photos et documents seront uploadés lors de la soumission finale. Vous pouvez passer cette étape et ajouter des médias plus tard.
-                  </p>
-                </div>
-
-                <div className="flex gap-3">
-                  <Button variant="outline" onClick={() => setStep("prix")} className="border-[#333] text-gray-400 hover:bg-[#111]">
-                    <ChevronLeft className="mr-2 w-4 h-4" /> Retour
-                  </Button>
-                  <Button onClick={() => setStep("recap")} className="flex-1 bg-[#C9A84C] hover:bg-[#b8943d] text-black font-bold h-12">
-                    Récapitulatif <ChevronRight className="ml-2 w-4 h-4" />
-                  </Button>
+                <div style={{ display: "flex", gap: "12px" }}>
+                  <button onClick={() => setStep("prix")} style={btnSecondary}><ChevronLeft size={14} strokeWidth={1.5} /> Retour</button>
+                  <button onClick={() => setStep("recap")} style={{ ...btnPrimary, flex: 1 }}>Recapitulatif <ChevronRight size={14} strokeWidth={1.5} /></button>
                 </div>
               </div>
             )}
 
-            {/* ÉTAPE 5 — RÉCAPITULATIF & ENVOI */}
+            {/* RECAP */}
             {step === "recap" && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-xl font-black text-white">Récapitulatif</h2>
-                  <p className="text-gray-400 text-sm mt-1">Vérifiez les informations avant de soumettre</p>
-                </div>
-
-                <div className="bg-[#111] border border-[#C9A84C]/20 p-6 space-y-4">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Bien</p>
-                      <p className="text-white font-bold">{form.titre}</p>
-                      <p className="text-gray-300">{form.typeBien} — {form.transaction}</p>
-                      <p className="text-gray-300">{form.adresse}, {form.codePostal} {form.ville}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Caractéristiques</p>
-                      <p className="text-white font-bold">{form.surface} m²</p>
-                      {form.nbPieces && <p className="text-gray-300">{form.nbPieces} pièces</p>}
-                      <p className="text-gray-300">{form.etatBien.replace(/_/g, " ")}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Prix</p>
-                      <p className="text-[#C9A84C] font-black text-xl">{parseInt(form.prix || "0").toLocaleString("fr-FR")} €</p>
-                      {form.prixNegociable && <p className="text-gray-400 text-xs">Prix négociable</p>}
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">DPE</p>
-                      <div className="flex items-center gap-2">
-                        <span className={`w-8 h-8 flex items-center justify-center font-black text-white text-sm ${DPE_COLORS[form.dpeLettre]}`}>{form.dpeLettre}</span>
-                        <span className="text-gray-300 text-sm">/ GES {form.gesLettre}</span>
-                      </div>
+              <div>
+                <h2 style={{ fontFamily: fonts.heading, fontSize: "22px", fontWeight: 600, color: colors.fg, marginBottom: "4px" }}>Recapitulatif</h2>
+                <p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted, marginBottom: "24px" }}>Verifiez les informations avant de soumettre</p>
+                <div style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: "2px", padding: "32px", marginBottom: "24px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px", marginBottom: "20px" }}>
+                    <div><p style={{ ...labelStyle, marginBottom: "8px" }}>Bien</p><p style={{ fontFamily: fonts.body, fontSize: "14px", fontWeight: 500, color: colors.fg, margin: "0 0 4px" }}>{form.titre}</p><p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted, margin: "0 0 2px" }}>{form.typeBien} — {form.transaction}</p><p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted, margin: 0 }}>{form.adresse}, {form.codePostal} {form.ville}</p></div>
+                    <div><p style={{ ...labelStyle, marginBottom: "8px" }}>Caracteristiques</p><p style={{ fontFamily: fonts.body, fontSize: "14px", fontWeight: 500, color: colors.fg, margin: "0 0 4px" }}>{form.surface} m2</p>{form.nbPieces && <p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted, margin: "0 0 2px" }}>{form.nbPieces} pieces</p>}<p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted, margin: 0 }}>{form.etatBien.replace(/_/g, " ")}</p></div>
+                    <div><p style={{ ...labelStyle, marginBottom: "8px" }}>Prix</p><p style={{ fontFamily: fonts.heading, fontSize: "22px", fontWeight: 700, color: colors.gold, margin: "0 0 4px" }}>{parseInt(form.prix || "0").toLocaleString("fr-FR")} EUR</p>{form.prixNegociable && <p style={{ fontFamily: fonts.body, fontSize: "11px", color: colors.faint }}>Prix negociable</p>}</div>
+                    <div><p style={{ ...labelStyle, marginBottom: "8px" }}>DPE</p><div style={{ display: "flex", alignItems: "center", gap: "8px" }}><span style={{ width: "28px", height: "28px", borderRadius: "2px", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: fonts.body, fontSize: "12px", fontWeight: 700, background: colors.gold, color: colors.bg }}>{form.dpeLettre}</span><span style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted }}>/ GES {form.gesLettre}</span></div></div>
+                  </div>
+                  <div style={{ borderTop: `1px solid ${colors.border}`, paddingTop: "16px", marginBottom: "16px" }}>
+                    <p style={{ ...labelStyle, marginBottom: "8px" }}>Equipements</p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      {["balcon","terrasse","jardin","parking","garage","cave","ascenseur","gardien","piscine"].filter(k => (form as any)[k]).map(k => (
+                        <span key={k} style={{ fontFamily: fonts.body, fontSize: "11px", color: colors.gold, padding: "4px 10px", border: `1px solid ${colors.border}`, borderRadius: "2px", textTransform: "capitalize" }}>{k}</span>
+                      ))}
                     </div>
                   </div>
-
-                  <div className="border-t border-[#222] pt-4">
-                    <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Équipements</p>
-                    <div className="flex flex-wrap gap-2">
-                      {["balcon", "terrasse", "jardin", "parking", "garage", "cave", "ascenseur", "gardien", "piscine"]
-                        .filter(k => (form as any)[k])
-                        .map(k => (
-                          <Badge key={k} className="bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/30 text-xs capitalize">{k}</Badge>
-                        ))}
-                    </div>
-                  </div>
-
                   {medias.length > 0 && (
-                    <div className="border-t border-[#222] pt-4">
-                      <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Médias ({medias.length} fichier{medias.length > 1 ? "s" : ""})</p>
-                      <div className="flex flex-wrap gap-2">
+                    <div style={{ borderTop: `1px solid ${colors.border}`, paddingTop: "16px" }}>
+                      <p style={{ ...labelStyle, marginBottom: "8px" }}>Medias ({medias.length} fichier{medias.length > 1 ? "s" : ""})</p>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
                         {medias.map(m => (
-                          <div key={m.id} className="flex items-center gap-1.5 bg-[#1a1a1a] border border-[#333] px-2 py-1">
-                            {m.preview ? <Image className="w-3 h-3 text-[#C9A84C]" /> : <FileText className="w-3 h-3 text-[#C9A84C]" />}
-                            <span className="text-gray-300 text-xs truncate max-w-[120px]">{m.file.name}</span>
-                            <span className="text-gray-600 text-xs">({CATEGORIE_LABELS[m.categorie].split(" ")[0]})</span>
-                          </div>
+                          <span key={m.id} style={{ fontFamily: fonts.body, fontSize: "11px", color: colors.muted, padding: "4px 8px", background: colors.surfaceRaised, border: `1px solid ${colors.border}`, borderRadius: "2px", display: "inline-flex", alignItems: "center", gap: "4px", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {m.preview ? <Image size={10} strokeWidth={1.5} style={{ color: colors.gold }} /> : <FileText size={10} strokeWidth={1.5} style={{ color: colors.gold }} />}
+                            {m.file.name}
+                          </span>
                         ))}
                       </div>
                     </div>
                   )}
                 </div>
-
-                <div className="bg-[#111] border border-[#222] p-4 flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-[#C9A84C] shrink-0 mt-0.5" />
-                  <p className="text-gray-400 text-sm">
-                    Votre bien sera soumis à validation par l'équipe Sigma Factory avant publication. Vous serez contacté(e) sous 48h.
-                  </p>
+                <div style={{ display: "flex", gap: "12px" }}>
+                  <button onClick={() => setStep("medias")} style={btnSecondary}><ChevronLeft size={14} strokeWidth={1.5} /> Retour</button>
+                  <button onClick={handleSubmit} disabled={creerBien.isPending || uploadingAll} style={{ ...btnPrimary, flex: 1, opacity: (creerBien.isPending || uploadingAll) ? 0.7 : 1, cursor: (creerBien.isPending || uploadingAll) ? "not-allowed" : "pointer" }}>
+                    {creerBien.isPending || uploadingAll ? (uploadingAll ? `Upload en cours... (${medias.filter(m => m.status === "done").length}/${medias.length})` : "Envoi en cours...") : "Soumettre le bien a Sigma Factory"}
+                  </button>
                 </div>
-
-                <div className="flex gap-3">
-                  <Button variant="outline" onClick={() => setStep("medias")} className="border-[#333] text-gray-400 hover:bg-[#111]">
-                    <ChevronLeft className="mr-2 w-4 h-4" /> Retour
-                  </Button>
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={creerBien.isPending || uploadingAll}
-                    className="flex-1 bg-[#C9A84C] hover:bg-[#b8943d] text-black font-bold h-12"
-                  >
-                    {creerBien.isPending || uploadingAll
-                      ? (uploadingAll ? `Upload en cours… (${medias.filter(m => m.status === "done").length}/${medias.length})` : "Envoi en cours…")
-                      : "Soumettre le bien à Sigma Factory"
-                    }
-                  </Button>
-                </div>
-
-                {creerBien.isError && (
-                  <p className="text-red-400 text-sm text-center">{creerBien.error.message}</p>
-                )}
+                {creerBien.isError && <p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.destructive, textAlign: "center", marginTop: "16px" }}>{creerBien.error.message}</p>}
               </div>
             )}
 
             {/* CONFIRMATION */}
             {step === "confirmation" && (
-              <div className="text-center space-y-8">
-                <div className="space-y-4">
-                  <div className="w-20 h-20 bg-[#C9A84C]/10 border border-[#C9A84C]/30 flex items-center justify-center mx-auto">
-                    <CheckCircle className="w-10 h-10 text-[#C9A84C]" />
+              <div style={{ textAlign: "center" }}>
+                <CheckCircle size={48} strokeWidth={1.5} style={{ color: colors.gold, margin: "0 auto 20px", display: "block" }} />
+                <h2 style={{ fontFamily: fonts.heading, fontSize: "28px", fontWeight: 600, color: colors.fg, letterSpacing: "0.04em", marginBottom: "8px" }}>Bien soumis avec succes</h2>
+                <p style={{ fontFamily: fonts.body, fontSize: "14px", color: colors.muted, marginBottom: "24px" }}>L'equipe Sigma Factory va examiner votre bien et vous recontacter sous 48h.</p>
+                {reference && (
+                  <div style={{ background: colors.surface, border: `1px solid ${colors.border}`, borderRadius: "2px", padding: "20px", display: "inline-block", marginBottom: "24px" }}>
+                    <p style={{ ...labelStyle, marginBottom: "4px" }}>Reference</p>
+                    <p style={{ fontFamily: "'Hanken Grotesk', monospace", fontSize: "18px", fontWeight: 700, color: colors.fg, margin: 0 }}>{reference}</p>
                   </div>
-                  <h2 className="text-3xl font-black text-white">Bien soumis avec succès !</h2>
-                  <p className="text-gray-400">L'équipe Sigma Factory va examiner votre bien et vous recontacter sous 48h.</p>
-                  {reference && (
-                    <div className="bg-[#111] border border-[#C9A84C]/30 p-4 inline-block">
-                      <p className="text-[#C9A84C] text-xs font-bold uppercase tracking-wider">Référence</p>
-                      <p className="text-white font-mono text-lg font-bold mt-1">{reference}</p>
-                    </div>
-                  )}
-                  {medias.length > 0 && (
-                    <div className="text-sm text-gray-400">
-                      {medias.filter(m => m.status === "done").length}/{medias.length} fichier{medias.length > 1 ? "s" : ""} uploadé{medias.length > 1 ? "s" : ""}
-                      {medias.some(m => m.status === "error") && (
-                        <span className="text-red-400 ml-2">— certains fichiers ont échoué</span>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                <Button
-                  onClick={() => {
-                    setStep("localisation");
-                    setForm(f => ({ ...f, titre: "", adresse: "", description: "", pointsForts: "", prix: "" }));
-                    setMedias([]);
-                    setBienId(null);
-                    setReference(null);
-                  }}
-                  className="bg-[#C9A84C] hover:bg-[#b8943d] text-black font-bold"
-                >
-                  <Home className="mr-2 w-4 h-4" /> Soumettre un autre bien
-                </Button>
+                )}
+                {medias.length > 0 && (
+                  <p style={{ fontFamily: fonts.body, fontSize: "13px", color: colors.muted, marginBottom: "24px" }}>
+                    {medias.filter(m => m.status === "done").length}/{medias.length} fichier{medias.length > 1 ? "s" : ""} uploade{medias.length > 1 ? "s" : ""}
+                    {medias.some(m => m.status === "error") && <span style={{ color: colors.destructive, marginLeft: "8px" }}>— certains fichiers ont echoue</span>}
+                  </p>
+                )}
+                <button onClick={() => { setStep("localisation"); setForm(f => ({ ...f, titre: "", adresse: "", description: "", pointsForts: "", prix: "" })); setMedias([]); setBienId(null); setReference(null); }} style={btnPrimary}>
+                  <Home size={14} strokeWidth={1.5} /> Soumettre un autre bien
+                </button>
               </div>
             )}
           </>

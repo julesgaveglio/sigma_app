@@ -16,7 +16,14 @@ const STATUT_LABELS: Record<Statut, string> = {
   disponible: "Disponible",
   sous_compromis: "Sous compromis",
   vendu: "Vendu",
-  archive: "Archivé",
+  archive: "Archive",
+};
+
+const STATUT_STYLES: Record<Statut, { color: string; bg: string; border: string }> = {
+  disponible: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  sous_compromis: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  vendu: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+  archive: { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" },
 };
 
 const STATUT_COLORS: Record<Statut, string> = {
@@ -27,10 +34,10 @@ const STATUT_COLORS: Record<Statut, string> = {
 };
 
 const REGIONS = [
-  "Grand Est", "Hauts-de-France", "Île-de-France", "Auvergne-Rhône-Alpes",
+  "Grand Est", "Hauts-de-France", "Ile-de-France", "Auvergne-Rhone-Alpes",
   "PACA", "Occitanie", "Nouvelle-Aquitaine", "Bretagne", "Normandie",
-  "Pays de la Loire", "Bourgogne-Franche-Comté", "Centre-Val de Loire",
-  "Corse", "Guadeloupe", "Martinique", "Guyane", "La Réunion",
+  "Pays de la Loire", "Bourgogne-Franche-Comte", "Centre-Val de Loire",
+  "Corse", "Guadeloupe", "Martinique", "Guyane", "La Reunion",
 ];
 
 const TYPE_BIENS = [
@@ -40,12 +47,12 @@ const TYPE_BIENS = [
 ];
 
 function formatPrice(n: number | null | undefined) {
-  if (!n) return "—";
+  if (!n) return "\u2014";
   return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
 }
 
 function formatPct(n: string | number | null | undefined) {
-  if (!n) return "—";
+  if (!n) return "\u2014";
   return `${Number(n).toFixed(2)} %`;
 }
 
@@ -98,6 +105,28 @@ function parseImages(raw: unknown): string[] {
   return [];
 }
 
+function StatutBadge({ statut }: { statut: Statut }) {
+  const s = STATUT_STYLES[statut] ?? STATUT_STYLES.archive;
+  return (
+    <span style={{
+      display: "inline-flex",
+      alignItems: "center",
+      padding: "2px 8px",
+      borderRadius: "2px",
+      fontSize: "10px",
+      fontFamily: "'Hanken Grotesk', sans-serif",
+      fontWeight: 500,
+      letterSpacing: "0.06em",
+      textTransform: "uppercase" as const,
+      color: s.color,
+      background: s.bg,
+      border: `1px solid ${s.border}`,
+    }}>
+      {STATUT_LABELS[statut]}
+    </span>
+  );
+}
+
 function BienCard({ bien, onClick }: { bien: Bien; onClick: () => void }) {
   const images = parseImages(bien.images);
   const mainImg = bien.imagePrincipale || images[0] || null;
@@ -106,63 +135,118 @@ function BienCard({ bien, onClick }: { bien: Bien; onClick: () => void }) {
 
   return (
     <div
-      className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden cursor-pointer hover:border-amber-500/40 hover:shadow-lg hover:shadow-amber-500/5 transition-all group"
       onClick={onClick}
+      className="cursor-pointer transition-colors duration-300"
+      style={{
+        background: "#111111",
+        border: "1px solid #1E1E1E",
+        borderRadius: "2px",
+        overflow: "hidden",
+      }}
+      onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(201,168,76,0.3)")}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
     >
-      <div className="relative h-48 bg-zinc-800 overflow-hidden">
+      {/* Image */}
+      <div style={{ position: "relative", height: "180px", background: "#0D0D0D", overflow: "hidden" }}>
         {mainImg ? (
-          <img src={mainImg} alt={bien.titre} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          <img
+            src={mainImg}
+            alt={bien.titre}
+            className="transition-transform duration-300"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.02)")}
+            onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
+          />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Building className="h-12 w-12 text-zinc-600" />
+          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Building style={{ width: "32px", height: "32px", color: "#1E1E1E", strokeWidth: 1.5 }} />
           </div>
         )}
-        <div className="absolute top-3 left-3 flex gap-1.5">
-          <span className={`text-xs font-medium px-2 py-1 rounded-full border ${STATUT_COLORS[statut]}`}>
-            {STATUT_LABELS[statut]}
-          </span>
+        <div style={{ position: "absolute", top: "12px", left: "12px", display: "flex", gap: "6px" }}>
+          <StatutBadge statut={statut} />
           {nouveau && (
-            <span className="text-xs font-bold px-2 py-1 rounded-full bg-amber-500 text-black border border-amber-400">
+            <span style={{
+              display: "inline-flex",
+              alignItems: "center",
+              padding: "2px 8px",
+              borderRadius: "2px",
+              fontSize: "10px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontWeight: 600,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase" as const,
+              color: "#0A0A0A",
+              background: "#C9A84C",
+            }}>
               Nouveau
             </span>
           )}
         </div>
         {images.length > 1 && (
-          <div className="absolute bottom-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
+          <span style={{
+            position: "absolute",
+            bottom: "10px",
+            right: "10px",
+            background: "rgba(0,0,0,0.6)",
+            color: "#F0EDE6",
+            fontSize: "10px",
+            fontFamily: "'Hanken Grotesk', sans-serif",
+            padding: "2px 8px",
+            borderRadius: "2px",
+          }}>
             {images.length} photos
-          </div>
+          </span>
         )}
       </div>
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <h3 className="font-semibold text-white text-sm leading-tight line-clamp-2">{bien.titre}</h3>
-        </div>
-        <div className="flex items-center gap-1 text-zinc-400 text-xs mb-3">
-          <MapPin className="h-3 w-3 shrink-0" />
-          <span className="truncate">{bien.region || bien.departement || "—"}</span>
+
+      {/* Content */}
+      <div style={{ padding: "16px 20px" }}>
+        <p style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: "16px",
+          fontWeight: 600,
+          color: "#F0EDE6",
+          lineHeight: 1.3,
+          marginBottom: "6px",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical" as const,
+          overflow: "hidden",
+          letterSpacing: "0.02em",
+        }}>
+          {bien.titre}
+        </p>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "4px", marginBottom: "14px" }}>
+          <MapPin style={{ width: "12px", height: "12px", color: "#3A3632", strokeWidth: 1.5, flexShrink: 0 }} />
+          <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
+            {bien.region || bien.departement || "\u2014"}
+          </span>
           {bien.typeBien && (
             <>
-              <span className="mx-1">·</span>
-              <span>{bien.typeBien}</span>
+              <span style={{ color: "#3A3632", margin: "0 2px" }}>\u00b7</span>
+              <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{bien.typeBien}</span>
             </>
           )}
         </div>
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="bg-zinc-800 rounded-lg p-2">
-            <div className="text-zinc-500 mb-0.5">Prix bien</div>
-            <div className="text-white font-medium">{formatPrice(bien.prixBien)}</div>
+
+        {/* Data grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "#1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+          <div style={{ background: "#0A0A0A", padding: "10px 12px" }}>
+            <p className="label-uppercase" style={{ marginBottom: "2px", fontSize: "9px" }}>Prix bien</p>
+            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{formatPrice(bien.prixBien)}</p>
           </div>
-          <div className="bg-zinc-800 rounded-lg p-2">
-            <div className="text-zinc-500 mb-0.5">Invest. total</div>
-            <div className="text-white font-medium">{formatPrice(bien.investissementTotal)}</div>
+          <div style={{ background: "#0A0A0A", padding: "10px 12px" }}>
+            <p className="label-uppercase" style={{ marginBottom: "2px", fontSize: "9px" }}>Invest. total</p>
+            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{formatPrice(bien.investissementTotal)}</p>
           </div>
-          <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-2">
-            <div className="text-amber-400/70 mb-0.5">Rentabilité brute</div>
-            <div className="text-amber-400 font-semibold">{formatPct(bien.rentabiliteBrute)}</div>
+          <div style={{ background: "#0A0A0A", padding: "10px 12px" }}>
+            <p style={{ marginBottom: "2px", fontSize: "9px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "#C9A84C" }}>Renta. brute</p>
+            <p className="tabular-nums" style={{ fontSize: "14px", fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, color: "#C9A84C" }}>{formatPct(bien.rentabiliteBrute)}</p>
           </div>
-          <div className="bg-zinc-800 rounded-lg p-2">
-            <div className="text-zinc-500 mb-0.5">Lots</div>
-            <div className="text-white font-medium">{bien.nbLots ?? "—"}</div>
+          <div style={{ background: "#0A0A0A", padding: "10px 12px" }}>
+            <p className="label-uppercase" style={{ marginBottom: "2px", fontSize: "9px" }}>Lots</p>
+            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{bien.nbLots ?? "\u2014"}</p>
           </div>
         </div>
       </div>
@@ -174,24 +258,54 @@ function ImageGallery({ images, title }: { images: string[]; title: string }) {
   const [current, setCurrent] = useState(0);
   if (!images.length) return null;
   return (
-    <div className="relative rounded-xl overflow-hidden bg-zinc-800">
-      <img src={images[current]} alt={`${title} - photo ${current + 1}`} className="w-full h-72 object-cover" />
+    <div style={{ position: "relative", borderRadius: "2px", overflow: "hidden", background: "#0D0D0D" }}>
+      <img src={images[current]} alt={`${title} - photo ${current + 1}`} style={{ width: "100%", height: "280px", objectFit: "cover" }} />
       {images.length > 1 && (
         <>
-          <button className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1.5 transition-colors" onClick={() => setCurrent(i => (i - 1 + images.length) % images.length)}>
-            <ChevronLeft className="h-4 w-4" />
+          <button
+            style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.6)", color: "#F0EDE6", border: "none", borderRadius: "2px", padding: "6px", cursor: "pointer" }}
+            className="transition-opacity duration-300 hover:opacity-80"
+            onClick={() => setCurrent(i => (i - 1 + images.length) % images.length)}
+          >
+            <ChevronLeft style={{ width: "16px", height: "16px", strokeWidth: 1.5 }} />
           </button>
-          <button className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1.5 transition-colors" onClick={() => setCurrent(i => (i + 1) % images.length)}>
-            <ChevronRight className="h-4 w-4" />
+          <button
+            style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.6)", color: "#F0EDE6", border: "none", borderRadius: "2px", padding: "6px", cursor: "pointer" }}
+            className="transition-opacity duration-300 hover:opacity-80"
+            onClick={() => setCurrent(i => (i + 1) % images.length)}
+          >
+            <ChevronRight style={{ width: "16px", height: "16px", strokeWidth: 1.5 }} />
           </button>
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1">
+          <div style={{ position: "absolute", bottom: "12px", left: "50%", transform: "translateX(-50%)", display: "flex", gap: "4px" }}>
             {images.map((_, i) => (
-              <button key={i} className={`w-1.5 h-1.5 rounded-full transition-colors ${i === current ? "bg-white" : "bg-white/40"}`} onClick={() => setCurrent(i)} />
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                style={{
+                  width: "6px",
+                  height: "6px",
+                  borderRadius: "1px",
+                  border: "none",
+                  cursor: "pointer",
+                  background: i === current ? "#F0EDE6" : "rgba(240,237,230,0.3)",
+                  transition: "background 300ms ease",
+                }}
+              />
             ))}
           </div>
-          <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
+          <span style={{
+            position: "absolute",
+            top: "12px",
+            right: "12px",
+            background: "rgba(0,0,0,0.6)",
+            color: "#F0EDE6",
+            fontSize: "10px",
+            fontFamily: "'Hanken Grotesk', sans-serif",
+            padding: "2px 8px",
+            borderRadius: "2px",
+          }}>
             {current + 1} / {images.length}
-          </div>
+          </span>
         </>
       )}
     </div>
@@ -220,7 +334,7 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
       setStep("confirm");
     },
     onError: (err) => {
-      toast.error("Erreur génération PDF : " + err.message);
+      toast.error("Erreur generation PDF : " + err.message);
       // Passer quand même à l'étape confirm sans PDF
       setStep("confirm");
     },
@@ -234,7 +348,7 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
   const proposerMutation = trpc.offMarket.proposerAuLead.useMutation({
     onSuccess: (data) => {
       setStep("done");
-      toast.success(`Fiche envoyée à ${data.leadEmail}${data.pdfUrl ? " avec PDF" : ""}`);
+      toast.success(`Fiche envoyee a ${data.leadEmail}${data.pdfUrl ? " avec PDF" : ""}`);
     },
     onError: (err) => {
       toast.error(`Erreur : ${err.message}`);
@@ -242,7 +356,7 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
   });
 
   const handleSend = async () => {
-    if (!selectedLeadId) { toast.error("Sélectionnez un lead"); return; }
+    if (!selectedLeadId) { toast.error("Selectionnez un lead"); return; }
     proposerMutation.mutate({
       offMarketId: bien.id,
       crmLeadId: Number(selectedLeadId),
@@ -250,70 +364,115 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
     });
   };
 
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    background: "#161616",
+    border: "1px solid #1E1E1E",
+    borderRadius: "2px",
+    padding: "10px 12px",
+    fontSize: "13px",
+    fontFamily: "'Hanken Grotesk', sans-serif",
+    color: "#F0EDE6",
+    resize: "none",
+    outline: "none",
+  };
+
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900 border-zinc-700 text-white max-w-lg">
+      <DialogContent style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", maxWidth: "480px" }} className="text-[#F0EDE6]">
         <DialogHeader>
-          <DialogTitle className="text-white flex items-center gap-2">
-            <Send className="h-4 w-4 text-amber-400" />
-            {step === "done" ? "✅ Fiche envoyée" : "Proposer à un lead"}
+          <DialogTitle style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em", display: "flex", alignItems: "center", gap: "8px" }}>
+            <Send style={{ width: "16px", height: "16px", color: "#6B6560", strokeWidth: 1.5 }} />
+            {step === "done" ? "Fiche envoyee" : "Proposer a un lead"}
           </DialogTitle>
         </DialogHeader>
 
-        {/* Étape 1 : Génération PDF */}
+        {/* Etape 1 : Generation PDF */}
         {step === "preview" && (
-          <div className="flex flex-col items-center gap-4 py-8">
-            <div className="w-10 h-10 border-4 border-amber-400 border-t-transparent rounded-full animate-spin" />
-            <p className="text-zinc-400 text-sm">Génération du PDF en cours...</p>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", padding: "32px 0" }}>
+            <Loader2 className="animate-spin" style={{ width: "20px", height: "20px", color: "#6B6560", strokeWidth: 1.5 }} />
+            <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Generation du PDF en cours...</p>
           </div>
         )}
 
-        {/* Étape 2 : Confirmation + envoi */}
+        {/* Etape 2 : Confirmation + envoi */}
         {step === "confirm" && (
-        <div className="space-y-4 pt-2">
-          <div className="bg-zinc-800 rounded-lg p-3">
-            <div className="text-xs text-zinc-400 mb-1">Bien sélectionné</div>
-            <div className="text-sm font-medium text-white">{bien.titre}</div>
-            <div className="text-xs text-amber-400 mt-1">{formatPrice(bien.prixBien)}</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px", paddingTop: "8px" }}>
+          <div style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "12px 14px" }}>
+            <p className="label-uppercase" style={{ marginBottom: "4px" }}>Bien selectionne</p>
+            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{bien.titre}</p>
+            <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#C9A84C", marginTop: "4px" }}>{formatPrice(bien.prixBien)}</p>
           </div>
 
-          {/* Aperçu + téléchargement PDF */}
-          <div className="bg-zinc-800/50 border border-amber-500/20 rounded-lg p-3">
-            <p className="text-amber-400/80 text-xs uppercase tracking-wider mb-2">Fiche PDF générée</p>
+          {/* Apercu PDF */}
+          <div style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "12px 14px" }}>
+            <p className="label-uppercase" style={{ marginBottom: "8px" }}>Fiche PDF generee</p>
             {pdfUrl ? (
-              <div className="flex items-center gap-3">
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <a
                   href={pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1.5 text-xs hover:bg-amber-500/20 transition-colors rounded"
+                  className="transition-opacity duration-300 hover:opacity-80"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    background: "transparent",
+                    color: "#C9A84C",
+                    border: "1px solid rgba(201,168,76,0.3)",
+                    padding: "6px 12px",
+                    fontSize: "11px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontWeight: 500,
+                    letterSpacing: "0.04em",
+                    textTransform: "uppercase" as const,
+                    textDecoration: "none",
+                    borderRadius: "2px",
+                  }}
                 >
-                  📄 Ouvrir / Vérifier le PDF
+                  Ouvrir le PDF
                 </a>
                 <a
                   href={pdfUrl}
                   download={`fiche-off-market-${bien.id}.pdf`}
-                  className="inline-flex items-center gap-2 bg-zinc-700 text-zinc-300 border border-zinc-600 px-3 py-1.5 text-xs hover:bg-zinc-600 transition-colors rounded"
+                  className="transition-opacity duration-300 hover:opacity-80"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    background: "transparent",
+                    color: "#6B6560",
+                    border: "1px solid #1E1E1E",
+                    padding: "6px 12px",
+                    fontSize: "11px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontWeight: 500,
+                    letterSpacing: "0.04em",
+                    textTransform: "uppercase" as const,
+                    textDecoration: "none",
+                    borderRadius: "2px",
+                  }}
                 >
-                  ⬇️ Télécharger
+                  Telecharger
                 </a>
               </div>
             ) : (
-              <p className="text-zinc-500 text-xs">PDF non disponible — la fiche sera envoyée sans pièce jointe.</p>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>PDF non disponible — la fiche sera envoyee sans piece jointe.</p>
             )}
           </div>
 
           <div>
-            <label className="text-xs text-zinc-400 mb-1.5 block">Lead destinataire *</label>
+            <p className="label-uppercase" style={{ marginBottom: "6px" }}>Lead destinataire *</p>
             <Select value={selectedLeadId} onValueChange={setSelectedLeadId}>
-              <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+              <SelectTrigger style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", color: "#F0EDE6", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>
                 <SelectValue placeholder="Choisir un lead..." />
               </SelectTrigger>
-              <SelectContent className="bg-zinc-800 border-zinc-700 max-h-60">
+              <SelectContent style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px" }} className="max-h-60">
                 {leads.map((lead: any) => (
-                  <SelectItem key={lead.id} value={String(lead.id)} className="text-white">
+                  <SelectItem key={lead.id} value={String(lead.id)} style={{ color: "#F0EDE6", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>
                     <span className="flex items-center gap-2">
-                      <Users className="h-3 w-3 text-zinc-400" />
+                      <Users style={{ width: "12px", height: "12px", color: "#3A3632", strokeWidth: 1.5 }} />
                       {lead.prenom} {lead.nom} — {lead.email}
                     </span>
                   </SelectItem>
@@ -322,71 +481,134 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
             </Select>
             {/* Alerte doublon */}
             {doublonCheck?.alreadySent && (
-              <div className="mt-2 bg-orange-500/10 border border-orange-500/30 rounded-lg px-3 py-2 flex items-start gap-2">
-                <span className="text-orange-400 text-sm mt-0.5">⚠️</span>
-                <div>
-                  <p className="text-orange-400 text-xs font-semibold">Ce bien a déjà été envoyé à ce lead</p>
-                  {doublonCheck.sentAt && (
-                    <p className="text-orange-300/70 text-xs">
-                      Envoyé le {new Date(doublonCheck.sentAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
-                    </p>
-                  )}
-                  <p className="text-orange-300/60 text-xs mt-0.5">Vous pouvez quand même renvoyer si nécessaire.</p>
-                </div>
+              <div style={{ marginTop: "8px", background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.2)", borderRadius: "2px", padding: "10px 12px" }}>
+                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "#C9A84C", letterSpacing: "0.04em" }}>Ce bien a deja ete envoye a ce lead</p>
+                {doublonCheck.sentAt && (
+                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginTop: "2px" }}>
+                    Envoye le {new Date(doublonCheck.sentAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
+                  </p>
+                )}
+                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>Vous pouvez quand meme renvoyer si necessaire.</p>
               </div>
             )}
           </div>
 
           <div>
-            <label className="text-xs text-zinc-400 mb-1.5 block">Message personnalisé (optionnel)</label>
+            <p className="label-uppercase" style={{ marginBottom: "6px" }}>Message personnalise (optionnel)</p>
             <textarea
               value={message}
               onChange={e => setMessage(e.target.value)}
-              placeholder="Suite à notre échange, voici une opportunité off market qui correspond à vos critères..."
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg p-3 text-sm text-white placeholder:text-zinc-500 resize-none focus:outline-none focus:border-amber-500/50"
+              placeholder="Suite a notre echange, voici une opportunite off market qui correspond a vos criteres..."
+              style={inputStyle}
               rows={3}
+              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
             />
           </div>
 
-          <div className="flex gap-3 pt-2">
-            <Button variant="outline" onClick={onClose} className="flex-1 border-zinc-700 text-zinc-300 hover:bg-zinc-800">
+          <div style={{ display: "flex", gap: "12px", paddingTop: "8px" }}>
+            <button
+              onClick={onClose}
+              className="transition-colors duration-300"
+              style={{
+                flex: 1,
+                padding: "10px 16px",
+                background: "transparent",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                fontSize: "11px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontWeight: 500,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase" as const,
+                color: "#6B6560",
+                cursor: "pointer",
+              }}
+            >
               Annuler
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={handleSend}
               disabled={!selectedLeadId || proposerMutation.isPending}
-              className="flex-1 bg-amber-500 hover:bg-amber-400 text-black font-semibold"
+              className="transition-colors duration-300"
+              style={{
+                flex: 1,
+                padding: "10px 16px",
+                background: (!selectedLeadId || proposerMutation.isPending) ? "#8A7535" : "#C9A84C",
+                border: "none",
+                borderRadius: "2px",
+                fontSize: "11px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontWeight: 500,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase" as const,
+                color: "#0A0A0A",
+                cursor: (!selectedLeadId || proposerMutation.isPending) ? "not-allowed" : "pointer",
+              }}
             >
               {proposerMutation.isPending ? (
-                <span className="flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" />Envoi...</span>
-              ) : "✉️ Envoyer la fiche"}
-            </Button>
+                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                  <Loader2 className="animate-spin" style={{ width: "14px", height: "14px", strokeWidth: 1.5 }} />
+                  Envoi...
+                </span>
+              ) : "Envoyer la fiche"}
+            </button>
           </div>
         </div>
         )}
 
-        {/* Étape 3 : Confirmation d'envoi */}
+        {/* Etape 3 : Confirmation d'envoi */}
         {step === "done" && (
-          <div className="flex flex-col items-center gap-4 py-8 text-center">
-            <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
-              <span className="text-2xl">✅</span>
-            </div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", padding: "32px 0", textAlign: "center" }}>
+            <CheckCircle style={{ width: "28px", height: "28px", color: "#4A7A5A", strokeWidth: 1.5 }} />
             <div>
-              <p className="text-white font-semibold">Fiche envoyée avec succès !</p>
-              <p className="text-zinc-400 text-sm mt-1">Le PDF a été joint à l'email du lead.</p>
+              <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>Fiche envoyee avec succes</p>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginTop: "4px" }}>Le PDF a ete joint a l'email du lead.</p>
             </div>
             {pdfUrl && (
               <a
                 href={pdfUrl}
                 download={`fiche-off-market-${bien.id}.pdf`}
-                className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-400 border border-amber-500/30 px-4 py-2 text-sm hover:bg-amber-500/20 transition-colors rounded"
+                className="transition-opacity duration-300 hover:opacity-80"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  background: "transparent",
+                  color: "#C9A84C",
+                  border: "1px solid rgba(201,168,76,0.3)",
+                  padding: "8px 16px",
+                  fontSize: "11px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase" as const,
+                  textDecoration: "none",
+                  borderRadius: "2px",
+                }}
               >
-                ⬇️ Télécharger le PDF
+                Telecharger le PDF
               </a>
             )}
-            <Button onClick={onClose} className="bg-zinc-700 hover:bg-zinc-600 text-white">
+            <button
+              onClick={onClose}
+              className="transition-colors duration-300"
+              style={{
+                padding: "10px 24px",
+                background: "transparent",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                fontSize: "11px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontWeight: 500,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase" as const,
+                color: "#6B6560",
+                cursor: "pointer",
+              }}
+            >
               Fermer
-            </Button>
+            </button>
           </div>
         )}
       </DialogContent>
@@ -394,7 +616,7 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
   );
 }
 
-// ── Formulaire d'ajout de bien Off Market ──
+// -- Formulaire d'ajout de bien Off Market --
 function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: () => void }) {
   const [form, setForm] = useState({
     titre: "",
@@ -423,7 +645,7 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
   const uploadImageMutation = trpc.offMarket.uploadImage.useMutation();
   const createMutation = trpc.offMarket.create.useMutation({
     onSuccess: () => {
-      toast.success("Bien Off Market ajouté avec succès");
+      toast.success("Bien Off Market ajoute avec succes");
       onSuccess();
       onClose();
     },
@@ -465,7 +687,6 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
     const prix = form.prixBien ? parseInt(form.prixBien.replace(/\s/g, "")) : undefined;
     const honoraires = form.honoraires ? parseInt(form.honoraires.replace(/\s/g, "")) : undefined;
     const travaux = form.travauxEstimation ? parseInt(form.travauxEstimation.replace(/\s/g, "")) : undefined;
-    // Calculer l'investissement total si non renseigné
     let invest = form.investissementTotal ? parseInt(form.investissementTotal.replace(/\s/g, "")) : undefined;
     if (!invest && prix) {
       const notaire = Math.round(prix * 0.08);
@@ -498,137 +719,159 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
     setForm(prev => ({ ...prev, [field]: e.target.value }));
   };
 
-  const inputClass = "w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-amber-500/50";
-  const labelClass = "text-xs text-zinc-400 mb-1 block";
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    background: "#161616",
+    border: "1px solid #1E1E1E",
+    borderRadius: "2px",
+    padding: "10px 12px",
+    fontSize: "13px",
+    fontFamily: "'Hanken Grotesk', sans-serif",
+    color: "#F0EDE6",
+    outline: "none",
+  };
+
+  const selectStyle: React.CSSProperties = {
+    ...inputStyle,
+    appearance: "auto" as const,
+  };
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900 border-zinc-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", maxWidth: "640px", maxHeight: "90vh", overflowY: "auto" }} className="text-[#F0EDE6]">
         <DialogHeader>
-          <DialogTitle className="text-white flex items-center gap-2">
-            <Gem className="h-4 w-4 text-amber-400" />
+          <DialogTitle style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em", display: "flex", alignItems: "center", gap: "8px" }}>
+            <Gem style={{ width: "16px", height: "16px", color: "#6B6560", strokeWidth: 1.5 }} />
             Nouveau bien Off Market
           </DialogTitle>
         </DialogHeader>
-        <div className="space-y-5 pt-2">
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px", paddingTop: "8px" }}>
           {/* Infos de base */}
           <div>
-            <div className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-3">Informations générales</div>
-            <div className="grid grid-cols-1 gap-3">
+            <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Informations generales</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               <div>
-                <label className={labelClass}>Titre *</label>
-                <input value={form.titre} onChange={f("titre")} placeholder="Ex: Immeuble De Rapport — 450 000 €" className={inputClass} />
+                <p className="label-uppercase" style={{ marginBottom: "4px" }}>Titre *</p>
+                <input value={form.titre} onChange={f("titre")} placeholder="Ex: Immeuble De Rapport - 450 000 EUR" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                 <div>
-                  <label className={labelClass}>Type de bien</label>
-                  <select value={form.typeBien} onChange={f("typeBien")} className={inputClass}>
-                    <option value="">Sélectionner...</option>
+                  <p className="label-uppercase" style={{ marginBottom: "4px" }}>Type de bien</p>
+                  <select value={form.typeBien} onChange={f("typeBien")} style={selectStyle}>
+                    <option value="">Selectionner...</option>
                     {TYPE_BIENS.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className={labelClass}>Statut</label>
-                  <select value={form.statut} onChange={f("statut")} className={inputClass}>
+                  <p className="label-uppercase" style={{ marginBottom: "4px" }}>Statut</p>
+                  <select value={form.statut} onChange={f("statut")} style={selectStyle}>
                     {(Object.keys(STATUT_LABELS) as Statut[]).map(s => (
                       <option key={s} value={s}>{STATUT_LABELS[s]}</option>
                     ))}
                   </select>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                 <div>
-                  <label className={labelClass}>Région</label>
-                  <select value={form.region} onChange={f("region")} className={inputClass}>
-                    <option value="">Sélectionner...</option>
+                  <p className="label-uppercase" style={{ marginBottom: "4px" }}>Region</p>
+                  <select value={form.region} onChange={f("region")} style={selectStyle}>
+                    <option value="">Selectionner...</option>
                     {REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className={labelClass}>Département / Ville</label>
-                  <input value={form.departement} onChange={f("departement")} placeholder="Ex: Bas-Rhin (67)" className={inputClass} />
+                  <p className="label-uppercase" style={{ marginBottom: "4px" }}>Departement / Ville</p>
+                  <input value={form.departement} onChange={f("departement")} placeholder="Ex: Bas-Rhin (67)" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                 <div>
-                  <label className={labelClass}>Surface totale (m²)</label>
-                  <input value={form.surfaceTotale} onChange={f("surfaceTotale")} placeholder="Ex: 280" className={inputClass} />
+                  <p className="label-uppercase" style={{ marginBottom: "4px" }}>Surface totale (m2)</p>
+                  <input value={form.surfaceTotale} onChange={f("surfaceTotale")} placeholder="Ex: 280" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
                 </div>
                 <div>
-                  <label className={labelClass}>Nombre de lots</label>
-                  <input type="number" value={form.nbLots} onChange={f("nbLots")} placeholder="Ex: 6" className={inputClass} />
+                  <p className="label-uppercase" style={{ marginBottom: "4px" }}>Nombre de lots</p>
+                  <input type="number" value={form.nbLots} onChange={f("nbLots")} placeholder="Ex: 6" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Données financières */}
+          {/* Donnees financieres */}
           <div>
-            <div className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-3">Données financières</div>
-            <div className="grid grid-cols-2 gap-3">
+            <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Donnees financieres</p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
               <div>
-                <label className={labelClass}>Prix du bien (€)</label>
-                <input value={form.prixBien} onChange={f("prixBien")} placeholder="Ex: 450000" className={inputClass} />
+                <p className="label-uppercase" style={{ marginBottom: "4px" }}>Prix du bien (EUR)</p>
+                <input value={form.prixBien} onChange={f("prixBien")} placeholder="Ex: 450000" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
               </div>
               <div>
-                <label className={labelClass}>Honoraires (€)</label>
-                <input value={form.honoraires} onChange={f("honoraires")} placeholder="Calculé auto si vide" className={inputClass} />
+                <p className="label-uppercase" style={{ marginBottom: "4px" }}>Honoraires (EUR)</p>
+                <input value={form.honoraires} onChange={f("honoraires")} placeholder="Calcule auto si vide" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
               </div>
               <div>
-                <label className={labelClass}>Travaux estimés (€)</label>
-                <input value={form.travauxEstimation} onChange={f("travauxEstimation")} placeholder="Ex: 30000" className={inputClass} />
+                <p className="label-uppercase" style={{ marginBottom: "4px" }}>Travaux estimes (EUR)</p>
+                <input value={form.travauxEstimation} onChange={f("travauxEstimation")} placeholder="Ex: 30000" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
               </div>
               <div>
-                <label className={labelClass}>Investissement total (€)</label>
-                <input value={form.investissementTotal} onChange={f("investissementTotal")} placeholder="Calculé auto si vide" className={inputClass} />
+                <p className="label-uppercase" style={{ marginBottom: "4px" }}>Investissement total (EUR)</p>
+                <input value={form.investissementTotal} onChange={f("investissementTotal")} placeholder="Calcule auto si vide" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
               </div>
               <div>
-                <label className={labelClass}>Revenus annuels actuels (€)</label>
-                <input value={form.revenusAnnuels} onChange={f("revenusAnnuels")} placeholder="Ex: 36000" className={inputClass} />
+                <p className="label-uppercase" style={{ marginBottom: "4px" }}>Revenus annuels actuels (EUR)</p>
+                <input value={form.revenusAnnuels} onChange={f("revenusAnnuels")} placeholder="Ex: 36000" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
               </div>
               <div>
-                <label className={labelClass}>Revenus potentiels LD (€)</label>
-                <input value={form.revenusPotenlielsLd} onChange={f("revenusPotenlielsLd")} placeholder="Ex: 42000" className={inputClass} />
+                <p className="label-uppercase" style={{ marginBottom: "4px" }}>Revenus potentiels LD (EUR)</p>
+                <input value={form.revenusPotenlielsLd} onChange={f("revenusPotenlielsLd")} placeholder="Ex: 42000" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
               </div>
             </div>
           </div>
 
-          {/* Rentabilités */}
+          {/* Rentabilites */}
           <div>
-            <div className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-3">Rentabilités</div>
-            <div className="grid grid-cols-3 gap-3">
+            <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Rentabilites</p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
               <div>
-                <label className={labelClass}>Brute actuelle (%)</label>
-                <input value={form.rentabiliteBrute} onChange={f("rentabiliteBrute")} placeholder="Ex: 8.50" className={inputClass} />
+                <p className="label-uppercase" style={{ marginBottom: "4px" }}>Brute actuelle (%)</p>
+                <input value={form.rentabiliteBrute} onChange={f("rentabiliteBrute")} placeholder="Ex: 8.50" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
               </div>
               <div>
-                <label className={labelClass}>Potentielle LD (%)</label>
-                <input value={form.rentabilitePotentielleLd} onChange={f("rentabilitePotentielleLd")} placeholder="Ex: 10.20" className={inputClass} />
+                <p className="label-uppercase" style={{ marginBottom: "4px" }}>Potentielle LD (%)</p>
+                <input value={form.rentabilitePotentielleLd} onChange={f("rentabilitePotentielleLd")} placeholder="Ex: 10.20" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
               </div>
               <div>
-                <label className={labelClass}>Potentielle CD (%)</label>
-                <input value={form.rentabilitePotentielleCd} onChange={f("rentabilitePotentielleCd")} placeholder="Ex: 12.50" className={inputClass} />
+                <p className="label-uppercase" style={{ marginBottom: "4px" }}>Potentielle CD (%)</p>
+                <input value={form.rentabilitePotentielleCd} onChange={f("rentabilitePotentielleCd")} placeholder="Ex: 12.50" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
               </div>
             </div>
           </div>
 
           {/* Photos */}
           <div>
-            <div className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-3">Photos</div>
+            <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Photos</p>
             <div
-              className="border-2 border-dashed border-zinc-700 rounded-xl p-6 text-center cursor-pointer hover:border-amber-500/50 transition-colors"
               onClick={() => fileInputRef.current?.click()}
+              className="cursor-pointer transition-colors duration-300"
+              style={{
+                border: "1px dashed #1E1E1E",
+                borderRadius: "2px",
+                padding: "24px",
+                textAlign: "center",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(201,168,76,0.3)")}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
             >
               {isUploading ? (
-                <div className="flex items-center justify-center gap-2 text-zinc-400">
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  <span>Upload en cours...</span>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+                  <Loader2 className="animate-spin" style={{ width: "16px", height: "16px", color: "#6B6560", strokeWidth: 1.5 }} />
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Upload en cours...</span>
                 </div>
               ) : (
                 <>
-                  <Upload className="h-8 w-8 text-zinc-500 mx-auto mb-2" />
-                  <p className="text-sm text-zinc-400">Cliquez pour ajouter des photos</p>
-                  <p className="text-xs text-zinc-600 mt-1">JPG, PNG, WebP — plusieurs fichiers acceptés</p>
+                  <Upload style={{ width: "20px", height: "20px", color: "#3A3632", margin: "0 auto 8px", strokeWidth: 1.5 }} />
+                  <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Cliquez pour ajouter des photos</p>
+                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>JPG, PNG, WebP — plusieurs fichiers acceptes</p>
                 </>
               )}
             </div>
@@ -641,18 +884,42 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
               onChange={e => handleImageUpload(e.target.files)}
             />
             {uploadedImages.length > 0 && (
-              <div className="grid grid-cols-4 gap-2 mt-3">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "8px", marginTop: "12px" }}>
                 {uploadedImages.map((url, i) => (
-                  <div key={i} className="relative group">
-                    <img src={url} alt={`Photo ${i + 1}`} className="w-full h-20 object-cover rounded-lg" />
+                  <div key={i} style={{ position: "relative" }} className="group">
+                    <img src={url} alt={`Photo ${i + 1}`} style={{ width: "100%", height: "64px", objectFit: "cover", borderRadius: "2px" }} />
                     {i === 0 && (
-                      <span className="absolute bottom-1 left-1 bg-amber-500 text-black text-xs px-1.5 py-0.5 rounded font-bold">Principal</span>
+                      <span style={{
+                        position: "absolute",
+                        bottom: "4px",
+                        left: "4px",
+                        background: "#C9A84C",
+                        color: "#0A0A0A",
+                        fontSize: "9px",
+                        fontFamily: "'Hanken Grotesk', sans-serif",
+                        fontWeight: 600,
+                        padding: "1px 6px",
+                        borderRadius: "2px",
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase" as const,
+                      }}>Principal</span>
                     )}
                     <button
-                      className="absolute top-1 right-1 bg-red-500/80 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      style={{
+                        position: "absolute",
+                        top: "4px",
+                        right: "4px",
+                        background: "rgba(160,64,64,0.8)",
+                        color: "#F0EDE6",
+                        border: "none",
+                        borderRadius: "2px",
+                        padding: "2px",
+                        cursor: "pointer",
+                      }}
                       onClick={(e) => { e.stopPropagation(); setUploadedImages(prev => prev.filter((_, j) => j !== i)); }}
                     >
-                      <X className="h-3 w-3" />
+                      <X style={{ width: "12px", height: "12px", strokeWidth: 1.5 }} />
                     </button>
                   </div>
                 ))}
@@ -660,19 +927,53 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
             )}
           </div>
 
-          <div className="flex gap-3 pt-2">
-            <Button variant="outline" onClick={onClose} className="flex-1 border-zinc-700 text-zinc-300 hover:bg-zinc-800">
+          <div style={{ display: "flex", gap: "12px", paddingTop: "8px" }}>
+            <button
+              onClick={onClose}
+              className="transition-colors duration-300"
+              style={{
+                flex: 1,
+                padding: "10px 16px",
+                background: "transparent",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                fontSize: "11px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontWeight: 500,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase" as const,
+                color: "#6B6560",
+                cursor: "pointer",
+              }}
+            >
               Annuler
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={handleSubmit}
               disabled={isSaving || isUploading}
-              className="flex-1 bg-amber-500 hover:bg-amber-400 text-black font-semibold"
+              className="transition-colors duration-300"
+              style={{
+                flex: 1,
+                padding: "10px 16px",
+                background: (isSaving || isUploading) ? "#8A7535" : "#C9A84C",
+                border: "none",
+                borderRadius: "2px",
+                fontSize: "11px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontWeight: 500,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase" as const,
+                color: "#0A0A0A",
+                cursor: (isSaving || isUploading) ? "not-allowed" : "pointer",
+              }}
             >
               {isSaving ? (
-                <span className="flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" />Enregistrement...</span>
+                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
+                  <Loader2 className="animate-spin" style={{ width: "14px", height: "14px", strokeWidth: 1.5 }} />
+                  Enregistrement...
+                </span>
               ) : "Ajouter le bien"}
-            </Button>
+            </button>
           </div>
         </div>
       </DialogContent>
@@ -684,58 +985,67 @@ function HistoriqueEnvois({ bienId }: { bienId: number }) {
   const { data: envois, isLoading } = trpc.offMarket.listEnvoisBien.useQuery({ offMarketBienId: bienId });
 
   if (isLoading) return (
-    <div className="flex items-center gap-2 text-zinc-500 text-sm py-2">
-      <Loader2 className="h-4 w-4 animate-spin" />
-      Chargement de l'historique...
+    <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 0" }}>
+      <Loader2 className="animate-spin" style={{ width: "14px", height: "14px", color: "#6B6560", strokeWidth: 1.5 }} />
+      <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Chargement de l'historique...</span>
     </div>
   );
 
   return (
     <div>
-      <h3 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-        <Clock className="h-4 w-4 text-amber-400" />
-        Historique des envois
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
+        <Clock style={{ width: "14px", height: "14px", color: "#6B6560", strokeWidth: 1.5 }} />
+        <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Historique des envois</p>
         {envois && envois.length > 0 && (
-          <span className="text-xs font-normal text-zinc-500 normal-case tracking-normal">
-            — {envois.length} envoi{envois.length > 1 ? "s" : ""}
+          <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+            \u2014 {envois.length} envoi{envois.length > 1 ? "s" : ""}
           </span>
         )}
-      </h3>
+      </div>
       {!envois || envois.length === 0 ? (
-        <div className="bg-zinc-900 rounded-lg p-4 text-center text-sm text-zinc-500">
-          Aucun envoi enregistré pour ce bien
+        <div style={{ background: "#0D0D0D", border: "1px dashed #1E1E1E", borderRadius: "2px", padding: "16px", textAlign: "center" }}>
+          <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun envoi enregistre pour ce bien</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div style={{ display: "flex", flexDirection: "column", gap: "1px", background: "#1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
           {envois.map((envoi) => (
-            <div key={envoi.id} className="bg-zinc-900 rounded-lg px-4 py-3 flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 mb-1">
+            <div key={envoi.id} style={{ background: "#111111", padding: "12px 16px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px" }}>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
                   {envoi.statut === "sent" ? (
-                    <CheckCircle className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                    <CheckCircle style={{ width: "12px", height: "12px", color: "#4A7A5A", strokeWidth: 1.5, flexShrink: 0 }} />
                   ) : (
-                    <Eye className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
+                    <Eye style={{ width: "12px", height: "12px", color: "#3A3632", strokeWidth: 1.5, flexShrink: 0 }} />
                   )}
-                  <span className="text-sm font-medium text-white truncate">
+                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
                     {envoi.leadPrenom} {envoi.leadNom}
                   </span>
-                  <span className={`text-xs px-1.5 py-0.5 rounded-full border shrink-0 ${
-                    envoi.statut === "sent"
-                      ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                      : "bg-zinc-700 text-zinc-400 border-zinc-600"
-                  }`}>
-                    {envoi.statut === "sent" ? "Envoyé" : "Prévisualisé"}
+                  <span style={{
+                    fontSize: "10px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontWeight: 500,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase" as const,
+                    padding: "2px 6px",
+                    borderRadius: "2px",
+                    flexShrink: 0,
+                    ...(envoi.statut === "sent"
+                      ? { color: "#4A7A5A", background: "rgba(74,122,90,0.08)", border: "1px solid rgba(74,122,90,0.2)" }
+                      : { color: "#3A3632", background: "rgba(58,54,50,0.08)", border: "1px solid rgba(58,54,50,0.2)" }
+                    ),
+                  }}>
+                    {envoi.statut === "sent" ? "Envoye" : "Previsualise"}
                   </span>
                 </div>
-                <div className="text-xs text-zinc-500 flex items-center gap-3">
+                <div style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", display: "flex", alignItems: "center", gap: "8px" }}>
                   <span>{envoi.emailDestinataire}</span>
-                  <span>·</span>
+                  <span>\u00b7</span>
                   <span>par {envoi.envoyePar?.split("@")[0]}</span>
-                  <span>·</span>
-                  <span>{new Date(envoi.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+                  <span>\u00b7</span>
+                  <span className="tabular-nums">{new Date(envoi.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
                 </div>
                 {envoi.messagePersonnalise && (
-                  <p className="text-xs text-zinc-400 mt-1.5 italic line-clamp-2">"{envoi.messagePersonnalise}"</p>
+                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontStyle: "italic", color: "#6B6560", marginTop: "6px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>"{envoi.messagePersonnalise}"</p>
                 )}
               </div>
               {envoi.pdfUrl && (
@@ -743,10 +1053,11 @@ function HistoriqueEnvois({ bienId }: { bienId: number }) {
                   href={envoi.pdfUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="shrink-0 text-amber-400 hover:text-amber-300 transition-colors"
-                  title="Voir le PDF envoyé"
+                  className="transition-opacity duration-300 hover:opacity-70"
+                  style={{ flexShrink: 0, color: "#6B6560" }}
+                  title="Voir le PDF envoye"
                 >
-                  <ExternalLink className="h-4 w-4" />
+                  <ExternalLink style={{ width: "14px", height: "14px", strokeWidth: 1.5 }} />
                 </a>
               )}
             </div>
@@ -768,14 +1079,14 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
   const updateStatut = trpc.offMarket.updateStatut.useMutation({
     onSuccess: () => {
       utils.offMarket.list.invalidate();
-      toast.success("Statut mis à jour");
+      toast.success("Statut mis a jour");
     },
   });
 
   const deleteMutation = trpc.offMarket.delete.useMutation({
     onSuccess: () => {
       utils.offMarket.list.invalidate();
-      toast.success("Bien supprimé");
+      toast.success("Bien supprime");
       onClose();
     },
     onError: (err) => toast.error(`Erreur : ${err.message}`),
@@ -787,19 +1098,19 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
         setGeoCoords({ lat: data.latitude!, lng: data.longitude! });
         utils.offMarket.list.invalidate();
         utils.ambassadeurs.getCarteReseau.invalidate();
-        toast.success("Coordonnées GPS mises à jour — le bien apparaît sur la carte du réseau");
+        toast.success("Coordonnees GPS mises a jour");
       }
       setIsGeolocating(false);
     },
     onError: (err) => {
-      toast.error(`Géolocalisation impossible : ${err.message}`);
+      toast.error(`Geolocalisation impossible : ${err.message}`);
       setIsGeolocating(false);
     },
   });
 
   const handleGeolocate = async () => {
     if (!bien.region && !bien.departement) {
-      toast.error("Ce bien n'a pas de région ou département renseigné");
+      toast.error("Ce bien n'a pas de region ou departement renseigne");
       return;
     }
     setIsGeolocating(true);
@@ -814,116 +1125,182 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-start justify-end">
-        <div className="w-full max-w-2xl h-full bg-zinc-950 border-l border-zinc-800 overflow-y-auto">
+      <div className="fixed inset-0 z-50 flex items-start justify-end" style={{ background: "rgba(0,0,0,0.7)" }} onClick={onClose}>
+        <div style={{ width: "100%", maxWidth: "600px", height: "100%", background: "#111111", borderLeft: "1px solid #1E1E1E", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
           {/* Header */}
-          <div className="sticky top-0 z-10 bg-zinc-950/95 backdrop-blur border-b border-zinc-800 px-6 py-4 flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <Gem className="h-4 w-4 text-amber-400 shrink-0" />
-                <span className="text-xs text-amber-400 font-medium uppercase tracking-wider">Off Market</span>
+          <div className="sticky top-0 z-10" style={{ background: "#111111", borderBottom: "1px solid #1E1E1E", padding: "16px 24px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px" }}>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                <Gem style={{ width: "14px", height: "14px", color: "#6B6560", strokeWidth: 1.5, flexShrink: 0 }} />
+                <span className="label-uppercase" style={{ color: "#6B6560" }}>Off Market</span>
                 {nouveau && (
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-500 text-black">Nouveau</span>
+                  <span style={{
+                    fontSize: "10px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    fontWeight: 600,
+                    padding: "2px 8px",
+                    borderRadius: "2px",
+                    background: "#C9A84C",
+                    color: "#0A0A0A",
+                    letterSpacing: "0.04em",
+                    textTransform: "uppercase" as const,
+                  }}>Nouveau</span>
                 )}
               </div>
-              <h2 className="text-lg font-semibold text-white leading-tight">{bien.titre}</h2>
-              <div className="flex items-center gap-2 mt-1">
-                <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${STATUT_COLORS[statut]}`}>
-                  {STATUT_LABELS[statut]}
-                </span>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6", lineHeight: 1.3, letterSpacing: "0.02em" }}>{bien.titre}</h2>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "6px" }}>
+                <StatutBadge statut={statut} />
                 {bien.region && (
-                  <span className="text-xs text-zinc-400 flex items-center gap-1">
-                    <MapPin className="h-3 w-3" />{bien.region}
+                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", display: "flex", alignItems: "center", gap: "4px" }}>
+                    <MapPin style={{ width: "12px", height: "12px", strokeWidth: 1.5 }} />{bien.region}
                   </span>
                 )}
               </div>
             </div>
-            <button onClick={onClose} className="text-zinc-400 hover:text-white transition-colors shrink-0 mt-1">
-              <X className="h-5 w-5" />
+            <button onClick={onClose} className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560", padding: "4px", marginTop: "4px", background: "transparent", border: "none", cursor: "pointer" }}>
+              <X style={{ width: "16px", height: "16px", strokeWidth: 1.5 }} />
             </button>
           </div>
 
-          <div className="p-6 space-y-6">
+          <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "24px" }}>
             {/* Galerie photos */}
             {images.length > 0 && <ImageGallery images={images} title={bien.titre} />}
 
             {/* Actions */}
-            <div className="flex items-center gap-3 flex-wrap">
-              <Button
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+              <button
                 onClick={() => setShowProposer(true)}
-                className="bg-amber-500 hover:bg-amber-400 text-black font-semibold gap-2"
+                className="transition-colors duration-300"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "8px 16px",
+                  background: "#C9A84C",
+                  border: "none",
+                  borderRadius: "2px",
+                  fontSize: "11px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase" as const,
+                  color: "#0A0A0A",
+                  cursor: "pointer",
+                }}
               >
-                <Send className="h-4 w-4" />
-                Proposer à un lead
-              </Button>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-zinc-400 shrink-0">Statut :</span>
-                <Select value={statut} onValueChange={(v) => updateStatut.mutate({ id: bien.id, statut: v as Statut })}>
-                  <SelectTrigger className="w-44 bg-zinc-900 border-zinc-700 text-white h-8 text-sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-zinc-900 border-zinc-700">
-                    {(Object.keys(STATUT_LABELS) as Statut[]).map(s => (
-                      <SelectItem key={s} value={s} className="text-white">{STATUT_LABELS[s]}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Send style={{ width: "12px", height: "12px", strokeWidth: 1.5 }} />
+                Proposer a un lead
+              </button>
+              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Statut :</span>
+                <select
+                  value={statut}
+                  onChange={e => updateStatut.mutate({ id: bien.id, statut: e.target.value as Statut })}
+                  style={{
+                    background: "#161616",
+                    border: "1px solid #1E1E1E",
+                    borderRadius: "2px",
+                    padding: "6px 10px",
+                    fontSize: "12px",
+                    fontFamily: "'Hanken Grotesk', sans-serif",
+                    color: "#F0EDE6",
+                    outline: "none",
+                  }}
+                >
+                  {(Object.keys(STATUT_LABELS) as Statut[]).map(s => (
+                    <option key={s} value={s}>{STATUT_LABELS[s]}</option>
+                  ))}
+                </select>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
+              <button
                 onClick={handleGeolocate}
                 disabled={isGeolocating}
-                className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 gap-1.5"
-                title={geoCoords ? `GPS : ${geoCoords.lat}, ${geoCoords.lng}` : "Géolocaliser ce bien sur la carte du réseau"}
+                className="transition-colors duration-300"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "6px 10px",
+                  background: "transparent",
+                  border: "1px solid #1E1E1E",
+                  borderRadius: "2px",
+                  fontSize: "11px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                  color: "#6B6560",
+                  cursor: isGeolocating ? "not-allowed" : "pointer",
+                }}
+                title={geoCoords ? `GPS : ${geoCoords.lat}, ${geoCoords.lng}` : "Geolocaliser ce bien"}
               >
-                {isGeolocating ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Navigation className="h-3.5 w-3.5" />}
-                {geoCoords ? "Re-géolocaliser" : "Géolocaliser"}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
+                {isGeolocating
+                  ? <Loader2 className="animate-spin" style={{ width: "12px", height: "12px", strokeWidth: 1.5 }} />
+                  : <Navigation style={{ width: "12px", height: "12px", strokeWidth: 1.5 }} />
+                }
+                {geoCoords ? "Re-geolocaliser" : "Geolocaliser"}
+              </button>
+              <button
                 onClick={() => { if (confirm("Supprimer ce bien ?")) deleteMutation.mutate({ id: bien.id }); }}
-                className="border-red-500/30 text-red-400 hover:bg-red-500/10 gap-1.5 ml-auto"
+                className="transition-colors duration-300"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "6px 10px",
+                  background: "transparent",
+                  border: "1px solid rgba(160,64,64,0.2)",
+                  borderRadius: "2px",
+                  fontSize: "11px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                  color: "#A04040",
+                  cursor: "pointer",
+                  marginLeft: "auto",
+                }}
               >
-                <Trash2 className="h-3.5 w-3.5" />
+                <Trash2 style={{ width: "12px", height: "12px", strokeWidth: 1.5 }} />
                 Supprimer
-              </Button>
+              </button>
             </div>
 
             {/* Financier */}
             <div>
-              <h3 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider mb-3">Données financières</h3>
-              <div className="grid grid-cols-2 gap-3">
+              <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Donnees financieres</p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "#1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
                 {[
                   { label: "Prix du bien", value: formatPrice(bien.prixBien) },
                   { label: "Honoraires", value: formatPrice(bien.honoraires) },
-                  { label: "Travaux estimés", value: formatPrice(bien.travauxEstimation) },
-                  { label: "Investissement total", value: formatPrice(bien.investissementTotal), highlight: true },
+                  { label: "Travaux estimes", value: formatPrice(bien.travauxEstimation) },
                   { label: "Revenus annuels actuels", value: formatPrice(bien.revenusAnnuels) },
                   { label: "Revenus potentiels LD", value: formatPrice(bien.revenusPotenlielsLd) },
                   { label: "Revenus potentiels CD", value: formatPrice(bien.revenusPotentielsCd) },
-                ].map(({ label, value, highlight }) => (
-                  <div key={label} className={`rounded-lg p-3 ${highlight ? "bg-amber-500/10 border border-amber-500/20 col-span-2" : "bg-zinc-900"}`}>
-                    <div className={`text-xs mb-1 ${highlight ? "text-amber-400/70" : "text-zinc-500"}`}>{label}</div>
-                    <div className={`font-semibold ${highlight ? "text-amber-400 text-base" : "text-white text-sm"}`}>{value}</div>
+                ].map(({ label, value }) => (
+                  <div key={label} style={{ background: "#0A0A0A", padding: "12px 14px" }}>
+                    <p className="label-uppercase" style={{ marginBottom: "2px", fontSize: "9px" }}>{label}</p>
+                    <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{value}</p>
                   </div>
                 ))}
               </div>
+              {/* Investissement total - highlight */}
+              <div style={{ background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.2)", borderRadius: "2px", padding: "14px 16px", marginTop: "8px" }}>
+                <p style={{ fontSize: "9px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "rgba(201,168,76,0.7)", marginBottom: "2px" }}>Investissement total</p>
+                <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#C9A84C" }}>{formatPrice(bien.investissementTotal)}</p>
+              </div>
             </div>
 
-            {/* Rentabilités */}
+            {/* Rentabilites */}
             <div>
-              <h3 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider mb-3">Rentabilités</h3>
-              <div className="grid grid-cols-3 gap-3">
+              <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Rentabilites</p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1px", background: "#1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
                 {[
                   { label: "Brute actuelle", value: formatPct(bien.rentabiliteBrute) },
                   { label: "Potentielle LD", value: formatPct(bien.rentabilitePotentielleLd) },
                   { label: "Potentielle CD", value: formatPct(bien.rentabilitePotentielleCd) },
                 ].map(({ label, value }) => (
-                  <div key={label} className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 text-center">
-                    <div className="text-xs text-emerald-400/70 mb-1">{label}</div>
-                    <div className="text-emerald-400 font-bold text-lg">{value}</div>
+                  <div key={label} style={{ background: "#0A0A0A", padding: "14px 12px", textAlign: "center" }}>
+                    <p style={{ fontSize: "9px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "rgba(74,122,90,0.7)", marginBottom: "4px" }}>{label}</p>
+                    <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, color: "#4A7A5A" }}>{value}</p>
                   </div>
                 ))}
               </div>
@@ -932,21 +1309,33 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
             {/* Lots */}
             {lots.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider mb-3">
+                <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>
                   Composition — {bien.nbLots} lot{(bien.nbLots ?? 0) > 1 ? "s" : ""}
-                </h3>
-                <div className="space-y-2">
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "1px", background: "#1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
                   {lots.map((lot, i) => (
-                    <div key={i} className="bg-zinc-900 rounded-lg px-4 py-3 flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <span className="text-xs text-zinc-500 font-mono shrink-0">#{i + 1}</span>
-                        <span className="text-sm text-white truncate">{lot.type}</span>
-                        {lot.surface && <span className="text-xs text-zinc-400 shrink-0">{lot.surface}</span>}
+                    <div key={i} style={{ background: "#0A0A0A", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+                        <span className="tabular-nums" style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", flexShrink: 0 }}>#{i + 1}</span>
+                        <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lot.type}</span>
+                        {lot.surface && <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", flexShrink: 0 }}>{lot.surface}</span>}
                       </div>
-                      <div className="flex items-center gap-3 shrink-0">
-                        {lot.loyer && <span className="text-sm text-amber-400 font-medium">{lot.loyer}</span>}
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", flexShrink: 0 }}>
+                        {lot.loyer && <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#C9A84C" }}>{lot.loyer}</span>}
                         {lot.statut && (
-                          <span className={`text-xs px-2 py-0.5 rounded-full border ${lot.statut.toLowerCase().includes("loué") || lot.statut.toLowerCase().includes("loue") ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-zinc-700 text-zinc-300 border-zinc-600"}`}>
+                          <span style={{
+                            fontSize: "10px",
+                            fontFamily: "'Hanken Grotesk', sans-serif",
+                            fontWeight: 500,
+                            padding: "2px 6px",
+                            borderRadius: "2px",
+                            letterSpacing: "0.04em",
+                            textTransform: "uppercase" as const,
+                            ...(lot.statut.toLowerCase().includes("lou")
+                              ? { color: "#4A7A5A", background: "rgba(74,122,90,0.08)", border: "1px solid rgba(74,122,90,0.2)" }
+                              : { color: "#6B6560", background: "rgba(58,54,50,0.08)", border: "1px solid rgba(58,54,50,0.2)" }
+                            ),
+                          }}>
                             {lot.statut}
                           </span>
                         )}
@@ -960,33 +1349,33 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
             {/* Situation */}
             {situation.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider mb-3">Situation</h3>
-                <ul className="space-y-1.5">
+                <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Situation</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                   {situation.map((s, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-zinc-300">
-                      <span className="text-amber-400 mt-0.5 shrink-0">•</span>
-                      <span>{s}</span>
-                    </li>
+                    <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                      <span style={{ color: "#3A3632", marginTop: "2px", flexShrink: 0 }}>\u2022</span>
+                      <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", lineHeight: 1.5 }}>{s}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
 
-            {/* Infos générales */}
+            {/* Infos generales */}
             <div>
-              <h3 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider mb-3">Informations générales</h3>
-              <div className="grid grid-cols-2 gap-3">
+              <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Informations generales</p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "#1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
                 {[
                   { label: "Type de bien", value: bien.typeBien },
-                  { label: "Région", value: bien.region },
-                  { label: "Département", value: bien.departement },
-                  { label: "Surface totale", value: bien.surfaceTotale ? `${bien.surfaceTotale} m²` : null },
+                  { label: "Region", value: bien.region },
+                  { label: "Departement", value: bien.departement },
+                  { label: "Surface totale", value: bien.surfaceTotale ? `${bien.surfaceTotale} m2` : null },
                   { label: "Nombre de lots", value: bien.nbLots?.toString() },
-                  { label: "Ajouté le", value: new Date(bien.createdAt).toLocaleDateString("fr-FR") },
+                  { label: "Ajoute le", value: new Date(bien.createdAt).toLocaleDateString("fr-FR") },
                 ].filter(f => f.value).map(({ label, value }) => (
-                  <div key={label} className="bg-zinc-900 rounded-lg p-3">
-                    <div className="text-xs text-zinc-500 mb-1">{label}</div>
-                    <div className="text-sm text-white font-medium">{value}</div>
+                  <div key={label} style={{ background: "#0A0A0A", padding: "12px 14px" }}>
+                    <p className="label-uppercase" style={{ marginBottom: "2px", fontSize: "9px" }}>{label}</p>
+                    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{value}</p>
                   </div>
                 ))}
               </div>
@@ -1047,120 +1436,184 @@ export default function OffMarketBoard() {
   const vendus = biens.filter(b => b.statut === "vendu").length;
   const nouveaux = biens.filter(b => isNew(b.createdAt)).length;
 
+  const selectStyle: React.CSSProperties = {
+    background: "#111111",
+    border: "1px solid #1E1E1E",
+    borderRadius: "2px",
+    padding: "8px 12px",
+    fontSize: "13px",
+    fontFamily: "'Hanken Grotesk', sans-serif",
+    color: "#F0EDE6",
+    outline: "none",
+  };
+
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
       <AdminNav />
-      <div className="max-w-[1800px] mx-auto px-4 pt-8 pb-16">
+      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "32px 20px 64px" }}>
         {/* Bouton retour si on vient de la carte */}
         {fromCarte && (
-          <div className="mb-4">
+          <div style={{ marginBottom: "16px" }}>
             <button
               onClick={() => navigate("/dashboard/reseau")}
-              className="flex items-center gap-2 text-zinc-400 hover:text-amber-400 transition-colors text-sm"
+              className="transition-opacity duration-300 hover:opacity-70"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "12px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                color: "#6B6560",
+              }}
             >
-              <ChevronLeft className="h-4 w-4" />
-              Retour à la carte du réseau
+              <ChevronLeft style={{ width: "14px", height: "14px", strokeWidth: 1.5 }} />
+              Retour a la carte du reseau
             </button>
           </div>
         )}
+
         {/* Header */}
-        <div className="mb-6 flex items-start justify-between gap-4">
+        <div style={{ marginBottom: "32px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px" }}>
           <div>
-            <div className="flex items-center gap-3 mb-1">
-              <Gem className="h-6 w-6 text-amber-400" />
-              <h1 className="text-2xl font-bold text-white">Biens Off Market</h1>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "4px" }}>
+              <h1 style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "28px",
+                fontWeight: 700,
+                color: "#F0EDE6",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase" as const,
+                lineHeight: 1,
+              }}>Biens Off Market</h1>
               {nouveaux > 0 && (
-                <span className="text-xs font-bold px-2 py-1 rounded-full bg-amber-500 text-black">
+                <span style={{
+                  fontSize: "10px",
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontWeight: 600,
+                  padding: "2px 8px",
+                  borderRadius: "2px",
+                  background: "#C9A84C",
+                  color: "#0A0A0A",
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase" as const,
+                }}>
                   {nouveaux} nouveau{nouveaux > 1 ? "x" : ""}
                 </span>
               )}
             </div>
-            <p className="text-zinc-400 text-sm">Pépites exclusives — accès confidentiel</p>
+            <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Acces confidentiel — opportunites exclusives</p>
           </div>
-          <Button
+          <button
             onClick={() => setShowNouveauBien(true)}
-            className="bg-amber-500 hover:bg-amber-400 text-black font-semibold gap-2 shrink-0"
+            className="transition-colors duration-300"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              padding: "10px 20px",
+              background: "#C9A84C",
+              border: "none",
+              borderRadius: "2px",
+              fontSize: "11px",
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontWeight: 500,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase" as const,
+              color: "#0A0A0A",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
           >
-            <Plus className="h-4 w-4" />
+            <Plus style={{ width: "14px", height: "14px", strokeWidth: 1.5 }} />
             Nouveau bien
-          </Button>
+          </button>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-4 gap-4 mb-6">
+        {/* KPIs */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px", marginBottom: "32px" }}>
           {[
-            { label: "Total", value: total, color: "text-white" },
-            { label: "Disponibles", value: disponibles, color: "text-emerald-400" },
-            { label: "Sous compromis", value: sousCompromis, color: "text-amber-400" },
-            { label: "Vendus", value: vendus, color: "text-red-400" },
-          ].map(({ label, value, color }) => (
-            <div key={label} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
-              <div className="text-xs text-zinc-500 mb-1">{label}</div>
-              <div className={`text-2xl font-bold ${color}`}>{value}</div>
+            { label: "Total", value: total, accent: true },
+            { label: "Disponibles", value: disponibles },
+            { label: "Sous compromis", value: sousCompromis },
+            { label: "Vendus", value: vendus },
+          ].map(({ label, value, accent }) => (
+            <div key={label} style={{ background: "#0A0A0A", padding: "20px" }}>
+              <p className="tabular-nums" style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "32px",
+                fontWeight: 600,
+                color: accent ? "#C9A84C" : "#F0EDE6",
+                lineHeight: 1,
+                letterSpacing: "0.02em",
+              }}>
+                {value}
+              </p>
+              <p className="label-uppercase" style={{ marginTop: "8px" }}>{label}</p>
             </div>
           ))}
         </div>
 
         {/* Filtres */}
-        <div className="flex gap-3 mb-6 flex-wrap">
-          <div className="relative flex-1 min-w-48 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
-            <Input
+        <div style={{ display: "flex", gap: "10px", marginBottom: "24px", flexWrap: "wrap" }}>
+          <div style={{ position: "relative", flex: 1, minWidth: "200px", maxWidth: "360px" }}>
+            <Search style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "14px", height: "14px", color: "#3A3632", strokeWidth: 1.5 }} />
+            <input
+              type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Rechercher un bien..."
-              className="pl-9 bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500 h-9"
+              className="w-full transition-colors duration-300 focus:outline-none"
+              style={{
+                background: "#111111",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                paddingLeft: "34px",
+                paddingRight: "12px",
+                paddingTop: "8px",
+                paddingBottom: "8px",
+                fontSize: "13px",
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                color: "#F0EDE6",
+              }}
+              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
+              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
             />
           </div>
-          <Select value={statut} onValueChange={setStatut}>
-            <SelectTrigger className="w-44 bg-zinc-900 border-zinc-700 text-white h-9">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="bg-zinc-900 border-zinc-700">
-              <SelectItem value="tous" className="text-white">Tous les statuts</SelectItem>
-              {(Object.keys(STATUT_LABELS) as Statut[]).map(s => (
-                <SelectItem key={s} value={s} className="text-white">{STATUT_LABELS[s]}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={region} onValueChange={setRegion}>
-            <SelectTrigger className="w-52 bg-zinc-900 border-zinc-700 text-white h-9">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="bg-zinc-900 border-zinc-700">
-              <SelectItem value="toutes" className="text-white">Toutes les régions</SelectItem>
-              {regions.map(r => (
-                <SelectItem key={r} value={r} className="text-white">{r}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={typeBienFilter} onValueChange={setTypeBienFilter}>
-            <SelectTrigger className="w-52 bg-zinc-900 border-zinc-700 text-white h-9">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="bg-zinc-900 border-zinc-700">
-              <SelectItem value="tous" className="text-white">Tous les types</SelectItem>
-              <SelectItem value="Immeuble De Rapport" className="text-white">Immeuble de rapport</SelectItem>
-              <SelectItem value="Immobilier Commercial" className="text-white">Immobilier commercial</SelectItem>
-              <SelectItem value="Residence Senior" className="text-white">Résidence senior</SelectItem>
-              <SelectItem value="Ferme Vosgienne" className="text-white">Ferme vosgienne</SelectItem>
-              <SelectItem value="Plateau A Amenager" className="text-white">Plateau à aménager</SelectItem>
-              <SelectItem value="Studio" className="text-white">Studio</SelectItem>
-            </SelectContent>
-          </Select>
+          <select value={statut} onChange={e => setStatut(e.target.value)} style={selectStyle}>
+            <option value="tous">Tous les statuts</option>
+            {(Object.keys(STATUT_LABELS) as Statut[]).map(s => (
+              <option key={s} value={s}>{STATUT_LABELS[s]}</option>
+            ))}
+          </select>
+          <select value={region} onChange={e => setRegion(e.target.value)} style={selectStyle}>
+            <option value="toutes">Toutes les regions</option>
+            {regions.map(r => (
+              <option key={r} value={r}>{r}</option>
+            ))}
+          </select>
+          <select value={typeBienFilter} onChange={e => setTypeBienFilter(e.target.value)} style={selectStyle}>
+            <option value="tous">Tous les types</option>
+            <option value="Immeuble De Rapport">Immeuble de rapport</option>
+            <option value="Immobilier Commercial">Immobilier commercial</option>
+            <option value="Residence Senior">Residence senior</option>
+            <option value="Ferme Vosgienne">Ferme vosgienne</option>
+            <option value="Plateau A Amenager">Plateau a amenager</option>
+            <option value="Studio">Studio</option>
+          </select>
         </div>
 
         {/* Grille */}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-xl h-80 animate-pulse" />
-            ))}
+          <div className="flex items-center justify-center" style={{ padding: "80px 0" }}>
+            <Loader2 className="animate-spin" style={{ width: "20px", height: "20px", color: "#6B6560", strokeWidth: 1.5 }} />
           </div>
         ) : biens.length === 0 ? (
-          <div className="text-center py-20 text-zinc-500">
-            <Gem className="h-12 w-12 mx-auto mb-4 opacity-30" />
-            <p>Aucun bien off market trouvé</p>
+          <div style={{ textAlign: "center", padding: "80px 0" }}>
+            <Gem style={{ width: "28px", height: "28px", color: "#1E1E1E", margin: "0 auto 12px", strokeWidth: 1.5 }} />
+            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun bien off market trouve</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1170,7 +1623,7 @@ export default function OffMarketBoard() {
           </div>
         )}
 
-        {/* Panel détail */}
+        {/* Panel detail */}
         {selectedBien && (
           <BienDetail
             bien={selectedBien}

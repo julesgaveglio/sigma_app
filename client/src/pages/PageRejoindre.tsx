@@ -28,81 +28,225 @@ export default function PageRejoindre() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6">
-      {/* Logo */}
-      <div className="mb-10 text-center">
-        <p className="text-[#C9A84C] text-xs font-bold uppercase tracking-[0.3em] mb-1">Sigma Factory</p>
-        <h1 className="text-4xl font-black text-white">Rejoindre le réseau</h1>
+    <div className="min-h-screen flex flex-col items-center justify-center"
+         style={{ background: "#0A0A0A", padding: "24px" }}>
+
+      {/* ── Logo ── */}
+      <div style={{ textAlign: "center", marginBottom: "48px" }}>
+        <p style={{
+          fontFamily: "'Hanken Grotesk', sans-serif",
+          fontSize: "11px",
+          fontWeight: 500,
+          color: "#C9A84C",
+          letterSpacing: "0.12em",
+          textTransform: "uppercase" as const,
+          marginBottom: "12px",
+        }}>
+          Sigma Factory
+        </p>
+        <h1 style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: "32px",
+          fontWeight: 600,
+          color: "#F0EDE6",
+          letterSpacing: "0.04em",
+          margin: 0,
+        }}>
+          Rejoindre le reseau
+        </h1>
       </div>
 
-      {/* Bannière parrain */}
+      {/* ── Banniere parrain ── */}
       {codeParrain && (
-        <div className="w-full max-w-md mb-8">
+        <div style={{ width: "100%", maxWidth: "460px", marginBottom: "32px" }}>
           {parrainLoading ? (
-            <div className="flex items-center justify-center gap-2 bg-[#111] border border-[#C9A84C]/30 p-4">
-              <Loader2 className="w-4 h-4 text-[#C9A84C] animate-spin" />
-              <span className="text-gray-400 text-sm">Vérification du parrain…</span>
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+              background: "#111111",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              padding: "16px",
+            }}>
+              <Loader2 size={16} style={{ color: "#6B6560" }} className="animate-spin" />
+              <span style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "13px",
+                color: "#6B6560",
+              }}>
+                Verification du parrain...
+              </span>
             </div>
           ) : parrainData && parrainData.type !== "sigma" ? (
-            <div className="bg-[#C9A84C]/10 border border-[#C9A84C]/40 p-4 flex items-center gap-3">
-              <CheckCircle className="w-5 h-5 text-[#C9A84C] shrink-0" />
+            <div style={{
+              background: "#111111",
+              border: "1px solid #1E1E1E",
+              borderRadius: "2px",
+              padding: "16px 20px",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+            }}>
+              <CheckCircle size={16} style={{ color: "#4A7A5A", flexShrink: 0 }} />
               <div>
-                <p className="text-[#C9A84C] font-bold text-sm">Invitation de {parrainData.nom}</p>
-                <p className="text-gray-400 text-xs">Vous bénéficiez d'un accompagnement personnalisé dès votre arrivée</p>
+                <p style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: "#F0EDE6",
+                  marginBottom: "2px",
+                }}>
+                  Invitation de {parrainData.nom}
+                </p>
+                <p style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "12px",
+                  color: "#6B6560",
+                }}>
+                  Vous beneficiez d'un accompagnement personnalise des votre arrivee
+                </p>
               </div>
             </div>
           ) : (
-            <div className="bg-red-900/20 border border-red-500/30 p-4 flex items-center gap-3">
-              <span className="text-red-400 text-sm">Code parrain non reconnu — vous pouvez tout de même rejoindre le réseau</span>
+            <div style={{
+              background: "#1A1010",
+              border: "1px solid #3A1E1E",
+              borderRadius: "2px",
+              padding: "16px 20px",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+            }}>
+              <span style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "13px",
+                color: "#A04040",
+              }}>
+                Code parrain non reconnu — vous pouvez tout de meme rejoindre le reseau
+              </span>
             </div>
           )}
         </div>
       )}
 
-      {/* Avantages */}
-      <div className="w-full max-w-md mb-8 space-y-2">
+      {/* ── Avantages ── */}
+      <div style={{ width: "100%", maxWidth: "460px", marginBottom: "32px" }}>
         {[
-          "Accès à un réseau de partenaires qualifiés",
+          "Acces a un reseau de partenaires qualifies",
           "Commissions attractives sur chaque dossier",
-          "Espace dédié pour suivre vos dossiers en temps réel",
-          "Support et accompagnement de l'équipe Sigma",
+          "Espace dedie pour suivre vos dossiers en temps reel",
+          "Support et accompagnement de l'equipe Sigma",
         ].map((item, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <Star className="w-3 h-3 text-[#C9A84C] shrink-0" />
-            <span className="text-gray-400 text-sm">{item}</span>
+          <div key={i} style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            marginBottom: "8px",
+          }}>
+            <Star size={12} style={{ color: "#3A3632", flexShrink: 0 }} />
+            <span style={{
+              fontFamily: "'Hanken Grotesk', sans-serif",
+              fontSize: "13px",
+              color: "#6B6560",
+            }}>
+              {item}
+            </span>
           </div>
         ))}
       </div>
 
-      {/* Choix du type */}
-      <div className="w-full max-w-md space-y-4">
-        <p className="text-gray-500 text-xs uppercase tracking-wider text-center mb-2">Choisissez votre profil</p>
+      {/* ── Choix du type ── */}
+      <div style={{ width: "100%", maxWidth: "460px" }}>
+        <p style={{
+          fontFamily: "'Hanken Grotesk', sans-serif",
+          fontSize: "11px",
+          fontWeight: 500,
+          color: "#3A3632",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase" as const,
+          textAlign: "center",
+          marginBottom: "16px",
+        }}>
+          Choisissez votre profil
+        </p>
 
         {/* Agent Immo */}
         <button
           onClick={() => handleChoix("agent")}
           disabled={choix !== null}
-          className="w-full group bg-[#111] border border-[#222] hover:border-[#C9A84C]/50 p-6 text-left transition-all disabled:opacity-60"
+          className="transition-colors duration-300 ease-out"
+          style={{
+            width: "100%",
+            background: "#111111",
+            border: "1px solid #1E1E1E",
+            borderRadius: "2px",
+            padding: "24px",
+            textAlign: "left",
+            cursor: choix !== null ? "not-allowed" : "pointer",
+            opacity: choix !== null ? 0.6 : 1,
+            marginBottom: "12px",
+          }}
+          onMouseEnter={e => { if (!choix) e.currentTarget.style.borderColor = "#C9A84C"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; }}
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-[#C9A84C]/10 flex items-center justify-center">
-                <Building2 className="w-6 h-6 text-[#C9A84C]" />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <div style={{
+                width: "44px",
+                height: "44px",
+                background: "#161616",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+                <Building2 size={20} style={{ color: "#6B6560" }} />
               </div>
               <div>
-                <p className="text-white font-bold text-lg">Agent Immobilier</p>
-                <p className="text-gray-500 text-sm">50% de rétrocommission sur chaque vente</p>
+                <p style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: "18px",
+                  fontWeight: 600,
+                  color: "#F0EDE6",
+                  letterSpacing: "0.02em",
+                  marginBottom: "4px",
+                }}>
+                  Agent Immobilier
+                </p>
+                <p style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "12px",
+                  color: "#6B6560",
+                }}>
+                  50% de retrocommission sur chaque vente
+                </p>
               </div>
             </div>
             {choix === "agent" ? (
-              <Loader2 className="w-5 h-5 text-[#C9A84C] animate-spin" />
+              <Loader2 size={16} style={{ color: "#6B6560" }} className="animate-spin" />
             ) : (
-              <ArrowRight className="w-5 h-5 text-gray-600 group-hover:text-[#C9A84C] transition-colors" />
+              <ArrowRight size={16} style={{ color: "#3A3632" }} />
             )}
           </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {["Biens immobiliers", "Réseau agents", "Suivi dossiers"].map(tag => (
-              <span key={tag} className="text-xs bg-[#C9A84C]/10 text-[#C9A84C] px-2 py-1">{tag}</span>
+          <div style={{ marginTop: "16px", display: "flex", flexWrap: "wrap", gap: "6px" }}>
+            {["Biens immobiliers", "Reseau agents", "Suivi dossiers"].map(tag => (
+              <span key={tag} style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "10px",
+                fontWeight: 500,
+                color: "#6B6560",
+                background: "#161616",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                padding: "4px 8px",
+                letterSpacing: "0.04em",
+                textTransform: "uppercase" as const,
+              }}>
+                {tag}
+              </span>
             ))}
           </div>
         </button>
@@ -111,34 +255,91 @@ export default function PageRejoindre() {
         <button
           onClick={() => handleChoix("courtier")}
           disabled={choix !== null}
-          className="w-full group bg-[#111] border border-[#222] hover:border-[#C9A84C]/50 p-6 text-left transition-all disabled:opacity-60"
+          className="transition-colors duration-300 ease-out"
+          style={{
+            width: "100%",
+            background: "#111111",
+            border: "1px solid #1E1E1E",
+            borderRadius: "2px",
+            padding: "24px",
+            textAlign: "left",
+            cursor: choix !== null ? "not-allowed" : "pointer",
+            opacity: choix !== null ? 0.6 : 1,
+          }}
+          onMouseEnter={e => { if (!choix) e.currentTarget.style.borderColor = "#C9A84C"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; }}
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-[#C9A84C]/10 flex items-center justify-center">
-                <Users className="w-6 h-6 text-[#C9A84C]" />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <div style={{
+                width: "44px",
+                height: "44px",
+                background: "#161616",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+                <Users size={20} style={{ color: "#6B6560" }} />
               </div>
               <div>
-                <p className="text-white font-bold text-lg">Courtier en Financement</p>
-                <p className="text-gray-500 text-sm">75% de rétrocommission sur chaque dossier</p>
+                <p style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: "18px",
+                  fontWeight: 600,
+                  color: "#F0EDE6",
+                  letterSpacing: "0.02em",
+                  marginBottom: "4px",
+                }}>
+                  Courtier en Financement
+                </p>
+                <p style={{
+                  fontFamily: "'Hanken Grotesk', sans-serif",
+                  fontSize: "12px",
+                  color: "#6B6560",
+                }}>
+                  75% de retrocommission sur chaque dossier
+                </p>
               </div>
             </div>
             {choix === "courtier" ? (
-              <Loader2 className="w-5 h-5 text-[#C9A84C] animate-spin" />
+              <Loader2 size={16} style={{ color: "#6B6560" }} className="animate-spin" />
             ) : (
-              <ArrowRight className="w-5 h-5 text-gray-600 group-hover:text-[#C9A84C] transition-colors" />
+              <ArrowRight size={16} style={{ color: "#3A3632" }} />
             )}
           </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {["Crédit immobilier", "Crédit pro", "Rachat de crédit", "Convention signée"].map(tag => (
-              <span key={tag} className="text-xs bg-[#C9A84C]/10 text-[#C9A84C] px-2 py-1">{tag}</span>
+          <div style={{ marginTop: "16px", display: "flex", flexWrap: "wrap", gap: "6px" }}>
+            {["Credit immobilier", "Credit pro", "Rachat de credit", "Convention signee"].map(tag => (
+              <span key={tag} style={{
+                fontFamily: "'Hanken Grotesk', sans-serif",
+                fontSize: "10px",
+                fontWeight: 500,
+                color: "#6B6560",
+                background: "#161616",
+                border: "1px solid #1E1E1E",
+                borderRadius: "2px",
+                padding: "4px 8px",
+                letterSpacing: "0.04em",
+                textTransform: "uppercase" as const,
+              }}>
+                {tag}
+              </span>
             ))}
           </div>
         </button>
       </div>
 
-      <p className="text-gray-600 text-xs mt-8 text-center max-w-sm">
-        En rejoignant le réseau Sigma Factory, vous acceptez nos conditions générales de partenariat.
+      <p style={{
+        fontFamily: "'Hanken Grotesk', sans-serif",
+        fontSize: "11px",
+        color: "#3A3632",
+        textAlign: "center",
+        maxWidth: "380px",
+        marginTop: "32px",
+        lineHeight: "1.6",
+      }}>
+        En rejoignant le reseau Sigma Factory, vous acceptez nos conditions generales de partenariat.
       </p>
     </div>
   );
