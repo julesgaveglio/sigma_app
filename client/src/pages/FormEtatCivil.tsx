@@ -6,7 +6,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { CheckCircle, ChevronRight, ChevronLeft, Upload, User, Users, Heart, AlertCircle, Globe, Loader2 } from "lucide-react";
 
-const SIGMA_LOGO = "https://d2xsxph8kpxj0f.cloudfront.net/110243537/dS69FocN6akHjQivURfVvd/sigma-logo_004dfdd3.png";
+const SIGMA_LOGO = "/assets/sigma-logo.png";
 
 const formSchema = z.object({
   nom: z.string().min(1, "Le nom est requis"),

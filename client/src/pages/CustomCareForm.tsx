@@ -7,7 +7,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { toast } from "sonner";
 import { Loader2, CheckCircle, ChevronDown, Upload, X, FileText, Image, File } from "lucide-react";
 
-const LOGO_FULL = "https://d2xsxph8kpxj0f.cloudfront.net/110243537/dS69FocN6akHjQivURfVvd/sigma-logo-full_c217e268.png";
+const LOGO_FULL = "/assets/sigma-logo.png";
 
 const schema = z.object({
   nom: z.string().min(1, "Le nom est requis"),

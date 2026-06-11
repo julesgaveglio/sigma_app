@@ -46,19 +46,19 @@ export default function Register() {
          style={{ background: "var(--background)" }}>
       <div className="w-full" style={{ maxWidth: "380px" }}>
 
-        {/* -- Wordmark -- */}
+        {/* -- Logo -- */}
         <header className="text-center mb-16">
-          <h1 className="text-[var(--gold)] mb-3"
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: "28px",
-                fontWeight: 700,
-                letterSpacing: "0.2em",
-                lineHeight: 1,
-              }}>
+          <img src="/assets/sigma-logo.png" alt="Sigma Factory" style={{ height: "56px", margin: "0 auto 16px", display: "block", objectFit: "contain" }} />
+          <h1 style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: "16px",
+            fontWeight: 600,
+            letterSpacing: "0.2em",
+            lineHeight: 1,
+            color: "var(--foreground-muted)",
+          }}>
             SIGMA FACTORY
           </h1>
-          <div className="gold-rule mx-auto" style={{ width: "40px" }} />
         </header>
 
         {/* -- Card -- */}

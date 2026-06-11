@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { ArrowRight, Briefcase, Building2, Lock } from "lucide-react";
 
-const LOGO_FULL = "https://d2xsxph8kpxj0f.cloudfront.net/110243537/dS69FocN6akHjQivURfVvd/sigma-logo-full_c217e268.png";
+const LOGO_FULL = "/assets/sigma-logo.png";
 const BG_CITY = "https://d2xsxph8kpxj0f.cloudfront.net/110243537/dS69FocN6akHjQivURfVvd/XSTQvvt1cO08_530224bb.jpg";
 
 export default function LandingPage() {

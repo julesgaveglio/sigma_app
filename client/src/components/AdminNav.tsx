@@ -284,18 +284,8 @@ export default function AdminNav() {
     <div className="sticky top-0 z-40" style={{ background: "var(--background)", borderBottom: "1px solid var(--border)" }}>
       <div className="flex items-center gap-4 px-5 py-3" style={{ maxWidth: "1440px", margin: "0 auto" }}>
 
-        {/* Wordmark */}
-        <span style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: "14px",
-          fontWeight: 700,
-          letterSpacing: "0.15em",
-          color: "var(--gold)",
-          textTransform: "uppercase" as const,
-          whiteSpace: "nowrap" as const,
-        }}>
-          SIGMA
-        </span>
+        {/* Logo */}
+        <img src="/assets/sigma-logo.png" alt="Sigma Factory" style={{ height: "28px", objectFit: "contain" }} />
 
         <div style={{ width: "1px", height: "16px", background: "var(--border)" }} />
 
