@@ -285,7 +285,7 @@ export default function AdminNav() {
       <div className="flex items-center gap-4 px-5 py-3" style={{ maxWidth: "1440px", margin: "0 auto" }}>
 
         {/* Logo */}
-        <img src="/assets/sigma-logo.png" alt="Sigma Factory" style={{ height: "28px", objectFit: "contain" }} />
+        <img src="/assets/sigma-logo.png" alt="Sigma Factory" style={{ height: "52px", objectFit: "contain" }} />
 
         <div style={{ width: "1px", height: "16px", background: "var(--border)" }} />
 

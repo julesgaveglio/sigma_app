@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { ArrowRight, Briefcase, Building2, Lock } from "lucide-react";
 
-const LOGO_FULL = "/assets/sigma-logo.png";
+const LOGO_FULL = "/assets/sigma-logo-full.png";
 const BG_CITY = "https://d2xsxph8kpxj0f.cloudfront.net/110243537/dS69FocN6akHjQivURfVvd/XSTQvvt1cO08_530224bb.jpg";
 
 export default function LandingPage() {
@@ -23,7 +23,7 @@ export default function LandingPage() {
 
         {/* Header */}
         <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6" style={{ maxWidth: "1280px", margin: "0 auto", width: "100%" }}>
-          <img src={LOGO_FULL} alt="Sigma Factory" className="h-8 object-contain" style={{ opacity: 0.8 }} />
+          <img src={LOGO_FULL} alt="Sigma Factory" className="object-contain" style={{ height: "52px" }} />
           <Link
             href="/dashboard"
             className="flex items-center gap-2 transition-opacity duration-300 hover:opacity-70"
@@ -326,7 +326,7 @@ export default function LandingPage() {
       {/* --- FOOTER --- */}
       <footer style={{ borderTop: "1px solid var(--border)", padding: "32px 24px" }}>
         <div className="flex flex-col md:flex-row items-center justify-between gap-6" style={{ maxWidth: "1280px", margin: "0 auto" }}>
-          <img src={LOGO_FULL} alt="Sigma Factory" className="h-6 object-contain" style={{ opacity: 0.4 }} />
+          <img src={LOGO_FULL} alt="Sigma Factory" className="object-contain" style={{ height: "36px", opacity: 0.4 }} />
           <div className="flex items-center gap-4 flex-wrap justify-center" style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", letterSpacing: "0.04em", color: "var(--foreground-faint)" }}>
             <span>&copy; {new Date().getFullYear()} Sigma Factory</span>
             <span style={{ color: "var(--border)" }}>·</span>
