@@ -103,9 +103,66 @@
   --gold-light: #D4B85C;
   --surface: #111111;
   --surface-raised: #161616;
+  --surface-header: #0D0D0D;
   --foreground-muted: #6B6560;
   --foreground-faint: #3A3632;
+  --border-subtle: #151515;
   --success: #4A7A5A;
+}
+
+/* ── Light Mode ── */
+:root.light {
+  --background: #F5F3EE;
+  --foreground: #1A1815;
+  --card: #FFFFFF;
+  --card-foreground: #1A1815;
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1815;
+
+  --primary: #C9A84C;
+  --primary-foreground: #FFFFFF;
+
+  --secondary: #F0EDE6;
+  --secondary-foreground: #3A3632;
+
+  --muted: #F0EDE6;
+  --muted-foreground: #8A8580;
+
+  --accent: #F0EDE6;
+  --accent-foreground: #1A1815;
+
+  --destructive: #A04040;
+  --destructive-foreground: #FFFFFF;
+
+  --border: #E0DDD6;
+  --input: #F0EDE6;
+  --ring: #C9A84C;
+
+  --chart-1: #C9A84C;
+  --chart-2: #B0AAA0;
+  --chart-3: #C0BBB5;
+  --chart-4: #D0CCC4;
+  --chart-5: #E0DDD6;
+
+  --sidebar: #F5F3EE;
+  --sidebar-foreground: #1A1815;
+  --sidebar-primary: #C9A84C;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F0EDE6;
+  --sidebar-accent-foreground: #3A3632;
+  --sidebar-border: #E0DDD6;
+  --sidebar-ring: #C9A84C;
+
+  --gold: #B89A40;
+  --gold-muted: #C9B870;
+  --gold-light: #A08530;
+  --surface: #FFFFFF;
+  --surface-raised: #F0EDE6;
+  --surface-header: #F8F6F1;
+  --foreground-muted: #8A8580;
+  --foreground-faint: #C0BBB5;
+  --border-subtle: #EAE7E0;
+  --success: #3A6A4A;
 }
 
 @layer base {
@@ -230,4 +287,26 @@
     border: none;
     opacity: 0.6;
   }
+
+  /* ── Theme transition ── */
+  .theme-transition,
+  .theme-transition *,
+  .theme-transition *::before,
+  .theme-transition *::after {
+    transition: background-color 400ms ease, color 400ms ease, border-color 400ms ease !important;
+  }
+}
+
+/* ── Light mode scrollbar ── */
+:root.light ::-webkit-scrollbar-thumb {
+  background: #D0CCC4;
+}
+:root.light ::-webkit-scrollbar-thumb:hover {
+  background: #B0AAA0;
+}
+
+/* ── Light mode selection ── */
+:root.light ::selection {
+  background: #C9A84C;
+  color: #FFFFFF;
 }

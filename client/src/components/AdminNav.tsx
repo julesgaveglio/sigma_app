@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { FileText, HeadphonesIcon, LogOut, Search, Coins, GitBranch, CalendarDays, Bell, CheckCheck, X, Filter, Users, Euro, TrendingUp, MessageSquarePlus, ShieldCheck, Building2, Home, Menu, Gem, Star } from "lucide-react";
+import { FileText, HeadphonesIcon, LogOut, Search, Coins, GitBranch, CalendarDays, Bell, CheckCheck, X, Filter, Users, Euro, TrendingUp, MessageSquarePlus, ShieldCheck, Building2, Home, Menu, Gem, Star, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const NAV_ITEMS = [
   {
@@ -143,21 +144,21 @@ function NotificationPanel({ onClose, userMembre }: { onClose: () => void; userM
   return (
     <div className="absolute right-0 top-full mt-1" style={{
       width: "380px",
-      background: "#111111",
-      border: "1px solid #1E1E1E",
+      background: "var(--surface)",
+      border: "1px solid var(--border)",
       borderRadius: "2px",
       zIndex: 50,
       overflow: "hidden",
     }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: "1px solid #1E1E1E" }}>
+      <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex items-center gap-2">
-          <Bell className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-          <span className="label-uppercase" style={{ color: "#F0EDE6", fontSize: "11px" }}>Notifications</span>
+          <Bell className="w-4 h-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+          <span className="label-uppercase" style={{ color: "var(--foreground)", fontSize: "11px" }}>Notifications</span>
           {notifs.filter((n: any) => !n.lu).length > 0 && (
             <span style={{
-              background: "#C9A84C",
-              color: "#0A0A0A",
+              background: "var(--gold)",
+              color: "var(--background)",
               fontSize: "10px",
               fontWeight: 600,
               padding: "1px 6px",
@@ -169,18 +170,18 @@ function NotificationPanel({ onClose, userMembre }: { onClose: () => void; userM
           )}
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={() => markAll.mutate()} className="p-1.5 transition-opacity duration-300 hover:opacity-70" title="Tout marquer comme lu" style={{ color: "#6B6560" }}>
+          <button onClick={() => markAll.mutate()} className="p-1.5 transition-opacity duration-300 hover:opacity-70" title="Tout marquer comme lu" style={{ color: "var(--foreground-muted)" }}>
             <CheckCheck className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </button>
-          <button onClick={onClose} className="p-1.5 transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }}>
+          <button onClick={onClose} className="p-1.5 transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-muted)" }}>
             <X className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </button>
         </div>
       </div>
 
       {/* Filtres membres */}
-      <div className="px-5 py-2.5 flex items-center gap-2 flex-wrap" style={{ borderBottom: "1px solid #1E1E1E" }}>
-        <Filter className="w-3 h-3 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+      <div className="px-5 py-2.5 flex items-center gap-2 flex-wrap" style={{ borderBottom: "1px solid var(--border)" }}>
+        <Filter className="w-3 h-3 shrink-0" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
         {MEMBRES.map((m) => (
           <button key={m} onClick={() => setFiltreMembre(m)}
             className="transition-colors duration-300"
@@ -192,9 +193,9 @@ function NotificationPanel({ onClose, userMembre }: { onClose: () => void; userM
               textTransform: "uppercase" as const,
               padding: "3px 8px",
               borderRadius: "2px",
-              background: filtreMembre === m ? "#C9A84C" : "#161616",
-              color: filtreMembre === m ? "#0A0A0A" : "#6B6560",
-              border: `1px solid ${filtreMembre === m ? "#C9A84C" : "#1E1E1E"}`,
+              background: filtreMembre === m ? "var(--gold)" : "var(--surface-raised)",
+              color: filtreMembre === m ? "var(--background)" : "var(--foreground-muted)",
+              border: `1px solid ${filtreMembre === m ? "var(--gold)" : "var(--border)"}`,
             }}
           >{m}</button>
         ))}
@@ -203,31 +204,31 @@ function NotificationPanel({ onClose, userMembre }: { onClose: () => void; userM
       {/* Liste */}
       <div style={{ maxHeight: "360px", overflowY: "auto" }}>
         {isLoading ? (
-          <div className="px-5 py-8 text-center" style={{ color: "#3A3632", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>Chargement...</div>
+          <div className="px-5 py-8 text-center" style={{ color: "var(--foreground-faint)", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>Chargement...</div>
         ) : notifsFiltrees.length === 0 ? (
-          <div className="px-5 py-8 text-center" style={{ color: "#3A3632", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>Aucune notification</div>
+          <div className="px-5 py-8 text-center" style={{ color: "var(--foreground-faint)", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>Aucune notification</div>
         ) : (
           notifsFiltrees.map((n: any) => (
             <button key={n.id} className="w-full text-left px-5 py-3 transition-colors duration-300"
               style={{
-                borderBottom: "1px solid #151515",
-                background: !n.lu ? "#0D0D0D" : "transparent",
+                borderBottom: "1px solid var(--border-subtle)",
+                background: !n.lu ? "var(--surface-header)" : "transparent",
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
-              onMouseLeave={e => (e.currentTarget.style.background = !n.lu ? "#0D0D0D" : "transparent")}
+              onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
+              onMouseLeave={e => (e.currentTarget.style.background = !n.lu ? "var(--surface-header)" : "transparent")}
               onClick={() => handleNotifClick(n)}
             >
               <div className="flex items-start gap-2.5">
-                {!n.lu && <div className="w-1.5 h-1.5 mt-1.5 shrink-0" style={{ background: "#C9A84C", borderRadius: "1px" }} />}
+                {!n.lu && <div className="w-1.5 h-1.5 mt-1.5 shrink-0" style={{ background: "var(--gold)", borderRadius: "1px" }} />}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#6B6560", letterSpacing: "0.04em", textTransform: "uppercase" as const }}>{TYPE_LABELS[n.type] || n.type}</span>
+                    <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground-muted)", letterSpacing: "0.04em", textTransform: "uppercase" as const }}>{TYPE_LABELS[n.type] || n.type}</span>
                     {n.destinataire && (
-                      <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", padding: "1px 5px", background: "#161616", borderRadius: "2px" }}>{n.destinataire}</span>
+                      <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", padding: "1px 5px", background: "var(--surface-raised)", borderRadius: "2px" }}>{n.destinataire}</span>
                     )}
                   </div>
-                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{n.titre}</p>
-                  <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>{n.message}</p>
+                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{n.titre}</p>
+                  <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>{n.message}</p>
                 </div>
               </div>
             </button>
@@ -241,10 +242,17 @@ function NotificationPanel({ onClose, userMembre }: { onClose: () => void; userM
 export default function AdminNav() {
   const [location] = useLocation();
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [showNotifs, setShowNotifs] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const handleToggleTheme = () => {
+    document.documentElement.classList.add("theme-transition");
+    toggleTheme();
+    setTimeout(() => document.documentElement.classList.remove("theme-transition"), 500);
+  };
 
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => { window.location.href = "/login"; },
@@ -273,7 +281,7 @@ export default function AdminNav() {
   const activeItem = visibleItems.find(item => item.match(location));
 
   return (
-    <div className="sticky top-0 z-40" style={{ background: "#0A0A0A", borderBottom: "1px solid #1E1E1E" }}>
+    <div className="sticky top-0 z-40" style={{ background: "var(--background)", borderBottom: "1px solid var(--border)" }}>
       <div className="flex items-center gap-4 px-5 py-3" style={{ maxWidth: "1440px", margin: "0 auto" }}>
 
         {/* Wordmark */}
@@ -282,18 +290,18 @@ export default function AdminNav() {
           fontSize: "14px",
           fontWeight: 700,
           letterSpacing: "0.15em",
-          color: "#C9A84C",
+          color: "var(--gold)",
           textTransform: "uppercase" as const,
           whiteSpace: "nowrap" as const,
         }}>
           SIGMA
         </span>
 
-        <div style={{ width: "1px", height: "16px", background: "#1E1E1E" }} />
+        <div style={{ width: "1px", height: "16px", background: "var(--border)" }} />
 
         {/* Page active */}
         {activeItem && (
-          <div className="flex items-center gap-2" style={{ color: "#F0EDE6" }}>
+          <div className="flex items-center gap-2" style={{ color: "var(--foreground)" }}>
             <activeItem.icon className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             <span style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
@@ -315,7 +323,7 @@ export default function AdminNav() {
             onClick={() => { setShowNotifs(v => !v); setShowMenu(false); }}
             className="relative flex items-center justify-center w-8 h-8 transition-opacity duration-300 hover:opacity-70"
             title="Notifications"
-            style={{ color: "#6B6560" }}
+            style={{ color: "var(--foreground-muted)" }}
           >
             <Bell className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             {unreadCount > 0 && (
@@ -323,8 +331,8 @@ export default function AdminNav() {
                 position: "absolute",
                 top: "0",
                 right: "0",
-                background: "#C9A84C",
-                color: "#0A0A0A",
+                background: "var(--gold)",
+                color: "var(--background)",
                 fontSize: "9px",
                 fontWeight: 700,
                 fontFamily: "'Hanken Grotesk', sans-serif",
@@ -342,10 +350,24 @@ export default function AdminNav() {
           {showNotifs && <NotificationPanel onClose={() => setShowNotifs(false)} userMembre={userMembre} />}
         </div>
 
+        {/* Theme toggle */}
+        <button
+          onClick={handleToggleTheme}
+          className="flex items-center justify-center w-8 h-8 shrink-0 transition-opacity duration-300 hover:opacity-70"
+          title={theme === "dark" ? "Mode clair" : "Mode sombre"}
+          style={{ color: "var(--foreground-muted)" }}
+        >
+          {theme === "dark" ? (
+            <Sun className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+          ) : (
+            <Moon className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
+          )}
+        </button>
+
         {/* User */}
         {user && (
           <span style={{
-            color: "#3A3632",
+            color: "var(--foreground-faint)",
             fontSize: "11px",
             fontFamily: "'Hanken Grotesk', sans-serif",
             letterSpacing: "0.02em",
@@ -365,13 +387,13 @@ export default function AdminNav() {
             className="flex items-center gap-2 px-3 py-1.5 transition-colors duration-300"
             title="Navigation"
             style={{
-              color: "#6B6560",
-              border: "1px solid #1E1E1E",
+              color: "var(--foreground-muted)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               background: "transparent",
             }}
-            onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-            onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
           >
             <Menu className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             <span className="hidden sm:block" style={{
@@ -386,8 +408,8 @@ export default function AdminNav() {
           {showMenu && (
             <div className="absolute right-0 top-full mt-1" style={{
               width: "240px",
-              background: "#111111",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               zIndex: 50,
               overflow: "hidden",
@@ -407,13 +429,13 @@ export default function AdminNav() {
                       fontFamily: "'Hanken Grotesk', sans-serif",
                       fontWeight: active ? 500 : 400,
                       letterSpacing: "0.02em",
-                      color: active ? "#C9A84C" : "#6B6560",
-                      background: active ? "#161616" : "transparent",
+                      color: active ? "var(--gold)" : "var(--foreground-muted)",
+                      background: active ? "var(--surface-raised)" : "transparent",
                       textDecoration: "none",
-                      borderLeft: active ? "2px solid #C9A84C" : "2px solid transparent",
+                      borderLeft: active ? "2px solid var(--gold)" : "2px solid transparent",
                     }}
-                    onMouseEnter={e => { if (!active) { e.currentTarget.style.color = "#F0EDE6"; e.currentTarget.style.background = "#161616"; }}}
-                    onMouseLeave={e => { if (!active) { e.currentTarget.style.color = "#6B6560"; e.currentTarget.style.background = "transparent"; }}}
+                    onMouseEnter={e => { if (!active) { e.currentTarget.style.color = "var(--foreground)"; e.currentTarget.style.background = "var(--surface-raised)"; }}}
+                    onMouseLeave={e => { if (!active) { e.currentTarget.style.color = "var(--foreground-muted)"; e.currentTarget.style.background = "transparent"; }}}
                   >
                     <item.icon className="w-3.5 h-3.5 shrink-0" style={{ strokeWidth: 1.5 }} />
                     <span className="flex-1">{item.label}</span>
@@ -424,8 +446,8 @@ export default function AdminNav() {
                         fontFamily: "'Hanken Grotesk', sans-serif",
                         padding: "1px 5px",
                         borderRadius: "2px",
-                        background: active ? "#C9A84C" : "#1E1E1E",
-                        color: active ? "#0A0A0A" : "#6B6560",
+                        background: active ? "var(--gold)" : "var(--border)",
+                        color: active ? "var(--background)" : "var(--foreground-muted)",
                       }}>
                         {notifCount > 9 ? "9+" : notifCount}
                       </span>
@@ -433,20 +455,20 @@ export default function AdminNav() {
                   </a>
                 );
               })}
-              <div style={{ borderTop: "1px solid #1E1E1E", marginTop: "4px", paddingTop: "4px" }}>
+              <div style={{ borderTop: "1px solid var(--border)", marginTop: "4px", paddingTop: "4px" }}>
                 <button
                   onClick={() => logoutMutation.mutate()}
                   className="flex items-center gap-3 px-4 py-2 w-full text-left transition-colors duration-300"
                   style={{
                     fontSize: "12px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#3A3632",
+                    color: "var(--foreground-faint)",
                     background: "transparent",
                     border: "none",
                     borderLeft: "2px solid transparent",
                   }}
-                  onMouseEnter={e => { e.currentTarget.style.color = "#A04040"; e.currentTarget.style.background = "#161616"; }}
-                  onMouseLeave={e => { e.currentTarget.style.color = "#3A3632"; e.currentTarget.style.background = "transparent"; }}
+                  onMouseEnter={e => { e.currentTarget.style.color = "var(--destructive)"; e.currentTarget.style.background = "var(--surface-raised)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.color = "var(--foreground-faint)"; e.currentTarget.style.background = "transparent"; }}
                 >
                   <LogOut className="w-3.5 h-3.5 shrink-0" style={{ strokeWidth: 1.5 }} />
                   <span>Deconnexion</span>

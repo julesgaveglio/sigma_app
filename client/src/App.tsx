@@ -118,7 +118,7 @@ function Router() {
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="dark">
+      <ThemeProvider>
         <TooltipProvider>
           <Toaster theme="dark" position="top-right" />
           <Router />
