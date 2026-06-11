@@ -6,7 +6,7 @@ const BG_CITY = "https://d2xsxph8kpxj0f.cloudfront.net/110243537/dS69FocN6akHjQi
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A", fontFamily: "'Hanken Grotesk', sans-serif" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)", fontFamily: "'Hanken Grotesk', sans-serif" }}>
 
       {/* --- HERO --- */}
       <section className="relative min-h-screen flex flex-col">
@@ -32,9 +32,9 @@ export default function LandingPage() {
               fontWeight: 500,
               letterSpacing: "0.06em",
               textTransform: "uppercase" as const,
-              color: "#3A3632",
+              color: "var(--foreground-faint)",
               padding: "8px 16px",
-              border: "1px solid #1E1E1E",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               textDecoration: "none",
             }}
@@ -54,23 +54,23 @@ export default function LandingPage() {
             fontWeight: 700,
             letterSpacing: "0.08em",
             textTransform: "uppercase" as const,
-            color: "#F0EDE6",
+            color: "var(--foreground)",
             lineHeight: 1.1,
             marginBottom: "16px",
           }}>
             Sigma Factory
           </h1>
 
-          <div style={{ width: "40px", height: "1px", background: "#C9A84C", margin: "0 auto 32px" }} />
+          <div style={{ width: "40px", height: "1px", background: "var(--gold)", margin: "0 auto 32px" }} />
 
           <p style={{
             fontSize: "16px",
-            color: "#6B6560",
+            color: "var(--foreground-muted)",
             maxWidth: "520px",
             lineHeight: "1.7",
             marginBottom: "48px",
           }}>
-            Rejoignez un reseau d'experts qui generent en moyenne <span style={{ color: "#F0EDE6", fontWeight: 500 }}>+30% de chiffre d'affaires supplementaire</span> des la premiere annee.
+            Rejoignez un reseau d'experts qui generent en moyenne <span style={{ color: "var(--foreground)", fontWeight: 500 }}>+30% de chiffre d'affaires supplementaire</span> des la premiere annee.
           </p>
 
           {/* Deux CTA */}
@@ -81,8 +81,8 @@ export default function LandingPage() {
                 className="flex items-center justify-center gap-2 transition-opacity duration-300 hover:opacity-80"
                 style={{
                   padding: "14px 28px",
-                  background: "#C9A84C",
-                  color: "#0A0A0A",
+                  background: "var(--gold)",
+                  color: "var(--background)",
                   fontSize: "11px",
                   fontWeight: 500,
                   letterSpacing: "0.1em",
@@ -95,7 +95,7 @@ export default function LandingPage() {
                 Espace Courtier
                 <ArrowRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </Link>
-              <Link href="/login" className="transition-opacity duration-300 hover:opacity-70" style={{ fontSize: "11px", color: "#3A3632", textDecoration: "none" }}>
+              <Link href="/login" className="transition-opacity duration-300 hover:opacity-70" style={{ fontSize: "11px", color: "var(--foreground-faint)", textDecoration: "none" }}>
                 Deja inscrit ? Se connecter
               </Link>
             </div>
@@ -106,7 +106,7 @@ export default function LandingPage() {
                 style={{
                   padding: "14px 28px",
                   border: "1px solid rgba(201,168,76,0.3)",
-                  color: "#C9A84C",
+                  color: "var(--gold)",
                   fontSize: "11px",
                   fontWeight: 500,
                   letterSpacing: "0.1em",
@@ -120,7 +120,7 @@ export default function LandingPage() {
                 Espace Agent Immo
                 <ArrowRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </Link>
-              <Link href="/login" className="transition-opacity duration-300 hover:opacity-70" style={{ fontSize: "11px", color: "#3A3632", textDecoration: "none" }}>
+              <Link href="/login" className="transition-opacity duration-300 hover:opacity-70" style={{ fontSize: "11px", color: "var(--foreground-faint)", textDecoration: "none" }}>
                 Deja inscrit ? Se connecter
               </Link>
             </div>
@@ -128,27 +128,27 @@ export default function LandingPage() {
 
           {/* Scroll hint */}
           <div className="flex flex-col items-center gap-2">
-            <span className="label-uppercase" style={{ fontSize: "10px", color: "#3A3632" }}>Decouvrez nos espaces</span>
-            <div style={{ width: "1px", height: "32px", background: "#1E1E1E" }} />
+            <span className="label-uppercase" style={{ fontSize: "10px", color: "var(--foreground-faint)" }}>Decouvrez nos espaces</span>
+            <div style={{ width: "1px", height: "32px", background: "var(--border)" }} />
           </div>
         </div>
       </section>
 
       {/* --- DEUX ESPACES --- */}
-      <section className="px-6 md:px-12 py-20" style={{ borderTop: "1px solid #1E1E1E" }}>
+      <section className="px-6 md:px-12 py-20" style={{ borderTop: "1px solid var(--border)" }}>
         <div style={{ maxWidth: "960px", margin: "0 auto" }}>
           <div className="text-center mb-16">
             <h2 style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "28px",
               fontWeight: 600,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               letterSpacing: "0.04em",
               marginBottom: "8px",
             }}>
               Votre espace professionnel
             </h2>
-            <p style={{ fontSize: "13px", color: "#6B6560" }}>
+            <p style={{ fontSize: "13px", color: "var(--foreground-muted)" }}>
               Accedez a votre tableau de bord et gerez vos dossiers en toute simplicite.
             </p>
           </div>
@@ -160,16 +160,16 @@ export default function LandingPage() {
               href="/login"
               className="group block transition-colors duration-300"
               style={{
-                background: "#111111",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "32px",
                 textDecoration: "none",
               }}
             >
-              <Briefcase className="w-5 h-5 mb-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+              <Briefcase className="w-5 h-5 mb-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
 
-              <p className="label-uppercase mb-2" style={{ color: "#C9A84C" }}>
+              <p className="label-uppercase mb-2" style={{ color: "var(--gold)" }}>
                 Courtier
               </p>
 
@@ -177,7 +177,7 @@ export default function LandingPage() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "20px",
                 fontWeight: 600,
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 letterSpacing: "0.02em",
                 marginBottom: "12px",
                 lineHeight: 1.3,
@@ -187,14 +187,14 @@ export default function LandingPage() {
 
               <p style={{
                 fontSize: "13px",
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 lineHeight: "1.6",
                 marginBottom: "20px",
               }}>
                 Consultez les dossiers qui vous sont assignes, suivez leur avancement et communiquez directement avec l'equipe Sigma Factory.
               </p>
 
-              <div className="flex items-center gap-2 transition-opacity duration-300 group-hover:opacity-80" style={{ color: "#C9A84C", fontSize: "11px", fontWeight: 500, letterSpacing: "0.06em" }}>
+              <div className="flex items-center gap-2 transition-opacity duration-300 group-hover:opacity-80" style={{ color: "var(--gold)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.06em" }}>
                 Acceder a mon espace
                 <ArrowRight className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
               </div>
@@ -205,16 +205,16 @@ export default function LandingPage() {
               href="/ambassadeur"
               className="group block transition-colors duration-300"
               style={{
-                background: "#111111",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "32px",
                 textDecoration: "none",
               }}
             >
-              <Building2 className="w-5 h-5 mb-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+              <Building2 className="w-5 h-5 mb-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
 
-              <p className="label-uppercase mb-2" style={{ color: "#C9A84C" }}>
+              <p className="label-uppercase mb-2" style={{ color: "var(--gold)" }}>
                 Agent Immobilier
               </p>
 
@@ -222,7 +222,7 @@ export default function LandingPage() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "20px",
                 fontWeight: 600,
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 letterSpacing: "0.02em",
                 marginBottom: "12px",
                 lineHeight: 1.3,
@@ -232,14 +232,14 @@ export default function LandingPage() {
 
               <p style={{
                 fontSize: "13px",
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 lineHeight: "1.6",
                 marginBottom: "20px",
               }}>
                 Soumettez vos biens, suivez vos dossiers clients et developpez votre activite avec le soutien du reseau Sigma Factory.
               </p>
 
-              <div className="flex items-center gap-2 transition-opacity duration-300 group-hover:opacity-80" style={{ color: "#C9A84C", fontSize: "11px", fontWeight: 500, letterSpacing: "0.06em" }}>
+              <div className="flex items-center gap-2 transition-opacity duration-300 group-hover:opacity-80" style={{ color: "var(--gold)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.06em" }}>
                 Acceder a mon espace
                 <ArrowRight className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
               </div>
@@ -250,9 +250,9 @@ export default function LandingPage() {
       </section>
 
       {/* --- SECTION PERFORMANCE --- */}
-      <section className="px-6 md:px-12 py-20" style={{ borderTop: "1px solid #1E1E1E" }}>
+      <section className="px-6 md:px-12 py-20" style={{ borderTop: "1px solid var(--border)" }}>
         <div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center" as const }}>
-          <p className="label-uppercase mb-4" style={{ color: "#6B6560" }}>
+          <p className="label-uppercase mb-4" style={{ color: "var(--foreground-muted)" }}>
             Resultats partenaires
           </p>
 
@@ -260,7 +260,7 @@ export default function LandingPage() {
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: "28px",
             fontWeight: 600,
-            color: "#F0EDE6",
+            color: "var(--foreground)",
             letterSpacing: "0.04em",
             marginBottom: "12px",
           }}>
@@ -269,7 +269,7 @@ export default function LandingPage() {
 
           <p style={{
             fontSize: "14px",
-            color: "#6B6560",
+            color: "var(--foreground-muted)",
             lineHeight: "1.7",
             marginBottom: "40px",
             maxWidth: "520px",
@@ -285,8 +285,8 @@ export default function LandingPage() {
               className="flex items-center justify-center gap-2 transition-opacity duration-300 hover:opacity-80"
               style={{
                 padding: "14px 24px",
-                background: "#C9A84C",
-                color: "#0A0A0A",
+                background: "var(--gold)",
+                color: "var(--background)",
                 fontSize: "11px",
                 fontWeight: 500,
                 letterSpacing: "0.1em",
@@ -305,7 +305,7 @@ export default function LandingPage() {
               style={{
                 padding: "14px 24px",
                 border: "1px solid rgba(201,168,76,0.3)",
-                color: "#C9A84C",
+                color: "var(--gold)",
                 fontSize: "11px",
                 fontWeight: 500,
                 letterSpacing: "0.1em",
@@ -324,20 +324,20 @@ export default function LandingPage() {
       </section>
 
       {/* --- FOOTER --- */}
-      <footer style={{ borderTop: "1px solid #1E1E1E", padding: "32px 24px" }}>
+      <footer style={{ borderTop: "1px solid var(--border)", padding: "32px 24px" }}>
         <div className="flex flex-col md:flex-row items-center justify-between gap-6" style={{ maxWidth: "1280px", margin: "0 auto" }}>
           <img src={LOGO_FULL} alt="Sigma Factory" className="h-6 object-contain" style={{ opacity: 0.4 }} />
-          <div className="flex items-center gap-4 flex-wrap justify-center" style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", letterSpacing: "0.04em", color: "#3A3632" }}>
+          <div className="flex items-center gap-4 flex-wrap justify-center" style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", letterSpacing: "0.04em", color: "var(--foreground-faint)" }}>
             <span>&copy; {new Date().getFullYear()} Sigma Factory</span>
-            <span style={{ color: "#1E1E1E" }}>·</span>
+            <span style={{ color: "var(--border)" }}>·</span>
             <span>Tous droits reserves</span>
-            <span style={{ color: "#1E1E1E" }}>·</span>
-            <a href="/politique-confidentialite" className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632", textDecoration: "none" }}>Politique de confidentialite</a>
-            <span style={{ color: "#1E1E1E" }}>·</span>
-            <a href="/mentions-legales" className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632", textDecoration: "none" }}>Mentions legales</a>
-            <span style={{ color: "#1E1E1E" }}>·</span>
-            <a href="/login?forgot=1" className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632", textDecoration: "none" }}>Mot de passe oublie</a>
-            <span style={{ color: "#1E1E1E" }}>·</span>
+            <span style={{ color: "var(--border)" }}>·</span>
+            <a href="/politique-confidentialite" className="transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-faint)", textDecoration: "none" }}>Politique de confidentialite</a>
+            <span style={{ color: "var(--border)" }}>·</span>
+            <a href="/mentions-legales" className="transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-faint)", textDecoration: "none" }}>Mentions legales</a>
+            <span style={{ color: "var(--border)" }}>·</span>
+            <a href="/login?forgot=1" className="transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-faint)", textDecoration: "none" }}>Mot de passe oublie</a>
+            <span style={{ color: "var(--border)" }}>·</span>
             <span>ORIAS n&deg;19000655</span>
           </div>
         </div>

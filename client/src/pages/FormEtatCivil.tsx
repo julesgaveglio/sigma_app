@@ -77,17 +77,17 @@ const fonts = {
 };
 
 const colors = {
-  bg: "#0A0A0A",
-  surface: "#111111",
-  surfaceRaised: "#161616",
-  border: "#1E1E1E",
-  fg: "#F0EDE6",
-  muted: "#6B6560",
-  faint: "#3A3632",
-  gold: "#C9A84C",
-  goldMuted: "#8A7535",
-  destructive: "#A04040",
-  success: "#4A7A5A",
+  bg: "var(--background)",
+  surface: "var(--surface)",
+  surfaceRaised: "var(--surface-raised)",
+  border: "var(--border)",
+  fg: "var(--foreground)",
+  muted: "var(--foreground-muted)",
+  faint: "var(--foreground-faint)",
+  gold: "var(--gold)",
+  goldMuted: "var(--gold-muted)",
+  destructive: "var(--destructive)",
+  success: "var(--success)",
 };
 
 const labelStyle: React.CSSProperties = {

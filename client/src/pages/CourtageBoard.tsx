@@ -41,10 +41,10 @@ interface CourtageLead {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const STATUT_CONFIG: Record<string, { label: string; color: string; bg: string; border: string }> = {
-  actif:    { label: "Actif",    color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-  en_pause: { label: "En pause", color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-  cloture:  { label: "Cloture",  color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
-  perdu:    { label: "Perdu",    color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+  actif:    { label: "Actif",    color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  en_pause: { label: "En pause", color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  cloture:  { label: "Cloture",  color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  perdu:    { label: "Perdu",    color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
 };
 
 const FORMULE_LABELS: Record<string, string> = {
@@ -58,7 +58,7 @@ function getCourtageStatus(lead: CourtageLead): { label: string; color: string; 
   if (lead.enveloppeValidee) {
     return {
       label: `${lead.enveloppeValidee.toLocaleString("fr-FR")} EUR`,
-      color: "#4A7A5A",
+      color: "var(--success)",
       bg: "rgba(74,122,90,0.08)",
       border: "rgba(74,122,90,0.2)",
       icon: <CheckCircle2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />,
@@ -67,7 +67,7 @@ function getCourtageStatus(lead: CourtageLead): { label: string; color: string; 
   if (lead.courtierAssigne) {
     return {
       label: "En cours",
-      color: "#C9A84C",
+      color: "var(--gold)",
       bg: "rgba(201,168,76,0.08)",
       border: "rgba(201,168,76,0.2)",
       icon: <Clock className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />,
@@ -75,7 +75,7 @@ function getCourtageStatus(lead: CourtageLead): { label: string; color: string; 
   }
   return {
     label: "A traiter",
-    color: "#A04040",
+    color: "var(--destructive)",
     bg: "rgba(160,64,64,0.08)",
     border: "rgba(160,64,64,0.2)",
     icon: <AlertCircle className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />,
@@ -141,9 +141,9 @@ function ModuleBadge({ active, label }: { active: boolean; label: string }) {
       fontFamily: "'Hanken Grotesk', sans-serif",
       fontWeight: 500,
       letterSpacing: "0.04em",
-      color: active ? "#F0EDE6" : "#3A3632",
+      color: active ? "var(--foreground)" : "var(--foreground-faint)",
       background: active ? "rgba(240,237,230,0.06)" : "transparent",
-      border: `1px solid ${active ? "rgba(240,237,230,0.15)" : "#1E1E1E"}`,
+      border: `1px solid ${active ? "rgba(240,237,230,0.15)" : "var(--border)"}`,
     }}>
       {label}
     </span>
@@ -153,11 +153,11 @@ function ModuleBadge({ active, label }: { active: boolean; label: string }) {
 // ─── Composant fiche detail Courtage ─────────────────────────────────────────
 
 const REPONSE_CONFIG: Record<string, { label: string; color: string; border: string; bg: string }> = {
-  en_attente:   { label: "En attente",    color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
-  ok_enveloppe: { label: "OK Enveloppe",  color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-  regroupement: { label: "Regroupement",  color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
-  refus:        { label: "Refus",         color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
-  sans_suite:   { label: "Sans suite",    color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" },
+  en_attente:   { label: "En attente",    color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  ok_enveloppe: { label: "OK Enveloppe",  color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  regroupement: { label: "Regroupement",  color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+  refus:        { label: "Refus",         color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+  sans_suite:   { label: "Sans suite",    color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" },
 };
 
 function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => void }) {
@@ -304,49 +304,49 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
 
   if (isLoading) return (
     <div className="flex items-center justify-center h-48">
-      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
     </div>
   );
 
-  if (!lead) return <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", padding: "24px" }}>Lead introuvable.</p>;
+  if (!lead) return <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", padding: "24px" }}>Lead introuvable.</p>;
 
   // Inline input style helper
   const inputStyle: React.CSSProperties = {
     width: "100%",
-    background: "#161616",
-    border: "1px solid #1E1E1E",
+    background: "var(--surface-raised)",
+    border: "1px solid var(--border)",
     borderRadius: "2px",
     padding: "8px 12px",
     fontSize: "13px",
     fontFamily: "'Hanken Grotesk', sans-serif",
-    color: "#F0EDE6",
+    color: "var(--foreground)",
     outline: "none",
   };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       {/* Identite */}
-      <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
         <p className="label-uppercase" style={{ marginBottom: "12px" }}>Identite du client</p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
           <div className="flex items-center gap-2">
-            <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Nom :</span>
-            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{lead.prenom} {lead.nom}</span>
+            <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Nom :</span>
+            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{lead.prenom} {lead.nom}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Mail className="w-3.5 h-3.5" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
-            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.email}</span>
+            <Mail className="w-3.5 h-3.5" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
+            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{lead.email}</span>
           </div>
           {lead.telephone && (
             <div className="flex items-center gap-2">
-              <Phone className="w-3.5 h-3.5" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
-              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.telephone}</span>
+              <Phone className="w-3.5 h-3.5" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
+              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{lead.telephone}</span>
             </div>
           )}
           {lead.formule && (
             <div className="flex items-center gap-2">
-              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Formule :</span>
-              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#C9A84C" }}>{FORMULE_LABELS[lead.formule] ?? lead.formule}</span>
+              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Formule :</span>
+              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--gold)" }}>{FORMULE_LABELS[lead.formule] ?? lead.formule}</span>
             </div>
           )}
         </div>
@@ -359,11 +359,11 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
       </div>
 
       {/* Suivi courtage */}
-      <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
         <p className="label-uppercase" style={{ marginBottom: "12px" }}>Suivi Courtage</p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
           <div>
-            <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#6B6560", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Courtier assigne</label>
+            <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground-muted)", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Courtier assigne</label>
             <AssigneeSelect
               mode="courtier"
               value={courtierNom}
@@ -377,38 +377,38 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
             />
           </div>
           <div>
-            <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#6B6560", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Email du courtier</label>
+            <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground-muted)", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Email du courtier</label>
             <input
               value={courtierEmail}
               onChange={(e) => setCourtierEmail(e.target.value)}
               style={inputStyle}
               placeholder="courtier@cabinet.fr"
               type="email"
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           <div>
-            <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#6B6560", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Enveloppe validee (EUR)</label>
+            <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground-muted)", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Enveloppe validee (EUR)</label>
             <input
               value={enveloppe}
               onChange={(e) => setEnveloppe(e.target.value)}
               type="number"
               style={inputStyle}
               placeholder="Ex. 350 000"
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           <div>
-            <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#6B6560", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Date annonce enveloppe</label>
+            <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground-muted)", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Date annonce enveloppe</label>
             <input
               value={enveloppeDate}
               onChange={(e) => setEnveloppeDate(e.target.value)}
               type="date"
               style={inputStyle}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
         </div>
@@ -425,8 +425,8 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
               fontWeight: 500,
               letterSpacing: "0.06em",
               textTransform: "uppercase" as const,
-              color: "#F0EDE6",
-              border: "1px solid #1E1E1E",
+              color: "var(--foreground)",
+              border: "1px solid var(--border)",
               background: "transparent",
               cursor: updateMutation.isPending ? "not-allowed" : "pointer",
               opacity: updateMutation.isPending ? 0.5 : 1,
@@ -446,8 +446,8 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
               fontWeight: 500,
               letterSpacing: "0.1em",
               textTransform: "uppercase" as const,
-              color: "#0A0A0A",
-              background: "#C9A84C",
+              color: "var(--background)",
+              background: "var(--gold)",
               border: "none",
               cursor: sendDossierMutation.isPending ? "not-allowed" : "pointer",
               opacity: sendDossierMutation.isPending ? 0.5 : 1,
@@ -457,11 +457,11 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
             {sendDossierMutation.isPending ? "Envoi..." : "Envoyer le dossier"}
           </button>
         </div>
-        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "8px" }}>L'envoi genere le PDF complet et le transmet au courtier + copie Manon</p>
+        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "8px" }}>L'envoi genere le PDF complet et le transmet au courtier + copie Manon</p>
       </div>
 
       {/* Tableau des soumissions courtier */}
-      <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
         <div className="flex items-center justify-between" style={{ marginBottom: "12px" }}>
           <p className="label-uppercase">Courtiers contactes</p>
           <button
@@ -475,8 +475,8 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
               fontWeight: 500,
               letterSpacing: "0.1em",
               textTransform: "uppercase" as const,
-              color: "#0A0A0A",
-              background: "#C9A84C",
+              color: "var(--background)",
+              background: "var(--gold)",
               border: "none",
               cursor: "pointer",
             }}
@@ -488,13 +488,13 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
 
         {/* Formulaire d'ajout enrichi */}
         {showAddForm && (
-          <div style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "20px", marginBottom: "12px" }}>
+          <div style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "20px", marginBottom: "12px" }}>
             {/* Identite courtier */}
             <div style={{ marginBottom: "16px" }}>
               <p className="label-uppercase" style={{ marginBottom: "8px" }}>Courtier contacte</p>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
                 <div style={{ gridColumn: "1 / -1" }}>
-                  <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#6B6560", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Courtier du reseau</label>
+                  <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground-muted)", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Courtier du reseau</label>
                   <AssigneeSelect
                     mode="courtier"
                     value={newCourtierNom}
@@ -512,52 +512,52 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#6B6560", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Cabinet</label>
+                  <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground-muted)", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Cabinet</label>
                   <input value={newCourtierCabinet} onChange={e => setNewCourtierCabinet(e.target.value)} style={inputStyle} placeholder="Cafpi, Meilleurtaux..."
-                    onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                    onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
                 </div>
                 <div>
-                  <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#6B6560", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Email</label>
+                  <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground-muted)", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Email</label>
                   <input value={newCourtierEmail} onChange={e => setNewCourtierEmail(e.target.value)} type="email" style={inputStyle} placeholder="courtier@cabinet.fr"
-                    onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                    onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
                 </div>
                 <div>
-                  <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#6B6560", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Date d'envoi</label>
+                  <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground-muted)", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Date d'envoi</label>
                   <input value={newDateEnvoi} onChange={e => setNewDateEnvoi(e.target.value)} type="date" style={inputStyle}
-                    onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                    onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
                 </div>
                 <div>
-                  <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#6B6560", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Note interne</label>
+                  <label style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground-muted)", letterSpacing: "0.04em", textTransform: "uppercase" as const, display: "block", marginBottom: "4px" }}>Note interne</label>
                   <input value={newNote} onChange={e => setNewNote(e.target.value)} style={inputStyle} placeholder="Remarques..."
-                    onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                    onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
                 </div>
               </div>
             </div>
 
             {/* Resume de situation */}
-            <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "12px", marginBottom: "16px" }}>
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: "12px", marginBottom: "16px" }}>
               <p className="label-uppercase" style={{ marginBottom: "8px" }}>Resume de la situation client</p>
               <textarea
                 value={newResumeSituation}
                 onChange={e => setNewResumeSituation(e.target.value)}
                 style={{ ...inputStyle, minHeight: "80px", resize: "none" as const }}
                 placeholder="Decrivez la situation financiere du client, son projet, ses revenus, ses contraintes... Ce texte sera inclus dans l'email envoye au courtier."
-                onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                onBlur={e => (e.target.style.borderColor = "var(--border)")}
               />
             </div>
 
             {/* Tableau de courtage PDF */}
-            <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "12px", marginBottom: "16px" }}>
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: "12px", marginBottom: "16px" }}>
               <p className="label-uppercase" style={{ marginBottom: "8px" }}>Tableau de courtage</p>
               {(lead as any)?.leadId ? (
                 <div className="flex items-center gap-2">
                   {tableauPdfUrl ? (
                     <div className="flex items-center gap-2" style={{ background: "rgba(74,122,90,0.06)", border: "1px solid rgba(74,122,90,0.2)", borderRadius: "2px", padding: "6px 12px" }}>
-                      <FileText className="w-3.5 h-3.5" style={{ color: "#4A7A5A", strokeWidth: 1.5 }} />
-                      <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#4A7A5A" }}>PDF genere</span>
-                      <a href={tableauPdfUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#C9A84C", textDecoration: "none" }}>Voir</a>
-                      <button onClick={() => setTableauPdfUrl(null)} className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632" }}><X className="w-3 h-3" style={{ strokeWidth: 1.5 }} /></button>
+                      <FileText className="w-3.5 h-3.5" style={{ color: "var(--success)", strokeWidth: 1.5 }} />
+                      <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--success)" }}>PDF genere</span>
+                      <a href={tableauPdfUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--gold)", textDecoration: "none" }}>Voir</a>
+                      <button onClick={() => setTableauPdfUrl(null)} className="transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-faint)" }}><X className="w-3 h-3" style={{ strokeWidth: 1.5 }} /></button>
                     </div>
                   ) : (
                     <button
@@ -572,8 +572,8 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
                         fontWeight: 500,
                         letterSpacing: "0.04em",
                         textTransform: "uppercase" as const,
-                        color: "#F0EDE6",
-                        border: "1px solid #1E1E1E",
+                        color: "var(--foreground)",
+                        border: "1px solid var(--border)",
                         background: "transparent",
                         cursor: generatePdfMutation.isPending ? "not-allowed" : "pointer",
                       }}
@@ -584,33 +584,33 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
                   )}
                 </div>
               ) : (
-                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", fontStyle: "italic" }}>Fiche d'etat civil requise pour generer le tableau de courtage.</p>
+                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", fontStyle: "italic" }}>Fiche d'etat civil requise pour generer le tableau de courtage.</p>
               )}
             </div>
 
             {/* Upload ZIP documents */}
-            <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "12px", marginBottom: "16px" }}>
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: "12px", marginBottom: "16px" }}>
               <p className="label-uppercase" style={{ marginBottom: "8px" }}>Documents a joindre (ZIP)</p>
               {zipFile && zipUrl ? (
                 <div className="flex items-center gap-2" style={{ background: "rgba(74,122,90,0.06)", border: "1px solid rgba(74,122,90,0.2)", borderRadius: "2px", padding: "6px 12px" }}>
-                  <Paperclip className="w-3.5 h-3.5" style={{ color: "#4A7A5A", strokeWidth: 1.5 }} />
-                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#4A7A5A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const, maxWidth: "200px" }}>{zipFile.name}</span>
-                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>({(zipFile.size / 1024 / 1024).toFixed(1)} Mo)</span>
-                  <a href={zipUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#C9A84C", textDecoration: "none" }}>Voir</a>
-                  <button onClick={() => { setZipFile(null); setZipUrl(null); }} className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632" }}><X className="w-3 h-3" style={{ strokeWidth: 1.5 }} /></button>
+                  <Paperclip className="w-3.5 h-3.5" style={{ color: "var(--success)", strokeWidth: 1.5 }} />
+                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--success)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const, maxWidth: "200px" }}>{zipFile.name}</span>
+                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>({(zipFile.size / 1024 / 1024).toFixed(1)} Mo)</span>
+                  <a href={zipUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--gold)", textDecoration: "none" }}>Voir</a>
+                  <button onClick={() => { setZipFile(null); setZipUrl(null); }} className="transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-faint)" }}><X className="w-3 h-3" style={{ strokeWidth: 1.5 }} /></button>
                 </div>
               ) : zipUploading ? (
                 <div className="flex items-center gap-2">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Upload en cours...</span>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Upload en cours...</span>
                 </div>
               ) : (
-                <label className="flex items-center gap-2 cursor-pointer transition-colors duration-300" style={{ border: "1px dashed #1E1E1E", borderRadius: "2px", padding: "10px 12px" }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = "#3A3632")}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                <label className="flex items-center gap-2 cursor-pointer transition-colors duration-300" style={{ border: "1px dashed var(--border)", borderRadius: "2px", padding: "10px 12px" }}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--foreground-faint)")}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
                 >
-                  <Upload className="w-3.5 h-3.5" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
-                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Cliquer pour selectionner un fichier ZIP ou PDF</span>
+                  <Upload className="w-3.5 h-3.5" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
+                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Cliquer pour selectionner un fichier ZIP ou PDF</span>
                   <input
                     type="file"
                     accept=".zip,.pdf,.rar"
@@ -622,15 +622,15 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
             </div>
 
             {/* Option envoi email */}
-            <div className="flex items-center gap-2" style={{ borderTop: "1px solid #1E1E1E", paddingTop: "12px", marginBottom: "12px" }}>
+            <div className="flex items-center gap-2" style={{ borderTop: "1px solid var(--border)", paddingTop: "12px", marginBottom: "12px" }}>
               <input
                 type="checkbox"
                 id="sendEmailOnAdd"
                 checked={sendEmailOnAdd}
                 onChange={e => setSendEmailOnAdd(e.target.checked)}
-                style={{ width: "14px", height: "14px", accentColor: "#C9A84C" }}
+                style={{ width: "14px", height: "14px", accentColor: "var(--gold)" }}
               />
-              <label htmlFor="sendEmailOnAdd" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", cursor: "pointer" }}>
+              <label htmlFor="sendEmailOnAdd" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", cursor: "pointer" }}>
                 Envoyer l'email au courtier avec le resume + documents
               </label>
             </div>
@@ -658,8 +658,8 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
                   fontWeight: 500,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase" as const,
-                  color: "#0A0A0A",
-                  background: "#C9A84C",
+                  color: "var(--background)",
+                  background: "var(--gold)",
                   border: "none",
                   cursor: (!newCourtierNom || addSoumissionMutation.isPending) ? "not-allowed" : "pointer",
                   opacity: (!newCourtierNom || addSoumissionMutation.isPending) ? 0.5 : 1,
@@ -679,8 +679,8 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
                   fontWeight: 500,
                   letterSpacing: "0.04em",
                   textTransform: "uppercase" as const,
-                  color: "#6B6560",
-                  border: "1px solid #1E1E1E",
+                  color: "var(--foreground-muted)",
+                  border: "1px solid var(--border)",
                   background: "transparent",
                   cursor: "pointer",
                 }}
@@ -693,7 +693,7 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
 
         {/* Liste des soumissions */}
         {(soumissions as any[]).length === 0 ? (
-          <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", textAlign: "center", padding: "16px 0" }}>Aucun courtier contacte pour ce dossier</p>
+          <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", textAlign: "center", padding: "16px 0" }}>Aucun courtier contacte pour ce dossier</p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {(soumissions as any[]).map((s: any) => {
@@ -703,15 +703,15 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
                 <div key={s.id} style={{
                   padding: "12px",
                   borderRadius: "2px",
-                  border: s.selectionne ? "1px solid rgba(74,122,90,0.3)" : "1px solid #1E1E1E",
-                  background: s.selectionne ? "rgba(74,122,90,0.04)" : "#161616",
+                  border: s.selectionne ? "1px solid rgba(74,122,90,0.3)" : "1px solid var(--border)",
+                  background: s.selectionne ? "rgba(74,122,90,0.04)" : "var(--surface-raised)",
                 }}>
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        {s.selectionne && <Star className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "#C9A84C", fill: "#C9A84C", strokeWidth: 1.5 }} />}
-                        <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{s.courtierNom}</span>
-                        {s.courtierCabinet && <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{s.courtierCabinet}</span>}
+                        {s.selectionne && <Star className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "var(--gold)", fill: "var(--gold)", strokeWidth: 1.5 }} />}
+                        <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{s.courtierNom}</span>
+                        {s.courtierCabinet && <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{s.courtierCabinet}</span>}
                         <span style={{
                           display: "inline-flex", alignItems: "center", padding: "1px 6px", borderRadius: "2px",
                           fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.04em",
@@ -720,17 +720,17 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
                           {cfg.label}
                         </span>
                         {s.reponse === "ok_enveloppe" && s.montantEnveloppe && (
-                          <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#4A7A5A" }}>{s.montantEnveloppe.toLocaleString("fr-FR")} EUR</span>
+                          <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--success)" }}>{s.montantEnveloppe.toLocaleString("fr-FR")} EUR</span>
                         )}
                       </div>
                       <div className="flex items-center gap-3 mt-1">
-                        {s.courtierEmail && <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{s.courtierEmail}</span>}
+                        {s.courtierEmail && <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{s.courtierEmail}</span>}
                         {joursDepuis !== null && (
-                          <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: joursDepuis > 7 ? "#C9A84C" : "#3A3632" }}>
+                          <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: joursDepuis > 7 ? "var(--gold)" : "var(--foreground-faint)" }}>
                             Envoye {joursDepuis === 0 ? "aujourd'hui" : `il y a ${joursDepuis}j`}
                           </span>
                         )}
-                        {s.note && <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", fontStyle: "italic", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const, maxWidth: "200px" }}>{s.note}</span>}
+                        {s.note && <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", fontStyle: "italic", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const, maxWidth: "200px" }}>{s.note}</span>}
                       </div>
                     </div>
                     {/* Actions rapides */}
@@ -740,8 +740,8 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
                         onChange={e => updateSoumissionMutation.mutate({ id: s.id, reponse: e.target.value as any })}
                         style={{
                           fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif",
-                          background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px",
-                          padding: "2px 6px", color: "#F0EDE6", height: "24px", outline: "none",
+                          background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px",
+                          padding: "2px 6px", color: "var(--foreground)", height: "24px", outline: "none",
                         }}
                       >
                         <option value="en_attente">En attente</option>
@@ -758,8 +758,8 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
                           onBlur={e => { if (e.target.value) updateSoumissionMutation.mutate({ id: s.id, montantEnveloppe: parseInt(e.target.value) }); }}
                           style={{
                             fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif",
-                            background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px",
-                            padding: "2px 6px", color: "#F0EDE6", height: "24px", width: "80px", outline: "none",
+                            background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px",
+                            padding: "2px 6px", color: "var(--foreground)", height: "24px", width: "80px", outline: "none",
                           }}
                         />
                       )}
@@ -767,7 +767,7 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
                         onClick={() => updateSoumissionMutation.mutate({ id: s.id, selectionne: !s.selectionne })}
                         title={s.selectionne ? "Deselectionner" : "Marquer comme courtier retenu"}
                         className="p-1 transition-opacity duration-300 hover:opacity-70"
-                        style={{ color: s.selectionne ? "#C9A84C" : "#3A3632" }}
+                        style={{ color: s.selectionne ? "var(--gold)" : "var(--foreground-faint)" }}
                       >
                         <Star className="w-3.5 h-3.5" fill={s.selectionne ? "currentColor" : "none"} style={{ strokeWidth: 1.5 }} />
                       </button>
@@ -784,7 +784,7 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
                           disabled={sendDossierMutation.isPending}
                           title={`Envoyer le dossier a ${s.courtierNom}`}
                           className="p-1 transition-opacity duration-300 hover:opacity-70"
-                          style={{ color: "#3A3632", opacity: sendDossierMutation.isPending ? 0.3 : 1 }}
+                          style={{ color: "var(--foreground-faint)", opacity: sendDossierMutation.isPending ? 0.3 : 1 }}
                         >
                           <Send className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                         </button>
@@ -792,9 +792,9 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
                       <button
                         onClick={() => { if (confirm("Supprimer cette soumission ?")) deleteSoumissionMutation.mutate({ id: s.id }); }}
                         className="p-1 transition-colors duration-300"
-                        style={{ color: "#3A3632" }}
-                        onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-                        onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                        style={{ color: "var(--foreground-faint)" }}
+                        onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+                        onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
                       >
                         <Trash2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                       </button>
@@ -808,22 +808,22 @@ function CourtageDetail({ leadId, onClose }: { leadId: number; onClose: () => vo
       </div>
 
       {/* Timeline des activites */}
-      <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
         <LeadTimeline crmLeadId={leadId} nomLead={lead ? `${lead.prenom} ${lead.nom}` : undefined} />
       </div>
 
       {/* Notes */}
       {lead.notes && Array.isArray(lead.notes) && lead.notes.length > 0 && (
-        <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
           <p className="label-uppercase" style={{ marginBottom: "12px" }}>Dernieres notes</p>
           <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxHeight: "160px", overflowY: "auto" }}>
             {(lead.notes as any[]).slice(0, 5).map((note: any) => (
-              <div key={note.id} style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "12px" }}>
+              <div key={note.id} style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "12px" }}>
                 <div className="flex justify-between" style={{ marginBottom: "4px" }}>
-                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{note.auteur ?? "Equipe"}</span>
-                  <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{new Date(note.createdAt).toLocaleDateString("fr-FR")}</span>
+                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{note.auteur ?? "Equipe"}</span>
+                  <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{new Date(note.createdAt).toLocaleDateString("fr-FR")}</span>
                 </div>
-                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{note.contenu}</p>
+                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{note.contenu}</p>
               </div>
             ))}
           </div>
@@ -840,17 +840,17 @@ function CourtageCard({ lead, onClick }: { lead: CourtageLead; onClick: () => vo
     <div
       onClick={onClick}
       className="cursor-pointer transition-colors duration-300"
-      style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "16px" }}
-      onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-      onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+      style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "16px" }}
+      onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
     >
       {/* Header */}
       <div className="flex items-start justify-between" style={{ marginBottom: "10px" }}>
         <div className="flex-1 min-w-0">
-          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
             {lead.prenom} {lead.nom}
           </p>
-          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lead.email}</p>
+          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lead.email}</p>
         </div>
         <div className="flex flex-col items-end gap-1 ml-2 shrink-0">
           <StatutBadge statut={lead.statut} />
@@ -859,11 +859,11 @@ function CourtageCard({ lead, onClick }: { lead: CourtageLead; onClick: () => vo
 
       {/* Courtier */}
       <div className="flex items-center gap-1.5" style={{ marginBottom: "8px" }}>
-        <Building2 className="w-3.5 h-3.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+        <Building2 className="w-3.5 h-3.5 shrink-0" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
         {lead.courtierAssigne ? (
-          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.courtierAssigne}</span>
+          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{lead.courtierAssigne}</span>
         ) : (
-          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", fontStyle: "italic" }}>Aucun courtier assigne</span>
+          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", fontStyle: "italic" }}>Aucun courtier assigne</span>
         )}
       </div>
 
@@ -873,8 +873,8 @@ function CourtageCard({ lead, onClick }: { lead: CourtageLead; onClick: () => vo
       {/* Date enveloppe */}
       {lead.enveloppeDate && (
         <div className="flex items-center gap-1.5 mt-2">
-          <CalendarDays className="w-3.5 h-3.5" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
-          <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+          <CalendarDays className="w-3.5 h-3.5" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
+          <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
             Annonce : {new Date(lead.enveloppeDate).toLocaleDateString("fr-FR")}
           </span>
         </div>
@@ -882,10 +882,10 @@ function CourtageCard({ lead, onClick }: { lead: CourtageLead; onClick: () => vo
 
       {/* Formule */}
       {lead.formule && (
-        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginTop: "8px" }}>{FORMULE_LABELS[lead.formule] ?? lead.formule}</p>
+        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", marginTop: "8px" }}>{FORMULE_LABELS[lead.formule] ?? lead.formule}</p>
       )}
 
-      <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "8px" }}>
+      <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "8px" }}>
         Entre le {new Date(lead.createdAt).toLocaleDateString("fr-FR")}
       </p>
     </div>
@@ -900,7 +900,7 @@ function ReseauCourtiers() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-48">
-        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
       </div>
     );
   }
@@ -908,9 +908,9 @@ function ReseauCourtiers() {
   if (!stats || stats.length === 0) {
     return (
       <div className="text-center py-16">
-        <Building2 className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun courtier contacte pour l'instant.</p>
-        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>Les courtiers apparaitront ici des qu'un dossier leur sera soumis.</p>
+        <Building2 className="w-10 h-10 mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucun courtier contacte pour l'instant.</p>
+        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>Les courtiers apparaitront ici des qu'un dossier leur sera soumis.</p>
       </div>
     );
   }
@@ -919,27 +919,27 @@ function ReseauCourtiers() {
     <div>
       <div className="flex items-center justify-between" style={{ marginBottom: "24px" }}>
         <div>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em" }}>
             Reseau courtiers
           </h2>
-          <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginTop: "4px" }}>{stats.length} courtier{stats.length > 1 ? "s" : ""} contacte{stats.length > 1 ? "s" : ""}</p>
+          <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", marginTop: "4px" }}>{stats.length} courtier{stats.length > 1 ? "s" : ""} contacte{stats.length > 1 ? "s" : ""}</p>
         </div>
       </div>
 
       {/* KPIs globaux */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px", marginBottom: "24px" }}>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-px" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px", marginBottom: "24px" }}>
         {[
           { label: "Courtiers contactes", value: stats.length, gold: false },
           { label: "Accords enveloppe", value: stats.reduce((s, c) => s + c.okEnveloppe, 0), gold: false },
           { label: "Refus", value: stats.reduce((s, c) => s + c.refus, 0), gold: false },
           { label: "En attente", value: stats.reduce((s, c) => s + c.enAttente, 0), gold: false },
         ].map((kpi) => (
-          <div key={kpi.label} style={{ padding: "20px", background: "#0A0A0A" }}>
+          <div key={kpi.label} style={{ padding: "20px", background: "var(--background)" }}>
             <p className="tabular-nums" style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "28px",
               fontWeight: 600,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               lineHeight: 1,
               letterSpacing: "0.02em",
             }}>
@@ -951,13 +951,13 @@ function ReseauCourtiers() {
       </div>
 
       {/* Tableau des courtiers */}
-      <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+              <tr style={{ borderBottom: "1px solid var(--border)" }}>
                 {["Courtier", "Cabinet", "Total", "Attente", "Accord", "Regroupement", "Refus", "Retenu", "Taux accord"].map(h => (
-                  <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "#0D0D0D" }}>{h}</th>
+                  <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "var(--surface-header)" }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -968,37 +968,37 @@ function ReseauCourtiers() {
                 return (
                   <tr key={i}
                     className="transition-colors duration-300"
-                    style={{ borderBottom: "1px solid #151515" }}
-                    onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                    style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                    onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                     onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                   >
                     <td className="px-5 py-3">
-                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{c.courtierNom}</p>
-                      {c.courtierEmail && <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{c.courtierEmail}</p>}
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{c.courtierNom}</p>
+                      {c.courtierEmail && <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{c.courtierEmail}</p>}
                     </td>
-                    <td className="px-5 py-3" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{c.courtierCabinet ?? "--"}</td>
-                    <td className="px-5 py-3 tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6", textAlign: "right" }}>{c.total}</td>
-                    <td className="px-5 py-3 tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: c.enAttente > 0 ? "#C9A84C" : "#3A3632", textAlign: "right" }}>{c.enAttente}</td>
-                    <td className="px-5 py-3 tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: c.okEnveloppe > 0 ? "#4A7A5A" : "#3A3632", textAlign: "right" }}>{c.okEnveloppe}</td>
-                    <td className="px-5 py-3 tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: c.regroupement > 0 ? "#F0EDE6" : "#3A3632", textAlign: "right" }}>{c.regroupement}</td>
-                    <td className="px-5 py-3 tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: c.refus > 0 ? "#A04040" : "#3A3632", textAlign: "right" }}>{c.refus}</td>
+                    <td className="px-5 py-3" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{c.courtierCabinet ?? "--"}</td>
+                    <td className="px-5 py-3 tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)", textAlign: "right" }}>{c.total}</td>
+                    <td className="px-5 py-3 tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: c.enAttente > 0 ? "var(--gold)" : "var(--foreground-faint)", textAlign: "right" }}>{c.enAttente}</td>
+                    <td className="px-5 py-3 tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: c.okEnveloppe > 0 ? "var(--success)" : "var(--foreground-faint)", textAlign: "right" }}>{c.okEnveloppe}</td>
+                    <td className="px-5 py-3 tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: c.regroupement > 0 ? "var(--foreground)" : "var(--foreground-faint)", textAlign: "right" }}>{c.regroupement}</td>
+                    <td className="px-5 py-3 tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: c.refus > 0 ? "var(--destructive)" : "var(--foreground-faint)", textAlign: "right" }}>{c.refus}</td>
                     <td className="px-5 py-3" style={{ textAlign: "right" }}>
                       {c.selectionne > 0 ? (
-                        <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#C9A84C" }}>{c.selectionne}</span>
+                        <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--gold)" }}>{c.selectionne}</span>
                       ) : (
-                        <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>--</span>
+                        <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>--</span>
                       )}
                     </td>
                     <td className="px-5 py-3">
                       {tauxAccord !== null ? (
                         <div className="flex items-center gap-2">
-                          <div style={{ flex: 1, background: "#1E1E1E", borderRadius: "1px", height: "4px", maxWidth: "64px" }}>
+                          <div style={{ flex: 1, background: "var(--border)", borderRadius: "1px", height: "4px", maxWidth: "64px" }}>
                             <div
                               style={{
                                 height: "4px",
                                 borderRadius: "1px",
                                 width: `${tauxAccord}%`,
-                                background: tauxAccord >= 60 ? "#4A7A5A" : tauxAccord >= 30 ? "#C9A84C" : "#A04040",
+                                background: tauxAccord >= 60 ? "var(--success)" : tauxAccord >= 30 ? "var(--gold)" : "var(--destructive)",
                               }}
                             />
                           </div>
@@ -1006,11 +1006,11 @@ function ReseauCourtiers() {
                             fontSize: "12px",
                             fontFamily: "'Hanken Grotesk', sans-serif",
                             fontWeight: 500,
-                            color: tauxAccord >= 60 ? "#4A7A5A" : tauxAccord >= 30 ? "#C9A84C" : "#A04040",
+                            color: tauxAccord >= 60 ? "var(--success)" : tauxAccord >= 30 ? "var(--gold)" : "var(--destructive)",
                           }}>{tauxAccord}%</span>
                         </div>
                       ) : (
-                        <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>En cours</span>
+                        <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>En cours</span>
                       )}
                     </td>
                   </tr>
@@ -1068,8 +1068,8 @@ export default function CourtageBoard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
-        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--background)" }}>
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
       </div>
     );
   }
@@ -1107,14 +1107,14 @@ export default function CourtageBoard() {
     .reduce((sum, l) => sum + (l.enveloppeValidee ?? 0), 0);
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <AdminNav />
 
       {/* Toolbar */}
-      <div style={{ borderBottom: "1px solid #1E1E1E" }}>
+      <div style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex items-center justify-between px-5 py-2.5" style={{ maxWidth: "1280px", margin: "0 auto" }}>
           {/* Onglets */}
-          <div className="flex items-center gap-0" style={{ border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+          <div className="flex items-center gap-0" style={{ border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
             <button
               onClick={() => setActiveTab("leads")}
               className="transition-colors duration-300"
@@ -1125,8 +1125,8 @@ export default function CourtageBoard() {
                 fontWeight: 500,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
-                color: activeTab === "leads" ? "#0A0A0A" : "#6B6560",
-                background: activeTab === "leads" ? "#C9A84C" : "transparent",
+                color: activeTab === "leads" ? "var(--background)" : "var(--foreground-muted)",
+                background: activeTab === "leads" ? "var(--gold)" : "transparent",
                 border: "none",
                 cursor: "pointer",
               }}
@@ -1143,10 +1143,10 @@ export default function CourtageBoard() {
                 fontWeight: 500,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
-                color: activeTab === "reseau" ? "#0A0A0A" : "#6B6560",
-                background: activeTab === "reseau" ? "#C9A84C" : "transparent",
+                color: activeTab === "reseau" ? "var(--background)" : "var(--foreground-muted)",
+                background: activeTab === "reseau" ? "var(--gold)" : "transparent",
                 border: "none",
-                borderLeft: "1px solid #1E1E1E",
+                borderLeft: "1px solid var(--border)",
                 cursor: "pointer",
               }}
             >
@@ -1155,9 +1155,9 @@ export default function CourtageBoard() {
           </div>
           <div className="flex items-center gap-2">
             <button onClick={() => refetch()} className="p-2 transition-colors duration-300"
-              style={{ color: "#3A3632", border: "1px solid #1E1E1E", borderRadius: "2px", background: "transparent" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#6B6560"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#3A3632"; }}
+              style={{ color: "var(--foreground-faint)", border: "1px solid var(--border)", borderRadius: "2px", background: "transparent" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-faint)"; }}
             >
               <RefreshCw className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             </button>
@@ -1168,13 +1168,13 @@ export default function CourtageBoard() {
                 fontWeight: 500,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
-                color: "#6B6560",
-                border: "1px solid #1E1E1E",
+                color: "var(--foreground-muted)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 background: "transparent",
               }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
             >
               <Download className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> Export CSV
             </button>
@@ -1194,21 +1194,21 @@ export default function CourtageBoard() {
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "28px",
               fontWeight: 700,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               letterSpacing: "0.08em",
               textTransform: "uppercase" as const,
               lineHeight: 1,
             }}>
               Suivi Courtage
             </h1>
-            <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginTop: "6px" }}>
+            <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", marginTop: "6px" }}>
               Tous les leads en etape Courtage
             </p>
           </div>
         </div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px", marginBottom: "32px" }}>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-px" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px", marginBottom: "32px" }}>
           {[
             { label: "Total leads", value: total, gold: true },
             { label: "A traiter", value: aTraiter, gold: false },
@@ -1216,12 +1216,12 @@ export default function CourtageBoard() {
             { label: "Enveloppe validee", value: avecEnveloppe, gold: false },
             { label: "Total enveloppes", value: enveloppeTotal > 0 ? `${enveloppeTotal.toLocaleString("fr-FR")} EUR` : "--", gold: false },
           ].map((kpi) => (
-            <div key={kpi.label} style={{ padding: "20px", background: "#0A0A0A" }}>
+            <div key={kpi.label} style={{ padding: "20px", background: "var(--background)" }}>
               <p className="tabular-nums" style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "32px",
                 fontWeight: 600,
-                color: kpi.gold ? "#C9A84C" : "#F0EDE6",
+                color: kpi.gold ? "var(--gold)" : "var(--foreground)",
                 lineHeight: 1,
                 letterSpacing: "0.02em",
               }}>
@@ -1235,7 +1235,7 @@ export default function CourtageBoard() {
         {/* Filtres */}
         <div className="flex flex-col sm:flex-row gap-3" style={{ marginBottom: "20px" }}>
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
             <input
               type="text"
               value={search}
@@ -1243,8 +1243,8 @@ export default function CourtageBoard() {
               placeholder="Rechercher un lead ou courtier..."
               className="w-full transition-colors duration-300 focus:outline-none"
               style={{
-                background: "#111111",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 paddingLeft: "36px",
                 paddingRight: "14px",
@@ -1252,23 +1252,23 @@ export default function CourtageBoard() {
                 paddingBottom: "10px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           <select
             value={filterStatut}
             onChange={(e) => setFilterStatut(e.target.value as any)}
             style={{
-              background: "#111111",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               padding: "10px 14px",
               fontSize: "13px",
               fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               outline: "none",
             }}
           >
@@ -1282,13 +1282,13 @@ export default function CourtageBoard() {
             value={filterEnveloppe}
             onChange={(e) => setFilterEnveloppe(e.target.value as any)}
             style={{
-              background: "#111111",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               padding: "10px 14px",
               fontSize: "13px",
               fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               outline: "none",
             }}
           >
@@ -1301,12 +1301,12 @@ export default function CourtageBoard() {
         {/* Resultats */}
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-20">
-            <Building2 className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+            <Building2 className="w-10 h-10 mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
               {leads.length === 0
                 ? "Aucun lead en etape Courtage pour l'instant."
                 : "Aucun resultat pour ces filtres."}
@@ -1314,18 +1314,18 @@ export default function CourtageBoard() {
           </div>
         ) : (
           <>
-            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginBottom: "12px" }}>
+            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginBottom: "12px" }}>
               {filtered.length} lead{filtered.length > 1 ? "s" : ""} affiche{filtered.length > 1 ? "s" : ""}
             </p>
 
             {/* Vue tableau (desktop) */}
-            <div className="hidden md:block" style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+            <div className="hidden md:block" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                    <tr style={{ borderBottom: "1px solid var(--border)" }}>
                       {["Client", "Statut", "Courtier assigne", "Enveloppe", "Date annonce", "Derniere action", "Modules"].map(h => (
-                        <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "#0D0D0D" }}>{h}</th>
+                        <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "var(--surface-header)" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -1336,15 +1336,15 @@ export default function CourtageBoard() {
                           key={lead.id}
                           onClick={() => setSelectedLeadId(lead.id)}
                           className="cursor-pointer transition-colors duration-300"
-                          style={{ borderBottom: "1px solid #151515" }}
-                          onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                          style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                          onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                           onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                         >
                           <td className="px-5 py-3">
-                            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
                               {lead.prenom} {lead.nom}
                             </p>
-                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", maxWidth: "192px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lead.email}</p>
+                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", maxWidth: "192px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lead.email}</p>
                           </td>
                           <td className="px-5 py-3">
                             <StatutBadge statut={lead.statut} />
@@ -1352,19 +1352,19 @@ export default function CourtageBoard() {
                           <td className="px-5 py-3">
                             {lead.courtierAssigne ? (
                               <div>
-                                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{lead.courtierAssigne}</p>
+                                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{lead.courtierAssigne}</p>
                                 {lead.courtierEmail && (
-                                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lead.courtierEmail}</p>
+                                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lead.courtierEmail}</p>
                                 )}
                               </div>
                             ) : (
-                              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", fontStyle: "italic" }}>Non assigne</span>
+                              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", fontStyle: "italic" }}>Non assigne</span>
                             )}
                           </td>
                           <td className="px-5 py-3">
                             <EnveloppeBadge lead={lead} />
                           </td>
-                          <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                          <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                             {lead.enveloppeDate ? new Date(lead.enveloppeDate).toLocaleDateString("fr-FR") : "--"}
                           </td>
                           <td className="px-5 py-3">
@@ -1375,12 +1375,12 @@ export default function CourtageBoard() {
                                 <span className="tabular-nums" style={{
                                   fontSize: "12px",
                                   fontFamily: "'Hanken Grotesk', sans-serif",
-                                  color: days >= 7 ? "#A04040" : days >= 3 ? "#C9A84C" : "#6B6560",
+                                  color: days >= 7 ? "var(--destructive)" : days >= 3 ? "var(--gold)" : "var(--foreground-muted)",
                                 }}>
                                   {days === 0 ? "Aujourd'hui" : days === 1 ? "Hier" : `Il y a ${days}j`}
                                 </span>
                               );
-                            })() : <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>--</span>}
+                            })() : <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>--</span>}
                           </td>
                           <td className="px-5 py-3">
                             <div className="flex gap-1">
@@ -1411,10 +1411,10 @@ export default function CourtageBoard() {
 
       {/* Modal fiche detail */}
       <Dialog open={!!selectedLeadId} onOpenChange={(open) => { if (!open) setSelectedLeadId(null); }}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto" style={{ background: "#0A0A0A", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto" style={{ background: "var(--background)", border: "1px solid var(--border)", borderRadius: "2px" }}>
           <DialogHeader>
-            <DialogTitle style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }} className="flex items-center gap-2">
-              <Building2 className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+            <DialogTitle style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em" }} className="flex items-center gap-2">
+              <Building2 className="w-4 h-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
               Suivi Courtage
             </DialogTitle>
           </DialogHeader>

@@ -16,10 +16,10 @@ import {
 import { Link } from "wouter";
 
 const STATUT_STYLES: Record<string, { color: string; bg: string; border: string }> = {
-  en_attente: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-  actif: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-  suspendu: { color: "#C9A84C", bg: "rgba(201,168,76,0.05)", border: "rgba(201,168,76,0.15)" },
-  resilie: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+  en_attente: { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  actif: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  suspendu: { color: "var(--gold)", bg: "rgba(201,168,76,0.05)", border: "rgba(201,168,76,0.15)" },
+  resilie: { color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
 };
 const STATUT_LABELS: Record<string, string> = {
   en_attente: "En attente",
@@ -29,11 +29,11 @@ const STATUT_LABELS: Record<string, string> = {
 };
 
 const DOSSIER_STATUT_STYLES: Record<string, { color: string; bg: string; border: string }> = {
-  nouveau: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-  en_cours: { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
-  envoye: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
-  valide: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-  refuse: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+  nouveau: { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  en_cours: { color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+  envoye: { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  valide: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  refuse: { color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
 };
 const DOSSIER_STATUT_LABELS: Record<string, string> = {
   nouveau: "Nouveau",
@@ -44,7 +44,7 @@ const DOSSIER_STATUT_LABELS: Record<string, string> = {
 };
 
 function StatutBadge({ statut, map }: { statut: string; map: Record<string, { color: string; bg: string; border: string }> }) {
-  const s = map[statut] ?? { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
+  const s = map[statut] ?? { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
   return (
     <span style={{
       display: "inline-flex",
@@ -140,13 +140,13 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
   const courtiersActifs = courtiers.filter((c: any) => c.statutInterne === "actif");
 
   return (
-    <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+    <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
       {/* Ligne principale */}
       <div
         className="flex items-center gap-4 cursor-pointer transition-colors duration-300"
         style={{ padding: "14px 20px" }}
         onClick={() => setExpanded(!expanded)}
-        onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+        onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
         onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
       >
         <div className="flex-1 min-w-0">
@@ -155,7 +155,7 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "13px",
               fontWeight: 500,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
             }}>
               {dossier.emprunteur1Prenom} {dossier.emprunteur1Nom}
             </span>
@@ -164,13 +164,13 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
           <div className="tabular-nums" style={{
             fontFamily: "'Hanken Grotesk', sans-serif",
             fontSize: "11px",
-            color: "#3A3632",
+            color: "var(--foreground-faint)",
             marginTop: "2px",
           }}>
             {dossier.montantProjet?.toLocaleString("fr-FR")} EUR · {dossier.duree} mois · {dossier.apportPersonnel?.toLocaleString("fr-FR")} EUR apport
           </div>
         </div>
-        <div className="flex items-center gap-4" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632" }}>
+        <div className="flex items-center gap-4" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "var(--foreground-faint)" }}>
           <span className="flex items-center gap-1.5">
             <FileText className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
             {dossier.docs?.length ?? 0} doc(s)
@@ -181,15 +181,15 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
           </span>
           <span className="tabular-nums">{new Date(dossier.createdAt).toLocaleDateString("fr-FR")}</span>
           {expanded
-            ? <ChevronUp className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-            : <ChevronDown className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+            ? <ChevronUp className="w-4 h-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+            : <ChevronDown className="w-4 h-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
           }
         </div>
       </div>
 
       {/* Detail expande */}
       {expanded && (
-        <div className="space-y-6" style={{ borderTop: "1px solid #1E1E1E", padding: "20px", background: "#0D0D0D" }}>
+        <div className="space-y-6" style={{ borderTop: "1px solid var(--border)", padding: "20px", background: "var(--surface-header)" }}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { label: "Revenus nets/mois", value: dossier.emprunteur1RevenusMensuelsNets?.toLocaleString("fr-FR") ?? "--", suffix: " EUR" },
@@ -203,7 +203,7 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "13px",
                   fontWeight: 500,
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                 }}>{item.value}{item.suffix}</p>
               </div>
             ))}
@@ -227,7 +227,7 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
                     fontWeight: 500,
                     letterSpacing: "0.06em",
                     textTransform: "uppercase" as const,
-                    color: "#C9A84C",
+                    color: "var(--gold)",
                     border: "1px solid rgba(201,168,76,0.3)",
                     background: "transparent",
                     cursor: uploading ? "not-allowed" : "pointer",
@@ -242,28 +242,28 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
               </div>
             </div>
             {(!dossier.docs || dossier.docs.length === 0) ? (
-              <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#3A3632" }}>
+              <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "var(--foreground-faint)" }}>
                 Aucun document joint. Ajoutez CNI, bulletins de salaire, avis d'imposition...
               </p>
             ) : (
               <div className="space-y-1">
                 {dossier.docs.map((doc: any) => (
                   <div key={doc.id} className="flex items-center justify-between" style={{
-                    background: "#0A0A0A",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--background)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     padding: "8px 12px",
                   }}>
                     <div className="flex items-center gap-2">
-                      <FileText className="w-3.5 h-3.5" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                      <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#F0EDE6" }}>{doc.nom}</span>
-                      <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "10px", color: "#3A3632", textTransform: "uppercase" as const, letterSpacing: "0.04em" }}>{doc.type}</span>
+                      <FileText className="w-3.5 h-3.5" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                      <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "var(--foreground)" }}>{doc.nom}</span>
+                      <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "10px", color: "var(--foreground-faint)", textTransform: "uppercase" as const, letterSpacing: "0.04em" }}>{doc.type}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       {doc.url && (
                         <a href={doc.url} target="_blank" rel="noopener noreferrer"
                           className="p-1 transition-opacity duration-300 hover:opacity-70"
-                          style={{ color: "#6B6560" }}
+                          style={{ color: "var(--foreground-muted)" }}
                         >
                           <Eye className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                         </a>
@@ -271,9 +271,9 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
                       <button
                         onClick={() => supprimerDocMutation.mutate({ id: doc.id })}
                         className="p-1 transition-colors duration-300"
-                        style={{ color: "#3A3632" }}
-                        onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-                        onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                        style={{ color: "var(--foreground-faint)" }}
+                        onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+                        onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
                       >
                         <X className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                       </button>
@@ -288,7 +288,7 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
           <div>
             <p className="label-uppercase" style={{ marginBottom: "10px" }}>Envoyer a des courtiers</p>
             {courtiersActifs.length === 0 ? (
-              <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#3A3632" }}>
+              <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "var(--foreground-faint)" }}>
                 Aucun courtier actif dans le reseau.
               </p>
             ) : (
@@ -314,22 +314,22 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
                           border: dejaEnvoye
                             ? "1px solid rgba(74,122,90,0.3)"
                             : isSelected
-                            ? "1px solid #C9A84C"
-                            : "1px solid #1E1E1E",
+                            ? "1px solid var(--gold)"
+                            : "1px solid var(--border)",
                           background: dejaEnvoye
                             ? "rgba(74,122,90,0.08)"
                             : isSelected
                             ? "rgba(201,168,76,0.1)"
                             : "transparent",
                           color: dejaEnvoye
-                            ? "#4A7A5A"
+                            ? "var(--success)"
                             : isSelected
-                            ? "#C9A84C"
-                            : "#6B6560",
+                            ? "var(--gold)"
+                            : "var(--foreground-muted)",
                         }}
                       >
                         {dejaEnvoye && "OK "}{c.prenom} {c.nom}
-                        {c.cabinetNom && <span style={{ color: "#3A3632", marginLeft: "4px" }}> · {c.cabinetNom}</span>}
+                        {c.cabinetNom && <span style={{ color: "var(--foreground-faint)", marginLeft: "4px" }}> · {c.cabinetNom}</span>}
                       </button>
                     );
                   })}
@@ -345,8 +345,8 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
                       fontWeight: 500,
                       letterSpacing: "0.1em",
                       textTransform: "uppercase" as const,
-                      background: "#C9A84C",
-                      color: "#0A0A0A",
+                      background: "var(--gold)",
+                      color: "var(--background)",
                       border: "none",
                       cursor: assignerMutation.isPending ? "not-allowed" : "pointer",
                       opacity: assignerMutation.isPending ? 0.6 : 1,
@@ -374,15 +374,15 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
               <div className="space-y-1">
                 {dossier.assignations.map((a: any) => {
                   const courtier = courtiers.find((c: any) => c.id === a.courtierId);
-                  const statutStyle = DOSSIER_STATUT_STYLES[a.statut] ?? { color: "#3A3632" };
+                  const statutStyle = DOSSIER_STATUT_STYLES[a.statut] ?? { color: "var(--foreground-faint)" };
                   return (
                     <div key={a.id} className="flex items-center justify-between" style={{
-                      background: "#0A0A0A",
-                      border: "1px solid #1E1E1E",
+                      background: "var(--background)",
+                      border: "1px solid var(--border)",
                       borderRadius: "2px",
                       padding: "8px 12px",
                     }}>
-                      <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#F0EDE6" }}>
+                      <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "var(--foreground)" }}>
                         {courtier ? `${courtier.prenom} ${courtier.nom}` : `Courtier #${a.courtierId}`}
                       </span>
                       <div className="flex items-center gap-3">
@@ -390,7 +390,7 @@ function DossierCourtageRow({ dossier, courtiers, onRefetch }: {
                           <span style={{
                             fontFamily: "'Hanken Grotesk', sans-serif",
                             fontSize: "11px",
-                            color: "#3A3632",
+                            color: "var(--foreground-faint)",
                             fontStyle: "italic",
                             maxWidth: "192px",
                             overflow: "hidden",
@@ -519,7 +519,7 @@ export default function CourtiersDashboard() {
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "28px",
               fontWeight: 700,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               letterSpacing: "0.08em",
               textTransform: "uppercase" as const,
               lineHeight: 1,
@@ -529,7 +529,7 @@ export default function CourtiersDashboard() {
             <p style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "13px",
-              color: "#3A3632",
+              color: "var(--foreground-faint)",
               marginTop: "6px",
             }}>
               Reseau courtiers & dossiers de financement
@@ -546,8 +546,8 @@ export default function CourtiersDashboard() {
                 fontWeight: 500,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase" as const,
-                background: "#C9A84C",
-                color: "#0A0A0A",
+                background: "var(--gold)",
+                color: "var(--background)",
                 border: "none",
                 cursor: "pointer",
               }}
@@ -561,7 +561,7 @@ export default function CourtiersDashboard() {
         </div>
 
         {/* Onglets */}
-        <div className="flex gap-1" style={{ borderBottom: "1px solid #1E1E1E", marginBottom: "32px" }}>
+        <div className="flex gap-1" style={{ borderBottom: "1px solid var(--border)", marginBottom: "32px" }}>
           {[
             { key: "reseau", label: "Reseau Courtiers", Icon: Users },
             { key: "dossiers", label: "Dossiers Courtage", Icon: FolderOpen },
@@ -579,9 +579,9 @@ export default function CourtiersDashboard() {
                 letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
                 border: "none",
-                borderBottom: activeTab === tab.key ? "1px solid #C9A84C" : "1px solid transparent",
+                borderBottom: activeTab === tab.key ? "1px solid var(--gold)" : "1px solid transparent",
                 background: "transparent",
-                color: activeTab === tab.key ? "#C9A84C" : "#3A3632",
+                color: activeTab === tab.key ? "var(--gold)" : "var(--foreground-faint)",
                 marginBottom: "-1px",
                 cursor: "pointer",
               }}
@@ -593,7 +593,7 @@ export default function CourtiersDashboard() {
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "10px",
                   fontWeight: 500,
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   background: "rgba(201,168,76,0.2)",
                   border: "1px solid rgba(201,168,76,0.3)",
                   borderRadius: "2px",
@@ -618,12 +618,12 @@ export default function CourtiersDashboard() {
                 padding: "20px",
               }}>
                 <div className="flex items-center gap-2" style={{ marginBottom: "12px" }}>
-                  <AlertTriangle className="w-4 h-4" style={{ color: "#A04040", strokeWidth: 1.5 }} />
+                  <AlertTriangle className="w-4 h-4" style={{ color: "var(--destructive)", strokeWidth: 1.5 }} />
                   <span style={{
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     fontSize: "12px",
                     fontWeight: 500,
-                    color: "#A04040",
+                    color: "var(--destructive)",
                   }}>
                     {retardsCourtiers.length} courtier(s) en retard — dossier(s) non traite(s) depuis plus de 72h
                   </span>
@@ -639,12 +639,12 @@ export default function CourtiersDashboard() {
                         padding: "12px 16px",
                       }}>
                         <div className="flex items-center gap-3">
-                          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#A04040", strokeWidth: 1.5 }} />
+                          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "var(--destructive)", strokeWidth: 1.5 }} />
                           <div>
-                            <div style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", fontWeight: 500, color: "#F0EDE6" }}>
+                            <div style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", fontWeight: 500, color: "var(--foreground)" }}>
                               {r.courtierNom}
                             </div>
-                            <div className="tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#A04040" }}>
+                            <div className="tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "var(--destructive)" }}>
                               {r.nbDossiersEnRetard} dossier(s) · {heuresRetard}h de retard · {r.courtierEmail}
                             </div>
                           </div>
@@ -663,8 +663,8 @@ export default function CourtiersDashboard() {
                                 fontWeight: 500,
                                 letterSpacing: "0.04em",
                                 textTransform: "uppercase" as const,
-                                background: "#A04040",
-                                color: "#F0EDE6",
+                                background: "var(--destructive)",
+                                color: "var(--foreground)",
                                 border: "none",
                                 cursor: declencherTrigger.isPending ? "not-allowed" : "pointer",
                               }}
@@ -687,7 +687,7 @@ export default function CourtiersDashboard() {
                                 letterSpacing: "0.04em",
                                 textTransform: "uppercase" as const,
                                 background: "transparent",
-                                color: "#4A7A5A",
+                                color: "var(--success)",
                                 border: "1px solid rgba(74,122,90,0.3)",
                                 cursor: reactiverCourtier.isPending ? "not-allowed" : "pointer",
                               }}
@@ -705,18 +705,18 @@ export default function CourtiersDashboard() {
             )}
 
             {/* KPIs */}
-            <div className="grid grid-cols-3 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+            <div className="grid grid-cols-3 gap-px" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
               {[
                 { label: "Courtiers total", value: stats.total, accent: true },
                 { label: "Actifs", value: stats.actifs, accent: false },
                 { label: "En attente de validation", value: stats.enAttente, accent: false },
               ].map(s => (
-                <div key={s.label} className="p-5" style={{ background: "#0A0A0A" }}>
+                <div key={s.label} className="p-5" style={{ background: "var(--background)" }}>
                   <p className="tabular-nums" style={{
                     fontFamily: "'Cormorant Garamond', serif",
                     fontSize: "32px",
                     fontWeight: 600,
-                    color: s.accent ? "#C9A84C" : "#F0EDE6",
+                    color: s.accent ? "var(--gold)" : "var(--foreground)",
                     lineHeight: 1,
                     letterSpacing: "0.02em",
                   }}>
@@ -732,7 +732,7 @@ export default function CourtiersDashboard() {
                 {/* Filtres */}
                 <div className="flex gap-3">
                   <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                     <input
                       type="text"
                       placeholder="Rechercher un courtier..."
@@ -740,8 +740,8 @@ export default function CourtiersDashboard() {
                       onChange={(e) => setSearch(e.target.value)}
                       className="w-full transition-colors duration-300 focus:outline-none"
                       style={{
-                        background: "#111111",
-                        border: "1px solid #1E1E1E",
+                        background: "var(--surface)",
+                        border: "1px solid var(--border)",
                         borderRadius: "2px",
                         paddingLeft: "36px",
                         paddingRight: "14px",
@@ -749,23 +749,23 @@ export default function CourtiersDashboard() {
                         paddingBottom: "10px",
                         fontSize: "13px",
                         fontFamily: "'Hanken Grotesk', sans-serif",
-                        color: "#F0EDE6",
+                        color: "var(--foreground)",
                       }}
-                      onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                      onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                      onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                      onBlur={e => (e.target.style.borderColor = "var(--border)")}
                     />
                   </div>
                   <select
                     value={statutFilter}
                     onChange={e => setStatutFilter(e.target.value)}
                     style={{
-                      background: "#111111",
-                      border: "1px solid #1E1E1E",
+                      background: "var(--surface)",
+                      border: "1px solid var(--border)",
                       borderRadius: "2px",
                       padding: "10px 14px",
                       fontSize: "13px",
                       fontFamily: "'Hanken Grotesk', sans-serif",
-                      color: "#F0EDE6",
+                      color: "var(--foreground)",
                       outline: "none",
                       minWidth: "160px",
                     }}
@@ -779,12 +779,12 @@ export default function CourtiersDashboard() {
                 </div>
 
                 {/* Table courtiers */}
-                <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+                <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
                   <table className="w-full">
                     <thead>
-                      <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                      <tr style={{ borderBottom: "1px solid var(--border)" }}>
                         {["Courtier", "Cabinet", "ORIAS", "Statut", "Niveau", "Derniere connexion", ""].map(h => (
-                          <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "#0D0D0D" }}>{h}</th>
+                          <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "var(--surface-header)" }}>{h}</th>
                         ))}
                       </tr>
                     </thead>
@@ -792,7 +792,7 @@ export default function CourtiersDashboard() {
                       {courtiers.length === 0 && (
                         <tr>
                           <td colSpan={7} className="text-center py-16">
-                            <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#3A3632" }}>Aucun courtier inscrit</p>
+                            <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground-faint)" }}>Aucun courtier inscrit</p>
                           </td>
                         </tr>
                       )}
@@ -802,24 +802,24 @@ export default function CourtiersDashboard() {
                           onClick={() => setSelectedCourtier(c.id)}
                           className="cursor-pointer transition-colors duration-300"
                           style={{
-                            borderBottom: "1px solid #151515",
-                            background: selectedCourtier === c.id ? "#161616" : "transparent",
+                            borderBottom: "1px solid var(--border-subtle)",
+                            background: selectedCourtier === c.id ? "var(--surface-raised)" : "transparent",
                           }}
-                          onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
-                          onMouseLeave={e => (e.currentTarget.style.background = selectedCourtier === c.id ? "#161616" : "transparent")}
+                          onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
+                          onMouseLeave={e => (e.currentTarget.style.background = selectedCourtier === c.id ? "var(--surface-raised)" : "transparent")}
                         >
                           <td className="px-5 py-3">
-                            <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", fontWeight: 500, color: "#F0EDE6" }}>
+                            <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", fontWeight: 500, color: "var(--foreground)" }}>
                               {c.prenom} {c.nom}
                             </p>
-                            <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
+                            <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "var(--foreground-faint)", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
                               {c.email}
                             </p>
                           </td>
-                          <td className="px-5 py-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#6B6560" }}>
+                          <td className="px-5 py-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground-muted)" }}>
                             {c.cabinetNom || "--"}
                           </td>
-                          <td className="px-5 py-3 tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#6B6560", fontVariantNumeric: "tabular-nums" }}>
+                          <td className="px-5 py-3 tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground-muted)", fontVariantNumeric: "tabular-nums" }}>
                             {c.numeroOrias || "--"}
                           </td>
                           <td className="px-5 py-3">
@@ -835,7 +835,7 @@ export default function CourtiersDashboard() {
                               fontFamily: "'Hanken Grotesk', sans-serif",
                               fontWeight: 500,
                               letterSpacing: "0.06em",
-                              color: "#6B6560",
+                              color: "var(--foreground-muted)",
                               background: "rgba(107,101,96,0.08)",
                               border: "1px solid rgba(107,101,96,0.15)",
                             }}>
@@ -845,26 +845,26 @@ export default function CourtiersDashboard() {
                           <td className="px-5 py-3">
                             {c.lastSignedIn ? (
                               <div>
-                                <div className="tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#6B6560" }}>
+                                <div className="tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "var(--foreground-muted)" }}>
                                   {new Date(c.lastSignedIn).toLocaleDateString("fr-FR")}
                                 </div>
-                                <div className="tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632" }}>
+                                <div className="tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "var(--foreground-faint)" }}>
                                   {new Date(c.lastSignedIn).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                                 </div>
                               </div>
                             ) : (
-                              <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632" }}>Jamais connecte</span>
+                              <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "var(--foreground-faint)" }}>Jamais connecte</span>
                             )}
                           </td>
                           <td className="px-5 py-3">
                             <div className="flex items-center gap-1">
-                              <ChevronRight className="w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                              <ChevronRight className="w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                               <button
                                 onClick={(e) => handleDelete(e, c.id, `${c.prenom} ${c.nom}`)}
                                 className="p-1 transition-colors duration-300"
-                                style={{ color: "#3A3632" }}
-                                onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-                                onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                                style={{ color: "var(--foreground-faint)" }}
+                                onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+                                onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
                               >
                                 <Trash2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                               </button>
@@ -881,50 +881,50 @@ export default function CourtiersDashboard() {
               <div className="space-y-4">
                 {!selectedCourtier && (
                   <div style={{
-                    background: "#111111",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--surface)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     padding: "32px",
                     textAlign: "center",
                   }}>
-                    <Users className="w-6 h-6 mx-auto" style={{ color: "#1E1E1E", strokeWidth: 1.5, marginBottom: "8px" }} />
-                    <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#3A3632" }}>
+                    <Users className="w-6 h-6 mx-auto" style={{ color: "var(--border)", strokeWidth: 1.5, marginBottom: "8px" }} />
+                    <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "var(--foreground-faint)" }}>
                       Selectionnez un courtier
                     </p>
                   </div>
                 )}
                 {detail && (
-                  <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+                  <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
                     <div style={{ marginBottom: "20px" }}>
                       <h3 style={{
                         fontFamily: "'Cormorant Garamond', serif",
                         fontSize: "18px",
                         fontWeight: 600,
-                        color: "#F0EDE6",
+                        color: "var(--foreground)",
                         letterSpacing: "0.02em",
                       }}>
                         {detail.courtier.prenom} {detail.courtier.nom}
                       </h3>
-                      <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632", marginTop: "2px" }}>
+                      <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "var(--foreground-faint)", marginTop: "2px" }}>
                         {detail.courtier.email}
                       </p>
                       {detail.courtier.cabinetNom && (
-                        <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#6B6560", marginTop: "4px" }}>
+                        <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "var(--foreground-muted)", marginTop: "4px" }}>
                           {detail.courtier.cabinetNom}
                         </p>
                       )}
                     </div>
 
                     {/* Stats mini */}
-                    <div className="grid grid-cols-2 gap-px" style={{ background: "#1E1E1E", borderRadius: "2px", marginBottom: "20px" }}>
-                      <div className="p-4 text-center" style={{ background: "#0A0A0A" }}>
-                        <div className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", lineHeight: 1 }}>
+                    <div className="grid grid-cols-2 gap-px" style={{ background: "var(--border)", borderRadius: "2px", marginBottom: "20px" }}>
+                      <div className="p-4 text-center" style={{ background: "var(--background)" }}>
+                        <div className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--foreground)", lineHeight: 1 }}>
                           {detail.stats.totalDossiers}
                         </div>
                         <p className="label-uppercase mt-1" style={{ fontSize: "10px" }}>Dossiers</p>
                       </div>
-                      <div className="p-4 text-center" style={{ background: "#0A0A0A" }}>
-                        <div className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#C9A84C", lineHeight: 1 }}>
+                      <div className="p-4 text-center" style={{ background: "var(--background)" }}>
+                        <div className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--gold)", lineHeight: 1 }}>
                           {detail.stats.totalFilleuls}
                         </div>
                         <p className="label-uppercase mt-1" style={{ fontSize: "10px" }}>Filleuls</p>
@@ -937,7 +937,7 @@ export default function CourtiersDashboard() {
                         style={{
                           fontFamily: "'Hanken Grotesk', sans-serif",
                           fontSize: "12px",
-                          color: "#6B6560",
+                          color: "var(--foreground-muted)",
                           textDecoration: "none",
                           marginBottom: "16px",
                         }}
@@ -960,8 +960,8 @@ export default function CourtiersDashboard() {
                         letterSpacing: "0.04em",
                         textTransform: "uppercase" as const,
                         background: "transparent",
-                        color: "#6B6560",
-                        border: "1px solid #1E1E1E",
+                        color: "var(--foreground-muted)",
+                        border: "1px solid var(--border)",
                         cursor: renvoyerBienvenue.isPending ? "not-allowed" : "pointer",
                         marginBottom: "20px",
                       }}
@@ -971,7 +971,7 @@ export default function CourtiersDashboard() {
                     </button>
 
                     {/* Documents bidirectionnels */}
-                    <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "20px", marginBottom: "20px" }}>
+                    <div style={{ borderTop: "1px solid var(--border)", paddingTop: "20px", marginBottom: "20px" }}>
                       <PartnerDocumentsSection
                         partnerType="courtier"
                         partnerId={detail.courtier.id}
@@ -981,7 +981,7 @@ export default function CourtiersDashboard() {
                       />
                     </div>
 
-                    <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "20px" }}>
+                    <div style={{ borderTop: "1px solid var(--border)", paddingTop: "20px" }}>
                       <p className="label-uppercase" style={{ marginBottom: "10px" }}>Changer le statut</p>
                       <div className="grid grid-cols-2 gap-2">
                         {(["en_attente", "actif", "suspendu", "resilie"] as const).map(s => {
@@ -1000,14 +1000,14 @@ export default function CourtiersDashboard() {
                                 fontWeight: 500,
                                 letterSpacing: "0.04em",
                                 textTransform: "uppercase" as const,
-                                border: "1px solid #1E1E1E",
+                                border: "1px solid var(--border)",
                                 background: "transparent",
-                                color: isActive ? "#3A3632" : "#6B6560",
+                                color: isActive ? "var(--foreground-faint)" : "var(--foreground-muted)",
                                 cursor: isActive ? "not-allowed" : "pointer",
                                 opacity: isActive ? 0.4 : 1,
                               }}
-                              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = "rgba(201,168,76,0.4)"; e.currentTarget.style.color = "#C9A84C"; } }}
-                              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; } }}
+                              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.borderColor = "rgba(201,168,76,0.4)"; e.currentTarget.style.color = "var(--gold)"; } }}
+                              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; } }}
                             >
                               {STATUT_LABELS[s]}
                             </button>
@@ -1026,18 +1026,18 @@ export default function CourtiersDashboard() {
         {activeTab === "compteur" && (
           <div className="space-y-8">
             {/* KPIs */}
-            <div className="grid grid-cols-3 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+            <div className="grid grid-cols-3 gap-px" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
               {[
                 { label: "Courtiers avec dossiers", value: statsCourtiers.filter((s: any) => s.total > 0).length, accent: false },
                 { label: "Total dossiers envoyes", value: statsCourtiers.reduce((acc: number, s: any) => acc + s.total, 0), accent: true },
                 { label: "Dossiers valides", value: statsCourtiers.reduce((acc: number, s: any) => acc + s.valide, 0), accent: false },
               ].map(s => (
-                <div key={s.label} className="p-5" style={{ background: "#0A0A0A" }}>
+                <div key={s.label} className="p-5" style={{ background: "var(--background)" }}>
                   <p className="tabular-nums" style={{
                     fontFamily: "'Cormorant Garamond', serif",
                     fontSize: "32px",
                     fontWeight: 600,
-                    color: s.accent ? "#C9A84C" : "#F0EDE6",
+                    color: s.accent ? "var(--gold)" : "var(--foreground)",
                     lineHeight: 1,
                     letterSpacing: "0.02em",
                   }}>
@@ -1056,12 +1056,12 @@ export default function CourtiersDashboard() {
                 borderRadius: "2px",
                 padding: "16px 20px",
               }}>
-                <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#C9A84C", strokeWidth: 1.5 }} />
+                <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "var(--gold)", strokeWidth: 1.5 }} />
                 <div>
-                  <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", fontWeight: 500, color: "#C9A84C" }}>
+                  <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", fontWeight: 500, color: "var(--gold)" }}>
                     Quota hebdomadaire atteint
                   </p>
-                  <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#6B6560", marginTop: "2px" }}>
+                  <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "var(--foreground-muted)", marginTop: "2px" }}>
                     {statsCourtiers.filter((s: any) => s.hebdo >= 10).map((s: any) => s.courtierNom).join(", ")} — 10 dossiers assignes cette semaine.
                   </p>
                 </div>
@@ -1069,19 +1069,19 @@ export default function CourtiersDashboard() {
             )}
 
             {/* Table compteur */}
-            <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+            <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
               <table className="w-full">
                 <thead>
-                  <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                  <tr style={{ borderBottom: "1px solid var(--border)" }}>
                     {["Courtier", "Cabinet", "Statut", "Regions", "Cette semaine", "Total", "En attente", "En cours", "Valides", "Refuses"].map(h => (
-                      <th key={h} className={`${["Cette semaine", "Total", "En attente", "En cours", "Valides", "Refuses"].includes(h) ? "text-center" : "text-left"} px-5 py-3 label-uppercase`} style={{ background: "#0D0D0D" }}>{h}</th>
+                      <th key={h} className={`${["Cette semaine", "Total", "En attente", "En cours", "Valides", "Refuses"].includes(h) ? "text-center" : "text-left"} px-5 py-3 label-uppercase`} style={{ background: "var(--surface-header)" }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {statsCourtiers.length === 0 && (
                     <tr><td colSpan={10} className="text-center py-16">
-                      <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#3A3632" }}>Aucun courtier inscrit</p>
+                      <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground-faint)" }}>Aucun courtier inscrit</p>
                     </td></tr>
                   )}
                   {statsCourtiers.map((s: any) => {
@@ -1089,15 +1089,15 @@ export default function CourtiersDashboard() {
                     return (
                     <tr key={s.courtierId}
                       className="transition-colors duration-300"
-                      style={{ borderBottom: "1px solid #151515" }}
-                      onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                      style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                      onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                       onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                     >
                       <td className="px-5 py-3">
-                        <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", fontWeight: 500, color: "#F0EDE6" }}>{s.courtierNom}</p>
-                        <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632" }}>{s.courtierEmail}</p>
+                        <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", fontWeight: 500, color: "var(--foreground)" }}>{s.courtierNom}</p>
+                        <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "var(--foreground-faint)" }}>{s.courtierEmail}</p>
                       </td>
-                      <td className="px-5 py-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#6B6560" }}>
+                      <td className="px-5 py-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground-muted)" }}>
                         {s.cabinetNom || "--"}
                       </td>
                       <td className="px-5 py-3">
@@ -1112,7 +1112,7 @@ export default function CourtiersDashboard() {
                                 fontSize: "10px",
                                 fontWeight: 500,
                                 letterSpacing: "0.04em",
-                                color: "#6B6560",
+                                color: "var(--foreground-muted)",
                                 background: "rgba(107,101,96,0.08)",
                                 border: "1px solid rgba(107,101,96,0.15)",
                                 borderRadius: "2px",
@@ -1120,10 +1120,10 @@ export default function CourtiersDashboard() {
                               }}>{r}</span>
                             ))}
                             {s.regions.length > 3 && (
-                              <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "10px", color: "#3A3632" }}>+{s.regions.length - 3}</span>
+                              <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "10px", color: "var(--foreground-faint)" }}>+{s.regions.length - 3}</span>
                             )}
                           </div>
-                        ) : <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632" }}>Non renseigne</span>}
+                        ) : <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "var(--foreground-faint)" }}>Non renseigne</span>}
                       </td>
                       <td className="px-5 py-3 text-center">
                         {quotaAtteint ? (
@@ -1136,7 +1136,7 @@ export default function CourtiersDashboard() {
                             fontSize: "11px",
                             fontFamily: "'Hanken Grotesk', sans-serif",
                             fontWeight: 600,
-                            color: "#C9A84C",
+                            color: "var(--gold)",
                             background: "rgba(201,168,76,0.08)",
                             border: "1px solid rgba(201,168,76,0.2)",
                           }}>
@@ -1147,7 +1147,7 @@ export default function CourtiersDashboard() {
                             fontFamily: "'Hanken Grotesk', sans-serif",
                             fontSize: "13px",
                             fontWeight: 500,
-                            color: s.hebdo > 0 ? "#F0EDE6" : "#3A3632",
+                            color: s.hebdo > 0 ? "var(--foreground)" : "var(--foreground-faint)",
                           }}>{s.hebdo || "--"}</span>
                         )}
                       </td>
@@ -1156,7 +1156,7 @@ export default function CourtiersDashboard() {
                           fontFamily: "'Cormorant Garamond', serif",
                           fontSize: "20px",
                           fontWeight: 600,
-                          color: s.total > 0 ? "#C9A84C" : "#3A3632",
+                          color: s.total > 0 ? "var(--gold)" : "var(--foreground-faint)",
                         }}>{s.total}</span>
                       </td>
                       {[
@@ -1181,7 +1181,7 @@ export default function CourtiersDashboard() {
                               background: cell.style.bg,
                               border: `1px solid ${cell.style.border}`,
                             }}>{cell.val}</span>
-                          ) : <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#3A3632" }}>--</span>}
+                          ) : <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "var(--foreground-faint)" }}>--</span>}
                         </td>
                       ))}
                     </tr>
@@ -1195,7 +1195,7 @@ export default function CourtiersDashboard() {
               <p style={{
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "11px",
-                color: "#3A3632",
+                color: "var(--foreground-faint)",
                 textAlign: "right",
               }}>
                 Tri par nombre total de dossiers recus (decroissant)
@@ -1208,19 +1208,19 @@ export default function CourtiersDashboard() {
         {activeTab === "dossiers" && (
           <div className="space-y-8">
             {/* KPIs dossiers */}
-            <div className="grid grid-cols-4 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+            <div className="grid grid-cols-4 gap-px" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
               {[
                 { label: "Total", value: dossierStats.total, accent: false },
                 { label: "Nouveaux", value: dossierStats.nouveaux, accent: true },
                 { label: "Envoyes", value: dossierStats.envoyes, accent: false },
                 { label: "Valides", value: dossierStats.valides, accent: false },
               ].map((s, i) => (
-                <div key={s.label} className="p-5" style={{ background: "#0A0A0A" }}>
+                <div key={s.label} className="p-5" style={{ background: "var(--background)" }}>
                   <p className="tabular-nums" style={{
                     fontFamily: "'Cormorant Garamond', serif",
                     fontSize: "32px",
                     fontWeight: 600,
-                    color: s.accent ? "#C9A84C" : "#F0EDE6",
+                    color: s.accent ? "var(--gold)" : "var(--foreground)",
                     lineHeight: 1,
                     letterSpacing: "0.02em",
                   }}>
@@ -1234,7 +1234,7 @@ export default function CourtiersDashboard() {
             {/* Filtres */}
             <div className="flex gap-3">
               <div className="relative flex-1" style={{ maxWidth: "320px" }}>
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                 <input
                   type="text"
                   placeholder="Rechercher un lead..."
@@ -1242,8 +1242,8 @@ export default function CourtiersDashboard() {
                   onChange={(e) => setDossierSearch(e.target.value)}
                   className="w-full transition-colors duration-300 focus:outline-none"
                   style={{
-                    background: "#111111",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--surface)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     paddingLeft: "36px",
                     paddingRight: "14px",
@@ -1251,23 +1251,23 @@ export default function CourtiersDashboard() {
                     paddingBottom: "10px",
                     fontSize: "13px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                   }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <select
                 value={dossierStatut}
                 onChange={e => setDossierStatut(e.target.value)}
                 style={{
-                  background: "#111111",
-                  border: "1px solid #1E1E1E",
+                  background: "var(--surface)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   padding: "10px 14px",
                   fontSize: "13px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   outline: "none",
                   minWidth: "160px",
                 }}
@@ -1285,17 +1285,17 @@ export default function CourtiersDashboard() {
             <div className="space-y-2">
               {dossiers.length === 0 ? (
                 <div style={{
-                  background: "#111111",
-                  border: "1px solid #1E1E1E",
+                  background: "var(--surface)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   padding: "48px 32px",
                   textAlign: "center",
                 }}>
-                  <FolderOpen className="w-8 h-8 mx-auto" style={{ color: "#1E1E1E", strokeWidth: 1.5, marginBottom: "12px" }} />
-                  <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#6B6560" }}>
+                  <FolderOpen className="w-8 h-8 mx-auto" style={{ color: "var(--border)", strokeWidth: 1.5, marginBottom: "12px" }} />
+                  <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground-muted)" }}>
                     Aucun dossier de courtage recu
                   </p>
-                  <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "#3A3632", marginTop: "4px" }}>
+                  <p style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "11px", color: "var(--foreground-faint)", marginTop: "4px" }}>
                     Les dossiers apparaissent ici quand les leads remplissent le Tableau de Courtage
                   </p>
                 </div>

@@ -5,11 +5,11 @@ type Resultat = "close" | "non_close" | "r2" | "perdu";
 
 /* ── Shared inline style helpers ── */
 const inputStyle: React.CSSProperties = {
-  background: "#161616",
-  border: "1px solid #1E1E1E",
+  background: "var(--surface-raised)",
+  border: "1px solid var(--border)",
   borderRadius: "2px",
   padding: "12px 14px",
-  color: "#F0EDE6",
+  color: "var(--foreground)",
   fontSize: "14px",
   fontFamily: "'Hanken Grotesk', sans-serif",
   width: "100%",
@@ -23,14 +23,14 @@ const labelStyle: React.CSSProperties = {
   fontSize: "11px",
   textTransform: "uppercase",
   letterSpacing: "0.08em",
-  color: "#6B6560",
+  color: "var(--foreground-muted)",
   display: "block",
   marginBottom: "8px",
 };
 
 const sectionStyle: React.CSSProperties = {
-  background: "#111111",
-  border: "1px solid #1E1E1E",
+  background: "var(--surface)",
+  border: "1px solid var(--border)",
   borderRadius: "2px",
   padding: "32px",
 };
@@ -39,19 +39,19 @@ const sectionTitleStyle: React.CSSProperties = {
   fontFamily: "'Cormorant Garamond', serif",
   fontSize: "18px",
   fontWeight: 600,
-  color: "#F0EDE6",
+  color: "var(--foreground)",
   letterSpacing: "0.04em",
   marginBottom: "24px",
   paddingBottom: "16px",
-  borderBottom: "1px solid #1E1E1E",
+  borderBottom: "1px solid var(--border)",
 };
 
 const selectTriggerStyle: React.CSSProperties = {
-  background: "#161616",
-  border: "1px solid #1E1E1E",
+  background: "var(--surface-raised)",
+  border: "1px solid var(--border)",
   borderRadius: "2px",
   padding: "12px 14px",
-  color: "#F0EDE6",
+  color: "var(--foreground)",
   fontSize: "14px",
   fontFamily: "'Hanken Grotesk', sans-serif",
   width: "100%",
@@ -63,10 +63,10 @@ const selectTriggerStyle: React.CSSProperties = {
 };
 
 const focusIn = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-  e.target.style.borderColor = "#C9A84C";
+  e.target.style.borderColor = "var(--gold)";
 };
 const focusOut = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-  e.target.style.borderColor = "#1E1E1E";
+  e.target.style.borderColor = "var(--border)";
 };
 
 export default function SalesClose() {
@@ -160,14 +160,14 @@ export default function SalesClose() {
   /* ── Confirmation post-submit ── */
   if (submitted) {
     return (
-      <div style={{ background: "#0A0A0A", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
+      <div style={{ background: "var(--background)", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
         <div style={{ textAlign: "center", maxWidth: "380px" }}>
-          <div style={{ borderBottom: "1px solid #1E1E1E", paddingBottom: "24px", marginBottom: "24px" }}>
+          <div style={{ borderBottom: "1px solid var(--border)", paddingBottom: "24px", marginBottom: "24px" }}>
             <h2 style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "24px",
               fontWeight: 600,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               letterSpacing: "0.04em",
               marginBottom: "12px",
             }}>
@@ -176,7 +176,7 @@ export default function SalesClose() {
             <p style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "13px",
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               lineHeight: "1.6",
               margin: 0,
             }}>
@@ -186,8 +186,8 @@ export default function SalesClose() {
           <button
             onClick={resetForm}
             style={{
-              background: "#C9A84C",
-              color: "#0A0A0A",
+              background: "var(--gold)",
+              color: "var(--background)",
               border: "none",
               borderRadius: "2px",
               padding: "14px 28px",
@@ -211,12 +211,12 @@ export default function SalesClose() {
 
   /* ── Main form ── */
   return (
-    <div style={{ background: "#0A0A0A", minHeight: "100vh" }}>
+    <div style={{ background: "var(--background)", minHeight: "100vh" }}>
 
       {/* Header */}
       <header style={{
-        borderBottom: "1px solid #1E1E1E",
-        background: "#0A0A0A",
+        borderBottom: "1px solid var(--border)",
+        background: "var(--background)",
         position: "sticky",
         top: 0,
         zIndex: 10,
@@ -229,7 +229,7 @@ export default function SalesClose() {
               fontWeight: 500,
               letterSpacing: "0.2em",
               textTransform: "uppercase" as const,
-              color: "#C9A84C",
+              color: "var(--gold)",
               margin: "0 0 4px",
             }}>
               SIGMA FACTORY
@@ -238,7 +238,7 @@ export default function SalesClose() {
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "20px",
               fontWeight: 600,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               letterSpacing: "0.04em",
               margin: 0,
             }}>
@@ -248,7 +248,7 @@ export default function SalesClose() {
           <p style={{
             fontFamily: "'Hanken Grotesk', sans-serif",
             fontSize: "11px",
-            color: "#3A3632",
+            color: "var(--foreground-faint)",
             margin: 0,
           }}>
             Saisie obligatoire apres chaque appel
@@ -271,7 +271,7 @@ export default function SalesClose() {
                 onChange={e => set("closerNom", e.target.value)}
                 style={{
                   ...selectTriggerStyle,
-                  color: form.closerNom ? "#F0EDE6" : "#3A3632",
+                  color: form.closerNom ? "var(--foreground)" : "var(--foreground-faint)",
                 }}
                 onFocus={focusIn as any}
                 onBlur={focusOut as any}
@@ -291,7 +291,7 @@ export default function SalesClose() {
                   onChange={e => set("offre", e.target.value)}
                   style={{
                     ...selectTriggerStyle,
-                    color: form.offre ? "#F0EDE6" : "#3A3632",
+                    color: form.offre ? "var(--foreground)" : "var(--foreground-faint)",
                   }}
                   onFocus={focusIn as any}
                   onBlur={focusOut as any}
@@ -363,11 +363,11 @@ export default function SalesClose() {
                     type="button"
                     onClick={() => { set("show", opt.v); if (opt.v === "false") set("resultat", ""); }}
                     style={{
-                      background: form.show === opt.v ? "rgba(201, 168, 76, 0.06)" : "#161616",
-                      border: `1px solid ${form.show === opt.v ? "#C9A84C" : "#1E1E1E"}`,
+                      background: form.show === opt.v ? "rgba(201, 168, 76, 0.06)" : "var(--surface-raised)",
+                      border: `1px solid ${form.show === opt.v ? "var(--gold)" : "var(--border)"}`,
                       borderRadius: "2px",
                       padding: "12px",
-                      color: form.show === opt.v ? "#C9A84C" : "#6B6560",
+                      color: form.show === opt.v ? "var(--gold)" : "var(--foreground-muted)",
                       fontSize: "13px",
                       fontFamily: "'Hanken Grotesk', sans-serif",
                       fontWeight: 500,
@@ -397,11 +397,11 @@ export default function SalesClose() {
                       type="button"
                       onClick={() => set("resultat", opt.v)}
                       style={{
-                        background: form.resultat === opt.v ? "rgba(201, 168, 76, 0.06)" : "#161616",
-                        border: `1px solid ${form.resultat === opt.v ? "#C9A84C" : "#1E1E1E"}`,
+                        background: form.resultat === opt.v ? "rgba(201, 168, 76, 0.06)" : "var(--surface-raised)",
+                        border: `1px solid ${form.resultat === opt.v ? "var(--gold)" : "var(--border)"}`,
                         borderRadius: "2px",
                         padding: "12px",
-                        color: form.resultat === opt.v ? "#C9A84C" : "#6B6560",
+                        color: form.resultat === opt.v ? "var(--gold)" : "var(--foreground-muted)",
                         fontSize: "13px",
                         fontFamily: "'Hanken Grotesk', sans-serif",
                         fontWeight: 500,
@@ -449,8 +449,8 @@ export default function SalesClose() {
 
           {/* ── SECTION 4 : DETAIL DU CA — uniquement si Close ── */}
           {isShow && isClose && (
-            <div style={{ ...sectionStyle, borderColor: "#C9A84C", marginBottom: "24px" }}>
-              <h2 style={{ ...sectionTitleStyle, color: "#C9A84C" }}>Detail du CA</h2>
+            <div style={{ ...sectionStyle, borderColor: "var(--gold)", marginBottom: "24px" }}>
+              <h2 style={{ ...sectionTitleStyle, color: "var(--gold)" }}>Detail du CA</h2>
 
               {/* Formule + Mode de paiement */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "20px" }}>
@@ -461,7 +461,7 @@ export default function SalesClose() {
                     onChange={e => set("formule", e.target.value)}
                     style={{
                       ...selectTriggerStyle,
-                      color: form.formule ? "#F0EDE6" : "#3A3632",
+                      color: form.formule ? "var(--foreground)" : "var(--foreground-faint)",
                     }}
                     onFocus={focusIn as any}
                     onBlur={focusOut as any}
@@ -478,7 +478,7 @@ export default function SalesClose() {
                     onChange={e => set("modePaiement", e.target.value)}
                     style={{
                       ...selectTriggerStyle,
-                      color: form.modePaiement ? "#F0EDE6" : "#3A3632",
+                      color: form.modePaiement ? "var(--foreground)" : "var(--foreground-faint)",
                     }}
                     onFocus={focusIn as any}
                     onBlur={focusOut as any}
@@ -536,8 +536,8 @@ export default function SalesClose() {
                       width: "18px",
                       height: "18px",
                       borderRadius: "2px",
-                      border: `1px solid ${form.hasCb ? "#C9A84C" : "#1E1E1E"}`,
-                      background: form.hasCb ? "#C9A84C" : "#161616",
+                      border: `1px solid ${form.hasCb ? "var(--gold)" : "var(--border)"}`,
+                      background: form.hasCb ? "var(--gold)" : "var(--surface-raised)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -547,9 +547,9 @@ export default function SalesClose() {
                       transition: "all 300ms ease",
                     }}
                   >
-                    {form.hasCb && <span style={{ color: "#0A0A0A", fontSize: "11px", fontWeight: 700, lineHeight: 1 }}>&#10003;</span>}
+                    {form.hasCb && <span style={{ color: "var(--background)", fontSize: "11px", fontWeight: 700, lineHeight: 1 }}>&#10003;</span>}
                   </button>
-                  <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6", width: "120px", flexShrink: 0 }}>CB Stripe</span>
+                  <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground)", width: "120px", flexShrink: 0 }}>CB Stripe</span>
                   {form.hasCb && (
                     <input
                       type="number" min="0" step="0.01" value={form.montantCb}
@@ -569,8 +569,8 @@ export default function SalesClose() {
                       width: "18px",
                       height: "18px",
                       borderRadius: "2px",
-                      border: `1px solid ${form.hasVirement ? "#C9A84C" : "#1E1E1E"}`,
-                      background: form.hasVirement ? "#C9A84C" : "#161616",
+                      border: `1px solid ${form.hasVirement ? "var(--gold)" : "var(--border)"}`,
+                      background: form.hasVirement ? "var(--gold)" : "var(--surface-raised)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -580,9 +580,9 @@ export default function SalesClose() {
                       transition: "all 300ms ease",
                     }}
                   >
-                    {form.hasVirement && <span style={{ color: "#0A0A0A", fontSize: "11px", fontWeight: 700, lineHeight: 1 }}>&#10003;</span>}
+                    {form.hasVirement && <span style={{ color: "var(--background)", fontSize: "11px", fontWeight: 700, lineHeight: 1 }}>&#10003;</span>}
                   </button>
-                  <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6", width: "120px", flexShrink: 0 }}>Virement</span>
+                  <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground)", width: "120px", flexShrink: 0 }}>Virement</span>
                   {form.hasVirement && (
                     <input
                       type="number" min="0" step="0.01" value={form.montantVirement}
@@ -602,8 +602,8 @@ export default function SalesClose() {
                       width: "18px",
                       height: "18px",
                       borderRadius: "2px",
-                      border: `1px solid ${form.hasCreditImpot ? "#C9A84C" : "#1E1E1E"}`,
-                      background: form.hasCreditImpot ? "#C9A84C" : "#161616",
+                      border: `1px solid ${form.hasCreditImpot ? "var(--gold)" : "var(--border)"}`,
+                      background: form.hasCreditImpot ? "var(--gold)" : "var(--surface-raised)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -613,9 +613,9 @@ export default function SalesClose() {
                       transition: "all 300ms ease",
                     }}
                   >
-                    {form.hasCreditImpot && <span style={{ color: "#0A0A0A", fontSize: "11px", fontWeight: 700, lineHeight: 1 }}>&#10003;</span>}
+                    {form.hasCreditImpot && <span style={{ color: "var(--background)", fontSize: "11px", fontWeight: 700, lineHeight: 1 }}>&#10003;</span>}
                   </button>
-                  <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6", width: "120px", flexShrink: 0 }}>Credit d'impot</span>
+                  <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground)", width: "120px", flexShrink: 0 }}>Credit d'impot</span>
                   {form.hasCreditImpot && (
                     <input
                       type="number" min="0" step="0.01" value={form.montantCreditImpot}
@@ -635,8 +635,8 @@ export default function SalesClose() {
                       width: "18px",
                       height: "18px",
                       borderRadius: "2px",
-                      border: `1px solid ${form.hasPrelevement ? "#C9A84C" : "#1E1E1E"}`,
-                      background: form.hasPrelevement ? "#C9A84C" : "#161616",
+                      border: `1px solid ${form.hasPrelevement ? "var(--gold)" : "var(--border)"}`,
+                      background: form.hasPrelevement ? "var(--gold)" : "var(--surface-raised)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -647,9 +647,9 @@ export default function SalesClose() {
                       transition: "all 300ms ease",
                     }}
                   >
-                    {form.hasPrelevement && <span style={{ color: "#0A0A0A", fontSize: "11px", fontWeight: 700, lineHeight: 1 }}>&#10003;</span>}
+                    {form.hasPrelevement && <span style={{ color: "var(--background)", fontSize: "11px", fontWeight: 700, lineHeight: 1 }}>&#10003;</span>}
                   </button>
-                  <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6", width: "120px", flexShrink: 0, marginTop: "2px" }}>Prelevement</span>
+                  <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground)", width: "120px", flexShrink: 0, marginTop: "2px" }}>Prelevement</span>
                   {form.hasPrelevement && (
                     <div style={{ display: "flex", gap: "8px", flex: 1 }}>
                       <input
@@ -674,12 +674,12 @@ export default function SalesClose() {
           {/* Erreur */}
           {error && (
             <div style={{
-              background: "#1A1010",
+              background: "var(--surface-header)",
               border: "1px solid #3A1E1E",
               borderRadius: "2px",
               padding: "12px 16px",
               marginBottom: "24px",
-              color: "#A04040",
+              color: "var(--destructive)",
               fontSize: "13px",
               fontFamily: "'Hanken Grotesk', sans-serif",
             }}>
@@ -693,8 +693,8 @@ export default function SalesClose() {
             disabled={soumettre.isPending}
             style={{
               width: "100%",
-              background: soumettre.isPending ? "#8A7535" : "#C9A84C",
-              color: "#0A0A0A",
+              background: soumettre.isPending ? "var(--gold-muted)" : "var(--gold)",
+              color: "var(--background)",
               border: "none",
               borderRadius: "2px",
               padding: "14px",

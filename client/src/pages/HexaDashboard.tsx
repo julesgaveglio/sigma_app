@@ -48,18 +48,18 @@ type HexaDossier = {
 // ─── Labels ───────────────────────────────────────────────────────────────────
 
 const STATUT_LABELS: Record<string, { label: string; style: { color: string; bg: string; border: string } }> = {
-  nouveau: { label: "Nouveau", style: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" } },
-  en_cours: { label: "En cours", style: { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" } },
-  lien_envoye: { label: "Lien envoye", style: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" } },
-  paiement_initie: { label: "Paiement initie", style: { color: "#F0EDE6", bg: "rgba(240,237,230,0.04)", border: "rgba(240,237,230,0.12)" } },
-  paiement_recu: { label: "Paiement recu", style: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" } },
-  annule: { label: "Annule", style: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" } },
+  nouveau: { label: "Nouveau", style: { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" } },
+  en_cours: { label: "En cours", style: { color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" } },
+  lien_envoye: { label: "Lien envoye", style: { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" } },
+  paiement_initie: { label: "Paiement initie", style: { color: "var(--foreground)", bg: "rgba(240,237,230,0.04)", border: "rgba(240,237,230,0.12)" } },
+  paiement_recu: { label: "Paiement recu", style: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" } },
+  annule: { label: "Annule", style: { color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" } },
 };
 
 const LIMIT = 25;
 
 function StatutBadge({ statut }: { statut: string }) {
-  const s = STATUT_LABELS[statut] ?? { label: statut, style: { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } };
+  const s = STATUT_LABELS[statut] ?? { label: statut, style: { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } };
   return (
     <span style={{
       display: "inline-flex",
@@ -110,22 +110,22 @@ function HexaDetail({ dossier, onClose, onUpdate }: {
     <div className="fixed inset-0 z-50 flex items-start justify-end" style={{ background: "rgba(0,0,0,0.7)" }} onClick={onClose}>
       <div
         className="w-full h-full overflow-y-auto"
-        style={{ maxWidth: "520px", background: "#111111", borderLeft: "1px solid #1E1E1E" }}
+        style={{ maxWidth: "520px", background: "var(--surface)", borderLeft: "1px solid var(--border)" }}
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between" style={{ background: "#111111", borderBottom: "1px solid #1E1E1E" }}>
+        <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between" style={{ background: "var(--surface)", borderBottom: "1px solid var(--border)" }}>
           <div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em" }}>
               {dossier.civilite ? `${dossier.civilite} ` : ""}{dossier.nom} {dossier.prenom}
             </h2>
-            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>
+            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>
               Dossier #{dossier.id} — {new Date(dossier.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
             </p>
           </div>
           <div className="flex items-center gap-3">
             <StatutBadge statut={statut} />
-            <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }}>
+            <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-muted)" }}>
               <X className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             </button>
           </div>
@@ -133,13 +133,13 @@ function HexaDetail({ dossier, onClose, onUpdate }: {
 
         <div className="p-6 space-y-8">
           {/* Montant */}
-          <div className="p-5 text-center" style={{ background: "#0A0A0A", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+          <div className="p-5 text-center" style={{ background: "var(--background)", border: "1px solid var(--border)", borderRadius: "2px" }}>
             <p className="label-uppercase" style={{ marginBottom: "6px" }}>Montant demande</p>
             <p className="tabular-nums" style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "36px",
               fontWeight: 600,
-              color: "#C9A84C",
+              color: "var(--gold)",
               lineHeight: 1,
               letterSpacing: "0.02em",
             }}>
@@ -149,34 +149,34 @@ function HexaDetail({ dossier, onClose, onUpdate }: {
 
           {/* Matching rapport de vente */}
           {dossier.closeInfo && (
-            <div className="p-4" style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+            <div className="p-4" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px" }}>
               <div className="flex items-center gap-2 mb-3">
-                <Link2 className="w-3.5 h-3.5" style={{ color: "#4A7A5A", strokeWidth: 1.5 }} />
-                <p className="label-uppercase" style={{ color: "#4A7A5A" }}>Matche avec le rapport de vente</p>
+                <Link2 className="w-3.5 h-3.5" style={{ color: "var(--success)", strokeWidth: 1.5 }} />
+                <p className="label-uppercase" style={{ color: "var(--success)" }}>Matche avec le rapport de vente</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Closer</p>
-                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{dossier.closeInfo.closerNom}</p>
+                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Closer</p>
+                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{dossier.closeInfo.closerNom}</p>
                 </div>
                 <div>
-                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Offre</p>
-                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{dossier.closeInfo.offre}</p>
+                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Offre</p>
+                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{dossier.closeInfo.offre}</p>
                 </div>
                 {dossier.closeInfo.formule && (
                   <div>
-                    <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Formule</p>
-                    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{dossier.closeInfo.formule}</p>
+                    <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Formule</p>
+                    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{dossier.closeInfo.formule}</p>
                   </div>
                 )}
                 <div>
-                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Montant genere</p>
-                  <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{dossier.closeInfo.montantGenere.toLocaleString("fr-FR")} EUR</p>
+                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Montant genere</p>
+                  <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{dossier.closeInfo.montantGenere.toLocaleString("fr-FR")} EUR</p>
                 </div>
                 {dossier.closeInfo.dateCall && (
                   <div className="col-span-2">
-                    <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Date du call</p>
-                    <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{new Date(dossier.closeInfo.dateCall).toLocaleDateString("fr-FR")}</p>
+                    <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Date du call</p>
+                    <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{new Date(dossier.closeInfo.dateCall).toLocaleDateString("fr-FR")}</p>
                   </div>
                 )}
               </div>
@@ -200,20 +200,20 @@ function HexaDetail({ dossier, onClose, onUpdate }: {
                 dossier.profession ? { label: "Profession", value: dossier.profession } : null,
               ].filter(Boolean).map((item, i) => (
                 <div key={i} className="flex items-baseline gap-3">
-                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", minWidth: "70px", flexShrink: 0 }}>{item!.label}</span>
-                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{item!.value}</span>
+                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", minWidth: "70px", flexShrink: 0 }}>{item!.label}</span>
+                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{item!.value}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Gestion interne */}
-          <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "24px" }}>
+          <div style={{ borderTop: "1px solid var(--border)", paddingTop: "24px" }}>
             <p className="label-uppercase mb-4">Gestion interne</p>
             <div className="space-y-4">
               {/* Statut */}
               <div>
-                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginBottom: "6px" }}>Statut</p>
+                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginBottom: "6px" }}>Statut</p>
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(STATUT_LABELS).map(([key, val]) => (
                     <button key={key} onClick={() => setStatut(key)}
@@ -226,9 +226,9 @@ function HexaDetail({ dossier, onClose, onUpdate }: {
                         fontWeight: 500,
                         letterSpacing: "0.04em",
                         textTransform: "uppercase" as const,
-                        border: `1px solid ${statut === key ? val.style.border : "#1E1E1E"}`,
+                        border: `1px solid ${statut === key ? val.style.border : "var(--border)"}`,
                         background: statut === key ? val.style.bg : "transparent",
-                        color: statut === key ? val.style.color : "#3A3632",
+                        color: statut === key ? val.style.color : "var(--foreground-faint)",
                       }}>
                       {val.label}
                     </button>
@@ -238,31 +238,31 @@ function HexaDetail({ dossier, onClose, onUpdate }: {
 
               {/* Lien paiement */}
               <div>
-                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginBottom: "6px" }}>Lien de paiement Hexa Coop</p>
+                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginBottom: "6px" }}>Lien de paiement Hexa Coop</p>
                 <input
                   value={lienPaiement}
                   onChange={e => setLienPaiement(e.target.value)}
                   placeholder="https://..."
                   className="w-full transition-colors duration-300 focus:outline-none"
                   style={{
-                    background: "#161616",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--surface-raised)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     padding: "10px 12px",
                     fontSize: "13px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                   }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
-                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>
+                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>
                   Collez ici le lien genere sur le site Hexa Coop apres traitement du dossier.
                 </p>
               </div>
 
               {/* Suivi paiement */}
-              <div className="p-4" style={{ border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+              <div className="p-4" style={{ border: "1px solid var(--border)", borderRadius: "2px" }}>
                 <p className="label-uppercase mb-3">Suivi paiement</p>
                 <div className="space-y-3">
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -273,21 +273,21 @@ function HexaDetail({ dossier, onClose, onUpdate }: {
                         width: "36px",
                         height: "20px",
                         borderRadius: "2px",
-                        background: paiementInitie ? "rgba(201,168,76,0.2)" : "#1E1E1E",
-                        border: `1px solid ${paiementInitie ? "rgba(201,168,76,0.4)" : "#2A2A2A"}`,
+                        background: paiementInitie ? "rgba(201,168,76,0.2)" : "var(--border)",
+                        border: `1px solid ${paiementInitie ? "rgba(201,168,76,0.4)" : "var(--border)"}`,
                       }}
                     >
                       <div className="absolute top-0.5 transition-all duration-300" style={{
                         width: "16px",
                         height: "16px",
                         borderRadius: "1px",
-                        background: paiementInitie ? "#C9A84C" : "#3A3632",
+                        background: paiementInitie ? "var(--gold)" : "var(--foreground-faint)",
                         left: paiementInitie ? "17px" : "1px",
                       }} />
                     </div>
                     <div>
-                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: paiementInitie ? "#F0EDE6" : "#6B6560" }}>Paiement initie</p>
-                      <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Le lien de paiement a ete envoye au client</p>
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: paiementInitie ? "var(--foreground)" : "var(--foreground-muted)" }}>Paiement initie</p>
+                      <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Le lien de paiement a ete envoye au client</p>
                     </div>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -298,21 +298,21 @@ function HexaDetail({ dossier, onClose, onUpdate }: {
                         width: "36px",
                         height: "20px",
                         borderRadius: "2px",
-                        background: paiementRecu ? "rgba(74,122,90,0.2)" : "#1E1E1E",
-                        border: `1px solid ${paiementRecu ? "rgba(74,122,90,0.4)" : "#2A2A2A"}`,
+                        background: paiementRecu ? "rgba(74,122,90,0.2)" : "var(--border)",
+                        border: `1px solid ${paiementRecu ? "rgba(74,122,90,0.4)" : "var(--border)"}`,
                       }}
                     >
                       <div className="absolute top-0.5 transition-all duration-300" style={{
                         width: "16px",
                         height: "16px",
                         borderRadius: "1px",
-                        background: paiementRecu ? "#4A7A5A" : "#3A3632",
+                        background: paiementRecu ? "var(--success)" : "var(--foreground-faint)",
                         left: paiementRecu ? "17px" : "1px",
                       }} />
                     </div>
                     <div>
-                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: paiementRecu ? "#F0EDE6" : "#6B6560" }}>Paiement recu</p>
-                      <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Le paiement a ete confirme et encaisse</p>
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: paiementRecu ? "var(--foreground)" : "var(--foreground-muted)" }}>Paiement recu</p>
+                      <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Le paiement a ete confirme et encaisse</p>
                     </div>
                   </label>
                 </div>
@@ -320,7 +320,7 @@ function HexaDetail({ dossier, onClose, onUpdate }: {
 
               {/* Assigne a */}
               <div>
-                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginBottom: "6px" }}>Assigne a</p>
+                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginBottom: "6px" }}>Assigne a</p>
                 <AssigneeSelect
                   mode="team"
                   value={assigneA}
@@ -332,7 +332,7 @@ function HexaDetail({ dossier, onClose, onUpdate }: {
 
               {/* Notes */}
               <div>
-                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginBottom: "6px" }}>Notes internes</p>
+                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginBottom: "6px" }}>Notes internes</p>
                 <textarea
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
@@ -340,17 +340,17 @@ function HexaDetail({ dossier, onClose, onUpdate }: {
                   placeholder="Observations, suivi..."
                   className="w-full transition-colors duration-300 focus:outline-none"
                   style={{
-                    background: "#161616",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--surface-raised)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     padding: "10px 12px",
                     fontSize: "13px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                     resize: "none",
                   }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
 
@@ -361,8 +361,8 @@ function HexaDetail({ dossier, onClose, onUpdate }: {
                 className="w-full transition-colors duration-300 disabled:cursor-not-allowed"
                 style={{
                   padding: "14px 28px",
-                  background: updateMutation.isPending ? "#8A7535" : "#C9A84C",
-                  color: "#0A0A0A",
+                  background: updateMutation.isPending ? "var(--gold-muted)" : "var(--gold)",
+                  color: "var(--background)",
                   fontSize: "11px",
                   fontWeight: 500,
                   fontFamily: "'Hanken Grotesk', sans-serif",
@@ -465,21 +465,21 @@ export default function HexaDashboard() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
-        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--background)" }}>
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-6" style={{ background: "#0A0A0A" }}>
-        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.04em" }}>Acces reserve</h2>
-        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Vous devez etre connecte pour acceder au tableau de bord.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-6" style={{ background: "var(--background)" }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.04em" }}>Acces reserve</h2>
+        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Vous devez etre connecte pour acceder au tableau de bord.</p>
         <a href="/login" style={{
           padding: "12px 28px",
-          background: "#C9A84C",
-          color: "#0A0A0A",
+          background: "var(--gold)",
+          color: "var(--background)",
           fontSize: "11px",
           fontWeight: 500,
           fontFamily: "'Hanken Grotesk', sans-serif",
@@ -494,9 +494,9 @@ export default function HexaDashboard() {
 
   if (user.role !== "admin" && user.role !== "direction") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: "#0A0A0A" }}>
-        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.04em" }}>Acces refuse</h2>
-        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Acces reserve a la direction.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: "var(--background)" }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.04em" }}>Acces refuse</h2>
+        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Acces reserve a la direction.</p>
       </div>
     );
   }
@@ -507,10 +507,10 @@ export default function HexaDashboard() {
 
   const commStatutBadge = (statutVal: string) => {
     const styles: Record<string, { color: string; bg: string; border: string }> = {
-      paye: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-      valide: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+      paye: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+      valide: { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
     };
-    const s = styles[statutVal] ?? { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
+    const s = styles[statutVal] ?? { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
     const labels: Record<string, string> = { paye: "Paye", valide: "Valide", en_attente: "En attente" };
     return (
       <span style={{
@@ -535,7 +535,7 @@ export default function HexaDashboard() {
   const pendingCount = (transCourtage as any[]).filter((t: any) => t.statut === "en_attente").length + (transImmo as any[]).filter((t: any) => t.statut === "en_attente").length;
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <AdminNav />
 
       {selected && (
@@ -548,7 +548,7 @@ export default function HexaDashboard() {
 
       <div className="px-5 py-8" style={{ maxWidth: "1280px", margin: "0 auto" }}>
         {/* Onglets principaux */}
-        <div className="flex gap-0 mb-10" style={{ borderBottom: "1px solid #1E1E1E" }}>
+        <div className="flex gap-0 mb-10" style={{ borderBottom: "1px solid var(--border)" }}>
           {[
             { key: "hexa", label: "Sigma Credit (Hexa)" },
             { key: "commissions", label: "Commissions partenaires" },
@@ -562,13 +562,13 @@ export default function HexaDashboard() {
                 fontWeight: 500,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
-                borderBottom: mainTab === tab.key ? "1px solid #C9A84C" : "1px solid transparent",
-                color: mainTab === tab.key ? "#F0EDE6" : "#3A3632",
+                borderBottom: mainTab === tab.key ? "1px solid var(--gold)" : "1px solid transparent",
+                color: mainTab === tab.key ? "var(--foreground)" : "var(--foreground-faint)",
                 background: "transparent",
                 border: "none",
                 borderBottomWidth: "1px",
                 borderBottomStyle: "solid",
-                borderBottomColor: mainTab === tab.key ? "#C9A84C" : "transparent",
+                borderBottomColor: mainTab === tab.key ? "var(--gold)" : "transparent",
               }}>
               {tab.label}
               {tab.key === "commissions" && pendingCount > 0 && (
@@ -580,7 +580,7 @@ export default function HexaDashboard() {
                   borderRadius: "2px",
                   background: "rgba(201,168,76,0.12)",
                   border: "1px solid rgba(201,168,76,0.25)",
-                  color: "#C9A84C",
+                  color: "var(--gold)",
                 }}>
                   {pendingCount}
                 </span>
@@ -593,33 +593,33 @@ export default function HexaDashboard() {
         {mainTab === "commissions" && (
           <div className="space-y-8">
             {/* KPIs */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-px" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
               {[
                 { label: "Courtage en attente", value: `${totalAttenteCourtage.toLocaleString("fr-FR")} EUR`, sub: `${(transCourtage as any[]).filter((t: any) => t.statut !== "paye").length} transaction(s)`, highlight: true },
                 { label: "Immo en attente", value: `${totalAttenteImmo.toLocaleString("fr-FR")} EUR`, sub: `${(transImmo as any[]).filter((t: any) => t.statut !== "paye").length} transaction(s)`, highlight: true },
                 { label: "Courtage paye", value: `${(transCourtage as any[]).filter((t: any) => t.statut === "paye").reduce((s: number, t: any) => s + (t.montantCommission || 0), 0).toLocaleString("fr-FR")} EUR`, sub: null, highlight: false },
                 { label: "Immo paye", value: `${(transImmo as any[]).filter((t: any) => t.statut === "paye").reduce((s: number, t: any) => s + (t.montantHonoraires || 0), 0).toLocaleString("fr-FR")} EUR`, sub: null, highlight: false },
               ].map((stat, i) => (
-                <div key={stat.label} className="p-5" style={{ background: "#0A0A0A" }}>
+                <div key={stat.label} className="p-5" style={{ background: "var(--background)" }}>
                   <p className="tabular-nums" style={{
                     fontFamily: "'Cormorant Garamond', serif",
                     fontSize: "24px",
                     fontWeight: 600,
-                    color: i < 2 ? "#C9A84C" : "#4A7A5A",
+                    color: i < 2 ? "var(--gold)" : "var(--success)",
                     lineHeight: 1,
                     letterSpacing: "0.02em",
                   }}>
                     {stat.value}
                   </p>
                   <p className="label-uppercase mt-2">{stat.label}</p>
-                  {stat.sub && <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>{stat.sub}</p>}
+                  {stat.sub && <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>{stat.sub}</p>}
                 </div>
               ))}
             </div>
 
             {/* Export + sous-onglets */}
             <div className="flex items-center justify-between">
-              <div className="flex gap-0" style={{ borderBottom: "1px solid #1E1E1E" }}>
+              <div className="flex gap-0" style={{ borderBottom: "1px solid var(--border)" }}>
                 {[{ key: "courtage", label: "Courtage" }, { key: "immo", label: "Immobilier" }].map(tab => (
                   <button key={tab.key} onClick={() => setCommTab(tab.key as any)}
                     className="transition-colors duration-300 -mb-px"
@@ -632,8 +632,8 @@ export default function HexaDashboard() {
                       textTransform: "uppercase" as const,
                       background: "transparent",
                       border: "none",
-                      borderBottom: commTab === tab.key ? "1px solid #C9A84C" : "1px solid transparent",
-                      color: commTab === tab.key ? "#F0EDE6" : "#3A3632",
+                      borderBottom: commTab === tab.key ? "1px solid var(--gold)" : "1px solid transparent",
+                      color: commTab === tab.key ? "var(--foreground)" : "var(--foreground-faint)",
                     }}>
                     {tab.label}
                   </button>
@@ -666,14 +666,14 @@ export default function HexaDashboard() {
                   fontWeight: 500,
                   letterSpacing: "0.06em",
                   textTransform: "uppercase" as const,
-                  color: "#6B6560",
-                  border: "1px solid #1E1E1E",
+                  color: "var(--foreground-muted)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   background: "transparent",
                   padding: "8px 14px",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
               >
                 <Download className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                 Export CSV mensuel
@@ -684,17 +684,17 @@ export default function HexaDashboard() {
             {commTab === "courtage" && (
               (transCourtage as any[]).length === 0 ? (
                 <div className="text-center py-20">
-                  <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucune transaction courtage declaree</p>
+                  <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucune transaction courtage declaree</p>
                 </div>
               ) : (
-                <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+                <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                        <tr style={{ borderBottom: "1px solid var(--border)" }}>
                           {["Courtier", "Detail", "Commission", "Part courtier (75%)", "Part Sigma (25%)", "Statut", ""].map(h => (
-                            <th key={h} className={`px-5 py-3 label-uppercase ${h === "Commission" || h === "Part courtier (75%)" || h === "Part Sigma (25%)" ? "text-right" : h === "Statut" ? "text-center" : "text-left"}`} style={{ background: "#0D0D0D" }}>{h}</th>
+                            <th key={h} className={`px-5 py-3 label-uppercase ${h === "Commission" || h === "Part courtier (75%)" || h === "Part Sigma (25%)" ? "text-right" : h === "Statut" ? "text-center" : "text-left"}`} style={{ background: "var(--surface-header)" }}>{h}</th>
                           ))}
                         </tr>
                       </thead>
@@ -702,38 +702,38 @@ export default function HexaDashboard() {
                         {(transCourtage as any[]).map((t: any) => (
                           <tr key={t.id}
                             className="transition-colors duration-300"
-                            style={{ borderBottom: "1px solid #151515" }}
-                            onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                            style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                            onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                             onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                           >
                             <td className="px-5 py-3">
-                              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>#{t.courtierId}</p>
-                              {t.leadNom && <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{t.leadNom}</p>}
+                              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>#{t.courtierId}</p>
+                              {t.leadNom && <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{t.leadNom}</p>}
                             </td>
                             <td className="px-5 py-3">
-                              {t.dossierRef && <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{t.dossierRef}</p>}
-                              {t.montantEnveloppe && <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Enveloppe : {t.montantEnveloppe.toLocaleString("fr-FR")} EUR</p>}
-                              <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{new Date(t.createdAt).toLocaleDateString("fr-FR")}</p>
+                              {t.dossierRef && <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{t.dossierRef}</p>}
+                              {t.montantEnveloppe && <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Enveloppe : {t.montantEnveloppe.toLocaleString("fr-FR")} EUR</p>}
+                              <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{new Date(t.createdAt).toLocaleDateString("fr-FR")}</p>
                             </td>
                             <td className="px-5 py-3 text-right">
                               {t.montantCommission ? (
-                                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "#F0EDE6" }}>{t.montantCommission.toLocaleString("fr-FR")} EUR</span>
+                                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "var(--foreground)" }}>{t.montantCommission.toLocaleString("fr-FR")} EUR</span>
                               ) : (
-                                <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>En attente</span>
+                                <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>En attente</span>
                               )}
                             </td>
                             <td className="px-5 py-3 text-right">
                               {t.partCourtier ? (
-                                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#4A7A5A" }}>{t.partCourtier.toLocaleString("fr-FR")} EUR</span>
+                                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--success)" }}>{t.partCourtier.toLocaleString("fr-FR")} EUR</span>
                               ) : (
-                                <span style={{ color: "#3A3632" }}>—</span>
+                                <span style={{ color: "var(--foreground-faint)" }}>—</span>
                               )}
                             </td>
                             <td className="px-5 py-3 text-right">
                               {t.partSigma ? (
-                                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{t.partSigma.toLocaleString("fr-FR")} EUR</span>
+                                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{t.partSigma.toLocaleString("fr-FR")} EUR</span>
                               ) : (
-                                <span style={{ color: "#3A3632" }}>—</span>
+                                <span style={{ color: "var(--foreground-faint)" }}>—</span>
                               )}
                             </td>
                             <td className="px-5 py-3 text-center">
@@ -754,7 +754,7 @@ export default function HexaDashboard() {
                                       borderRadius: "2px",
                                       border: "1px solid rgba(201,168,76,0.3)",
                                       background: "rgba(201,168,76,0.06)",
-                                      color: "#C9A84C",
+                                      color: "var(--gold)",
                                     }}
                                     onMouseEnter={e => (e.currentTarget.style.background = "rgba(201,168,76,0.12)")}
                                     onMouseLeave={e => (e.currentTarget.style.background = "rgba(201,168,76,0.06)")}
@@ -775,7 +775,7 @@ export default function HexaDashboard() {
                                       borderRadius: "2px",
                                       border: "1px solid rgba(74,122,90,0.3)",
                                       background: "rgba(74,122,90,0.06)",
-                                      color: "#4A7A5A",
+                                      color: "var(--success)",
                                     }}
                                     onMouseEnter={e => (e.currentTarget.style.background = "rgba(74,122,90,0.12)")}
                                     onMouseLeave={e => (e.currentTarget.style.background = "rgba(74,122,90,0.06)")}
@@ -798,17 +798,17 @@ export default function HexaDashboard() {
             {commTab === "immo" && (
               (transImmo as any[]).length === 0 ? (
                 <div className="text-center py-20">
-                  <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucune transaction immobiliere declaree</p>
+                  <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucune transaction immobiliere declaree</p>
                 </div>
               ) : (
-                <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+                <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                        <tr style={{ borderBottom: "1px solid var(--border)" }}>
                           {["Agent", "Bien", "Honoraires", "Part agent (50%)", "Part Sigma", "Statut", ""].map(h => (
-                            <th key={h} className={`px-5 py-3 label-uppercase ${h === "Honoraires" || h === "Part agent (50%)" || h === "Part Sigma" ? "text-right" : h === "Statut" ? "text-center" : "text-left"}`} style={{ background: "#0D0D0D" }}>{h}</th>
+                            <th key={h} className={`px-5 py-3 label-uppercase ${h === "Honoraires" || h === "Part agent (50%)" || h === "Part Sigma" ? "text-right" : h === "Statut" ? "text-center" : "text-left"}`} style={{ background: "var(--surface-header)" }}>{h}</th>
                           ))}
                         </tr>
                       </thead>
@@ -816,37 +816,37 @@ export default function HexaDashboard() {
                         {(transImmo as any[]).map((t: any) => (
                           <tr key={t.id}
                             className="transition-colors duration-300"
-                            style={{ borderBottom: "1px solid #151515" }}
-                            onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                            style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                            onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                             onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                           >
                             <td className="px-5 py-3">
-                              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>#{t.agentId}</p>
-                              <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{new Date(t.createdAt).toLocaleDateString("fr-FR")}</p>
+                              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>#{t.agentId}</p>
+                              <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{new Date(t.createdAt).toLocaleDateString("fr-FR")}</p>
                             </td>
                             <td className="px-5 py-3">
-                              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{t.adresseBien || "—"}</p>
-                              <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", textTransform: "capitalize" as const }}>{t.typeTransaction}</p>
+                              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{t.adresseBien || "—"}</p>
+                              <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", textTransform: "capitalize" as const }}>{t.typeTransaction}</p>
                             </td>
                             <td className="px-5 py-3 text-right">
                               {t.montantHonoraires ? (
-                                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "#F0EDE6" }}>{t.montantHonoraires.toLocaleString("fr-FR")} EUR</span>
+                                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "var(--foreground)" }}>{t.montantHonoraires.toLocaleString("fr-FR")} EUR</span>
                               ) : (
-                                <span style={{ color: "#3A3632" }}>—</span>
+                                <span style={{ color: "var(--foreground-faint)" }}>—</span>
                               )}
                             </td>
                             <td className="px-5 py-3 text-right">
                               {t.partAgent ? (
-                                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#4A7A5A" }}>{t.partAgent.toLocaleString("fr-FR")} EUR</span>
+                                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--success)" }}>{t.partAgent.toLocaleString("fr-FR")} EUR</span>
                               ) : (
-                                <span style={{ color: "#3A3632" }}>—</span>
+                                <span style={{ color: "var(--foreground-faint)" }}>—</span>
                               )}
                             </td>
                             <td className="px-5 py-3 text-right">
                               {t.partSigma ? (
-                                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{t.partSigma.toLocaleString("fr-FR")} EUR</span>
+                                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{t.partSigma.toLocaleString("fr-FR")} EUR</span>
                               ) : (
-                                <span style={{ color: "#3A3632" }}>—</span>
+                                <span style={{ color: "var(--foreground-faint)" }}>—</span>
                               )}
                             </td>
                             <td className="px-5 py-3 text-center">
@@ -867,7 +867,7 @@ export default function HexaDashboard() {
                                       borderRadius: "2px",
                                       border: "1px solid rgba(201,168,76,0.3)",
                                       background: "rgba(201,168,76,0.06)",
-                                      color: "#C9A84C",
+                                      color: "var(--gold)",
                                     }}
                                     onMouseEnter={e => (e.currentTarget.style.background = "rgba(201,168,76,0.12)")}
                                     onMouseLeave={e => (e.currentTarget.style.background = "rgba(201,168,76,0.06)")}
@@ -888,7 +888,7 @@ export default function HexaDashboard() {
                                       borderRadius: "2px",
                                       border: "1px solid rgba(74,122,90,0.3)",
                                       background: "rgba(74,122,90,0.06)",
-                                      color: "#4A7A5A",
+                                      color: "var(--success)",
                                     }}
                                     onMouseEnter={e => (e.currentTarget.style.background = "rgba(74,122,90,0.12)")}
                                     onMouseLeave={e => (e.currentTarget.style.background = "rgba(74,122,90,0.06)")}
@@ -919,14 +919,14 @@ export default function HexaDashboard() {
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: "28px",
                   fontWeight: 700,
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   letterSpacing: "0.08em",
                   textTransform: "uppercase" as const,
                   lineHeight: 1,
                 }}>
                   Sigma Credit
                 </h1>
-                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "6px" }}>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "6px" }}>
                   {total} dossier{total > 1 ? "s" : ""} au total
                 </p>
               </div>
@@ -939,14 +939,14 @@ export default function HexaDashboard() {
                   fontWeight: 500,
                   letterSpacing: "0.06em",
                   textTransform: "uppercase" as const,
-                  color: "#6B6560",
-                  border: "1px solid #1E1E1E",
+                  color: "var(--foreground-muted)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   background: "transparent",
                   padding: "10px 16px",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
               >
                 <Download className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                 Exporter CSV
@@ -956,15 +956,15 @@ export default function HexaDashboard() {
             {/* Filtres */}
             <div className="flex flex-col sm:flex-row gap-3 mb-5">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                 <input
                   value={search}
                   onChange={e => { setSearch(e.target.value); setPage(0); }}
                   placeholder="Rechercher par nom, email, ville..."
                   className="w-full transition-colors duration-300 focus:outline-none"
                   style={{
-                    background: "#111111",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--surface)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     paddingLeft: "36px",
                     paddingRight: "14px",
@@ -972,23 +972,23 @@ export default function HexaDashboard() {
                     paddingBottom: "10px",
                     fontSize: "13px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                   }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <select
                 value={statut}
                 onChange={e => { setStatut(e.target.value); setPage(0); }}
                 style={{
-                  background: "#111111",
-                  border: "1px solid #1E1E1E",
+                  background: "var(--surface)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   padding: "10px 14px",
                   fontSize: "13px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   outline: "none",
                 }}
               >
@@ -1002,22 +1002,22 @@ export default function HexaDashboard() {
             {/* Table */}
             {isLoading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+                <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
               </div>
             ) : dossiers.length === 0 ? (
               <div className="text-center py-20">
-                <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun dossier trouve</p>
+                <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucun dossier trouve</p>
               </div>
             ) : (
-              <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+              <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
                 {/* Desktop table */}
                 <div className="hidden md:block overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                      <tr style={{ borderBottom: "1px solid var(--border)" }}>
                         {["#", "Client", "Ville", "Montant", "Statut", "Paiement initie", "Paiement recu", "Date", ""].map(h => (
-                          <th key={h} className={`px-5 py-3 label-uppercase text-left ${h === "Paiement initie" || h === "Paiement recu" ? "text-center" : ""}`} style={{ background: "#0D0D0D" }}>{h}</th>
+                          <th key={h} className={`px-5 py-3 label-uppercase text-left ${h === "Paiement initie" || h === "Paiement recu" ? "text-center" : ""}`} style={{ background: "var(--surface-header)" }}>{h}</th>
                         ))}
                       </tr>
                     </thead>
@@ -1025,19 +1025,19 @@ export default function HexaDashboard() {
                       {dossiers.map((d) => (
                         <tr key={d.id}
                           className="cursor-pointer transition-colors duration-300"
-                          style={{ borderBottom: "1px solid #151515" }}
+                          style={{ borderBottom: "1px solid var(--border-subtle)" }}
                           onClick={() => setSelected(d)}
-                          onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                          onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                           onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                         >
-                          <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{d.id}</td>
+                          <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{d.id}</td>
                           <td className="px-5 py-3">
-                            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{d.civilite ? `${d.civilite} ` : ""}{d.nom} {d.prenom}</p>
-                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{d.email}</p>
+                            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{d.civilite ? `${d.civilite} ` : ""}{d.nom} {d.prenom}</p>
+                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{d.email}</p>
                           </td>
-                          <td className="px-5 py-3" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{d.ville}</td>
+                          <td className="px-5 py-3" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{d.ville}</td>
                           <td className="px-5 py-3">
-                            <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "#F0EDE6" }}>{d.montant.toLocaleString("fr-FR")} EUR</span>
+                            <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "var(--foreground)" }}>{d.montant.toLocaleString("fr-FR")} EUR</span>
                           </td>
                           <td className="px-5 py-3">
                             <StatutBadge statut={d.statut} />
@@ -1050,9 +1050,9 @@ export default function HexaDashboard() {
                               width: "20px",
                               height: "20px",
                               borderRadius: "2px",
-                              border: `1px solid ${d.paiementInitie ? "rgba(201,168,76,0.3)" : "#1E1E1E"}`,
+                              border: `1px solid ${d.paiementInitie ? "rgba(201,168,76,0.3)" : "var(--border)"}`,
                               background: d.paiementInitie ? "rgba(201,168,76,0.08)" : "transparent",
-                              color: d.paiementInitie ? "#C9A84C" : "#3A3632",
+                              color: d.paiementInitie ? "var(--gold)" : "var(--foreground-faint)",
                               fontSize: "11px",
                             }}>
                               {d.paiementInitie ? (
@@ -1070,9 +1070,9 @@ export default function HexaDashboard() {
                               width: "20px",
                               height: "20px",
                               borderRadius: "2px",
-                              border: `1px solid ${d.paiementRecu ? "rgba(74,122,90,0.3)" : "#1E1E1E"}`,
+                              border: `1px solid ${d.paiementRecu ? "rgba(74,122,90,0.3)" : "var(--border)"}`,
                               background: d.paiementRecu ? "rgba(74,122,90,0.08)" : "transparent",
-                              color: d.paiementRecu ? "#4A7A5A" : "#3A3632",
+                              color: d.paiementRecu ? "var(--success)" : "var(--foreground-faint)",
                               fontSize: "11px",
                             }}>
                               {d.paiementRecu ? (
@@ -1082,7 +1082,7 @@ export default function HexaDashboard() {
                               )}
                             </span>
                           </td>
-                          <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                          <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                             {new Date(d.createdAt).toLocaleDateString("fr-FR")}
                           </td>
                           <td className="px-5 py-3">
@@ -1090,16 +1090,16 @@ export default function HexaDashboard() {
                               <button
                                 onClick={(e) => { e.stopPropagation(); setSelected(d); }}
                                 className="p-1.5 transition-opacity duration-300 hover:opacity-70"
-                                style={{ color: "#3A3632" }}
+                                style={{ color: "var(--foreground-faint)" }}
                               >
                                 <Eye className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                               </button>
                               <button
                                 onClick={(e) => handleDelete(e, d.id, `${d.nom} ${d.prenom}`)}
                                 className="p-1.5 transition-colors duration-300"
-                                style={{ color: "#3A3632" }}
-                                onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-                                onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                                style={{ color: "var(--foreground-faint)" }}
+                                onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+                                onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
                                 title="Supprimer"
                               >
                                 <Trash2 className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
@@ -1117,21 +1117,21 @@ export default function HexaDashboard() {
                   {dossiers.map(d => (
                     <div key={d.id}
                       className="p-4 cursor-pointer transition-colors duration-300"
-                      style={{ borderBottom: "1px solid #151515" }}
+                      style={{ borderBottom: "1px solid var(--border-subtle)" }}
                       onClick={() => setSelected(d)}
-                      onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                      onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                       onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{d.civilite ? `${d.civilite} ` : ""}{d.nom} {d.prenom}</p>
-                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>{d.email}</p>
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{d.civilite ? `${d.civilite} ` : ""}{d.nom} {d.prenom}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>{d.email}</p>
                         </div>
                         <StatutBadge statut={d.statut} />
                       </div>
                       <div className="flex items-center gap-4 mt-2">
-                        <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "#F0EDE6" }}>{d.montant.toLocaleString("fr-FR")} EUR</span>
-                        <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{new Date(d.createdAt).toLocaleDateString("fr-FR")}</span>
+                        <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "var(--foreground)" }}>{d.montant.toLocaleString("fr-FR")} EUR</span>
+                        <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{new Date(d.createdAt).toLocaleDateString("fr-FR")}</span>
                       </div>
                     </div>
                   ))}
@@ -1139,8 +1139,8 @@ export default function HexaDashboard() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-between px-5 py-3" style={{ borderTop: "1px solid #1E1E1E" }}>
-                    <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                  <div className="flex items-center justify-between px-5 py-3" style={{ borderTop: "1px solid var(--border)" }}>
+                    <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                       {total} dossier{total > 1 ? "s" : ""} — Page {page + 1}/{totalPages}
                     </p>
                     <div className="flex items-center gap-2">
@@ -1148,16 +1148,16 @@ export default function HexaDashboard() {
                         onClick={() => setPage(p => Math.max(0, p - 1))}
                         disabled={page === 0}
                         className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
-                        style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px" }}
+                        style={{ color: "var(--foreground-muted)", border: "1px solid var(--border)", borderRadius: "2px" }}
                       >
                         <ChevronLeft className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                       </button>
-                      <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", padding: "0 8px" }}>{page + 1} / {totalPages}</span>
+                      <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", padding: "0 8px" }}>{page + 1} / {totalPages}</span>
                       <button
                         onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
                         disabled={page >= totalPages - 1}
                         className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
-                        style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px" }}
+                        style={{ color: "var(--foreground-muted)", border: "1px solid var(--border)", borderRadius: "2px" }}
                       >
                         <ChevronRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                       </button>

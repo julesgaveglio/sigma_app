@@ -51,10 +51,10 @@ interface RechercheLead {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const STATUT_CONFIG: Record<string, { label: string; style: { color: string; bg: string; border: string } }> = {
-  actif:    { label: "Actif",    style: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" } },
-  en_pause: { label: "En pause", style: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" } },
-  cloture:  { label: "Cloture",  style: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" } },
-  perdu:    { label: "Perdu",    style: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" } },
+  actif:    { label: "Actif",    style: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" } },
+  en_pause: { label: "En pause", style: { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" } },
+  cloture:  { label: "Cloture",  style: { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" } },
+  perdu:    { label: "Perdu",    style: { color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" } },
 };
 
 const FORMULE_LABELS: Record<string, string> = {
@@ -65,7 +65,7 @@ const FORMULE_LABELS: Record<string, string> = {
 };
 
 function StatutBadge({ statut }: { statut: string }) {
-  const s = STATUT_CONFIG[statut] ?? { label: statut, style: { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } };
+  const s = STATUT_CONFIG[statut] ?? { label: statut, style: { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } };
   return (
     <span style={{
       display: "inline-flex",
@@ -90,27 +90,27 @@ function getRechercheStatus(lead: RechercheLead): { label: string; style: { colo
   if (lead.offreAcceptee) {
     return {
       label: "Offre acceptee",
-      style: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+      style: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
       icon: <CheckCircle2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />,
     };
   }
   if (lead.nbBiensPresentes > 0) {
     return {
       label: `${lead.nbBiensPresentes} bien${lead.nbBiensPresentes > 1 ? "s" : ""} presente${lead.nbBiensPresentes > 1 ? "s" : ""}`,
-      style: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+      style: { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
       icon: <Clock className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />,
     };
   }
   if (lead.agentAssigne) {
     return {
       label: "Agent assigne",
-      style: { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+      style: { color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
       icon: <Clock className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />,
     };
   }
   return {
     label: "A traiter",
-    style: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+    style: { color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
     icon: <AlertCircle className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />,
   };
 }
@@ -126,9 +126,9 @@ function ModuleBadge({ active, label }: { active: boolean; label: string }) {
       fontFamily: "'Hanken Grotesk', sans-serif",
       fontWeight: 500,
       letterSpacing: "0.04em",
-      color: active ? "#F0EDE6" : "#3A3632",
+      color: active ? "var(--foreground)" : "var(--foreground-faint)",
       background: active ? "rgba(240,237,230,0.06)" : "transparent",
-      border: `1px solid ${active ? "rgba(240,237,230,0.15)" : "#1E1E1E"}`,
+      border: `1px solid ${active ? "rgba(240,237,230,0.15)" : "var(--border)"}`,
     }}>
       {label}
     </span>
@@ -213,12 +213,12 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
 
   if (isLoading) return (
     <div className="flex items-center justify-center h-48">
-      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
     </div>
   );
 
   if (!lead) return (
-    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", padding: "24px" }}>
+    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", padding: "24px" }}>
       Lead introuvable.
     </p>
   );
@@ -226,39 +226,39 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
   return (
     <div className="space-y-6">
       {/* Identite */}
-      <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
         <p className="label-uppercase" style={{ marginBottom: "12px" }}>Identite du client</p>
         <div className="grid grid-cols-2 gap-3">
           <div className="flex items-center gap-2">
-            <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Nom :</span>
-            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{lead.prenom} {lead.nom}</span>
+            <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Nom :</span>
+            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{lead.prenom} {lead.nom}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Mail className="w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
-            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.email}</span>
+            <Mail className="w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
+            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{lead.email}</span>
           </div>
           {lead.telephone && (
             <div className="flex items-center gap-2">
-              <Phone className="w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
-              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.telephone}</span>
+              <Phone className="w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
+              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{lead.telephone}</span>
             </div>
           )}
           {lead.formule && (
             <div className="flex items-center gap-2">
-              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Formule :</span>
-              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#C9A84C" }}>{FORMULE_LABELS[lead.formule] ?? lead.formule}</span>
+              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Formule :</span>
+              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--gold)" }}>{FORMULE_LABELS[lead.formule] ?? lead.formule}</span>
             </div>
           )}
           {lead.enveloppeValidee && (
             <div className="flex items-center gap-2">
-              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Enveloppe :</span>
-              <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#4A7A5A" }}>{lead.enveloppeValidee.toLocaleString("fr-FR")} EUR</span>
+              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Enveloppe :</span>
+              <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--success)" }}>{lead.enveloppeValidee.toLocaleString("fr-FR")} EUR</span>
             </div>
           )}
           {lead.courtierAssigne && (
             <div className="flex items-center gap-2">
-              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Courtier :</span>
-              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.courtierAssigne}</span>
+              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Courtier :</span>
+              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{lead.courtierAssigne}</span>
             </div>
           )}
         </div>
@@ -271,7 +271,7 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
       </div>
 
       {/* Suivi recherche bien */}
-      <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
         <p className="label-uppercase" style={{ marginBottom: "12px" }}>Suivi Recherche bien</p>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -282,16 +282,16 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
               placeholder="Nom de l'agent"
               className="w-full transition-colors duration-300 focus:outline-none"
               style={{
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "8px 12px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           <div>
@@ -304,16 +304,16 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
               placeholder="0"
               className="w-full transition-colors duration-300 focus:outline-none"
               style={{
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "8px 12px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
         </div>
@@ -323,12 +323,12 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
               type="checkbox"
               checked={offreAcceptee}
               onChange={(e) => setOffreAcceptee(e.target.checked)}
-              style={{ width: "14px", height: "14px", accentColor: "#C9A84C" }}
+              style={{ width: "14px", height: "14px", accentColor: "var(--gold)" }}
             />
             <span style={{
               fontSize: "13px",
               fontFamily: "'Hanken Grotesk', sans-serif",
-              color: offreAcceptee ? "#4A7A5A" : "#6B6560",
+              color: offreAcceptee ? "var(--success)" : "var(--foreground-muted)",
               fontWeight: offreAcceptee ? 500 : 400,
               transition: "color 300ms ease",
             }}>
@@ -342,8 +342,8 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
             disabled={updateMutation.isPending}
             style={{
               padding: "10px 24px",
-              background: updateMutation.isPending ? "#8A7535" : "#C9A84C",
-              color: "#0A0A0A",
+              background: updateMutation.isPending ? "var(--gold-muted)" : "var(--gold)",
+              color: "var(--background)",
               fontSize: "11px",
               fontWeight: 500,
               fontFamily: "'Hanken Grotesk', sans-serif",
@@ -364,18 +364,18 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
             style={{
               padding: "10px 20px",
               background: "transparent",
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               fontSize: "11px",
               fontWeight: 500,
               fontFamily: "'Hanken Grotesk', sans-serif",
               letterSpacing: "0.06em",
               textTransform: "uppercase" as const,
               borderRadius: "2px",
-              border: "1px solid #1E1E1E",
+              border: "1px solid var(--border)",
               cursor: sendEmailMutation.isPending ? "not-allowed" : "pointer",
             }}
-            onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-            onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
           >
             <Mail className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
             {sendEmailMutation.isPending ? "Envoi en cours..." : "Mail Point Immobilier"}
@@ -385,15 +385,15 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
 
       {/* Mandat de recherche */}
       {(lead.numeroMandat || lead.budgetMax || lead.zoneRecherche || lead.projetType) && (
-        <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
           <p className="label-uppercase" style={{ marginBottom: "12px" }}>Mandat de Recherche</p>
           <div className="grid grid-cols-2 gap-2">
             {lead.numeroMandat && (
               <div className="col-span-2 flex items-center gap-2 flex-wrap">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>N Mandat :</span>
-                <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", letterSpacing: "0.02em" }}>{lead.numeroMandat}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>N Mandat :</span>
+                <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", letterSpacing: "0.02em" }}>{lead.numeroMandat}</span>
                 {lead.dateSignatureMandat && lead.dateSignatureMandat !== '—' && (
-                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginLeft: "4px" }}>Signe le {lead.dateSignatureMandat}</span>
+                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginLeft: "4px" }}>Signe le {lead.dateSignatureMandat}</span>
                 )}
                 {lead.mandatSignePdfUrl && (
                   <a
@@ -406,7 +406,7 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
                       borderRadius: "2px",
                       border: "1px solid rgba(74,122,90,0.2)",
                       background: "rgba(74,122,90,0.08)",
-                      color: "#4A7A5A",
+                      color: "var(--success)",
                       fontSize: "11px",
                       fontFamily: "'Hanken Grotesk', sans-serif",
                       fontWeight: 500,
@@ -421,7 +421,7 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
             )}
             {lead.projetType && (
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Projet :</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Projet :</span>
                 <span style={{
                   padding: "2px 8px",
                   borderRadius: "2px",
@@ -430,37 +430,37 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
                   fontSize: "11px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontWeight: 500,
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                 }}>{lead.projetType}</span>
               </div>
             )}
             {lead.budgetMax && (
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Budget max :</span>
-                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "#F0EDE6" }}>{lead.budgetMax.toLocaleString('fr-FR')} EUR</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Budget max :</span>
+                <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "var(--foreground)" }}>{lead.budgetMax.toLocaleString('fr-FR')} EUR</span>
               </div>
             )}
             {lead.villeResidence && (
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Domicile :</span>
-                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.villeResidence}{lead.departement ? ` (${lead.departement})` : ''}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Domicile :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{lead.villeResidence}{lead.departement ? ` (${lead.departement})` : ''}</span>
               </div>
             )}
             {lead.typeBien && (
               <div className="col-span-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Type de bien : </span>
-                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.typeBien}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Type de bien : </span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{lead.typeBien}</span>
               </div>
             )}
             {lead.zoneRecherche && (
               <div className="col-span-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Zone : </span>
-                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", lineHeight: 1.6 }}>{lead.zoneRecherche}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Zone : </span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", lineHeight: 1.6 }}>{lead.zoneRecherche}</span>
               </div>
             )}
           </div>
           {/* Bouton upload mandat signe */}
-          <div className="mt-4 pt-4" style={{ borderTop: "1px solid #1E1E1E" }}>
+          <div className="mt-4 pt-4" style={{ borderTop: "1px solid var(--border)" }}>
             <label className="cursor-pointer">
               <input
                 type="file"
@@ -476,9 +476,9 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontWeight: 500,
                 letterSpacing: "0.04em",
-                color: isUploadingMandat ? "#3A3632" : "#6B6560",
-                background: isUploadingMandat ? "#111111" : "transparent",
-                border: `1px solid ${isUploadingMandat ? "#1E1E1E" : "#1E1E1E"}`,
+                color: isUploadingMandat ? "var(--foreground-faint)" : "var(--foreground-muted)",
+                background: isUploadingMandat ? "var(--surface)" : "transparent",
+                border: `1px solid ${isUploadingMandat ? "var(--border)" : "var(--border)"}`,
                 cursor: isUploadingMandat ? "not-allowed" : "pointer",
               }}>
                 {isUploadingMandat ? (
@@ -503,9 +503,9 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontWeight: 500,
                   letterSpacing: "0.04em",
-                  color: isSendingMandatInvit ? "#3A3632" : "#C9A84C",
+                  color: isSendingMandatInvit ? "var(--foreground-faint)" : "var(--gold)",
                   background: "transparent",
-                  border: `1px solid ${isSendingMandatInvit ? "#1E1E1E" : "rgba(201,168,76,0.3)"}`,
+                  border: `1px solid ${isSendingMandatInvit ? "var(--border)" : "rgba(201,168,76,0.3)"}`,
                   cursor: isSendingMandatInvit ? "not-allowed" : "pointer",
                 }}
               >
@@ -521,7 +521,7 @@ function RechercheBienDetail({ leadId, onClose }: { leadId: number; onClose: () 
       )}
 
       {/* Timeline des activites */}
-      <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
         <LeadTimeline crmLeadId={leadId} nomLead={lead ? `${lead.prenom} ${lead.nom}` : undefined} />
       </div>
     </div>
@@ -544,8 +544,8 @@ export default function RechercheBienBoard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
-        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--background)" }}>
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
       </div>
     );
   }
@@ -608,31 +608,31 @@ export default function RechercheBienBoard() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <AdminNav />
 
       {/* Toolbar */}
-      <div style={{ borderBottom: "1px solid #1E1E1E" }}>
+      <div style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex items-center justify-between px-5 py-3" style={{ maxWidth: "1280px", margin: "0 auto" }}>
           <div>
             <h1 style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "22px",
               fontWeight: 600,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               letterSpacing: "0.04em",
             }}>
               Recherche bien
             </h1>
-            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>
+            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>
               Tous les leads en etape Recherche bien
             </p>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={() => refetch()} className="p-2 transition-colors duration-300"
-              style={{ color: "#3A3632", border: "1px solid #1E1E1E", borderRadius: "2px", background: "transparent" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#6B6560"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#3A3632"; }}
+              style={{ color: "var(--foreground-faint)", border: "1px solid var(--border)", borderRadius: "2px", background: "transparent" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-faint)"; }}
             >
               <RefreshCw className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             </button>
@@ -643,13 +643,13 @@ export default function RechercheBienBoard() {
                 fontWeight: 500,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
-                color: "#6B6560",
-                border: "1px solid #1E1E1E",
+                color: "var(--foreground-muted)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 background: "transparent",
               }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
             >
               <Download className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> Export CSV
             </button>
@@ -660,7 +660,7 @@ export default function RechercheBienBoard() {
       <div className="px-5 py-8" style={{ maxWidth: "1280px", margin: "0 auto" }}>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-px mb-10" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-px mb-10" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
           {[
             { label: "Total leads", value: total, gold: true },
             { label: "A traiter", value: aTraiter, gold: false },
@@ -668,12 +668,12 @@ export default function RechercheBienBoard() {
             { label: "Offre acceptee", value: offreAcceptee, gold: false },
             { label: "Biens presentes", value: totalBiens, gold: false },
           ].map((kpi) => (
-            <div key={kpi.label} className="p-5" style={{ background: "#0A0A0A" }}>
+            <div key={kpi.label} className="p-5" style={{ background: "var(--background)" }}>
               <p className="tabular-nums" style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "28px",
                 fontWeight: 600,
-                color: kpi.gold ? "#C9A84C" : "#F0EDE6",
+                color: kpi.gold ? "var(--gold)" : "var(--foreground)",
                 lineHeight: 1,
                 letterSpacing: "0.02em",
               }}>
@@ -687,7 +687,7 @@ export default function RechercheBienBoard() {
         {/* Filtres */}
         <div className="flex flex-col sm:flex-row gap-3 mb-5">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
             <input
               type="text"
               value={search}
@@ -695,8 +695,8 @@ export default function RechercheBienBoard() {
               placeholder="Rechercher par nom, email, agent..."
               className="w-full transition-colors duration-300 focus:outline-none"
               style={{
-                background: "#111111",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 paddingLeft: "36px",
                 paddingRight: "14px",
@@ -704,23 +704,23 @@ export default function RechercheBienBoard() {
                 paddingBottom: "10px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           <select
             value={filterStatut}
             onChange={(e) => setFilterStatut(e.target.value as any)}
             style={{
-              background: "#111111",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               padding: "10px 14px",
               fontSize: "13px",
               fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               outline: "none",
             }}
           >
@@ -734,13 +734,13 @@ export default function RechercheBienBoard() {
             value={filterOffre}
             onChange={(e) => setFilterOffre(e.target.value as any)}
             style={{
-              background: "#111111",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               padding: "10px 14px",
               fontSize: "13px",
               fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               outline: "none",
             }}
           >
@@ -751,15 +751,15 @@ export default function RechercheBienBoard() {
         </div>
 
         {/* Resultats */}
-        <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
             </div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-20">
-              <Home className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+              <Home className="w-10 h-10 mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                 {leads.length === 0
                   ? "Aucun lead en etape Recherche bien pour l'instant."
                   : "Aucun resultat pour ces filtres."}
@@ -767,8 +767,8 @@ export default function RechercheBienBoard() {
             </div>
           ) : (
             <>
-              <div className="px-5 py-2" style={{ borderBottom: "1px solid #1E1E1E" }}>
-                <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+              <div className="px-5 py-2" style={{ borderBottom: "1px solid var(--border)" }}>
+                <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                   {filtered.length} lead{filtered.length > 1 ? "s" : ""} affiche{filtered.length > 1 ? "s" : ""}
                 </p>
               </div>
@@ -777,9 +777,9 @@ export default function RechercheBienBoard() {
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                    <tr style={{ borderBottom: "1px solid var(--border)" }}>
                       {["Client", "Statut", "Agent assigne", "Avancement", "Enveloppe", "Derniere action", "Modules"].map(h => (
-                        <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "#0D0D0D" }}>{h}</th>
+                        <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "var(--surface-header)" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -791,24 +791,24 @@ export default function RechercheBienBoard() {
                           key={lead.id}
                           onClick={() => setSelectedLeadId(lead.id)}
                           className="cursor-pointer transition-colors duration-300"
-                          style={{ borderBottom: "1px solid #151515" }}
-                          onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                          style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                          onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                           onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                         >
                           <td className="px-5 py-3">
-                            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
                               {lead.prenom} {lead.nom}
                             </p>
-                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", maxWidth: "180px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lead.email}</p>
+                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", maxWidth: "180px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lead.email}</p>
                           </td>
                           <td className="px-5 py-3">
                             <StatutBadge statut={lead.statut} />
                           </td>
                           <td className="px-5 py-3">
                             {lead.agentAssigne ? (
-                              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{lead.agentAssigne}</span>
+                              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{lead.agentAssigne}</span>
                             ) : (
-                              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Non assigne</span>
+                              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Non assigne</span>
                             )}
                           </td>
                           <td className="px-5 py-3">
@@ -830,11 +830,11 @@ export default function RechercheBienBoard() {
                           </td>
                           <td className="px-5 py-3">
                             {lead.enveloppeValidee ? (
-                              <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                              <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
                                 {lead.enveloppeValidee.toLocaleString("fr-FR")} EUR
                               </span>
                             ) : (
-                              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>—</span>
+                              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>—</span>
                             )}
                           </td>
                           <td className="px-5 py-3">
@@ -845,12 +845,12 @@ export default function RechercheBienBoard() {
                                 <span className="tabular-nums" style={{
                                   fontSize: "12px",
                                   fontFamily: "'Hanken Grotesk', sans-serif",
-                                  color: days >= 7 ? "#A04040" : days >= 3 ? "#C9A84C" : "#6B6560",
+                                  color: days >= 7 ? "var(--destructive)" : days >= 3 ? "var(--gold)" : "var(--foreground-muted)",
                                 }}>
                                   {days === 0 ? "Aujourd'hui" : days === 1 ? "Hier" : `Il y a ${days}j`}
                                 </span>
                               );
-                            })() : <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>—</span>}
+                            })() : <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>—</span>}
                           </td>
                           <td className="px-5 py-3">
                             <div className="flex gap-1">
@@ -875,23 +875,23 @@ export default function RechercheBienBoard() {
                       key={lead.id}
                       onClick={() => setSelectedLeadId(lead.id)}
                       className="p-4 cursor-pointer transition-colors duration-300"
-                      style={{ borderBottom: "1px solid #151515" }}
-                      onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                      style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                      onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                       onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                     >
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <div>
-                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{lead.prenom} {lead.nom}</p>
-                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>{lead.email}</p>
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{lead.prenom} {lead.nom}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>{lead.email}</p>
                         </div>
                         <StatutBadge statut={lead.statut} />
                       </div>
                       <div className="flex items-center gap-2 mb-2">
-                        <Home className="w-3.5 h-3.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                        <Home className="w-3.5 h-3.5 shrink-0" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                         {lead.agentAssigne ? (
-                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.agentAssigne}</span>
+                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{lead.agentAssigne}</span>
                         ) : (
-                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun agent assigne</span>
+                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucun agent assigne</span>
                         )}
                       </div>
                       <span className="inline-flex items-center gap-1" style={{
@@ -920,10 +920,10 @@ export default function RechercheBienBoard() {
 
       {/* Modal fiche detail */}
       <Dialog open={!!selectedLeadId} onOpenChange={(open) => { if (!open) setSelectedLeadId(null); }}>
-        <DialogContent style={{ background: "#0A0A0A", border: "1px solid #1E1E1E", borderRadius: "2px", maxWidth: "640px", maxHeight: "85vh", overflow: "auto" }}>
+        <DialogContent style={{ background: "var(--background)", border: "1px solid var(--border)", borderRadius: "2px", maxWidth: "640px", maxHeight: "85vh", overflow: "auto" }}>
           <DialogHeader>
-            <DialogTitle style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }} className="flex items-center gap-2">
-              <Home className="w-5 h-5" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+            <DialogTitle style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em" }} className="flex items-center gap-2">
+              <Home className="w-5 h-5" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
               Suivi Recherche bien
             </DialogTitle>
           </DialogHeader>

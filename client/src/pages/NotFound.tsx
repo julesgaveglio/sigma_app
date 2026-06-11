@@ -8,12 +8,12 @@ export default function NotFound() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen flex flex-col items-center justify-center" style={{ background: "var(--background)" }}>
       <p style={{
         fontFamily: "'Cormorant Garamond', serif",
         fontSize: "72px",
         fontWeight: 700,
-        color: "#1E1E1E",
+        color: "var(--border)",
         lineHeight: 1,
         letterSpacing: "0.08em",
       }}>
@@ -22,7 +22,7 @@ export default function NotFound() {
       <p style={{
         fontFamily: "'Hanken Grotesk', sans-serif",
         fontSize: "14px",
-        color: "#6B6560",
+        color: "var(--foreground-muted)",
         marginTop: "16px",
         letterSpacing: "0.02em",
       }}>
@@ -38,7 +38,7 @@ export default function NotFound() {
           fontFamily: "'Hanken Grotesk', sans-serif",
           fontSize: "12px",
           fontWeight: 500,
-          color: "#C9A84C",
+          color: "var(--gold)",
           letterSpacing: "0.06em",
           cursor: "pointer",
           padding: 0,

@@ -7,10 +7,10 @@ import AdminNav from "@/components/AdminNav";
 import { toast } from "sonner";
 
 const STATUT_LABELS: Record<string, { label: string; style: { color: string; bg: string; border: string } }> = {
-  nouveau: { label: "Nouveau", style: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" } },
-  en_cours: { label: "En cours", style: { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" } },
-  traite: { label: "Traite", style: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" } },
-  archive: { label: "Archive", style: { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } },
+  nouveau: { label: "Nouveau", style: { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" } },
+  en_cours: { label: "En cours", style: { color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" } },
+  traite: { label: "Traite", style: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" } },
+  archive: { label: "Archive", style: { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } },
 };
 
 const SITUATION_LABELS: Record<string, string> = {
@@ -23,7 +23,7 @@ const NATIONALITE_LABELS: Record<string, string> = {
 };
 
 function StatutBadge({ statut }: { statut: string }) {
-  const s = STATUT_LABELS[statut] ?? { label: statut, style: { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } };
+  const s = STATUT_LABELS[statut] ?? { label: statut, style: { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } };
   return (
     <span style={{
       display: "inline-flex",
@@ -48,10 +48,10 @@ function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value
   if (!value) return null;
   return (
     <div className="flex items-start gap-3">
-      <Icon className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+      <Icon className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
       <div>
         <p className="label-uppercase" style={{ marginBottom: "2px" }}>{label}</p>
-        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{value}</p>
+        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{value}</p>
       </div>
     </div>
   );
@@ -71,7 +71,7 @@ function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void 
 
   if (isLoading) return (
     <div className="flex items-center justify-center h-64">
-      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
     </div>
   );
 
@@ -86,18 +86,18 @@ function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void 
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-end" style={{ background: "rgba(0,0,0,0.7)" }} onClick={onClose}>
-      <div className="w-full h-full overflow-y-auto" style={{ maxWidth: "520px", background: "#111111", borderLeft: "1px solid #1E1E1E" }} onClick={e => e.stopPropagation()}>
+      <div className="w-full h-full overflow-y-auto" style={{ maxWidth: "520px", background: "var(--surface)", borderLeft: "1px solid var(--border)" }} onClick={e => e.stopPropagation()}>
         {/* Header */}
-        <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between" style={{ background: "#111111", borderBottom: "1px solid #1E1E1E" }}>
+        <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between" style={{ background: "var(--surface)", borderBottom: "1px solid var(--border)" }}>
           <div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em" }}>
               {lead.nom} {lead.prenoms}
             </h2>
-            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>
+            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>
               Fiche #{lead.id} — {new Date(lead.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
             </p>
           </div>
-          <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }}>
+          <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-muted)" }}>
             <X className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </button>
         </div>
@@ -118,9 +118,9 @@ function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void 
                     fontWeight: 500,
                     letterSpacing: "0.04em",
                     textTransform: "uppercase" as const,
-                    border: `1px solid ${lead.statut === key ? val.style.border : "#1E1E1E"}`,
+                    border: `1px solid ${lead.statut === key ? val.style.border : "var(--border)"}`,
                     background: lead.statut === key ? val.style.bg : "transparent",
-                    color: lead.statut === key ? val.style.color : "#3A3632",
+                    color: lead.statut === key ? val.style.color : "var(--foreground-faint)",
                   }}>
                   {val.label}
                 </button>
@@ -133,18 +133,18 @@ function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void 
               rows={2}
               style={{
                 width: "100%",
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "10px 12px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 resize: "none",
                 outline: "none",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
 
@@ -181,15 +181,15 @@ function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void 
             <p className="label-uppercase mb-3">Situation familiale</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Situation :</span>
-                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{SITUATION_LABELS[lead.situationFamiliale ?? ""] ?? "—"}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Situation :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{SITUATION_LABELS[lead.situationFamiliale ?? ""] ?? "—"}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Nationalite :</span>
-                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{NATIONALITE_LABELS[lead.nationalite ?? ""] ?? "—"}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Nationalite :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{NATIONALITE_LABELS[lead.nationalite ?? ""] ?? "—"}</span>
               </div>
-              {lead.communeMariage && <div className="flex items-center gap-2"><span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Mariage :</span><span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.communeMariage} {lead.dateMariage ? `— ${lead.dateMariage}` : ""}</span></div>}
-              {lead.contratMariage && <div className="flex items-center gap-2"><span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Contrat :</span><span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.regimeMatrimonial ?? "Oui"}</span></div>}
+              {lead.communeMariage && <div className="flex items-center gap-2"><span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Mariage :</span><span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{lead.communeMariage} {lead.dateMariage ? `— ${lead.dateMariage}` : ""}</span></div>}
+              {lead.contratMariage && <div className="flex items-center gap-2"><span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Contrat :</span><span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{lead.regimeMatrimonial ?? "Oui"}</span></div>}
             </div>
           </div>
 
@@ -201,14 +201,14 @@ function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void 
                 {mandats.map((m: any) => (
                   <a key={m.id} href="/dashboard/mandats"
                     className="flex items-center gap-3 p-3 transition-colors duration-300"
-                    style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", textDecoration: "none" }}
-                    onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-                    onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                    style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", textDecoration: "none" }}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
                   >
-                    <FileText className="w-4 h-4 shrink-0" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+                    <FileText className="w-4 h-4 shrink-0" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
                     <div className="flex-1 min-w-0">
-                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{TYPE_BIEN_LABELS[m.typeBien] ?? m.typeBien} — {m.localisation}</p>
-                      <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{m.budgetMax?.toLocaleString("fr-FR")} EUR · {new Date(m.createdAt).toLocaleDateString("fr-FR")}</p>
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{TYPE_BIEN_LABELS[m.typeBien] ?? m.typeBien} — {m.localisation}</p>
+                      <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{m.budgetMax?.toLocaleString("fr-FR")} EUR · {new Date(m.createdAt).toLocaleDateString("fr-FR")}</p>
                     </div>
                   </a>
                 ))}
@@ -216,9 +216,9 @@ function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void 
             </div>
           )}
           {mandats && mandats.length === 0 && (
-            <div className="flex items-center justify-between p-3" style={{ background: "#0D0D0D", border: "1px dashed #1E1E1E", borderRadius: "2px" }}>
-              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun mandat de recherche associe</p>
-              <a href={`/mandat?leadId=${leadId}`} style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#C9A84C", textDecoration: "none", letterSpacing: "0.04em" }}>
+            <div className="flex items-center justify-between p-3" style={{ background: "var(--surface-header)", border: "1px dashed var(--border)", borderRadius: "2px" }}>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucun mandat de recherche associe</p>
+              <a href={`/mandat?leadId=${leadId}`} style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--gold)", textDecoration: "none", letterSpacing: "0.04em" }}>
                 + Creer un mandat
               </a>
             </div>
@@ -232,16 +232,16 @@ function DetailPanel({ leadId, onClose }: { leadId: number; onClose: () => void 
                 {documents.map(doc => (
                   <a key={doc.id} href={doc.url} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-3 p-3 transition-colors duration-300"
-                    style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", textDecoration: "none" }}
-                    onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-                    onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                    style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", textDecoration: "none" }}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
                   >
-                    <FileText className="w-4 h-4 shrink-0" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+                    <FileText className="w-4 h-4 shrink-0" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
                     <div className="flex-1 min-w-0">
-                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{doc.filename}</p>
-                      <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{doc.type.replace("_", " ")} — {doc.size ? `${Math.round(doc.size / 1024)} Ko` : "—"}</p>
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{doc.filename}</p>
+                      <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{doc.type.replace("_", " ")} — {doc.size ? `${Math.round(doc.size / 1024)} Ko` : "—"}</p>
                     </div>
-                    <Eye className="w-4 h-4 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                    <Eye className="w-4 h-4 shrink-0" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                   </a>
                 ))}
               </div>
@@ -284,19 +284,19 @@ export default function Dashboard() {
   );
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
-      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--background)" }}>
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
     </div>
   );
 
   if (!isAuthenticated) return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-6" style={{ background: "#0A0A0A" }}>
-      <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.04em" }}>Acces reserve</h2>
-      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Connectez-vous pour acceder au tableau de bord.</p>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-6" style={{ background: "var(--background)" }}>
+      <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.04em" }}>Acces reserve</h2>
+      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Connectez-vous pour acceder au tableau de bord.</p>
       <a href="/login" style={{
         padding: "12px 28px",
-        background: "#C9A84C",
-        color: "#0A0A0A",
+        background: "var(--gold)",
+        color: "var(--background)",
         fontSize: "11px",
         fontWeight: 500,
         fontFamily: "'Hanken Grotesk', sans-serif",
@@ -309,9 +309,9 @@ export default function Dashboard() {
   );
 
   if (user?.role !== "admin" && user?.role !== "direction") return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: "#0A0A0A" }}>
-      <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.04em" }}>Acces refuse</h2>
-      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Vous n'avez pas les droits pour acceder a cette page.</p>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: "var(--background)" }}>
+      <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.04em" }}>Acces refuse</h2>
+      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Vous n'avez pas les droits pour acceder a cette page.</p>
     </div>
   );
 
@@ -340,16 +340,16 @@ export default function Dashboard() {
   const totalPages = Math.ceil((data?.total ?? 0) / LIMIT);
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <AdminNav />
 
       {/* Toolbar */}
-      <div style={{ borderBottom: "1px solid #1E1E1E" }}>
+      <div style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex items-center justify-end gap-2 px-5 py-2.5" style={{ maxWidth: "1280px", margin: "0 auto" }}>
           <button onClick={() => refetch()} className="p-2 transition-colors duration-300"
-            style={{ color: "#3A3632", border: "1px solid #1E1E1E", borderRadius: "2px", background: "transparent" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#6B6560"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#3A3632"; }}
+            style={{ color: "var(--foreground-faint)", border: "1px solid var(--border)", borderRadius: "2px", background: "transparent" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-faint)"; }}
           >
             <RefreshCw className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </button>
@@ -360,7 +360,7 @@ export default function Dashboard() {
               fontWeight: 500,
               letterSpacing: "0.06em",
               textTransform: "uppercase" as const,
-              color: "#C9A84C",
+              color: "var(--gold)",
               border: "1px solid rgba(201,168,76,0.3)",
               borderRadius: "2px",
               background: "transparent",
@@ -376,19 +376,19 @@ export default function Dashboard() {
       <div className="px-5 py-8" style={{ maxWidth: "1280px", margin: "0 auto" }}>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mb-10" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mb-10" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
           {[
             { label: "Total leads", value: data?.total ?? 0 },
             { label: "Nouveaux", value: data?.items.filter(l => l.statut === "nouveau").length ?? 0 },
             { label: "En cours", value: data?.items.filter(l => l.statut === "en_cours").length ?? 0 },
             { label: "Traites", value: data?.items.filter(l => l.statut === "traite").length ?? 0 },
           ].map((stat, i) => (
-            <div key={stat.label} className="p-5" style={{ background: "#0A0A0A" }}>
+            <div key={stat.label} className="p-5" style={{ background: "var(--background)" }}>
               <p className="tabular-nums" style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "32px",
                 fontWeight: 600,
-                color: i === 0 ? "#C9A84C" : "#F0EDE6",
+                color: i === 0 ? "var(--gold)" : "var(--foreground)",
                 lineHeight: 1,
                 letterSpacing: "0.02em",
               }}>
@@ -401,33 +401,33 @@ export default function Dashboard() {
 
         {/* Avis Marie */}
         {avisStats && (
-          <div className="mb-10 p-5" style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+          <div className="mb-10 p-5" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px" }}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Star className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                <span className="label-uppercase" style={{ color: "#F0EDE6" }}>Avis & Temoignages</span>
+                <Star className="w-4 h-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                <span className="label-uppercase" style={{ color: "var(--foreground)" }}>Avis & Temoignages</span>
               </div>
-              <a href="/dashboard/avis-pipe" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", textDecoration: "none", letterSpacing: "0.04em" }}
+              <a href="/dashboard/avis-pipe" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", textDecoration: "none", letterSpacing: "0.04em" }}
                 className="transition-opacity duration-300 hover:opacity-70"
               >
                 Voir le pipe →
               </a>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px" style={{ background: "#1E1E1E", borderRadius: "2px" }}>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px" style={{ background: "var(--border)", borderRadius: "2px" }}>
               {[
                 { label: "A contacter", value: avisStats.aFaire },
                 { label: "Avis effectue", value: avisStats.effectue },
                 { label: "En montage / OK", value: avisStats.enMontage + avisStats.montageOk },
                 { label: "Taux finalisation", value: `${avisStats.tauxConversion}%` },
               ].map(s => (
-                <div key={s.label} className="p-4" style={{ background: "#111111" }}>
-                  <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, color: "#F0EDE6", lineHeight: 1 }}>{s.value}</p>
+                <div key={s.label} className="p-4" style={{ background: "var(--surface)" }}>
+                  <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, color: "var(--foreground)", lineHeight: 1 }}>{s.value}</p>
                   <p className="label-uppercase mt-1.5" style={{ fontSize: "10px" }}>{s.label}</p>
                 </div>
               ))}
             </div>
-            <div className="flex gap-3 mt-3 pt-3" style={{ borderTop: "1px solid #1E1E1E" }}>
-              <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+            <div className="flex gap-3 mt-3 pt-3" style={{ borderTop: "1px solid var(--border)" }}>
+              <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                 Sources : {avisStats.courtage} Courtage · {avisStats.immo} Immo · Ce mois : {avisStats.montageOkCeMois} finalises
               </span>
             </div>
@@ -437,14 +437,14 @@ export default function Dashboard() {
         {/* Filtres */}
         <div className="flex flex-col sm:flex-row gap-3 mb-5">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
             <input
               type="text" placeholder="Rechercher par nom, email, telephone..."
               value={search} onChange={e => { setSearch(e.target.value); setPage(0); }}
               className="w-full transition-colors duration-300 focus:outline-none"
               style={{
-                background: "#111111",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 paddingLeft: "36px",
                 paddingRight: "14px",
@@ -452,22 +452,22 @@ export default function Dashboard() {
                 paddingBottom: "10px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           <select
             value={statut} onChange={e => { setStatut(e.target.value); setPage(0); }}
             style={{
-              background: "#111111",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               padding: "10px 14px",
               fontSize: "13px",
               fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               outline: "none",
             }}
           >
@@ -477,15 +477,15 @@ export default function Dashboard() {
         </div>
 
         {/* Tableau */}
-        <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
             </div>
           ) : !data?.items.length ? (
             <div className="text-center py-20">
-              <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucune fiche trouvee</p>
+              <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucune fiche trouvee</p>
             </div>
           ) : (
             <>
@@ -493,9 +493,9 @@ export default function Dashboard() {
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                    <tr style={{ borderBottom: "1px solid var(--border)" }}>
                       {["Nom / Prenom", "Contact", "Situation", "Statut", "Date", ""].map(h => (
-                        <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "#0D0D0D" }}>{h}</th>
+                        <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "var(--surface-header)" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -503,30 +503,30 @@ export default function Dashboard() {
                     {data.items.map((lead) => (
                       <tr key={lead.id}
                         className="cursor-pointer transition-colors duration-300"
-                        style={{ borderBottom: "1px solid #151515" }}
+                        style={{ borderBottom: "1px solid var(--border-subtle)" }}
                         onClick={() => setSelectedId(lead.id)}
-                        onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                        onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                         onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                       >
                         <td className="px-5 py-3">
-                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{lead.nom} {lead.prenoms}</p>
-                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{lead.profession ?? "—"}</p>
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{lead.nom} {lead.prenoms}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{lead.profession ?? "—"}</p>
                         </td>
                         <td className="px-5 py-3">
-                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{lead.telephonePortable ?? "—"}</p>
-                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lead.email ?? "—"}</p>
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{lead.telephonePortable ?? "—"}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lead.email ?? "—"}</p>
                         </td>
-                        <td className="px-5 py-3" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{SITUATION_LABELS[lead.situationFamiliale ?? ""] ?? "—"}</td>
+                        <td className="px-5 py-3" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{SITUATION_LABELS[lead.situationFamiliale ?? ""] ?? "—"}</td>
                         <td className="px-5 py-3"><StatutBadge statut={lead.statut} /></td>
-                        <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{new Date(lead.createdAt).toLocaleDateString("fr-FR")}</td>
+                        <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{new Date(lead.createdAt).toLocaleDateString("fr-FR")}</td>
                         <td className="px-5 py-3">
                           <div className="flex items-center gap-1">
-                            <button onClick={(e) => { e.stopPropagation(); setSelectedId(lead.id); }} className="p-1.5 transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632" }}>
+                            <button onClick={(e) => { e.stopPropagation(); setSelectedId(lead.id); }} className="p-1.5 transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-faint)" }}>
                               <Eye className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                             </button>
-                            <button onClick={(e) => handleDelete(e, lead.id, `${lead.nom} ${lead.prenoms}`)} className="p-1.5 transition-colors duration-300" style={{ color: "#3A3632" }}
-                              onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-                              onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                            <button onClick={(e) => handleDelete(e, lead.id, `${lead.nom} ${lead.prenoms}`)} className="p-1.5 transition-colors duration-300" style={{ color: "var(--foreground-faint)" }}
+                              onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+                              onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
                               title="Supprimer"
                             >
                               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -544,21 +544,21 @@ export default function Dashboard() {
                 {data.items.map(lead => (
                   <div key={lead.id}
                     className="p-4 cursor-pointer transition-colors duration-300"
-                    style={{ borderBottom: "1px solid #151515" }}
+                    style={{ borderBottom: "1px solid var(--border-subtle)" }}
                     onClick={() => setSelectedId(lead.id)}
-                    onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                    onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                     onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{lead.nom} {lead.prenoms}</p>
-                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>{lead.telephonePortable ?? lead.email ?? "—"}</p>
+                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{lead.nom} {lead.prenoms}</p>
+                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>{lead.telephonePortable ?? lead.email ?? "—"}</p>
                       </div>
                       <StatutBadge statut={lead.statut} />
                     </div>
                     <div className="flex items-center gap-4 mt-2">
-                      <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{SITUATION_LABELS[lead.situationFamiliale ?? ""] ?? "—"}</span>
-                      <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{new Date(lead.createdAt).toLocaleDateString("fr-FR")}</span>
+                      <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{SITUATION_LABELS[lead.situationFamiliale ?? ""] ?? "—"}</span>
+                      <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{new Date(lead.createdAt).toLocaleDateString("fr-FR")}</span>
                     </div>
                   </div>
                 ))}
@@ -570,20 +570,20 @@ export default function Dashboard() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between mt-5">
-            <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+            <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
               {page * LIMIT + 1}–{Math.min((page + 1) * LIMIT, data?.total ?? 0)} sur {data?.total ?? 0}
             </p>
             <div className="flex items-center gap-2">
               <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}
                 className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
-                style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px" }}
+                style={{ color: "var(--foreground-muted)", border: "1px solid var(--border)", borderRadius: "2px" }}
               >
                 <ChevronLeft className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </button>
-              <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", padding: "0 8px" }}>{page + 1} / {totalPages}</span>
+              <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", padding: "0 8px" }}>{page + 1} / {totalPages}</span>
               <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1}
                 className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
-                style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px" }}
+                style={{ color: "var(--foreground-muted)", border: "1px solid var(--border)", borderRadius: "2px" }}
               >
                 <ChevronRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </button>

@@ -45,12 +45,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 
 function statutBadge(statut: string) {
   const map: Record<string, { label: string; color: string; bg: string; border: string }> = {
-    en_attente: { label: "En attente", color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-    actif:      { label: "Actif",      color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-    suspendu:   { label: "Suspendu",   color: "#C9A84C", bg: "rgba(201,168,76,0.06)", border: "rgba(201,168,76,0.15)" },
-    resilie:    { label: "Resilie",     color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+    en_attente: { label: "En attente", color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+    actif:      { label: "Actif",      color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+    suspendu:   { label: "Suspendu",   color: "var(--gold)", bg: "rgba(201,168,76,0.06)", border: "rgba(201,168,76,0.15)" },
+    resilie:    { label: "Resilie",     color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
   };
-  const s = map[statut] ?? { label: statut, color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
+  const s = map[statut] ?? { label: statut, color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
   return (
     <span style={{
       display: "inline-flex",
@@ -73,11 +73,11 @@ function statutBadge(statut: string) {
 
 function commissionBadge(statut: string) {
   const styles: Record<string, { color: string; label: string; Icon: any }> = {
-    paye:   { color: "#4A7A5A", label: "Payee",      Icon: CheckCircle },
-    valide: { color: "#6B6560", label: "Validee",    Icon: Clock },
-    annule: { color: "#A04040", label: "Annulee",    Icon: XCircle },
+    paye:   { color: "var(--success)", label: "Payee",      Icon: CheckCircle },
+    valide: { color: "var(--foreground-muted)", label: "Validee",    Icon: Clock },
+    annule: { color: "var(--destructive)", label: "Annulee",    Icon: XCircle },
   };
-  const s = styles[statut] ?? { color: "#C9A84C", label: "En attente", Icon: Clock };
+  const s = styles[statut] ?? { color: "var(--gold)", label: "En attente", Icon: Clock };
   return (
     <span className="flex items-center gap-1" style={{ color: s.color, fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif" }}>
       <s.Icon size={12} style={{ strokeWidth: 1.5 }} /> {s.label}
@@ -127,7 +127,7 @@ function ContactResponsableForm({ isAgent, membreNom }: { isAgent: boolean; memb
 
   return (
     <div className="space-y-3">
-      <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>
+      <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>
         Envoyez un message a {isAgent ? "Elodie" : "Manon"} — une tache sera creee dans son calendrier.
       </p>
       <input
@@ -137,16 +137,16 @@ function ContactResponsableForm({ isAgent, membreNom }: { isAgent: boolean; memb
         onChange={e => setSujet(e.target.value)}
         className="w-full transition-colors duration-300 focus:outline-none"
         style={{
-          background: "#161616",
-          border: "1px solid #1E1E1E",
+          background: "var(--surface-raised)",
+          border: "1px solid var(--border)",
           borderRadius: "2px",
           padding: "10px 14px",
           fontSize: "13px",
           fontFamily: "'Hanken Grotesk', sans-serif",
-          color: "#F0EDE6",
+          color: "var(--foreground)",
         }}
-        onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-        onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+        onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+        onBlur={e => (e.target.style.borderColor = "var(--border)")}
       />
       <textarea
         placeholder="Message (optionnel)"
@@ -155,18 +155,18 @@ function ContactResponsableForm({ isAgent, membreNom }: { isAgent: boolean; memb
         rows={3}
         style={{
           width: "100%",
-          background: "#161616",
-          border: "1px solid #1E1E1E",
+          background: "var(--surface-raised)",
+          border: "1px solid var(--border)",
           borderRadius: "2px",
           padding: "10px 14px",
           fontSize: "13px",
           fontFamily: "'Hanken Grotesk', sans-serif",
-          color: "#F0EDE6",
+          color: "var(--foreground)",
           resize: "none",
           outline: "none",
         }}
-        onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-        onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+        onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+        onBlur={e => (e.target.style.borderColor = "var(--border)")}
       />
       <button
         onClick={handleSend}
@@ -174,8 +174,8 @@ function ContactResponsableForm({ isAgent, membreNom }: { isAgent: boolean; memb
         className="w-full transition-colors duration-300 disabled:cursor-not-allowed"
         style={{
           padding: "12px 28px",
-          background: sending || !sujet.trim() ? "#8A7535" : "#C9A84C",
-          color: "#0A0A0A",
+          background: sending || !sujet.trim() ? "var(--gold-muted)" : "var(--gold)",
+          color: "var(--background)",
           fontSize: "11px",
           fontWeight: 500,
           fontFamily: "'Hanken Grotesk', sans-serif",
@@ -277,8 +277,8 @@ export default function PortailMembre() {
   // ─── Auth guard ────────────────────────────────────────────────────────────
   if (authLoading || loadingAmb || loadingCourt) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
-        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Chargement...</p>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--background)" }}>
+        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Chargement...</p>
       </div>
     );
   }
@@ -291,13 +291,13 @@ export default function PortailMembre() {
   // ─── Pas encore inscrit dans le reseau ────────────────────────────────────
   if (!profilAmbassadeur && !profilCourtier) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "#0A0A0A" }}>
-        <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", maxWidth: "440px", width: "100%", padding: "48px 32px", textAlign: "center" }}>
-          <Award className="mx-auto mb-5" size={32} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.04em", marginBottom: "8px" }}>
+      <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "var(--background)" }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", maxWidth: "440px", width: "100%", padding: "48px 32px", textAlign: "center" }}>
+          <Award className="mx-auto mb-5" size={32} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.04em", marginBottom: "8px" }}>
             Vous n'etes pas encore inscrit dans le reseau
           </h2>
-          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginBottom: "32px" }}>
+          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", marginBottom: "32px" }}>
             Pour rejoindre le reseau Sigma Factory, inscrivez-vous en tant qu'agent ou courtier.
           </p>
           <div className="flex gap-3 justify-center">
@@ -306,8 +306,8 @@ export default function PortailMembre() {
               className="flex items-center gap-2 transition-colors duration-300"
               style={{
                 padding: "12px 24px",
-                background: "#C9A84C",
-                color: "#0A0A0A",
+                background: "var(--gold)",
+                color: "var(--background)",
                 fontSize: "11px",
                 fontWeight: 500,
                 fontFamily: "'Hanken Grotesk', sans-serif",
@@ -326,14 +326,14 @@ export default function PortailMembre() {
               style={{
                 padding: "12px 24px",
                 background: "transparent",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 fontSize: "11px",
                 fontWeight: 500,
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 letterSpacing: "0.1em",
                 textTransform: "uppercase" as const,
                 borderRadius: "2px",
-                border: "1px solid #1E1E1E",
+                border: "1px solid var(--border)",
                 cursor: "pointer",
               }}
             >
@@ -411,19 +411,19 @@ export default function PortailMembre() {
   };
 
   // ─── Shared inline style helpers ───────────────────────────────────────────
-  const sPanel: React.CSSProperties = { background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px" };
-  const sRaised: React.CSSProperties = { background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px" };
+  const sPanel: React.CSSProperties = { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px" };
+  const sRaised: React.CSSProperties = { background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px" };
 
   return (
     <>
-    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       {/* Banniere suspension */}
       {profil.statutInterne === "suspendu" && (
         <div className="flex items-center gap-3 px-6 py-3" style={{ borderBottom: "1px solid rgba(160,64,64,0.3)", background: "rgba(160,64,64,0.06)" }}>
-          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "#A04040", strokeWidth: 1.5 }} />
+          <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: "var(--destructive)", strokeWidth: 1.5 }} />
           <div>
-            <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "#A04040" }}>Compte suspendu</span>
-            <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginLeft: "8px" }}>
+            <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "var(--destructive)" }}>Compte suspendu</span>
+            <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", marginLeft: "8px" }}>
               {isAgent
                 ? "Votre compte a ete suspendu automatiquement (inactivite > 30 jours). Contactez Elodie pour reactiver votre acces."
                 : "Votre compte a ete suspendu automatiquement (dossier non traite > 72h). Contactez Manon pour reactiver votre acces."
@@ -434,13 +434,13 @@ export default function PortailMembre() {
       )}
 
       {/* Header */}
-      <div style={{ borderBottom: "1px solid #1E1E1E" }}>
+      <div style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex items-center justify-between px-6 py-4" style={{ maxWidth: "1280px", margin: "0 auto" }}>
           <div className="flex items-center gap-3">
-            <Award size={18} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+            <Award size={18} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
             <div>
               <p className="label-uppercase" style={{ marginBottom: "2px" }}>{typeLabel}</p>
-              <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em", lineHeight: 1 }}>
+              <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em", lineHeight: 1 }}>
                 {profil.prenom} {profil.nom}
               </h1>
             </div>
@@ -458,14 +458,14 @@ export default function PortailMembre() {
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   letterSpacing: "0.06em",
                   textTransform: "uppercase" as const,
-                  color: "#F0EDE6",
-                  border: "1px solid #1E1E1E",
+                  color: "var(--foreground)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   background: "transparent",
                   cursor: "pointer",
                 }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
               >
                 <FileText size={13} style={{ strokeWidth: 1.5 }} /> Telecharger mon contrat
               </button>
@@ -480,14 +480,14 @@ export default function PortailMembre() {
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
-                color: "#6B6560",
-                border: "1px solid #1E1E1E",
+                color: "var(--foreground-muted)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 background: "transparent",
                 cursor: "pointer",
               }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
             >
               <Lock size={13} style={{ strokeWidth: 1.5 }} /> Mot de passe
             </button>
@@ -502,10 +502,10 @@ export default function PortailMembre() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <p className="label-uppercase" style={{ marginBottom: "4px" }}>Votre code parrain</p>
-              <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", fontWeight: 600, color: "#C9A84C", letterSpacing: "0.08em", lineHeight: 1 }}>
+              <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", fontWeight: 600, color: "var(--gold)", letterSpacing: "0.08em", lineHeight: 1 }}>
                 {codeParrain}
               </p>
-              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "6px" }}>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "6px" }}>
                 Partagez ce code pour recruter dans votre reseau
               </p>
             </div>
@@ -515,8 +515,8 @@ export default function PortailMembre() {
                 className="flex items-center gap-1.5 transition-colors duration-300"
                 style={{
                   padding: "10px 20px",
-                  background: "#C9A84C",
-                  color: "#0A0A0A",
+                  background: "var(--gold)",
+                  color: "var(--background)",
                   fontSize: "11px",
                   fontWeight: 500,
                   fontFamily: "'Hanken Grotesk', sans-serif",
@@ -536,18 +536,18 @@ export default function PortailMembre() {
                 style={{
                   padding: "10px 20px",
                   background: "transparent",
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   fontSize: "11px",
                   fontWeight: 500,
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   letterSpacing: "0.1em",
                   textTransform: "uppercase" as const,
                   borderRadius: "2px",
-                  border: "1px solid #1E1E1E",
+                  border: "1px solid var(--border)",
                   cursor: "pointer",
                 }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
               >
                 <Share2 size={13} style={{ strokeWidth: 1.5 }} />
                 {copiedLink ? "Copie !" : "Lien d'invitation"}
@@ -558,18 +558,18 @@ export default function PortailMembre() {
                 style={{
                   padding: "10px 20px",
                   background: "transparent",
-                  color: "#6B6560",
+                  color: "var(--foreground-muted)",
                   fontSize: "11px",
                   fontWeight: 500,
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   letterSpacing: "0.1em",
                   textTransform: "uppercase" as const,
                   borderRadius: "2px",
-                  border: "1px solid #1E1E1E",
+                  border: "1px solid var(--border)",
                   cursor: "pointer",
                 }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
               >
                 <ChevronRight size={13} style={{ strokeWidth: 1.5 }} /> Voir la page
               </button>
@@ -578,23 +578,23 @@ export default function PortailMembre() {
         </div>
 
         {/* Stats rapides */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px mb-8" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px mb-8" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
           {[
             { label: isAgent ? "Biens soumis" : "Dossiers", value: dossiers.length, icon: isAgent ? Home : CreditCard, gold: false },
             { label: "Filleuls reseau", value: totalFilleuls, icon: Users, gold: false },
             { label: "Commissions payees", value: `${totalPaye.toLocaleString("fr-FR")} EUR`, icon: Wallet, gold: false },
             { label: "En attente", value: `${totalEnAttente.toLocaleString("fr-FR")} EUR`, icon: AlertCircle, gold: true },
           ].map((stat) => (
-            <div key={stat.label} className="p-5" style={{ background: "#0A0A0A" }}>
+            <div key={stat.label} className="p-5" style={{ background: "var(--background)" }}>
               <div className="flex items-center gap-2 mb-2">
-                <stat.icon size={14} style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                <stat.icon size={14} style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                 <p className="label-uppercase">{stat.label}</p>
               </div>
               <p className="tabular-nums" style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "28px",
                 fontWeight: 600,
-                color: stat.gold ? "#C9A84C" : "#F0EDE6",
+                color: stat.gold ? "var(--gold)" : "var(--foreground)",
                 lineHeight: 1,
                 letterSpacing: "0.02em",
               }}>
@@ -605,7 +605,7 @@ export default function PortailMembre() {
         </div>
 
         {/* Onglets */}
-        <div className="flex gap-0 mb-8" style={{ borderBottom: "1px solid #1E1E1E" }}>
+        <div className="flex gap-0 mb-8" style={{ borderBottom: "1px solid var(--border)" }}>
           {[
             { id: "apercu", label: "Apercu", icon: BarChart2 },
             { id: "commissions", label: `Commissions (${allCommissions.length})`, icon: TrendingUp },
@@ -626,10 +626,10 @@ export default function PortailMembre() {
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
-                color: activeTab === tab.id ? "#F0EDE6" : "#3A3632",
+                color: activeTab === tab.id ? "var(--foreground)" : "var(--foreground-faint)",
                 background: "transparent",
                 border: "none",
-                borderBottom: activeTab === tab.id ? "1px solid #C9A84C" : "1px solid transparent",
+                borderBottom: activeTab === tab.id ? "1px solid var(--gold)" : "1px solid transparent",
                 cursor: "pointer",
                 marginBottom: "-1px",
               }}
@@ -645,26 +645,26 @@ export default function PortailMembre() {
           <div className="space-y-8">
             {/* Resume financier */}
             <div style={sPanel}>
-              <div className="px-5 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid #1E1E1E" }}>
-                <TrendingUp size={14} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Resume financier</p>
+              <div className="px-5 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid var(--border)" }}>
+                <TrendingUp size={14} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Resume financier</p>
               </div>
-              <div className="grid grid-cols-3 gap-px" style={{ background: "#1E1E1E" }}>
-                <div className="p-5 text-center" style={{ background: "#111111" }}>
+              <div className="grid grid-cols-3 gap-px" style={{ background: "var(--border)" }}>
+                <div className="p-5 text-center" style={{ background: "var(--surface)" }}>
                   <p className="label-uppercase mb-2">Total genere</p>
-                  <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", lineHeight: 1 }}>
+                  <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--foreground)", lineHeight: 1 }}>
                     {totalCommissions.toLocaleString("fr-FR")} EUR
                   </p>
                 </div>
-                <div className="p-5 text-center" style={{ background: "#111111" }}>
+                <div className="p-5 text-center" style={{ background: "var(--surface)" }}>
                   <p className="label-uppercase mb-2">Paye</p>
-                  <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#4A7A5A", lineHeight: 1 }}>
+                  <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--success)", lineHeight: 1 }}>
                     {totalPaye.toLocaleString("fr-FR")} EUR
                   </p>
                 </div>
-                <div className="p-5 text-center" style={{ background: "#111111" }}>
+                <div className="p-5 text-center" style={{ background: "var(--surface)" }}>
                   <p className="label-uppercase mb-2">En attente</p>
-                  <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#C9A84C", lineHeight: 1 }}>
+                  <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--gold)", lineHeight: 1 }}>
                     {totalEnAttente.toLocaleString("fr-FR")} EUR
                   </p>
                 </div>
@@ -674,15 +674,15 @@ export default function PortailMembre() {
             {/* Dernieres commissions */}
             {allCommissions.length > 0 && (
               <div style={sPanel}>
-                <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: "1px solid #1E1E1E" }}>
+                <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: "1px solid var(--border)" }}>
                   <div className="flex items-center gap-2">
-                    <Clock size={14} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                    <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Dernieres commissions</p>
+                    <Clock size={14} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                    <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Dernieres commissions</p>
                   </div>
                   <button
                     onClick={() => setActiveTab("commissions")}
                     className="transition-opacity duration-300 hover:opacity-70"
-                    style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", letterSpacing: "0.04em", background: "none", border: "none", cursor: "pointer" }}
+                    style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", letterSpacing: "0.04em", background: "none", border: "none", cursor: "pointer" }}
                   >
                     Voir tout →
                   </button>
@@ -690,19 +690,19 @@ export default function PortailMembre() {
                 <div className="p-5 space-y-2">
                   {allCommissions.slice(0, 5).map((c: any) => (
                     <div key={c.id} className="flex items-center justify-between p-3 transition-colors duration-300" style={sRaised}
-                      onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-                      onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                      onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+                      onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
                     >
                       <div>
-                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
                           {c.description ?? c.typeDossier ?? "Commission reseau"}
                         </p>
-                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                           {formatMois(c.dateEncaissement ?? c.createdAt)}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                        <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
                           {(c.montantHt ?? 0).toLocaleString("fr-FR")} EUR
                         </p>
                         <div>{commissionBadge(c.statut)}</div>
@@ -716,32 +716,32 @@ export default function PortailMembre() {
             {/* Reseau rapide */}
             {totalFilleuls > 0 && (
               <div style={sPanel}>
-                <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: "1px solid #1E1E1E" }}>
+                <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: "1px solid var(--border)" }}>
                   <div className="flex items-center gap-2">
-                    <Users size={14} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                    <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Mon reseau</p>
+                    <Users size={14} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                    <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Mon reseau</p>
                   </div>
                   <button
                     onClick={() => setActiveTab("reseau")}
                     className="transition-opacity duration-300 hover:opacity-70"
-                    style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", letterSpacing: "0.04em", background: "none", border: "none", cursor: "pointer" }}
+                    style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", letterSpacing: "0.04em", background: "none", border: "none", cursor: "pointer" }}
                   >
                     Voir tout →
                   </button>
                 </div>
                 <div className="p-5">
-                  <div className="grid grid-cols-2 gap-px" style={{ background: "#1E1E1E", borderRadius: "2px" }}>
+                  <div className="grid grid-cols-2 gap-px" style={{ background: "var(--border)", borderRadius: "2px" }}>
                     {filleulsAgentsN1.length > 0 && (
-                      <div className="p-4 text-center" style={{ background: "#111111" }}>
-                        <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", fontWeight: 600, color: "#F0EDE6", lineHeight: 1 }}>
+                      <div className="p-4 text-center" style={{ background: "var(--surface)" }}>
+                        <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", fontWeight: 600, color: "var(--foreground)", lineHeight: 1 }}>
                           {filleulsAgentsN1.length}
                         </p>
                         <p className="label-uppercase mt-2" style={{ fontSize: "10px" }}>Agent{filleulsAgentsN1.length > 1 ? "s" : ""} N1</p>
                       </div>
                     )}
                     {filleulsCourtiersN1.length > 0 && (
-                      <div className="p-4 text-center" style={{ background: "#111111" }}>
-                        <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", fontWeight: 600, color: "#F0EDE6", lineHeight: 1 }}>
+                      <div className="p-4 text-center" style={{ background: "var(--surface)" }}>
+                        <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px", fontWeight: 600, color: "var(--foreground)", lineHeight: 1 }}>
                           {filleulsCourtiersN1.length}
                         </p>
                         <p className="label-uppercase mt-2" style={{ fontSize: "10px" }}>Courtier{filleulsCourtiersN1.length > 1 ? "s" : ""} N1</p>
@@ -754,9 +754,9 @@ export default function PortailMembre() {
 
             {/* Contacter le responsable */}
             <div style={sPanel}>
-              <div className="px-5 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid #1E1E1E" }}>
-                <MessageSquare size={14} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Contacter {isAgent ? "Elodie" : "Manon"}</p>
+              <div className="px-5 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid var(--border)" }}>
+                <MessageSquare size={14} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Contacter {isAgent ? "Elodie" : "Manon"}</p>
               </div>
               <div className="p-5">
                 <ContactResponsableForm isAgent={isAgent} membreNom={profil ? `${(profil as any).prenom ?? ""} ${(profil as any).nom ?? ""}`.trim() : ""} />
@@ -766,9 +766,9 @@ export default function PortailMembre() {
             {/* Vide */}
             {dossiers.length === 0 && allCommissions.length === 0 && totalFilleuls === 0 && (
               <div className="py-12 text-center" style={sPanel}>
-                <ChevronRight size={24} className="mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Votre espace est pret.</p>
-                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>
+                <ChevronRight size={24} className="mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Votre espace est pret.</p>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>
                   {isAgent
                     ? "Vos biens soumis et vos commissions apparaitront ici."
                     : "Vos dossiers et vos commissions apparaitront ici."}
@@ -782,31 +782,31 @@ export default function PortailMembre() {
         {activeTab === "commissions" && (
           <div className="space-y-8">
             {/* Resume */}
-            <div className="grid grid-cols-3 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
-              <div className="p-5 text-center" style={{ background: "#0A0A0A" }}>
+            <div className="grid grid-cols-3 gap-px" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
+              <div className="p-5 text-center" style={{ background: "var(--background)" }}>
                 <p className="label-uppercase mb-2">Total genere</p>
-                <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", lineHeight: 1 }}>
+                <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--foreground)", lineHeight: 1 }}>
                   {totalCommissions.toLocaleString("fr-FR")} EUR
                 </p>
-                <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>
+                <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>
                   {allCommissions.length} commission{allCommissions.length > 1 ? "s" : ""}
                 </p>
               </div>
-              <div className="p-5 text-center" style={{ background: "#0A0A0A" }}>
+              <div className="p-5 text-center" style={{ background: "var(--background)" }}>
                 <p className="label-uppercase mb-2">Paye</p>
-                <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#4A7A5A", lineHeight: 1 }}>
+                <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--success)", lineHeight: 1 }}>
                   {totalPaye.toLocaleString("fr-FR")} EUR
                 </p>
-                <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>
+                <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>
                   {commissionsPayeesArr.length} paiement{commissionsPayeesArr.length > 1 ? "s" : ""}
                 </p>
               </div>
-              <div className="p-5 text-center" style={{ background: "#0A0A0A" }}>
+              <div className="p-5 text-center" style={{ background: "var(--background)" }}>
                 <p className="label-uppercase mb-2">En attente</p>
-                <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#C9A84C", lineHeight: 1 }}>
+                <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--gold)", lineHeight: 1 }}>
                   {totalEnAttente.toLocaleString("fr-FR")} EUR
                 </p>
-                <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>
+                <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>
                   {commissionsEnAttenteArr.length} en cours
                 </p>
               </div>
@@ -815,9 +815,9 @@ export default function PortailMembre() {
             {/* Historique mensuel */}
             {historiqueParMois.length > 0 && (
               <div style={sPanel}>
-                <div className="px-5 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid #1E1E1E" }}>
-                  <BarChart2 size={14} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                  <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Historique mensuel</p>
+                <div className="px-5 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid var(--border)" }}>
+                  <BarChart2 size={14} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                  <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Historique mensuel</p>
                 </div>
                 <div className="p-5 space-y-4">
                   {historiqueParMois.map((m, i) => {
@@ -826,15 +826,15 @@ export default function PortailMembre() {
                     return (
                       <div key={i} className="space-y-1.5">
                         <div className="flex items-center justify-between">
-                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", textTransform: "capitalize" as const }}>{m.mois}</span>
+                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", textTransform: "capitalize" as const }}>{m.mois}</span>
                           <div className="flex items-center gap-4">
-                            <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#4A7A5A" }}>{m.paye.toLocaleString("fr-FR")} EUR paye</span>
-                            <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{m.total.toLocaleString("fr-FR")} EUR total</span>
-                            <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{m.count} ligne{m.count > 1 ? "s" : ""}</span>
+                            <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--success)" }}>{m.paye.toLocaleString("fr-FR")} EUR paye</span>
+                            <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{m.total.toLocaleString("fr-FR")} EUR total</span>
+                            <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{m.count} ligne{m.count > 1 ? "s" : ""}</span>
                           </div>
                         </div>
-                        <div style={{ height: "3px", background: "#1E1E1E", borderRadius: "1px", overflow: "hidden" }}>
-                          <div style={{ height: "100%", background: "#C9A84C", borderRadius: "1px", width: `${pct}%`, transition: "width 300ms ease" }} />
+                        <div style={{ height: "3px", background: "var(--border)", borderRadius: "1px", overflow: "hidden" }}>
+                          <div style={{ height: "100%", background: "var(--gold)", borderRadius: "1px", width: `${pct}%`, transition: "width 300ms ease" }} />
                         </div>
                       </div>
                     );
@@ -846,25 +846,25 @@ export default function PortailMembre() {
             {/* Liste detaillee */}
             {allCommissions.length > 0 ? (
               <div style={sPanel}>
-                <div className="px-5 py-4" style={{ borderBottom: "1px solid #1E1E1E" }}>
-                  <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Detail des commissions</p>
+                <div className="px-5 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
+                  <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Detail des commissions</p>
                 </div>
                 <div className="p-5 space-y-2">
                   {allCommissions.map((c: any) => (
                     <div key={c.id} className="flex items-center justify-between p-3 transition-colors duration-300" style={sRaised}
-                      onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-                      onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                      onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+                      onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
                     >
                       <div>
-                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
                           {c.description ?? c.typeDossier ?? "Commission reseau"}
                         </p>
-                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                           {formatMois(c.dateEncaissement ?? c.createdAt)}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                        <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
                           {(c.montantHt ?? 0).toLocaleString("fr-FR")} EUR
                         </p>
                         <div>{commissionBadge(c.statut)}</div>
@@ -875,9 +875,9 @@ export default function PortailMembre() {
               </div>
             ) : (
               <div className="py-12 text-center" style={sPanel}>
-                <TrendingUp size={24} className="mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Aucune commission pour le moment.</p>
-                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>
+                <TrendingUp size={24} className="mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Aucune commission pour le moment.</p>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>
                   Vos commissions apparaitront ici des validation d'un dossier.
                 </p>
               </div>
@@ -889,14 +889,14 @@ export default function PortailMembre() {
         {activeTab === "reseau" && (
           <div className="space-y-8">
             {/* KPIs reseau */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-px" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
               {[
-                { label: "Total filleuls", value: totalFilleuls, color: "#F0EDE6" },
-                { label: "Commissions generees", value: `${(totalCommissions / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}`, color: "#F0EDE6" },
-                { label: "Payees", value: `${(totalPaye / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}`, color: "#4A7A5A" },
-                { label: "En attente", value: `${(totalEnAttente / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}`, color: "#C9A84C" },
+                { label: "Total filleuls", value: totalFilleuls, color: "var(--foreground)" },
+                { label: "Commissions generees", value: `${(totalCommissions / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}`, color: "var(--foreground)" },
+                { label: "Payees", value: `${(totalPaye / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}`, color: "var(--success)" },
+                { label: "En attente", value: `${(totalEnAttente / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}`, color: "var(--gold)" },
               ].map(kpi => (
-                <div key={kpi.label} className="p-5" style={{ background: "#0A0A0A" }}>
+                <div key={kpi.label} className="p-5" style={{ background: "var(--background)" }}>
                   <p className="label-uppercase mb-2">{kpi.label}</p>
                   <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, color: kpi.color, lineHeight: 1 }}>
                     {kpi.value}
@@ -907,17 +907,17 @@ export default function PortailMembre() {
 
             {/* Lien de parrainage */}
             <div className="p-5" style={{ ...sPanel, borderColor: "rgba(201,168,76,0.15)" }}>
-              <p className="label-uppercase mb-3" style={{ color: "#C9A84C" }}>Mon lien de parrainage</p>
+              <p className="label-uppercase mb-3" style={{ color: "var(--gold)" }}>Mon lien de parrainage</p>
               <div className="flex items-center gap-2">
                 <code style={{
                   flex: 1,
-                  background: "#0A0A0A",
-                  border: "1px solid #1E1E1E",
+                  background: "var(--background)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   padding: "8px 12px",
                   fontSize: "11px",
                   fontFamily: "monospace",
-                  color: "#6B6560",
+                  color: "var(--foreground-muted)",
                   wordBreak: "break-all" as const,
                 }}>
                   {lienParrainage}
@@ -932,19 +932,19 @@ export default function PortailMembre() {
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     letterSpacing: "0.06em",
                     textTransform: "uppercase" as const,
-                    color: "#F0EDE6",
-                    border: "1px solid #1E1E1E",
+                    color: "var(--foreground)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     background: "transparent",
                     cursor: "pointer",
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
                 >
                   <Share2 size={12} style={{ strokeWidth: 1.5 }} /> {copiedLink ? "Copie !" : "Copier"}
                 </button>
               </div>
-              <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "8px" }}>
+              <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "8px" }}>
                 Ce lien pre-remplit automatiquement votre code parrain dans le formulaire d'inscription
               </p>
             </div>
@@ -952,9 +952,9 @@ export default function PortailMembre() {
             {/* Filleuls */}
             {totalFilleuls === 0 ? (
               <div className="py-12 text-center" style={sPanel}>
-                <Users size={24} className="mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Votre reseau est vide pour l'instant.</p>
-                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>
+                <Users size={24} className="mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Votre reseau est vide pour l'instant.</p>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>
                   Partagez votre lien ci-dessus pour recruter vos premiers filleuls.
                 </p>
               </div>
@@ -962,26 +962,26 @@ export default function PortailMembre() {
               <>
                 {filleulsAgentsN1.length > 0 && (
                   <div style={sPanel}>
-                    <div className="px-5 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid #1E1E1E" }}>
-                      <Home size={14} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                      <p className="label-uppercase" style={{ color: "#F0EDE6" }}>
+                    <div className="px-5 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid var(--border)" }}>
+                      <Home size={14} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                      <p className="label-uppercase" style={{ color: "var(--foreground)" }}>
                         Agents parraines ({filleulsAgentsN1.length})
                       </p>
-                      <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#C9A84C", letterSpacing: "0.04em" }}>10% residuel</span>
+                      <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--gold)", letterSpacing: "0.04em" }}>10% residuel</span>
                     </div>
                     <div className="p-5 space-y-2">
                       {filleulsAgentsN1.map((f: any) => (
                         <div key={f.id} className="flex items-center justify-between p-3 transition-colors duration-300" style={sRaised}
-                          onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-                          onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                          onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+                          onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
                         >
                           <div>
-                            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{f.prenom} {f.nom}</span>
-                            <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginLeft: "8px" }}>{f.ville}</span>
+                            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{f.prenom} {f.nom}</span>
+                            <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginLeft: "8px" }}>{f.ville}</span>
                           </div>
                           <div className="flex items-center gap-3">
                             {statutBadge(f.statutInterne)}
-                            <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                            <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                               {new Date(f.createdAt).toLocaleDateString("fr-FR")}
                             </span>
                           </div>
@@ -993,26 +993,26 @@ export default function PortailMembre() {
 
                 {filleulsCourtiersN1.length > 0 && (
                   <div style={sPanel}>
-                    <div className="px-5 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid #1E1E1E" }}>
-                      <CreditCard size={14} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                      <p className="label-uppercase" style={{ color: "#F0EDE6" }}>
+                    <div className="px-5 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid var(--border)" }}>
+                      <CreditCard size={14} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                      <p className="label-uppercase" style={{ color: "var(--foreground)" }}>
                         Courtiers parraines ({filleulsCourtiersN1.length})
                       </p>
-                      <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#C9A84C", letterSpacing: "0.04em" }}>10% residuel</span>
+                      <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--gold)", letterSpacing: "0.04em" }}>10% residuel</span>
                     </div>
                     <div className="p-5 space-y-2">
                       {filleulsCourtiersN1.map((f: any) => (
                         <div key={f.id} className="flex items-center justify-between p-3 transition-colors duration-300" style={sRaised}
-                          onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-                          onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                          onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+                          onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
                         >
                           <div>
-                            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{f.prenom} {f.nom}</span>
-                            <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginLeft: "8px" }}>{f.ville}</span>
+                            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{f.prenom} {f.nom}</span>
+                            <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginLeft: "8px" }}>{f.ville}</span>
                           </div>
                           <div className="flex items-center gap-3">
                             {statutBadge(f.statutInterne)}
-                            <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                            <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                               {new Date(f.createdAt).toLocaleDateString("fr-FR")}
                             </span>
                           </div>
@@ -1037,8 +1037,8 @@ export default function PortailMembre() {
                   className="flex items-center gap-2 transition-colors duration-300"
                   style={{
                     padding: "12px 24px",
-                    background: "#C9A84C",
-                    color: "#0A0A0A",
+                    background: "var(--gold)",
+                    color: "var(--background)",
                     fontSize: "11px",
                     fontWeight: 500,
                     fontFamily: "'Hanken Grotesk', sans-serif",
@@ -1056,10 +1056,10 @@ export default function PortailMembre() {
             {dossiers.length === 0 ? (
               <div className="py-12 text-center" style={sPanel}>
                 {isAgent
-                  ? <Home size={24} className="mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-                  : <CreditCard size={24} className="mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
+                  ? <Home size={24} className="mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+                  : <CreditCard size={24} className="mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
                 }
-                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>
+                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>
                   {isAgent ? "Aucun bien soumis pour l'instant." : "Aucun dossier pour l'instant."}
                 </p>
                 {isAgent && (
@@ -1068,8 +1068,8 @@ export default function PortailMembre() {
                     className="flex items-center gap-2 mx-auto mt-4 transition-colors duration-300"
                     style={{
                       padding: "10px 20px",
-                      background: "#C9A84C",
-                      color: "#0A0A0A",
+                      background: "var(--gold)",
+                      color: "var(--background)",
                       fontSize: "11px",
                       fontWeight: 500,
                       fontFamily: "'Hanken Grotesk', sans-serif",
@@ -1089,35 +1089,35 @@ export default function PortailMembre() {
                 <div className="p-5 space-y-2">
                   {dossiers.map((d: any) => (
                     <div key={d.id} className="flex items-center justify-between p-3 transition-colors duration-300" style={sRaised}
-                      onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-                      onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                      onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+                      onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
                     >
                       <div className="flex-1 min-w-0">
-                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
                           {isAgent
                             ? (d.titre ?? d.adresse ?? `Bien #${d.id}`)
                             : (d.clientNom ?? `Dossier #${d.id}`)}
                         </p>
-                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                           {isAgent
                             ? `${d.typeBien ?? ""} — ${d.ville ?? ""}`
                             : `${d.typeDossier?.replace(/_/g, " ") ?? ""}`}
                         </p>
-                        <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                        <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                           {d.createdAt ? new Date(d.createdAt).toLocaleDateString("fr-FR") : ""}
                         </p>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>
+                        <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>
                           {isAgent ? (d.statutBien ?? "—") : (d.statut ?? "—")}
                         </span>
                         {isAgent && d.prix && (
-                          <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                          <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
                             {(d.prix / 1000).toFixed(0)}k EUR
                           </span>
                         )}
                         {!isAgent && d.montantFinancement && (
-                          <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                          <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
                             {(d.montantFinancement / 1000).toFixed(0)}k EUR
                           </span>
                         )}
@@ -1125,7 +1125,7 @@ export default function PortailMembre() {
                           <button
                             onClick={() => { setEditingBien(d); setEditForm({ titre: d.titre ?? "", prix: d.prix ?? "", surface: d.surface ?? "", nbPieces: d.nbPieces ?? "", description: d.description ?? "", pointsForts: d.pointsForts ?? "" }); }}
                             className="p-1.5 transition-opacity duration-300 hover:opacity-70"
-                            style={{ color: "#3A3632", background: "transparent", border: "none", cursor: "pointer" }}
+                            style={{ color: "var(--foreground-faint)", background: "transparent", border: "none", cursor: "pointer" }}
                           >
                             <Pencil size={13} style={{ strokeWidth: 1.5 }} />
                           </button>
@@ -1144,26 +1144,26 @@ export default function PortailMembre() {
           <div className="space-y-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <AlertTriangle size={14} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                <p className="label-uppercase" style={{ color: "#F0EDE6" }}>
+                <AlertTriangle size={14} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                <p className="label-uppercase" style={{ color: "var(--foreground)" }}>
                   Mes demandes envoyees a {isAgent ? "Elodie" : "Manon"}
                 </p>
               </div>
               <button
                 onClick={() => refetchDemandes()}
                 className="transition-opacity duration-300 hover:opacity-70"
-                style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
+                style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
               >
                 Actualiser
               </button>
             </div>
             {mesDemandes.length === 0 ? (
               <div className="py-12 text-center" style={sPanel}>
-                <MessageSquare size={24} className="mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>
+                <MessageSquare size={24} className="mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>
                   Aucune demande envoyee pour l'instant.
                 </p>
-                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>
                   Utilisez le formulaire dans l'onglet "Apercu" pour contacter {isAgent ? "Elodie" : "Manon"}.
                 </p>
               </div>
@@ -1171,28 +1171,28 @@ export default function PortailMembre() {
               <div className="space-y-2">
                 {mesDemandes.map((task: any) => {
                   const statutStyles: Record<string, { color: string; bg: string; border: string }> = {
-                    a_faire:  { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-                    en_cours: { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
-                    termine:  { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+                    a_faire:  { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+                    en_cours: { color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+                    termine:  { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
                   };
                   const statutLabels: Record<string, string> = {
                     a_faire: "A faire",
                     en_cours: "En cours",
                     termine: "Termine",
                   };
-                  const ss = statutStyles[task.statut] ?? { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
+                  const ss = statutStyles[task.statut] ?? { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
                   return (
                     <div key={task.id} className="flex items-start justify-between gap-4 p-4" style={sPanel}>
                       <div className="flex-1 min-w-0">
-                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
+                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
                           {task.titre}
                         </p>
                         {task.description && (
-                          <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
+                          <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>
                             {task.description}
                           </p>
                         )}
-                        <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>
+                        <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>
                           {new Date(task.dateDebut).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" })}
                           {" a "}
                           {new Date(task.dateDebut).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Paris" })}
@@ -1226,14 +1226,14 @@ export default function PortailMembre() {
         {/* ── ONGLET DOCUMENTS ── */}
         {activeTab === "documents" && (
           <div style={sPanel}>
-            <div className="px-5 py-4" style={{ borderBottom: "1px solid #1E1E1E" }}>
+            <div className="px-5 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
               <div className="flex items-center gap-2 mb-1">
-                <FileText size={14} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                <p className="label-uppercase" style={{ color: "#F0EDE6" }}>
+                <FileText size={14} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                <p className="label-uppercase" style={{ color: "var(--foreground)" }}>
                   Echange de documents avec {isAgent ? "Elodie" : "Manon"}
                 </p>
               </div>
-              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                 Envoyez des documents ou consultez ceux qui vous ont ete transmis.
               </p>
             </div>
@@ -1262,12 +1262,12 @@ export default function PortailMembre() {
         {/* ── Onglet Mon Profil ── */}
         {activeTab === "profil" && (
           <div style={sPanel}>
-            <div className="px-5 py-4" style={{ borderBottom: "1px solid #1E1E1E" }}>
+            <div className="px-5 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
               <div className="flex items-center gap-2 mb-1">
-                <MapPin size={14} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Regions d'operation</p>
+                <MapPin size={14} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Regions d'operation</p>
               </div>
-              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                 Indiquez les regions ou vous exercez. {isAgent ? "Elodie" : "Manon"} utilisera cette information pour vous assigner les dossiers correspondants.
               </p>
             </div>
@@ -1280,7 +1280,7 @@ export default function PortailMembre() {
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     fontWeight: 500,
                     letterSpacing: "0.04em",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                     background: "rgba(201,168,76,0.06)",
                     border: "1px solid rgba(201,168,76,0.15)",
                     borderRadius: "2px",
@@ -1289,14 +1289,14 @@ export default function PortailMembre() {
                     <button
                       onClick={() => setMesRegions(prev => prev.filter(x => x !== r))}
                       className="transition-opacity duration-300 hover:opacity-70"
-                      style={{ color: "#6B6560", background: "none", border: "none", cursor: "pointer", padding: 0, marginLeft: "2px" }}
+                      style={{ color: "var(--foreground-muted)", background: "none", border: "none", cursor: "pointer", padding: 0, marginLeft: "2px" }}
                     >
                       <X className="w-3 h-3" style={{ strokeWidth: 1.5 }} />
                     </button>
                   </span>
                 ))}
                 {mesRegions.length === 0 && (
-                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", fontStyle: "italic" }}>
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", fontStyle: "italic" }}>
                     Aucune region renseignee
                   </span>
                 )}
@@ -1305,13 +1305,13 @@ export default function PortailMembre() {
                 <select
                   style={{
                     flex: 1,
-                    background: "#161616",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--surface-raised)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     padding: "10px 14px",
                     fontSize: "13px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                     outline: "none",
                   }}
                   onChange={e => {
@@ -1332,8 +1332,8 @@ export default function PortailMembre() {
                   className="transition-colors duration-300"
                   style={{
                     padding: "10px 24px",
-                    background: (updateMesRegionsCourtier.isPending || updateMesRegionsAgent.isPending) ? "#8A7535" : "#C9A84C",
-                    color: "#0A0A0A",
+                    background: (updateMesRegionsCourtier.isPending || updateMesRegionsAgent.isPending) ? "var(--gold-muted)" : "var(--gold)",
+                    color: "var(--background)",
                     fontSize: "11px",
                     fontWeight: 500,
                     fontFamily: "'Hanken Grotesk', sans-serif",
@@ -1356,10 +1356,10 @@ export default function PortailMembre() {
 
     {/* Modale edition bien */}
     <Dialog open={!!editingBien} onOpenChange={open => !open && setEditingBien(null)}>
-      <DialogContent className="border-0 p-0 max-w-lg max-h-[80vh] overflow-y-auto" style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
-        <div className="px-6 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid #1E1E1E" }}>
-          <Pencil size={14} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>
+      <DialogContent className="border-0 p-0 max-w-lg max-h-[80vh] overflow-y-auto" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px" }}>
+        <div className="px-6 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid var(--border)" }}>
+          <Pencil size={14} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em" }}>
             Modifier le bien
           </h3>
         </div>
@@ -1372,9 +1372,9 @@ export default function PortailMembre() {
                 value={editForm.titre}
                 onChange={e => setEditForm(f => ({ ...f, titre: e.target.value }))}
                 className="w-full focus:outline-none transition-colors duration-300"
-                style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}
-                onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}
+                onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                onBlur={e => (e.target.style.borderColor = "var(--border)")}
               />
             </div>
             <div className="grid grid-cols-3 gap-3">
@@ -1385,9 +1385,9 @@ export default function PortailMembre() {
                   value={editForm.prix}
                   onChange={e => setEditForm(f => ({ ...f, prix: Number(e.target.value) }))}
                   className="w-full focus:outline-none transition-colors duration-300"
-                  style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div>
@@ -1397,9 +1397,9 @@ export default function PortailMembre() {
                   value={editForm.surface}
                   onChange={e => setEditForm(f => ({ ...f, surface: Number(e.target.value) }))}
                   className="w-full focus:outline-none transition-colors duration-300"
-                  style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div>
@@ -1409,9 +1409,9 @@ export default function PortailMembre() {
                   value={editForm.nbPieces}
                   onChange={e => setEditForm(f => ({ ...f, nbPieces: Number(e.target.value) }))}
                   className="w-full focus:outline-none transition-colors duration-300"
-                  style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
             </div>
@@ -1421,9 +1421,9 @@ export default function PortailMembre() {
                 value={editForm.description}
                 onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
                 rows={3}
-                style={{ width: "100%", background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", resize: "none", outline: "none" }}
-                onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                style={{ width: "100%", background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", resize: "none", outline: "none" }}
+                onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                onBlur={e => (e.target.style.borderColor = "var(--border)")}
               />
             </div>
             <div>
@@ -1433,19 +1433,19 @@ export default function PortailMembre() {
                 onChange={e => setEditForm(f => ({ ...f, pointsForts: e.target.value }))}
                 rows={2}
                 placeholder="Calme, lumineux, vue degagee..."
-                style={{ width: "100%", background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", resize: "none", outline: "none" }}
-                onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                style={{ width: "100%", background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", resize: "none", outline: "none" }}
+                onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                onBlur={e => (e.target.style.borderColor = "var(--border)")}
               />
             </div>
-            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
               Le statut de publication ne peut etre modifie que par l'equipe Sigma.
             </p>
             <div className="flex gap-2 justify-end pt-2">
               <button
                 onClick={() => setEditingBien(null)}
                 className="flex items-center gap-1 transition-opacity duration-300 hover:opacity-70"
-                style={{ padding: "10px 20px", fontSize: "11px", fontWeight: 500, fontFamily: "'Hanken Grotesk', sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "#6B6560", background: "transparent", border: "none", cursor: "pointer" }}
+                style={{ padding: "10px 20px", fontSize: "11px", fontWeight: 500, fontFamily: "'Hanken Grotesk', sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "var(--foreground-muted)", background: "transparent", border: "none", cursor: "pointer" }}
               >
                 <X size={13} style={{ strokeWidth: 1.5 }} /> Annuler
               </button>
@@ -1455,8 +1455,8 @@ export default function PortailMembre() {
                 className="flex items-center gap-1 transition-colors duration-300"
                 style={{
                   padding: "10px 24px",
-                  background: updateBien.isPending ? "#8A7535" : "#C9A84C",
-                  color: "#0A0A0A",
+                  background: updateBien.isPending ? "var(--gold-muted)" : "var(--gold)",
+                  color: "var(--background)",
                   fontSize: "11px",
                   fontWeight: 500,
                   fontFamily: "'Hanken Grotesk', sans-serif",
@@ -1477,10 +1477,10 @@ export default function PortailMembre() {
 
     {/* Modale changement de mot de passe */}
     <Dialog open={showChangeMdp} onOpenChange={setShowChangeMdp}>
-      <DialogContent className="border-0 p-0 max-w-md" style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
-        <div className="px-6 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid #1E1E1E" }}>
-          <Lock size={14} style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>
+      <DialogContent className="border-0 p-0 max-w-md" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px" }}>
+        <div className="px-6 py-4 flex items-center gap-2" style={{ borderBottom: "1px solid var(--border)" }}>
+          <Lock size={14} style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em" }}>
             Changer mon mot de passe
           </h3>
         </div>
@@ -1493,9 +1493,9 @@ export default function PortailMembre() {
               onChange={e => setMdpForm(f => ({ ...f, current: e.target.value }))}
               placeholder="Votre mot de passe actuel"
               className="w-full focus:outline-none transition-colors duration-300"
-              style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           <div>
@@ -1506,9 +1506,9 @@ export default function PortailMembre() {
               onChange={e => setMdpForm(f => ({ ...f, next: e.target.value }))}
               placeholder="Au moins 8 caracteres"
               className="w-full focus:outline-none transition-colors duration-300"
-              style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           <div>
@@ -1519,19 +1519,19 @@ export default function PortailMembre() {
               onChange={e => setMdpForm(f => ({ ...f, confirm: e.target.value }))}
               placeholder="Confirmez le nouveau mot de passe"
               className="w-full focus:outline-none transition-colors duration-300"
-              style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "10px 14px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           {mdpForm.next && mdpForm.confirm && mdpForm.next !== mdpForm.confirm && (
-            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#A04040" }}>Les mots de passe ne correspondent pas.</p>
+            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--destructive)" }}>Les mots de passe ne correspondent pas.</p>
           )}
           <div className="flex gap-2 justify-end pt-2">
             <button
               onClick={() => { setShowChangeMdp(false); setMdpForm({ current: "", next: "", confirm: "" }); }}
               className="flex items-center gap-1 transition-opacity duration-300 hover:opacity-70"
-              style={{ padding: "10px 20px", fontSize: "11px", fontWeight: 500, fontFamily: "'Hanken Grotesk', sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "#6B6560", background: "transparent", border: "none", cursor: "pointer" }}
+              style={{ padding: "10px 20px", fontSize: "11px", fontWeight: 500, fontFamily: "'Hanken Grotesk', sans-serif", letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "var(--foreground-muted)", background: "transparent", border: "none", cursor: "pointer" }}
             >
               <X size={13} style={{ strokeWidth: 1.5 }} /> Annuler
             </button>
@@ -1551,8 +1551,8 @@ export default function PortailMembre() {
               className="flex items-center gap-1 transition-colors duration-300"
               style={{
                 padding: "10px 24px",
-                background: (changeMdp.isPending || !mdpForm.current || !mdpForm.next || !mdpForm.confirm) ? "#8A7535" : "#C9A84C",
-                color: "#0A0A0A",
+                background: (changeMdp.isPending || !mdpForm.current || !mdpForm.next || !mdpForm.confirm) ? "var(--gold-muted)" : "var(--gold)",
+                color: "var(--background)",
                 fontSize: "11px",
                 fontWeight: 500,
                 fontFamily: "'Hanken Grotesk', sans-serif",

@@ -56,11 +56,11 @@ const JOURS = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
 
 /* ── Shared inline styles ── */
 const inputStyle: React.CSSProperties = {
-  background: "#161616",
-  border: "1px solid #1E1E1E",
+  background: "var(--surface-raised)",
+  border: "1px solid var(--border)",
   borderRadius: "2px",
   padding: "12px 14px",
-  color: "#F0EDE6",
+  color: "var(--foreground)",
   fontSize: "14px",
   fontFamily: "'Hanken Grotesk', sans-serif",
   width: "100%",
@@ -72,7 +72,7 @@ const labelStyle: React.CSSProperties = {
   fontFamily: "'Hanken Grotesk', sans-serif",
   fontSize: "11px",
   fontWeight: 500,
-  color: "#6B6560",
+  color: "var(--foreground-muted)",
   letterSpacing: "0.08em",
   textTransform: "uppercase",
   display: "block",
@@ -188,26 +188,26 @@ export default function PriseRdvElodie() {
       ? new Date(calYear, calMonth, selectedDay).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
       : "";
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A", padding: "24px" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--background)", padding: "24px" }}>
         <div style={{ maxWidth: "420px", width: "100%", textAlign: "center" }}>
           <div style={{
             width: "64px",
             height: "64px",
-            background: "#111111",
-            border: "1px solid #1E1E1E",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
             borderRadius: "2px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             margin: "0 auto 24px",
           }}>
-            <CheckCircle size={28} style={{ color: "#4A7A5A" }} />
+            <CheckCircle size={28} style={{ color: "var(--success)" }} />
           </div>
           <h1 style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: "24px",
             fontWeight: 600,
-            color: "#F0EDE6",
+            color: "var(--foreground)",
             letterSpacing: "0.04em",
             marginBottom: "8px",
           }}>
@@ -217,7 +217,7 @@ export default function PriseRdvElodie() {
             fontFamily: "'Hanken Grotesk', sans-serif",
             fontSize: "11px",
             fontWeight: 500,
-            color: "#6B6560",
+            color: "var(--foreground-muted)",
             letterSpacing: "0.08em",
             textTransform: "uppercase" as const,
             marginBottom: "32px",
@@ -226,28 +226,28 @@ export default function PriseRdvElodie() {
           </p>
 
           <div style={{
-            background: "#111111",
-            border: "1px solid #1E1E1E",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
             borderRadius: "2px",
             padding: "20px 24px",
             textAlign: "left",
             marginBottom: "24px",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
-              <Calendar size={16} style={{ color: "#3A3632" }} />
-              <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6" }}>
+              <Calendar size={16} style={{ color: "var(--foreground-faint)" }} />
+              <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground)" }}>
                 {dateStr}
               </span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
-              <Clock size={16} style={{ color: "#3A3632" }} />
-              <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6" }}>
+              <Clock size={16} style={{ color: "var(--foreground-faint)" }} />
+              <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground)" }}>
                 {selectedHeure} — Point Immobilier (45 min)
               </span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <Home size={16} style={{ color: "#3A3632" }} />
-              <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6" }}>
+              <Home size={16} style={{ color: "var(--foreground-faint)" }} />
+              <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground)" }}>
                 Avec Elodie — Conseillere Immobiliere
               </span>
             </div>
@@ -256,11 +256,11 @@ export default function PriseRdvElodie() {
           <p style={{
             fontFamily: "'Hanken Grotesk', sans-serif",
             fontSize: "13px",
-            color: "#6B6560",
+            color: "var(--foreground-muted)",
             lineHeight: "1.6",
             marginBottom: "24px",
           }}>
-            Elodie vous contactera a l'heure convenue. Un email de confirmation vous a ete envoye a <strong style={{ color: "#F0EDE6" }}>{form.email}</strong>.
+            Elodie vous contactera a l'heure convenue. Un email de confirmation vous a ete envoye a <strong style={{ color: "var(--foreground)" }}>{form.email}</strong>.
           </p>
           <a
             href="/"
@@ -268,7 +268,7 @@ export default function PriseRdvElodie() {
             style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "12px",
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               textDecoration: "none",
               letterSpacing: "0.04em",
             }}
@@ -281,10 +281,10 @@ export default function PriseRdvElodie() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A", color: "#F0EDE6" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)", color: "var(--foreground)" }}>
 
       {/* ── Header ── */}
-      <div style={{ borderBottom: "1px solid #1E1E1E", padding: "20px 24px" }}>
+      <div style={{ borderBottom: "1px solid var(--border)", padding: "20px 24px" }}>
         <div style={{
           maxWidth: "680px",
           margin: "0 auto",
@@ -297,7 +297,7 @@ export default function PriseRdvElodie() {
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "11px",
               fontWeight: 500,
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               letterSpacing: "0.08em",
               textTransform: "uppercase" as const,
               marginBottom: "4px",
@@ -308,7 +308,7 @@ export default function PriseRdvElodie() {
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "20px",
               fontWeight: 600,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               letterSpacing: "0.04em",
               margin: 0,
             }}>
@@ -317,7 +317,7 @@ export default function PriseRdvElodie() {
             <p style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "12px",
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               marginTop: "4px",
               lineHeight: "1.6",
             }}>
@@ -328,17 +328,17 @@ export default function PriseRdvElodie() {
             display: "flex",
             alignItems: "center",
             gap: "8px",
-            background: "#111111",
-            border: "1px solid #1E1E1E",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
             borderRadius: "2px",
             padding: "8px 14px",
           }}>
-            <Home size={16} style={{ color: "#6B6560" }} />
+            <Home size={16} style={{ color: "var(--foreground-muted)" }} />
             <span style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "11px",
               fontWeight: 500,
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               letterSpacing: "0.04em",
               textTransform: "uppercase" as const,
             }}>
@@ -352,8 +352,8 @@ export default function PriseRdvElodie() {
 
         {/* ── Bandeau info ── */}
         <div style={{
-          background: "#111111",
-          borderLeft: "2px solid #1E1E1E",
+          background: "var(--surface)",
+          borderLeft: "2px solid var(--border)",
           borderRadius: "0 2px 2px 0",
           padding: "16px 20px",
           marginBottom: "32px",
@@ -361,10 +361,10 @@ export default function PriseRdvElodie() {
           <p style={{
             fontFamily: "'Hanken Grotesk', sans-serif",
             fontSize: "13px",
-            color: "#6B6560",
+            color: "var(--foreground-muted)",
             lineHeight: "1.8",
           }}>
-            Ce rendez-vous marque votre entree dans le <strong style={{ color: "#F0EDE6" }}>Pole Immobilier Sigma Factory</strong>.
+            Ce rendez-vous marque votre entree dans le <strong style={{ color: "var(--foreground)" }}>Pole Immobilier Sigma Factory</strong>.
             Elodie, votre conseillere dediee, fera le point sur votre projet, votre enveloppe de financement et lancera la recherche du bien ideal.
           </p>
         </div>
@@ -377,7 +377,7 @@ export default function PriseRdvElodie() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "22px",
                 fontWeight: 600,
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 letterSpacing: "0.04em",
                 marginBottom: "8px",
               }}>
@@ -386,7 +386,7 @@ export default function PriseRdvElodie() {
               <p style={{
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "12px",
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
               }}>
                 Disponibilites d'Elodie : Lun-Mar-Jeu-Ven-Sam 10h-19h — Mer 17h-19h
               </p>
@@ -395,8 +395,8 @@ export default function PriseRdvElodie() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
               {/* Calendrier */}
               <div style={{
-                background: "#111111",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "20px",
               }}>
@@ -408,7 +408,7 @@ export default function PriseRdvElodie() {
                     style={{
                       background: "none",
                       border: "none",
-                      color: isCurrentMonthPast ? "#1E1E1E" : "#6B6560",
+                      color: isCurrentMonthPast ? "var(--border)" : "var(--foreground-muted)",
                       cursor: isCurrentMonthPast ? "not-allowed" : "pointer",
                       padding: "4px",
                     }}
@@ -419,14 +419,14 @@ export default function PriseRdvElodie() {
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     fontSize: "13px",
                     fontWeight: 500,
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                   }}>
                     {MOIS[calMonth]} {calYear}
                   </span>
                   <button
                     onClick={nextMonth}
                     className="transition-opacity duration-300 ease-out hover:opacity-70"
-                    style={{ background: "none", border: "none", color: "#6B6560", cursor: "pointer", padding: "4px" }}
+                    style={{ background: "none", border: "none", color: "var(--foreground-muted)", cursor: "pointer", padding: "4px" }}
                   >
                     <ChevronRight size={16} />
                   </button>
@@ -438,7 +438,7 @@ export default function PriseRdvElodie() {
                       fontFamily: "'Hanken Grotesk', sans-serif",
                       fontSize: "10px",
                       fontWeight: 500,
-                      color: "#3A3632",
+                      color: "var(--foreground-faint)",
                       letterSpacing: "0.04em",
                       padding: "4px 0",
                     }}>
@@ -463,8 +463,8 @@ export default function PriseRdvElodie() {
                           fontFamily: "'Hanken Grotesk', sans-serif",
                           fontSize: "12px",
                           fontWeight: isSelected ? 600 : 400,
-                          background: isSelected ? "#C9A84C" : "transparent",
-                          color: !avail ? "#1E1E1E" : isSelected ? "#0A0A0A" : "#F0EDE6",
+                          background: isSelected ? "var(--gold)" : "transparent",
+                          color: !avail ? "var(--border)" : isSelected ? "var(--background)" : "var(--foreground)",
                           border: "none",
                           borderRadius: "2px",
                           cursor: !avail ? "not-allowed" : "pointer",
@@ -479,8 +479,8 @@ export default function PriseRdvElodie() {
 
               {/* Creneaux horaires */}
               <div style={{
-                background: "#111111",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "20px",
               }}>
@@ -488,7 +488,7 @@ export default function PriseRdvElodie() {
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "11px",
                   fontWeight: 500,
-                  color: "#6B6560",
+                  color: "var(--foreground-muted)",
                   letterSpacing: "0.08em",
                   textTransform: "uppercase" as const,
                   marginBottom: "4px",
@@ -498,7 +498,7 @@ export default function PriseRdvElodie() {
                 <p style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "11px",
-                  color: "#3A3632",
+                  color: "var(--foreground-faint)",
                   marginBottom: "16px",
                 }}>
                   Horaires en heure de Paris (UTC+2)
@@ -508,7 +508,7 @@ export default function PriseRdvElodie() {
                     <p style={{
                       fontFamily: "'Hanken Grotesk', sans-serif",
                       fontSize: "13px",
-                      color: "#6B6560",
+                      color: "var(--foreground-muted)",
                       marginBottom: "12px",
                     }}>
                       {new Date(calYear, calMonth, selectedDay).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}
@@ -526,9 +526,9 @@ export default function PriseRdvElodie() {
                               fontSize: "13px",
                               fontWeight: 500,
                               fontVariantNumeric: "tabular-nums",
-                              background: selectedHeure === h ? "#C9A84C" : "transparent",
-                              color: selectedHeure === h ? "#0A0A0A" : "#F0EDE6",
-                              border: selectedHeure === h ? "1px solid #C9A84C" : "1px solid #1E1E1E",
+                              background: selectedHeure === h ? "var(--gold)" : "transparent",
+                              color: selectedHeure === h ? "var(--background)" : "var(--foreground)",
+                              border: selectedHeure === h ? "1px solid var(--gold)" : "1px solid var(--border)",
                               borderRadius: "2px",
                               cursor: "pointer",
                             }}
@@ -541,7 +541,7 @@ export default function PriseRdvElodie() {
                       <div style={{
                         fontFamily: "'Hanken Grotesk', sans-serif",
                         fontSize: "13px",
-                        color: "#3A3632",
+                        color: "var(--foreground-faint)",
                         padding: "16px 0",
                       }}>
                         Aucun creneau disponible ce jour.
@@ -556,7 +556,7 @@ export default function PriseRdvElodie() {
                     height: "100%",
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     fontSize: "13px",
-                    color: "#3A3632",
+                    color: "var(--foreground-faint)",
                     padding: "32px 0",
                   }}>
                     Selectionnez une date
@@ -571,8 +571,8 @@ export default function PriseRdvElodie() {
               className="transition-opacity duration-300 ease-out"
               style={{
                 marginTop: "32px",
-                background: (!selectedDay || !selectedHeure) ? "#8A7535" : "#C9A84C",
-                color: "#0A0A0A",
+                background: (!selectedDay || !selectedHeure) ? "var(--gold-muted)" : "var(--gold)",
+                color: "var(--background)",
                 border: "none",
                 borderRadius: "2px",
                 padding: "14px 28px",
@@ -598,7 +598,7 @@ export default function PriseRdvElodie() {
                 type="button"
                 onClick={() => setStep("date")}
                 className="transition-opacity duration-300 ease-out hover:opacity-70"
-                style={{ background: "none", border: "none", color: "#6B6560", cursor: "pointer", padding: 0 }}
+                style={{ background: "none", border: "none", color: "var(--foreground-muted)", cursor: "pointer", padding: 0 }}
               >
                 <ChevronLeft size={20} />
               </button>
@@ -607,7 +607,7 @@ export default function PriseRdvElodie() {
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: "24px",
                   fontWeight: 600,
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   letterSpacing: "0.04em",
                 }}>
                   Vos coordonnees
@@ -615,7 +615,7 @@ export default function PriseRdvElodie() {
                 <p style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "12px",
-                  color: "#6B6560",
+                  color: "var(--foreground-muted)",
                   marginTop: "4px",
                 }}>
                   Point Immobilier — {selectedDay && new Date(calYear, calMonth, selectedDay).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })} a {selectedHeure}
@@ -631,8 +631,8 @@ export default function PriseRdvElodie() {
                   onChange={set("prenom")}
                   required
                   style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div>
@@ -642,8 +642,8 @@ export default function PriseRdvElodie() {
                   onChange={set("nom")}
                   required
                   style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div>
@@ -654,8 +654,8 @@ export default function PriseRdvElodie() {
                   onChange={set("email")}
                   required
                   style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div>
@@ -665,8 +665,8 @@ export default function PriseRdvElodie() {
                   onChange={set("telephone")}
                   required
                   style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div style={{ gridColumn: "1 / -1" }}>
@@ -680,16 +680,16 @@ export default function PriseRdvElodie() {
                     ...inputStyle,
                     resize: "none",
                   }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
             </div>
 
             {/* Recapitulatif */}
             <div style={{
-              background: "#111111",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               padding: "20px 24px",
               marginBottom: "32px",
@@ -698,7 +698,7 @@ export default function PriseRdvElodie() {
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "11px",
                 fontWeight: 500,
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase" as const,
                 marginBottom: "16px",
@@ -706,20 +706,20 @@ export default function PriseRdvElodie() {
                 Recapitulatif
               </p>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
-                <Calendar size={16} style={{ color: "#3A3632" }} />
-                <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6" }}>
+                <Calendar size={16} style={{ color: "var(--foreground-faint)" }} />
+                <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground)" }}>
                   {selectedDay && new Date(calYear, calMonth, selectedDay).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                 </span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
-                <Clock size={16} style={{ color: "#3A3632" }} />
-                <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6" }}>
+                <Clock size={16} style={{ color: "var(--foreground-faint)" }} />
+                <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground)" }}>
                   {selectedHeure} — Point Immobilier (45 min)
                 </span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <Home size={16} style={{ color: "#3A3632" }} />
-                <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "#F0EDE6" }}>
+                <Home size={16} style={{ color: "var(--foreground-faint)" }} />
+                <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", color: "var(--foreground)" }}>
                   Avec Elodie — Pole Immobilier Sigma Factory
                 </span>
               </div>
@@ -731,8 +731,8 @@ export default function PriseRdvElodie() {
               className="transition-opacity duration-300 ease-out"
               style={{
                 width: "100%",
-                background: bookRdv.isPending ? "#8A7535" : "#C9A84C",
-                color: "#0A0A0A",
+                background: bookRdv.isPending ? "var(--gold-muted)" : "var(--gold)",
+                color: "var(--background)",
                 border: "none",
                 borderRadius: "2px",
                 padding: "14px",

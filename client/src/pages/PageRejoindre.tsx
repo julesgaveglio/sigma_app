@@ -29,7 +29,7 @@ export default function PageRejoindre() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center"
-         style={{ background: "#0A0A0A", padding: "24px" }}>
+         style={{ background: "var(--background)", padding: "24px" }}>
 
       {/* ── Logo ── */}
       <div style={{ textAlign: "center", marginBottom: "48px" }}>
@@ -37,7 +37,7 @@ export default function PageRejoindre() {
           fontFamily: "'Hanken Grotesk', sans-serif",
           fontSize: "11px",
           fontWeight: 500,
-          color: "#C9A84C",
+          color: "var(--gold)",
           letterSpacing: "0.12em",
           textTransform: "uppercase" as const,
           marginBottom: "12px",
@@ -48,7 +48,7 @@ export default function PageRejoindre() {
           fontFamily: "'Cormorant Garamond', serif",
           fontSize: "32px",
           fontWeight: 600,
-          color: "#F0EDE6",
+          color: "var(--foreground)",
           letterSpacing: "0.04em",
           margin: 0,
         }}>
@@ -65,37 +65,37 @@ export default function PageRejoindre() {
               alignItems: "center",
               justifyContent: "center",
               gap: "10px",
-              background: "#111111",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               padding: "16px",
             }}>
-              <Loader2 size={16} style={{ color: "#6B6560" }} className="animate-spin" />
+              <Loader2 size={16} style={{ color: "var(--foreground-muted)" }} className="animate-spin" />
               <span style={{
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "13px",
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
               }}>
                 Verification du parrain...
               </span>
             </div>
           ) : parrainData && parrainData.type !== "sigma" ? (
             <div style={{
-              background: "#111111",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               padding: "16px 20px",
               display: "flex",
               alignItems: "center",
               gap: "12px",
             }}>
-              <CheckCircle size={16} style={{ color: "#4A7A5A", flexShrink: 0 }} />
+              <CheckCircle size={16} style={{ color: "var(--success)", flexShrink: 0 }} />
               <div>
                 <p style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "13px",
                   fontWeight: 500,
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   marginBottom: "2px",
                 }}>
                   Invitation de {parrainData.nom}
@@ -103,7 +103,7 @@ export default function PageRejoindre() {
                 <p style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "12px",
-                  color: "#6B6560",
+                  color: "var(--foreground-muted)",
                 }}>
                   Vous beneficiez d'un accompagnement personnalise des votre arrivee
                 </p>
@@ -111,7 +111,7 @@ export default function PageRejoindre() {
             </div>
           ) : (
             <div style={{
-              background: "#1A1010",
+              background: "var(--surface-header)",
               border: "1px solid #3A1E1E",
               borderRadius: "2px",
               padding: "16px 20px",
@@ -122,7 +122,7 @@ export default function PageRejoindre() {
               <span style={{
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "13px",
-                color: "#A04040",
+                color: "var(--destructive)",
               }}>
                 Code parrain non reconnu — vous pouvez tout de meme rejoindre le reseau
               </span>
@@ -145,11 +145,11 @@ export default function PageRejoindre() {
             gap: "10px",
             marginBottom: "8px",
           }}>
-            <Star size={12} style={{ color: "#3A3632", flexShrink: 0 }} />
+            <Star size={12} style={{ color: "var(--foreground-faint)", flexShrink: 0 }} />
             <span style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "13px",
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
             }}>
               {item}
             </span>
@@ -163,7 +163,7 @@ export default function PageRejoindre() {
           fontFamily: "'Hanken Grotesk', sans-serif",
           fontSize: "11px",
           fontWeight: 500,
-          color: "#3A3632",
+          color: "var(--foreground-faint)",
           letterSpacing: "0.08em",
           textTransform: "uppercase" as const,
           textAlign: "center",
@@ -179,8 +179,8 @@ export default function PageRejoindre() {
           className="transition-colors duration-300 ease-out"
           style={{
             width: "100%",
-            background: "#111111",
-            border: "1px solid #1E1E1E",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
             borderRadius: "2px",
             padding: "24px",
             textAlign: "left",
@@ -188,29 +188,29 @@ export default function PageRejoindre() {
             opacity: choix !== null ? 0.6 : 1,
             marginBottom: "12px",
           }}
-          onMouseEnter={e => { if (!choix) e.currentTarget.style.borderColor = "#C9A84C"; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; }}
+          onMouseEnter={e => { if (!choix) e.currentTarget.style.borderColor = "var(--gold)"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
               <div style={{
                 width: "44px",
                 height: "44px",
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}>
-                <Building2 size={20} style={{ color: "#6B6560" }} />
+                <Building2 size={20} style={{ color: "var(--foreground-muted)" }} />
               </div>
               <div>
                 <p style={{
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: "18px",
                   fontWeight: 600,
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   letterSpacing: "0.02em",
                   marginBottom: "4px",
                 }}>
@@ -219,16 +219,16 @@ export default function PageRejoindre() {
                 <p style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "12px",
-                  color: "#6B6560",
+                  color: "var(--foreground-muted)",
                 }}>
                   50% de retrocommission sur chaque vente
                 </p>
               </div>
             </div>
             {choix === "agent" ? (
-              <Loader2 size={16} style={{ color: "#6B6560" }} className="animate-spin" />
+              <Loader2 size={16} style={{ color: "var(--foreground-muted)" }} className="animate-spin" />
             ) : (
-              <ArrowRight size={16} style={{ color: "#3A3632" }} />
+              <ArrowRight size={16} style={{ color: "var(--foreground-faint)" }} />
             )}
           </div>
           <div style={{ marginTop: "16px", display: "flex", flexWrap: "wrap", gap: "6px" }}>
@@ -237,9 +237,9 @@ export default function PageRejoindre() {
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "10px",
                 fontWeight: 500,
-                color: "#6B6560",
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                color: "var(--foreground-muted)",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "4px 8px",
                 letterSpacing: "0.04em",
@@ -258,37 +258,37 @@ export default function PageRejoindre() {
           className="transition-colors duration-300 ease-out"
           style={{
             width: "100%",
-            background: "#111111",
-            border: "1px solid #1E1E1E",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
             borderRadius: "2px",
             padding: "24px",
             textAlign: "left",
             cursor: choix !== null ? "not-allowed" : "pointer",
             opacity: choix !== null ? 0.6 : 1,
           }}
-          onMouseEnter={e => { if (!choix) e.currentTarget.style.borderColor = "#C9A84C"; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; }}
+          onMouseEnter={e => { if (!choix) e.currentTarget.style.borderColor = "var(--gold)"; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
               <div style={{
                 width: "44px",
                 height: "44px",
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}>
-                <Users size={20} style={{ color: "#6B6560" }} />
+                <Users size={20} style={{ color: "var(--foreground-muted)" }} />
               </div>
               <div>
                 <p style={{
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: "18px",
                   fontWeight: 600,
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   letterSpacing: "0.02em",
                   marginBottom: "4px",
                 }}>
@@ -297,16 +297,16 @@ export default function PageRejoindre() {
                 <p style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "12px",
-                  color: "#6B6560",
+                  color: "var(--foreground-muted)",
                 }}>
                   75% de retrocommission sur chaque dossier
                 </p>
               </div>
             </div>
             {choix === "courtier" ? (
-              <Loader2 size={16} style={{ color: "#6B6560" }} className="animate-spin" />
+              <Loader2 size={16} style={{ color: "var(--foreground-muted)" }} className="animate-spin" />
             ) : (
-              <ArrowRight size={16} style={{ color: "#3A3632" }} />
+              <ArrowRight size={16} style={{ color: "var(--foreground-faint)" }} />
             )}
           </div>
           <div style={{ marginTop: "16px", display: "flex", flexWrap: "wrap", gap: "6px" }}>
@@ -315,9 +315,9 @@ export default function PageRejoindre() {
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "10px",
                 fontWeight: 500,
-                color: "#6B6560",
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                color: "var(--foreground-muted)",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "4px 8px",
                 letterSpacing: "0.04em",
@@ -333,7 +333,7 @@ export default function PageRejoindre() {
       <p style={{
         fontFamily: "'Hanken Grotesk', sans-serif",
         fontSize: "11px",
-        color: "#3A3632",
+        color: "var(--foreground-faint)",
         textAlign: "center",
         maxWidth: "380px",
         marginTop: "32px",

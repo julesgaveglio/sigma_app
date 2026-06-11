@@ -21,19 +21,19 @@ import { CarteReseau } from "@/components/CarteReseau";
 
 /* ── Design tokens ─────────────────────────────────────────── */
 const T = {
-  bg: "#0A0A0A",
-  surface: "#111111",
-  raised: "#161616",
-  border: "#1E1E1E",
-  borderSubtle: "#151515",
-  fg: "#F0EDE6",
-  muted: "#6B6560",
-  faint: "#3A3632",
-  gold: "#C9A84C",
-  goldMuted: "#8A7535",
-  destructive: "#A04040",
-  success: "#4A7A5A",
-  headerBg: "#0D0D0D",
+  bg: "var(--background)",
+  surface: "var(--surface)",
+  raised: "var(--surface-raised)",
+  border: "var(--border)",
+  borderSubtle: "var(--border-subtle)",
+  fg: "var(--foreground)",
+  muted: "var(--foreground-muted)",
+  faint: "var(--foreground-faint)",
+  gold: "var(--gold)",
+  goldMuted: "var(--gold-muted)",
+  destructive: "var(--destructive)",
+  success: "var(--success)",
+  headerBg: "var(--surface-header)",
 } as const;
 
 const font = {

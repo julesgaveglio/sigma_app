@@ -31,20 +31,20 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const STATUT_STYLES: Record<string, { color: string; bg: string; border: string }> = {
-  nouveau: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-  en_cours: { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
-  en_attente_banque: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
-  accepte: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-  refuse: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
-  finalise: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-  annule: { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" },
+  nouveau: { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  en_cours: { color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+  en_attente_banque: { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  accepte: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  refuse: { color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+  finalise: { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  annule: { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" },
 };
 
 const ASSIGNATION_STATUT_STYLES: Record<string, { color: string; bg: string; border: string }> = {
-  en_attente: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
-  en_cours: { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
-  valide: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-  refuse: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+  en_attente: { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  en_cours: { color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+  valide: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  refuse: { color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
 };
 const ASSIGNATION_STATUT_LABELS: Record<string, string> = {
   en_attente: "En attente",
@@ -55,7 +55,7 @@ const ASSIGNATION_STATUT_LABELS: Record<string, string> = {
 
 function StatutBadge({ statut, styles }: { statut: string; styles?: Record<string, { color: string; bg: string; border: string }> }) {
   const map = styles ?? STATUT_STYLES;
-  const s = map[statut] ?? { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
+  const s = map[statut] ?? { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
   return (
     <span style={{
       display: "inline-flex",
@@ -105,26 +105,26 @@ function ContactManonButton({ courtierId, courtierNom }: { courtierId?: number; 
     });
   };
   return (
-    <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "20px" }}>
+    <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "20px" }}>
       <div className="flex items-center justify-between">
         <div>
-          <p className="label-uppercase" style={{ color: "#F0EDE6", marginBottom: "2px" }}>Contacter Manon</p>
-          <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Creer une tache dans le calendrier de Manon</p>
+          <p className="label-uppercase" style={{ color: "var(--foreground)", marginBottom: "2px" }}>Contacter Manon</p>
+          <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Creer une tache dans le calendrier de Manon</p>
         </div>
         <button
           onClick={() => setOpen(!open)}
           className="transition-colors duration-300"
           style={{
             padding: "10px 24px",
-            background: open ? "transparent" : "#C9A84C",
-            color: open ? "#6B6560" : "#0A0A0A",
+            background: open ? "transparent" : "var(--gold)",
+            color: open ? "var(--foreground-muted)" : "var(--background)",
             fontSize: "11px",
             fontWeight: 500,
             fontFamily: "'Hanken Grotesk', sans-serif",
             letterSpacing: "0.1em",
             textTransform: "uppercase" as const,
             borderRadius: "2px",
-            border: open ? "1px solid #1E1E1E" : "1px solid #C9A84C",
+            border: open ? "1px solid var(--border)" : "1px solid var(--gold)",
           }}
         >
           {open ? "Annuler" : "Envoyer une demande"}
@@ -140,16 +140,16 @@ function ContactManonButton({ courtierId, courtierNom }: { courtierId?: number; 
               placeholder="Ex: Question sur le dossier Dupont"
               className="w-full transition-colors duration-300 focus:outline-none"
               style={{
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "10px 14px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           <div>
@@ -161,17 +161,17 @@ function ContactManonButton({ courtierId, courtierNom }: { courtierId?: number; 
               rows={2}
               className="w-full transition-colors duration-300 focus:outline-none"
               style={{
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "10px 14px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 resize: "none",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           <button
@@ -180,8 +180,8 @@ function ContactManonButton({ courtierId, courtierNom }: { courtierId?: number; 
             className="w-full transition-colors duration-300"
             style={{
               padding: "12px 28px",
-              background: createTask.isPending ? "#8A7535" : "#C9A84C",
-              color: "#0A0A0A",
+              background: createTask.isPending ? "var(--gold-muted)" : "var(--gold)",
+              color: "var(--background)",
               fontSize: "11px",
               fontWeight: 500,
               fontFamily: "'Hanken Grotesk', sans-serif",
@@ -220,13 +220,13 @@ function DossierRecuCard({ item, onRefetch }: { item: any; onRefetch: () => void
   if (!dossier) return null;
 
   return (
-    <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+    <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
       {/* Ligne principale */}
       <div
         className="flex items-center gap-4 cursor-pointer transition-colors duration-300"
         style={{ padding: "16px 20px" }}
         onClick={() => setExpanded(!expanded)}
-        onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+        onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
         onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
       >
         <div className="flex-1 min-w-0">
@@ -235,34 +235,34 @@ function DossierRecuCard({ item, onRefetch }: { item: any; onRefetch: () => void
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "13px",
               fontWeight: 500,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
             }}>
               {dossier.emprunteur1Prenom} {dossier.emprunteur1Nom}
             </span>
             <StatutBadge statut={item.assignation.statut} styles={ASSIGNATION_STATUT_STYLES} />
             {item.docs?.length > 0 && (
-              <span className="flex items-center gap-1" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>
+              <span className="flex items-center gap-1" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>
                 <FileText className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                 {item.docs.length} doc(s)
               </span>
             )}
           </div>
-          <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>
+          <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>
             {dossier.montantProjet?.toLocaleString("fr-FR")} EUR -- {dossier.duree} mois -- apport {dossier.apportPersonnel?.toLocaleString("fr-FR")} EUR
           </p>
         </div>
-        <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+        <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
           {new Date(item.assignation.createdAt).toLocaleDateString("fr-FR")}
         </span>
         {expanded
-          ? <ChevronUp className="w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
-          : <ChevronDown className="w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+          ? <ChevronUp className="w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
+          : <ChevronDown className="w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
         }
       </div>
 
       {/* Detail expande */}
       {expanded && (
-        <div style={{ borderTop: "1px solid #1E1E1E", padding: "24px 20px", background: "#0A0A0A" }}>
+        <div style={{ borderTop: "1px solid var(--border)", padding: "24px 20px", background: "var(--background)" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
             {/* Infos emprunteur */}
             <div>
@@ -280,8 +280,8 @@ function DossierRecuCard({ item, onRefetch }: { item: any; onRefetch: () => void
                   { label: "Nb enfants", value: dossier.emprunteur1NbEnfants?.toString() ?? "—" },
                 ].map(f => (
                   <div key={f.label}>
-                    <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "#3A3632", marginBottom: "4px" }}>{f.label}</p>
-                    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{f.value}</p>
+                    <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "var(--foreground-faint)", marginBottom: "4px" }}>{f.label}</p>
+                    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{f.value}</p>
                   </div>
                 ))}
               </div>
@@ -298,8 +298,8 @@ function DossierRecuCard({ item, onRefetch }: { item: any; onRefetch: () => void
                     { label: "Revenus nets/mois", value: dossier.emprunteur2RevenusMensuelsNets ? `${dossier.emprunteur2RevenusMensuelsNets.toLocaleString("fr-FR")} EUR` : "—" },
                   ].map(f => (
                     <div key={f.label}>
-                      <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "#3A3632", marginBottom: "4px" }}>{f.label}</p>
-                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{f.value}</p>
+                      <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "var(--foreground-faint)", marginBottom: "4px" }}>{f.label}</p>
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{f.value}</p>
                     </div>
                   ))}
                 </div>
@@ -321,8 +321,8 @@ function DossierRecuCard({ item, onRefetch }: { item: any; onRefetch: () => void
                   { label: "Loyers HC", value: dossier.loyersHC ? `${dossier.loyersHC.toLocaleString("fr-FR")} EUR` : "—" },
                 ].map(f => (
                   <div key={f.label}>
-                    <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "#3A3632", marginBottom: "4px" }}>{f.label}</p>
-                    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{f.value}</p>
+                    <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "var(--foreground-faint)", marginBottom: "4px" }}>{f.label}</p>
+                    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{f.value}</p>
                   </div>
                 ))}
               </div>
@@ -334,11 +334,11 @@ function DossierRecuCard({ item, onRefetch }: { item: any; onRefetch: () => void
                 <p className="label-uppercase" style={{ marginBottom: "12px" }}>Documents joints par Manon</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                   {item.docs.map((doc: any) => (
-                    <div key={doc.id} className="flex items-center justify-between" style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "10px 14px" }}>
+                    <div key={doc.id} className="flex items-center justify-between" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "10px 14px" }}>
                       <div className="flex items-center gap-3">
-                        <FileText className="w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
-                        <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{doc.nom}</span>
-                        <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "#3A3632" }}>{doc.type}</span>
+                        <FileText className="w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
+                        <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{doc.nom}</span>
+                        <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "var(--foreground-faint)" }}>{doc.type}</span>
                       </div>
                       {doc.url && (
                         <a
@@ -346,7 +346,7 @@ function DossierRecuCard({ item, onRefetch }: { item: any; onRefetch: () => void
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-1 transition-opacity duration-300 hover:opacity-70"
-                          style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.04em", color: "#6B6560", textDecoration: "none" }}
+                          style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.04em", color: "var(--foreground-muted)", textDecoration: "none" }}
                         >
                           <Eye className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                           Voir
@@ -361,13 +361,13 @@ function DossierRecuCard({ item, onRefetch }: { item: any; onRefetch: () => void
             {/* Note de Manon */}
             {item.assignation.noteManon && (
               <div style={{ background: "rgba(201,168,76,0.04)", border: "1px solid rgba(201,168,76,0.15)", borderRadius: "2px", padding: "16px" }}>
-                <p className="label-uppercase" style={{ color: "#C9A84C", marginBottom: "6px" }}>Note de Manon</p>
-                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", fontStyle: "italic" }}>"{item.assignation.noteManon}"</p>
+                <p className="label-uppercase" style={{ color: "var(--gold)", marginBottom: "6px" }}>Note de Manon</p>
+                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", fontStyle: "italic" }}>"{item.assignation.noteManon}"</p>
               </div>
             )}
 
             {/* Mettre a jour le statut */}
-            <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "24px" }}>
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: "24px" }}>
               <p className="label-uppercase" style={{ marginBottom: "12px" }}>Votre retour</p>
               <div className="flex flex-wrap gap-2" style={{ marginBottom: "12px" }}>
                 {[
@@ -390,13 +390,13 @@ function DossierRecuCard({ item, onRefetch }: { item: any; onRefetch: () => void
                       textTransform: "uppercase" as const,
                       border: statut === s.value
                         ? "1px solid rgba(201,168,76,0.4)"
-                        : "1px solid #1E1E1E",
+                        : "1px solid var(--border)",
                       background: statut === s.value
                         ? "rgba(201,168,76,0.08)"
                         : "transparent",
                       color: statut === s.value
-                        ? "#C9A84C"
-                        : "#3A3632",
+                        ? "var(--gold)"
+                        : "var(--foreground-faint)",
                       cursor: "pointer",
                     }}
                   >
@@ -411,18 +411,18 @@ function DossierRecuCard({ item, onRefetch }: { item: any; onRefetch: () => void
                 rows={2}
                 className="w-full transition-colors duration-300 focus:outline-none"
                 style={{
-                  background: "#161616",
-                  border: "1px solid #1E1E1E",
+                  background: "var(--surface-raised)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   padding: "10px 14px",
                   fontSize: "13px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   resize: "none",
                   marginBottom: "12px",
                 }}
-                onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                onBlur={e => (e.target.style.borderColor = "var(--border)")}
               />
               <button
                 onClick={() => updateMutation.mutate({
@@ -434,8 +434,8 @@ function DossierRecuCard({ item, onRefetch }: { item: any; onRefetch: () => void
                 className="transition-colors duration-300"
                 style={{
                   padding: "10px 24px",
-                  background: updateMutation.isPending ? "#8A7535" : "#C9A84C",
-                  color: "#0A0A0A",
+                  background: updateMutation.isPending ? "var(--gold-muted)" : "var(--gold)",
+                  color: "var(--background)",
                   fontSize: "11px",
                   fontWeight: 500,
                   fontFamily: "'Hanken Grotesk', sans-serif",
@@ -550,17 +550,17 @@ export default function CourtierPortail() {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center" style={{ padding: "80px 24px" }}>
-          <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "48px 40px", maxWidth: "420px", textAlign: "center" }}>
-            <AlertCircle className="mx-auto" style={{ width: "32px", height: "32px", color: "#6B6560", strokeWidth: 1.5, marginBottom: "20px" }} />
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em", marginBottom: "8px" }}>Profil courtier non trouve</h2>
-            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginBottom: "28px", lineHeight: 1.6 }}>
+          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "48px 40px", maxWidth: "420px", textAlign: "center" }}>
+            <AlertCircle className="mx-auto" style={{ width: "32px", height: "32px", color: "var(--foreground-muted)", strokeWidth: 1.5, marginBottom: "20px" }} />
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em", marginBottom: "8px" }}>Profil courtier non trouve</h2>
+            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", marginBottom: "28px", lineHeight: 1.6 }}>
               Votre compte n'est pas encore lie a un profil courtier. Inscrivez-vous via le formulaire de partenariat.
             </p>
             <a href="/inscription-courtier" style={{
               display: "inline-block",
               padding: "12px 28px",
-              background: "#C9A84C",
-              color: "#0A0A0A",
+              background: "var(--gold)",
+              color: "var(--background)",
               fontSize: "11px",
               fontWeight: 500,
               fontFamily: "'Hanken Grotesk', sans-serif",
@@ -585,21 +585,21 @@ export default function CourtierPortail() {
   });
 
   const inputStyle = {
-    background: "#161616",
-    border: "1px solid #1E1E1E",
+    background: "var(--surface-raised)",
+    border: "1px solid var(--border)",
     borderRadius: "2px",
     padding: "10px 14px",
     fontSize: "13px",
     fontFamily: "'Hanken Grotesk', sans-serif",
-    color: "#F0EDE6",
+    color: "var(--foreground)",
     width: "100%",
     outline: "none",
   } as const;
 
   const primaryButtonStyle = {
     padding: "10px 24px",
-    background: "#C9A84C",
-    color: "#0A0A0A",
+    background: "var(--gold)",
+    color: "var(--background)",
     fontSize: "11px",
     fontWeight: 500,
     fontFamily: "'Hanken Grotesk', sans-serif",
@@ -613,14 +613,14 @@ export default function CourtierPortail() {
   const secondaryButtonStyle = {
     padding: "10px 24px",
     background: "transparent",
-    color: "#6B6560",
+    color: "var(--foreground-muted)",
     fontSize: "11px",
     fontWeight: 500,
     fontFamily: "'Hanken Grotesk', sans-serif",
     letterSpacing: "0.06em",
     textTransform: "uppercase" as const,
     borderRadius: "2px",
-    border: "1px solid #1E1E1E",
+    border: "1px solid var(--border)",
     cursor: "pointer",
   } as const;
 
@@ -632,10 +632,10 @@ export default function CourtierPortail() {
           {/* Banniere suspension */}
           {profil.statutInterne === "suspendu" && (
             <div className="flex items-start gap-3" style={{ border: "1px solid rgba(160,64,64,0.4)", background: "rgba(160,64,64,0.06)", borderRadius: "2px", padding: "16px 20px" }}>
-              <AlertTriangle className="flex-shrink-0 mt-0.5" style={{ width: "16px", height: "16px", color: "#A04040", strokeWidth: 1.5 }} />
+              <AlertTriangle className="flex-shrink-0 mt-0.5" style={{ width: "16px", height: "16px", color: "var(--destructive)", strokeWidth: 1.5 }} />
               <div>
-                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#A04040", marginBottom: "2px" }}>Compte suspendu</p>
-                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Votre compte a ete suspendu automatiquement suite a des dossiers non traites. Contactez Manon pour reactiver votre acces.</p>
+                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--destructive)", marginBottom: "2px" }}>Compte suspendu</p>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Votre compte a ete suspendu automatiquement suite a des dossiers non traites. Contactez Manon pour reactiver votre acces.</p>
               </div>
             </div>
           )}
@@ -643,10 +643,10 @@ export default function CourtierPortail() {
           {/* Banniere dossiers en retard */}
           {dossiersEnRetard.length > 0 && profil.statutInterne !== "suspendu" && (
             <div className="flex items-start gap-3" style={{ border: "1px solid rgba(201,168,76,0.3)", background: "rgba(201,168,76,0.04)", borderRadius: "2px", padding: "16px 20px" }}>
-              <AlertTriangle className="flex-shrink-0 mt-0.5" style={{ width: "16px", height: "16px", color: "#C9A84C", strokeWidth: 1.5 }} />
+              <AlertTriangle className="flex-shrink-0 mt-0.5" style={{ width: "16px", height: "16px", color: "var(--gold)", strokeWidth: 1.5 }} />
               <div>
-                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#C9A84C", marginBottom: "2px" }}>{dossiersEnRetard.length} dossier(s) en retard -- plus de 72h sans traitement</p>
-                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Veuillez traiter ces dossiers rapidement pour eviter la suspension de votre compte.</p>
+                <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--gold)", marginBottom: "2px" }}>{dossiersEnRetard.length} dossier(s) en retard -- plus de 72h sans traitement</p>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Veuillez traiter ces dossiers rapidement pour eviter la suspension de votre compte.</p>
               </div>
             </div>
           )}
@@ -658,40 +658,40 @@ export default function CourtierPortail() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "28px",
                 fontWeight: 700,
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase" as const,
                 lineHeight: 1,
               }}>
                 Mon espace courtier
               </h1>
-              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginTop: "8px" }}>
+              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", marginTop: "8px" }}>
                 {profil.prenom} {profil.nom} {profil.cabinetNom ? `-- ${profil.cabinetNom}` : ""}
               </p>
             </div>
             <StatutBadge
               statut={profil.statutInterne === "actif" ? "actif" : "en_attente"}
               styles={{
-                actif: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-                en_attente: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+                actif: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+                en_attente: { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
               }}
             />
           </div>
 
           {/* KPIs */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-px" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
             {[
               { label: "Dossiers recus", value: assignations.length },
               { label: "En cours", value: dossiers.filter((d: any) => ["nouveau", "en_cours", "en_attente_banque"].includes(d.statut)).length },
               { label: "Filleuls reseau", value: detail?.stats.totalFilleuls ?? 0 },
               { label: "Commissions reseau", value: (totalCommissions / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" }) },
             ].map((stat, i) => (
-              <div key={stat.label} style={{ background: "#0A0A0A", padding: "20px" }}>
+              <div key={stat.label} style={{ background: "var(--background)", padding: "20px" }}>
                 <p className="tabular-nums" style={{
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: "28px",
                   fontWeight: 600,
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   lineHeight: 1,
                   letterSpacing: "0.02em",
                 }}>
@@ -703,7 +703,7 @@ export default function CourtierPortail() {
           </div>
 
           {/* Onglets */}
-          <div style={{ borderBottom: "1px solid #1E1E1E" }}>
+          <div style={{ borderBottom: "1px solid var(--border)" }}>
             <div className="flex gap-0 overflow-x-auto" style={{ marginBottom: "-1px" }}>
               {[
                 { key: "recus", label: "Dossiers recus", icon: <Inbox className="w-4 h-4" style={{ strokeWidth: 1.5 }} />, badge: nbNouveauxRecus },
@@ -725,10 +725,10 @@ export default function CourtierPortail() {
                     fontWeight: 500,
                     letterSpacing: "0.06em",
                     textTransform: "uppercase" as const,
-                    color: activeTab === tab.key ? "#C9A84C" : "#3A3632",
+                    color: activeTab === tab.key ? "var(--gold)" : "var(--foreground-faint)",
                     background: "transparent",
                     border: "none",
-                    borderBottom: activeTab === tab.key ? "1px solid #C9A84C" : "1px solid transparent",
+                    borderBottom: activeTab === tab.key ? "1px solid var(--gold)" : "1px solid transparent",
                     cursor: "pointer",
                   }}
                 >
@@ -739,7 +739,7 @@ export default function CourtierPortail() {
                       fontSize: "10px",
                       fontFamily: "'Hanken Grotesk', sans-serif",
                       fontWeight: 500,
-                      color: "#F0EDE6",
+                      color: "var(--foreground)",
                       background: "rgba(240,237,230,0.1)",
                       border: "1px solid rgba(240,237,230,0.15)",
                       borderRadius: "2px",
@@ -759,10 +759,10 @@ export default function CourtierPortail() {
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               <ContactManonButton courtierId={profil?.id} courtierNom={profil ? `${profil.prenom} ${profil.nom}` : ""} />
               {assignations.length === 0 ? (
-                <div className="text-center" style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "60px 24px" }}>
-                  <Inbox className="mx-auto" style={{ width: "32px", height: "32px", color: "#1E1E1E", strokeWidth: 1.5, marginBottom: "16px" }} />
-                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun dossier recu pour l'instant</p>
-                  <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#1E1E1E", marginTop: "4px" }}>Manon vous assignera des dossiers de courtage ici</p>
+                <div className="text-center" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "60px 24px" }}>
+                  <Inbox className="mx-auto" style={{ width: "32px", height: "32px", color: "var(--border)", strokeWidth: 1.5, marginBottom: "16px" }} />
+                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucun dossier recu pour l'instant</p>
+                  <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--border)", marginTop: "4px" }}>Manon vous assignera des dossiers de courtage ici</p>
                 </div>
               ) : (
                 assignations.map((item: any) => (
@@ -776,7 +776,7 @@ export default function CourtierPortail() {
           {activeTab === "dossiers" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               <div className="flex items-center justify-between">
-                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>Mes dossiers clients</h2>
+                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em" }}>Mes dossiers clients</h2>
                 <button
                   onClick={() => setShowNewDossier(!showNewDossier)}
                   className="flex items-center gap-2 transition-colors duration-300"
@@ -788,8 +788,8 @@ export default function CourtierPortail() {
               </div>
 
               {showNewDossier && (
-                <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
-                  <p className="label-uppercase" style={{ color: "#F0EDE6", marginBottom: "16px" }}>Nouveau dossier client</p>
+                <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
+                  <p className="label-uppercase" style={{ color: "var(--foreground)", marginBottom: "16px" }}>Nouveau dossier client</p>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="label-uppercase" style={{ marginBottom: "6px" }}>Nom du client *</p>
@@ -798,15 +798,15 @@ export default function CourtierPortail() {
                         onChange={e => setNewDossier(f => ({ ...f, clientNom: e.target.value }))}
                         style={inputStyle}
                         className="transition-colors duration-300 focus:outline-none"
-                        onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                        onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                        onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                        onBlur={e => (e.target.style.borderColor = "var(--border)")}
                       />
                     </div>
                     <div>
                       <p className="label-uppercase" style={{ marginBottom: "6px" }}>Type de dossier *</p>
                       <Select value={newDossier.typeDossier} onValueChange={v => setNewDossier(f => ({ ...f, typeDossier: v as any }))}>
                         <SelectTrigger style={{ ...inputStyle, display: "flex" }}><SelectValue placeholder="Choisir..." /></SelectTrigger>
-                        <SelectContent style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+                        <SelectContent style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px" }}>
                           {Object.entries(TYPE_LABELS).map(([v, l]) => <SelectItem key={v} value={v}>{l}</SelectItem>)}
                         </SelectContent>
                       </Select>
@@ -819,8 +819,8 @@ export default function CourtierPortail() {
                         onChange={e => setNewDossier(f => ({ ...f, clientEmail: e.target.value }))}
                         style={inputStyle}
                         className="transition-colors duration-300 focus:outline-none"
-                        onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                        onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                        onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                        onBlur={e => (e.target.style.borderColor = "var(--border)")}
                       />
                     </div>
                     <div>
@@ -831,8 +831,8 @@ export default function CourtierPortail() {
                         onChange={e => setNewDossier(f => ({ ...f, montantFinancement: e.target.value }))}
                         style={inputStyle}
                         className="transition-colors duration-300 focus:outline-none"
-                        onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                        onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                        onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                        onBlur={e => (e.target.style.borderColor = "var(--border)")}
                       />
                     </div>
                   </div>
@@ -861,37 +861,37 @@ export default function CourtierPortail() {
                 </div>
               )}
 
-              <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+              <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
                 <table className="w-full">
                   <thead>
-                    <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                    <tr style={{ borderBottom: "1px solid var(--border)" }}>
                       {["Client", "Type", "Montant", "Statut", "Date"].map(h => (
-                        <th key={h} className="text-left label-uppercase" style={{ padding: "12px 20px", background: "#0D0D0D" }}>{h}</th>
+                        <th key={h} className="text-left label-uppercase" style={{ padding: "12px 20px", background: "var(--surface-header)" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {dossiers.length === 0 && (
-                      <tr><td colSpan={5} className="text-center" style={{ padding: "48px 20px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun dossier</td></tr>
+                      <tr><td colSpan={5} className="text-center" style={{ padding: "48px 20px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucun dossier</td></tr>
                     )}
                     {dossiers.map((d: any) => (
                       <tr
                         key={d.id}
                         className="cursor-pointer transition-colors duration-300"
-                        style={{ borderBottom: "1px solid #151515" }}
-                        onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                        style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                        onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                         onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                       >
                         <td style={{ padding: "12px 20px" }}>
-                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{d.clientNom}</p>
-                          {d.clientEmail && <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{d.clientEmail}</p>}
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{d.clientNom}</p>
+                          {d.clientEmail && <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{d.clientEmail}</p>}
                         </td>
-                        <td style={{ padding: "12px 20px", fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{TYPE_LABELS[d.typeDossier] || d.typeDossier}</td>
-                        <td className="tabular-nums" style={{ padding: "12px 20px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{d.montantFinancement ? `${(d.montantFinancement / 100).toLocaleString("fr-FR")} EUR` : "—"}</td>
+                        <td style={{ padding: "12px 20px", fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{TYPE_LABELS[d.typeDossier] || d.typeDossier}</td>
+                        <td className="tabular-nums" style={{ padding: "12px 20px", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{d.montantFinancement ? `${(d.montantFinancement / 100).toLocaleString("fr-FR")} EUR` : "—"}</td>
                         <td style={{ padding: "12px 20px" }}>
                           <StatutBadge statut={d.statut} />
                         </td>
-                        <td className="tabular-nums" style={{ padding: "12px 20px", fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{new Date(d.createdAt).toLocaleDateString("fr-FR")}</td>
+                        <td className="tabular-nums" style={{ padding: "12px 20px", fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{new Date(d.createdAt).toLocaleDateString("fr-FR")}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -904,7 +904,7 @@ export default function CourtierPortail() {
           {activeTab === "commissions" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               <div className="flex items-center justify-between">
-                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>Mes commissions courtage</h2>
+                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em" }}>Mes commissions courtage</h2>
                 <button
                   onClick={() => setShowDeclarer(v => !v)}
                   className="flex items-center gap-2 transition-colors duration-300"
@@ -917,8 +917,8 @@ export default function CourtierPortail() {
 
               {/* Formulaire declaration */}
               {showDeclarer && (
-                <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
-                  <p className="label-uppercase" style={{ color: "#F0EDE6", marginBottom: "16px" }}>Nouvelle declaration</p>
+                <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
+                  <p className="label-uppercase" style={{ color: "var(--foreground)", marginBottom: "16px" }}>Nouvelle declaration</p>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="label-uppercase" style={{ marginBottom: "6px" }}>Nom du lead / client</p>
@@ -928,8 +928,8 @@ export default function CourtierPortail() {
                         placeholder="Ex: Jean Dupont"
                         style={inputStyle}
                         className="transition-colors duration-300 focus:outline-none"
-                        onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                        onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                        onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                        onBlur={e => (e.target.style.borderColor = "var(--border)")}
                       />
                     </div>
                     <div>
@@ -940,8 +940,8 @@ export default function CourtierPortail() {
                         placeholder="Ex: DOC-2024-001"
                         style={inputStyle}
                         className="transition-colors duration-300 focus:outline-none"
-                        onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                        onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                        onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                        onBlur={e => (e.target.style.borderColor = "var(--border)")}
                       />
                     </div>
                     <div>
@@ -953,8 +953,8 @@ export default function CourtierPortail() {
                         placeholder="Ex: 250000"
                         style={inputStyle}
                         className="transition-colors duration-300 focus:outline-none"
-                        onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                        onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                        onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                        onBlur={e => (e.target.style.borderColor = "var(--border)")}
                       />
                     </div>
                     <div>
@@ -966,31 +966,31 @@ export default function CourtierPortail() {
                         placeholder="Ex: 3000"
                         style={inputStyle}
                         className="transition-colors duration-300 focus:outline-none"
-                        onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                        onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                        onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                        onBlur={e => (e.target.style.borderColor = "var(--border)")}
                       />
                     </div>
                   </div>
                   {/* Calcul preview */}
                   {montantComm > 0 && (
-                    <div style={{ background: "#0A0A0A", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "16px", marginTop: "16px" }}>
+                    <div style={{ background: "var(--background)", border: "1px solid var(--border)", borderRadius: "2px", padding: "16px", marginTop: "16px" }}>
                       <p className="label-uppercase" style={{ marginBottom: "12px" }}>Repartition calculee automatiquement</p>
                       <div className="grid grid-cols-2 gap-3">
                         <div className="flex justify-between">
-                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Votre part (75%)</span>
-                          <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#4A7A5A" }}>{previewCourtier.toLocaleString("fr-FR")} EUR</span>
+                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Votre part (75%)</span>
+                          <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--success)" }}>{previewCourtier.toLocaleString("fr-FR")} EUR</span>
                         </div>
                         <div className="flex justify-between">
-                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Parrain N1 (10% Sigma)</span>
-                          <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{previewParrainN1.toLocaleString("fr-FR")} EUR</span>
+                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Parrain N1 (10% Sigma)</span>
+                          <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{previewParrainN1.toLocaleString("fr-FR")} EUR</span>
                         </div>
                         <div className="flex justify-between">
-                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Part Sigma</span>
-                          <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{previewSigmaNet.toLocaleString("fr-FR")} EUR</span>
+                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Part Sigma</span>
+                          <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{previewSigmaNet.toLocaleString("fr-FR")} EUR</span>
                         </div>
                         <div className="flex justify-between">
-                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Parrain N2 (5% Sigma)</span>
-                          <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{previewParrainN2.toLocaleString("fr-FR")} EUR</span>
+                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Parrain N2 (5% Sigma)</span>
+                          <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{previewParrainN2.toLocaleString("fr-FR")} EUR</span>
                         </div>
                       </div>
                     </div>
@@ -1011,7 +1011,7 @@ export default function CourtierPortail() {
                       disabled={creerTransactionMut.isPending}
                       style={{
                         ...primaryButtonStyle,
-                        background: creerTransactionMut.isPending ? "#8A7535" : "#C9A84C",
+                        background: creerTransactionMut.isPending ? "var(--gold-muted)" : "var(--gold)",
                         cursor: creerTransactionMut.isPending ? "not-allowed" : "pointer",
                       }}
                       className="transition-colors duration-300"
@@ -1026,52 +1026,52 @@ export default function CourtierPortail() {
               {/* Liste des transactions */}
               {transactionsCourtage.length === 0 ? (
                 <div className="text-center" style={{ padding: "60px 24px" }}>
-                  <Euro className="mx-auto" style={{ width: "24px", height: "24px", color: "#1E1E1E", strokeWidth: 1.5, marginBottom: "12px" }} />
-                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucune commission declaree pour l'instant</p>
+                  <Euro className="mx-auto" style={{ width: "24px", height: "24px", color: "var(--border)", strokeWidth: 1.5, marginBottom: "12px" }} />
+                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucune commission declaree pour l'instant</p>
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {transactionsCourtage.map((t: any) => (
-                    <div key={t.id} style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "20px" }}>
+                    <div key={t.id} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "20px" }}>
                       <div className="flex items-start justify-between">
                         <div>
-                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{t.leadNom || "Client anonyme"}</p>
-                          {t.dossierRef && <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>Ref : {t.dossierRef}</p>}
-                          <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>{new Date(t.createdAt).toLocaleDateString("fr-FR")}</p>
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{t.leadNom || "Client anonyme"}</p>
+                          {t.dossierRef && <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>Ref : {t.dossierRef}</p>}
+                          <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>{new Date(t.createdAt).toLocaleDateString("fr-FR")}</p>
                         </div>
                         <div className="text-right">
-                          {t.montantCommission && <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6" }}>{t.montantCommission.toLocaleString("fr-FR")} EUR</p>}
-                          {t.montantEnveloppe && <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>Enveloppe : {t.montantEnveloppe.toLocaleString("fr-FR")} EUR</p>}
+                          {t.montantCommission && <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "var(--foreground)" }}>{t.montantCommission.toLocaleString("fr-FR")} EUR</p>}
+                          {t.montantEnveloppe && <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>Enveloppe : {t.montantEnveloppe.toLocaleString("fr-FR")} EUR</p>}
                           <StatutBadge
                             statut={t.statut === "paye" ? "paye" : t.statut === "paiement_initie" ? "paiement initie" : t.statut === "valide" ? "valide" : "en attente"}
                             styles={{
-                              paye: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-                              "paiement initie": { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
-                              valide: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-                              "en attente": { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+                              paye: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+                              "paiement initie": { color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+                              valide: { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+                              "en attente": { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
                             }}
                           />
                         </div>
                       </div>
                       {t.partCourtier && (
-                        <div className="grid grid-cols-3 gap-3" style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #151515" }}>
+                        <div className="grid grid-cols-3 gap-3" style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid var(--border-subtle)" }}>
                           <div>
-                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "#3A3632", marginBottom: "2px" }}>Votre part</p>
-                            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#4A7A5A" }}>{t.partCourtier.toLocaleString("fr-FR")} EUR</p>
+                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "var(--foreground-faint)", marginBottom: "2px" }}>Votre part</p>
+                            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--success)" }}>{t.partCourtier.toLocaleString("fr-FR")} EUR</p>
                           </div>
                           <div>
-                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "#3A3632", marginBottom: "2px" }}>Parrain N1</p>
-                            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{(t.partParrainN1 || 0).toLocaleString("fr-FR")} EUR</p>
+                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "var(--foreground-faint)", marginBottom: "2px" }}>Parrain N1</p>
+                            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{(t.partParrainN1 || 0).toLocaleString("fr-FR")} EUR</p>
                           </div>
                           <div>
-                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "#3A3632", marginBottom: "2px" }}>Part Sigma</p>
-                            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{(t.partSigma || 0).toLocaleString("fr-FR")} EUR</p>
+                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "var(--foreground-faint)", marginBottom: "2px" }}>Part Sigma</p>
+                            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{(t.partSigma || 0).toLocaleString("fr-FR")} EUR</p>
                           </div>
                         </div>
                       )}
                       {t.noteHanna && (
-                        <div style={{ marginTop: "12px", background: "rgba(240,237,230,0.03)", border: "1px solid #151515", borderRadius: "2px", padding: "10px 12px" }}>
-                          <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Note Hanna : {t.noteHanna}</p>
+                        <div style={{ marginTop: "12px", background: "rgba(240,237,230,0.03)", border: "1px solid var(--border-subtle)", borderRadius: "2px", padding: "10px 12px" }}>
+                          <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Note Hanna : {t.noteHanna}</p>
                         </div>
                       )}
                     </div>
@@ -1085,19 +1085,19 @@ export default function CourtierPortail() {
           {activeTab === "reseau" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
               {/* KPIs reseau */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-px" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
                 {[
                   { label: "Total filleuls", value: monReseau?.stats.totalFilleuls ?? 0 },
                   { label: "Commissions generees", value: ((monReseau?.stats.commissionsTotal ?? 0) / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" }) },
                   { label: "Commissions payees", value: ((monReseau?.stats.commissionsPayees ?? 0) / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" }) },
                   { label: "En attente", value: ((monReseau?.stats.commissionsEnAttente ?? 0) / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" }) },
                 ].map(kpi => (
-                  <div key={kpi.label} style={{ background: "#0A0A0A", padding: "20px" }}>
+                  <div key={kpi.label} style={{ background: "var(--background)", padding: "20px" }}>
                     <p className="tabular-nums" style={{
                       fontFamily: "'Cormorant Garamond', serif",
                       fontSize: "24px",
                       fontWeight: 600,
-                      color: "#F0EDE6",
+                      color: "var(--foreground)",
                       lineHeight: 1,
                       letterSpacing: "0.02em",
                     }}>
@@ -1109,17 +1109,17 @@ export default function CourtierPortail() {
               </div>
 
               {/* Lien de parrainage */}
-              <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
-                <p className="label-uppercase" style={{ color: "#F0EDE6", marginBottom: "12px" }}>Mon lien de parrainage</p>
+              <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
+                <p className="label-uppercase" style={{ color: "var(--foreground)", marginBottom: "12px" }}>Mon lien de parrainage</p>
                 <div className="flex items-center gap-3">
                   <code className="flex-1 tabular-nums" style={{
-                    background: "#0A0A0A",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--background)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     padding: "10px 14px",
                     fontSize: "12px",
                     fontFamily: "monospace",
-                    color: "#6B6560",
+                    color: "var(--foreground-muted)",
                     wordBreak: "break-all",
                   }}>
                     {window.location.origin}/rejoindre?parrain={profil.codeParrain}
@@ -1132,32 +1132,32 @@ export default function CourtierPortail() {
                     Copier
                   </button>
                 </div>
-                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "10px" }}>Partagez ce lien pour recruter des courtiers ou agents dans votre reseau</p>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "10px" }}>Partagez ce lien pour recruter des courtiers ou agents dans votre reseau</p>
               </div>
 
               <div className="grid grid-cols-2 gap-6">
                 {/* Filleuls courtiers */}
-                <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+                <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
                   <div className="flex items-center gap-2" style={{ marginBottom: "16px" }}>
-                    <Users className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                    <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Courtiers parraines ({monReseau?.filleulsCourtiers.length ?? 0})</p>
+                    <Users className="w-4 h-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                    <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Courtiers parraines ({monReseau?.filleulsCourtiers.length ?? 0})</p>
                   </div>
                   {!monReseau?.filleulsCourtiers.length ? (
-                    <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", textAlign: "center", padding: "20px 0" }}>Aucun courtier parraine pour l'instant</p>
+                    <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", textAlign: "center", padding: "20px 0" }}>Aucun courtier parraine pour l'instant</p>
                   ) : (
                     <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                       {monReseau.filleulsCourtiers.map((f: any) => (
-                        <div key={f.id} className="flex items-center justify-between" style={{ background: "#0A0A0A", border: "1px solid #151515", borderRadius: "2px", padding: "10px 14px" }}>
+                        <div key={f.id} className="flex items-center justify-between" style={{ background: "var(--background)", border: "1px solid var(--border-subtle)", borderRadius: "2px", padding: "10px 14px" }}>
                           <div>
-                            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{f.prenom} {f.nom}</p>
-                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{f.email}</p>
+                            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{f.prenom} {f.nom}</p>
+                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{f.email}</p>
                           </div>
                           <StatutBadge
                             statut={f.statutInterne}
                             styles={{
-                              actif: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-                              suspendu: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
-                              en_attente: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+                              actif: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+                              suspendu: { color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+                              en_attente: { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
                             }}
                           />
                         </div>
@@ -1167,27 +1167,27 @@ export default function CourtierPortail() {
                 </div>
 
                 {/* Filleuls agents */}
-                <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+                <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
                   <div className="flex items-center gap-2" style={{ marginBottom: "16px" }}>
-                    <Users className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                    <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Agents parraines ({monReseau?.filleulsAgents.length ?? 0})</p>
+                    <Users className="w-4 h-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                    <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Agents parraines ({monReseau?.filleulsAgents.length ?? 0})</p>
                   </div>
                   {!monReseau?.filleulsAgents.length ? (
-                    <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", textAlign: "center", padding: "20px 0" }}>Aucun agent parraine pour l'instant</p>
+                    <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", textAlign: "center", padding: "20px 0" }}>Aucun agent parraine pour l'instant</p>
                   ) : (
                     <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                       {monReseau.filleulsAgents.map((f: any) => (
-                        <div key={f.id} className="flex items-center justify-between" style={{ background: "#0A0A0A", border: "1px solid #151515", borderRadius: "2px", padding: "10px 14px" }}>
+                        <div key={f.id} className="flex items-center justify-between" style={{ background: "var(--background)", border: "1px solid var(--border-subtle)", borderRadius: "2px", padding: "10px 14px" }}>
                           <div>
-                            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{f.prenom} {f.nom}</p>
-                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{f.email}</p>
+                            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{f.prenom} {f.nom}</p>
+                            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{f.email}</p>
                           </div>
                           <StatutBadge
                             statut={f.statutInterne}
                             styles={{
-                              actif: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-                              suspendu: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
-                              en_attente: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+                              actif: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+                              suspendu: { color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+                              en_attente: { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
                             }}
                           />
                         </div>
@@ -1198,29 +1198,29 @@ export default function CourtierPortail() {
               </div>
 
               {/* Historique commissions reseau */}
-              <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "24px" }}>
+              <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "24px" }}>
                 <div className="flex items-center gap-2" style={{ marginBottom: "16px" }}>
-                  <TrendingUp className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                  <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Historique des commissions de parrainage</p>
+                  <TrendingUp className="w-4 h-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                  <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Historique des commissions de parrainage</p>
                 </div>
                 {!monReseau?.commissions.length ? (
-                  <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", textAlign: "center", padding: "20px 0" }}>Aucune commission de parrainage generee pour l'instant</p>
+                  <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", textAlign: "center", padding: "20px 0" }}>Aucune commission de parrainage generee pour l'instant</p>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                     {monReseau.commissions.slice(0, 10).map((c: any) => (
-                      <div key={c.id} className="flex items-center justify-between" style={{ background: "#0A0A0A", border: "1px solid #151515", borderRadius: "2px", padding: "10px 14px" }}>
-                        <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>
+                      <div key={c.id} className="flex items-center justify-between" style={{ background: "var(--background)", border: "1px solid var(--border-subtle)", borderRadius: "2px", padding: "10px 14px" }}>
+                        <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>
                           Niveau {c.niveau} -- {c.tauxPourcent}% -- {new Date(c.createdAt).toLocaleDateString("fr-FR")}
                         </span>
                         <div className="flex items-center gap-3">
-                          <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                          <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
                             +{(c.montantHt / 100).toLocaleString("fr-FR", { style: "currency", currency: "EUR" })}
                           </span>
                           <StatutBadge
                             statut={c.statut === "paye" ? "paye" : "en attente"}
                             styles={{
-                              paye: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-                              "en attente": { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+                              paye: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+                              "en attente": { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
                             }}
                           />
                         </div>
@@ -1237,29 +1237,29 @@ export default function CourtierPortail() {
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               <div className="flex items-center justify-between" style={{ marginBottom: "4px" }}>
                 <div className="flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                  <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Mes demandes envoyees a Manon</p>
+                  <AlertTriangle className="w-4 h-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                  <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Mes demandes envoyees a Manon</p>
                 </div>
                 <button
                   onClick={() => refetchDemandes()}
                   className="transition-opacity duration-300 hover:opacity-70"
-                  style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
+                  style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
                 >
                   Actualiser
                 </button>
               </div>
               {mesDemandes.length === 0 ? (
-                <div className="text-center" style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "48px 24px" }}>
-                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucune demande envoyee pour l'instant.</p>
-                  <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#1E1E1E", marginTop: "4px" }}>Utilisez le bouton "Envoyer une demande" dans l'onglet "Dossiers recus".</p>
+                <div className="text-center" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "48px 24px" }}>
+                  <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucune demande envoyee pour l'instant.</p>
+                  <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--border)", marginTop: "4px" }}>Utilisez le bouton "Envoyer une demande" dans l'onglet "Dossiers recus".</p>
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                   {mesDemandes.map(task => {
                     const statutStyles: Record<string, { color: string; bg: string; border: string }> = {
-                      a_faire: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
-                      en_cours: { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
-                      termine: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+                      a_faire: { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+                      en_cours: { color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+                      termine: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
                     };
                     const statutLabels: Record<string, string> = {
                       a_faire: "A faire",
@@ -1267,11 +1267,11 @@ export default function CourtierPortail() {
                       termine: "Termine",
                     };
                     return (
-                      <div key={task.id} className="flex items-start justify-between gap-4" style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "16px 20px" }}>
+                      <div key={task.id} className="flex items-start justify-between gap-4" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "16px 20px" }}>
                         <div className="flex-1 min-w-0">
-                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{task.titre}</p>
-                          {task.description && <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as any}>{task.description}</p>}
-                          <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "6px" }}>
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{task.titre}</p>
+                          {task.description && <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as any}>{task.description}</p>}
+                          <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "6px" }}>
                             {new Date(task.dateDebut).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Paris" })}
                             {" a "}
                             {new Date(task.dateDebut).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Paris" })}
@@ -1288,12 +1288,12 @@ export default function CourtierPortail() {
 
           {/* == Onglet Mon Profil == */}
           {activeTab === "profil" && profil && (
-            <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "32px" }}>
+            <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "32px" }}>
               <div className="flex items-center gap-2" style={{ marginBottom: "8px" }}>
-                <MapPin className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Regions d'operation</p>
+                <MapPin className="w-4 h-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Regions d'operation</p>
               </div>
-              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginBottom: "20px", lineHeight: 1.6 }}>
+              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginBottom: "20px", lineHeight: 1.6 }}>
                 Indiquez les regions ou vous exercez. Manon utilisera cette information pour vous assigner les dossiers correspondants.
               </p>
               <div className="flex flex-wrap gap-2" style={{ marginBottom: "20px" }}>
@@ -1305,31 +1305,31 @@ export default function CourtierPortail() {
                     padding: "4px 12px",
                     fontSize: "12px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#6B6560",
+                    color: "var(--foreground-muted)",
                   }}>
                     {r}
                     <button
                       onClick={() => setMesRegions(prev => prev.filter(x => x !== r))}
                       className="transition-opacity duration-300 hover:opacity-70"
-                      style={{ color: "#3A3632", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                      style={{ color: "var(--foreground-faint)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
                     >
                       <X className="w-3 h-3" style={{ strokeWidth: 1.5 }} />
                     </button>
                   </span>
                 ))}
-                {mesRegions.length === 0 && <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", fontStyle: "italic" }}>Aucune region renseignee</span>}
+                {mesRegions.length === 0 && <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", fontStyle: "italic" }}>Aucune region renseignee</span>}
               </div>
               <div className="flex gap-3">
                 <select
                   style={{
                     flex: 1,
-                    background: "#161616",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--surface-raised)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     padding: "10px 14px",
                     fontSize: "13px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                     outline: "none",
                   }}
                   onChange={e => {
@@ -1349,7 +1349,7 @@ export default function CourtierPortail() {
                   disabled={updateMesRegions.isPending}
                   style={{
                     ...primaryButtonStyle,
-                    background: updateMesRegions.isPending ? "#8A7535" : "#C9A84C",
+                    background: updateMesRegions.isPending ? "var(--gold-muted)" : "var(--gold)",
                     cursor: updateMesRegions.isPending ? "not-allowed" : "pointer",
                   }}
                   className="transition-colors duration-300"
@@ -1362,12 +1362,12 @@ export default function CourtierPortail() {
 
           {/* == Onglet Documents == */}
           {activeTab === "documents" && profil && (
-            <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "32px" }}>
+            <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "32px" }}>
               <div className="flex items-center gap-2" style={{ marginBottom: "8px" }}>
-                <FileText className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-                <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Echange de documents avec Manon</p>
+                <FileText className="w-4 h-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Echange de documents avec Manon</p>
               </div>
-              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginBottom: "24px", lineHeight: 1.6 }}>
+              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginBottom: "24px", lineHeight: 1.6 }}>
                 Envoyez des documents a Manon ou consultez les documents qu'elle vous a transmis.
               </p>
               <PartnerDocumentsSection

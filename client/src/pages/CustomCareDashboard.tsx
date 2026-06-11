@@ -24,12 +24,12 @@ const STATUTS = [
 ];
 
 const STATUT_STYLES: Record<string, { color: string; bg: string; border: string }> = {
-  nouvelle:          { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-  en_cours:          { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
-  en_attente_retour: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
-  standby:           { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
-  effectuee:         { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-  annulee:           { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+  nouvelle:          { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  en_cours:          { color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+  en_attente_retour: { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  standby:           { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  effectuee:         { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  annulee:           { color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
 };
 
 const PRIORITES_CONFIG = [
@@ -41,11 +41,11 @@ const PRIORITES_CONFIG = [
 ];
 
 const PRIORITE_STYLES: Record<string, { color: string; bg: string; border: string }> = {
-  hyper_urgent: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
-  tres_urgent:  { color: "#A04040", bg: "rgba(160,64,64,0.06)", border: "rgba(160,64,64,0.15)" },
-  urgent:       { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-  normal:       { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-  faible:       { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" },
+  hyper_urgent: { color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+  tres_urgent:  { color: "var(--destructive)", bg: "rgba(160,64,64,0.06)", border: "rgba(160,64,64,0.15)" },
+  urgent:       { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  normal:       { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  faible:       { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" },
 };
 
 function getPrioriteStyle(value: string) {
@@ -57,7 +57,7 @@ function getPrioriteLabel(value: string) {
 }
 
 function getStatutStyle(value: string) {
-  return STATUT_STYLES[value] ?? { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
+  return STATUT_STYLES[value] ?? { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
 }
 
 function getStatutLabel(value: string) {
@@ -75,9 +75,9 @@ function formatFileSize(bytes: number): string {
 }
 
 function getFileIcon(mimeType: string) {
-  if (mimeType.startsWith("image/")) return <Image className="w-4 h-4 shrink-0" style={{ color: "#6B6560", strokeWidth: 1.5 }} />;
-  if (mimeType === "application/pdf") return <FileText className="w-4 h-4 shrink-0" style={{ color: "#6B6560", strokeWidth: 1.5 }} />;
-  return <File className="w-4 h-4 shrink-0" style={{ color: "#6B6560", strokeWidth: 1.5 }} />;
+  if (mimeType.startsWith("image/")) return <Image className="w-4 h-4 shrink-0" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />;
+  if (mimeType === "application/pdf") return <FileText className="w-4 h-4 shrink-0" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />;
+  return <File className="w-4 h-4 shrink-0" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />;
 }
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -209,15 +209,15 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
   const hannaDocs = docs?.filter(d => d.envoyePar === "hanna") ?? [];
 
   return (
-    <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "20px" }}>
+    <div style={{ borderTop: "1px solid var(--border)", paddingTop: "20px" }}>
       <div className="flex items-center gap-2 mb-4">
-        <Paperclip className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-        <span className="label-uppercase" style={{ color: "#F0EDE6" }}>Documents</span>
+        <Paperclip className="w-4 h-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+        <span className="label-uppercase" style={{ color: "var(--foreground)" }}>Documents</span>
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-4">
-          <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+          <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
         </div>
       ) : (
         <div className="space-y-5">
@@ -227,28 +227,28 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
               Documents recus du lead ({leadDocs.length})
             </p>
             {leadDocs.length === 0 ? (
-              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun document joint par le lead</p>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucun document joint par le lead</p>
             ) : (
               <div className="space-y-2">
                 {leadDocs.map(doc => (
                   <div key={doc.id} className="flex items-center gap-3 p-3"
-                    style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+                    style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px" }}>
                     {getFileIcon(doc.mimeType)}
                     <div className="flex-1 min-w-0">
-                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{doc.nom}</p>
-                      <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{formatFileSize(doc.taille)} · {new Date(doc.uploadedAt).toLocaleDateString("fr-FR")}</p>
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{doc.nom}</p>
+                      <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{formatFileSize(doc.taille)} · {new Date(doc.uploadedAt).toLocaleDateString("fr-FR")}</p>
                     </div>
                     <a href={doc.url} target="_blank" rel="noopener noreferrer"
-                      className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }} title="Ouvrir">
+                      className="transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-muted)" }} title="Ouvrir">
                       <ExternalLink className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                     </a>
                     <button
                       onClick={() => {
                         if (window.confirm(`Supprimer "${doc.nom}" ?`)) deleteMutation.mutate({ documentId: doc.id });
                       }}
-                      className="transition-colors duration-300" style={{ color: "#3A3632" }}
-                      onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-                      onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                      className="transition-colors duration-300" style={{ color: "var(--foreground-faint)" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
                       title="Supprimer"
                     >
                       <Trash2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
@@ -265,28 +265,28 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
               Documents envoyes par Hanna ({hannaDocs.length})
             </p>
             {hannaDocs.length === 0 ? (
-              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun document envoye</p>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucun document envoye</p>
             ) : (
               <div className="space-y-2">
                 {hannaDocs.map(doc => (
                   <div key={doc.id} className="flex items-center gap-3 p-3"
-                    style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+                    style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px" }}>
                     {getFileIcon(doc.mimeType)}
                     <div className="flex-1 min-w-0">
-                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{doc.nom}</p>
-                      <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{formatFileSize(doc.taille)} · {new Date(doc.uploadedAt).toLocaleDateString("fr-FR")}</p>
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{doc.nom}</p>
+                      <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{formatFileSize(doc.taille)} · {new Date(doc.uploadedAt).toLocaleDateString("fr-FR")}</p>
                     </div>
                     <a href={doc.url} target="_blank" rel="noopener noreferrer"
-                      className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }} title="Ouvrir">
+                      className="transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-muted)" }} title="Ouvrir">
                       <ExternalLink className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                     </a>
                     <button
                       onClick={() => {
                         if (window.confirm(`Supprimer "${doc.nom}" ?`)) deleteMutation.mutate({ documentId: doc.id });
                       }}
-                      className="transition-colors duration-300" style={{ color: "#3A3632" }}
-                      onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-                      onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                      className="transition-colors duration-300" style={{ color: "var(--foreground-faint)" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
                       title="Supprimer"
                     >
                       <Trash2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
@@ -298,10 +298,10 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
           </div>
 
           {/* Zone d'envoi de documents par Hanna */}
-          <div style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "16px" }}>
+          <div style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "16px" }}>
             <div className="flex items-center gap-2 mb-3">
-              <Upload className="w-3.5 h-3.5" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
-              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+              <Upload className="w-3.5 h-3.5" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
                 Envoyer un document a {demandeNom}
               </span>
             </div>
@@ -311,16 +311,16 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
               onClick={() => fileInputRef.current?.click()}
               className="cursor-pointer transition-colors duration-300"
               style={{
-                border: "1px dashed #1E1E1E",
+                border: "1px dashed var(--border)",
                 borderRadius: "2px",
                 padding: "16px",
                 textAlign: "center",
               }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = "#3A3632")}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--foreground-faint)")}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
             >
-              <Upload className="w-4 h-4 mx-auto mb-1" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
-              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Cliquez ou glissez un fichier</p>
+              <Upload className="w-4 h-4 mx-auto mb-1" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Cliquez ou glissez un fichier</p>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -336,15 +336,15 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
               <div className="space-y-1.5 mt-3">
                 {uploadFiles.map((file, i) => (
                   <div key={i} className="flex items-center gap-2 p-2"
-                    style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+                    style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px" }}>
                     {getFileIcon(file.type)}
-                    <span className="flex-1 min-w-0" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{file.name}</span>
-                    <span className="tabular-nums shrink-0" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{formatFileSize(file.size)}</span>
+                    <span className="flex-1 min-w-0" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{file.name}</span>
+                    <span className="tabular-nums shrink-0" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{formatFileSize(file.size)}</span>
                     <button
                       onClick={() => setUploadFiles(prev => prev.filter((_, j) => j !== i))}
-                      className="transition-colors duration-300" style={{ color: "#3A3632" }}
-                      onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-                      onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                      className="transition-colors duration-300" style={{ color: "var(--foreground-faint)" }}
+                      onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+                      onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
                     >
                       <X className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                     </button>
@@ -357,19 +357,19 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
             {uploading && (
               <div className="mt-3 space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "#6B6560" }} />
-                  <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
+                  <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>
                     Envoi en cours... ({uploadProgress.done}/{uploadProgress.total})
                   </span>
                 </div>
-                <div style={{ height: "2px", background: "#1E1E1E", borderRadius: "1px", overflow: "hidden" }}>
+                <div style={{ height: "2px", background: "var(--border)", borderRadius: "1px", overflow: "hidden" }}>
                   <div
                     className="transition-all duration-300"
                     style={{
                       height: "100%",
                       borderRadius: "1px",
                       width: `${uploadProgress.total > 0 ? (uploadProgress.done / uploadProgress.total) * 100 : 0}%`,
-                      background: "#C9A84C",
+                      background: "var(--gold)",
                     }}
                   />
                 </div>
@@ -382,8 +382,8 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
               className="w-full flex items-center justify-center gap-1.5 mt-3 transition-colors duration-300 disabled:cursor-not-allowed"
               style={{
                 padding: "10px 20px",
-                background: uploadFiles.length === 0 || uploading ? "#8A7535" : "#C9A84C",
-                color: "#0A0A0A",
+                background: uploadFiles.length === 0 || uploading ? "var(--gold-muted)" : "var(--gold)",
+                color: "var(--background)",
                 fontSize: "11px",
                 fontWeight: 500,
                 fontFamily: "'Hanken Grotesk', sans-serif",
@@ -399,7 +399,7 @@ function DocumentsSection({ demandeId, demandeNom }: { demandeId: number; demand
                 <><Upload className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> Envoyer {uploadFiles.length > 0 ? `${uploadFiles.length} fichier${uploadFiles.length > 1 ? "s" : ""}` : "les fichiers"}</>
               )}
             </button>
-            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", textAlign: "center", marginTop: "8px" }}>
+            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", textAlign: "center", marginTop: "8px" }}>
               Un email sera automatiquement envoye a {demandeNom}
             </p>
           </div>
@@ -443,25 +443,25 @@ function DetailPanel({ id, onClose }: { id: number; onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-end" style={{ background: "rgba(0,0,0,0.7)" }} onClick={onClose}>
-      <div className="w-full h-full overflow-y-auto flex flex-col" style={{ maxWidth: "520px", background: "#111111", borderLeft: "1px solid #1E1E1E" }} onClick={e => e.stopPropagation()}>
+      <div className="w-full h-full overflow-y-auto flex flex-col" style={{ maxWidth: "520px", background: "var(--surface)", borderLeft: "1px solid var(--border)" }} onClick={e => e.stopPropagation()}>
         {/* Header */}
-        <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between" style={{ background: "#111111", borderBottom: "1px solid #1E1E1E" }}>
+        <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between" style={{ background: "var(--surface)", borderBottom: "1px solid var(--border)" }}>
           <div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em" }}>
               Detail de la demande
             </h2>
-            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>
+            <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>
               Fiche #{id}
             </p>
           </div>
-          <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }}>
+          <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-muted)" }}>
             <X className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </button>
         </div>
 
         {isLoading ? (
           <div className="flex-1 flex items-center justify-center">
-            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
           </div>
         ) : demande ? (
           <div className="p-6 space-y-8">
@@ -476,41 +476,41 @@ function DetailPanel({ id, onClose }: { id: number; onClose: () => void }) {
               <p className="label-uppercase mb-3">Contact</p>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <User className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                  <User className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                   <div>
                     <p className="label-uppercase" style={{ marginBottom: "2px" }}>Nom complet</p>
-                    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{demande.prenom} {demande.nom}</p>
+                    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{demande.prenom} {demande.nom}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Phone className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                  <Phone className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                   <div>
                     <p className="label-uppercase" style={{ marginBottom: "2px" }}>Telephone</p>
-                    <a href={`tel:${demande.telephone}`} style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", textDecoration: "none" }}
+                    <a href={`tel:${demande.telephone}`} style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", textDecoration: "none" }}
                       className="transition-opacity duration-300 hover:opacity-70">{demande.telephone}</a>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Mail className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                  <Mail className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                   <div>
                     <p className="label-uppercase" style={{ marginBottom: "2px" }}>Email</p>
-                    <a href={`mailto:${demande.email}`} style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", textDecoration: "none" }}
+                    <a href={`mailto:${demande.email}`} style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", textDecoration: "none" }}
                       className="transition-opacity duration-300 hover:opacity-70">{demande.email}</a>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Calendar className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                  <Calendar className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                   <div>
                     <p className="label-uppercase" style={{ marginBottom: "2px" }}>Date de creation</p>
-                    <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{formatDate(demande.createdAt)}</p>
+                    <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{formatDate(demande.createdAt)}</p>
                   </div>
                 </div>
                 {demande.createdBy && (
                   <div className="flex items-start gap-3">
-                    <User className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                    <User className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                     <div>
                       <p className="label-uppercase" style={{ marginBottom: "2px" }}>Cree par</p>
-                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{demande.createdBy}</p>
+                      <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{demande.createdBy}</p>
                     </div>
                   </div>
                 )}
@@ -520,18 +520,18 @@ function DetailPanel({ id, onClose }: { id: number; onClose: () => void }) {
             {/* Sujet & demande */}
             <div>
               <p className="label-uppercase mb-2">Sujet</p>
-              <p style={{ fontSize: "14px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{demande.sujet}</p>
+              <p style={{ fontSize: "14px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{demande.sujet}</p>
             </div>
             <div>
               <p className="label-uppercase mb-2">Description</p>
               <div style={{
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "16px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 lineHeight: "1.6",
                 whiteSpace: "pre-wrap" as const,
               }}>
@@ -546,7 +546,7 @@ function DetailPanel({ id, onClose }: { id: number; onClose: () => void }) {
             />
 
             {/* Gestion */}
-            <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "20px" }}>
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: "20px" }}>
               <p className="label-uppercase mb-4">Gestion Hanna</p>
 
               {/* Statut */}
@@ -557,17 +557,17 @@ function DetailPanel({ id, onClose }: { id: number; onClose: () => void }) {
                   onChange={e => setStatut(e.target.value)}
                   style={{
                     width: "100%",
-                    background: "#161616",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--surface-raised)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     padding: "10px 14px",
                     fontSize: "13px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                     outline: "none",
                   }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 >
                   {STATUTS.filter(s => s.value !== "toutes").map(s => (
                     <option key={s.value} value={s.value}>{s.label}</option>
@@ -597,18 +597,18 @@ function DetailPanel({ id, onClose }: { id: number; onClose: () => void }) {
                   placeholder="Ajouter une note interne..."
                   style={{
                     width: "100%",
-                    background: "#161616",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--surface-raised)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     padding: "10px 12px",
                     fontSize: "13px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                     resize: "none",
                     outline: "none",
                   }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
 
@@ -618,8 +618,8 @@ function DetailPanel({ id, onClose }: { id: number; onClose: () => void }) {
                 className="w-full flex items-center justify-center gap-2 transition-colors duration-300 disabled:cursor-not-allowed"
                 style={{
                   padding: "14px 28px",
-                  background: saving ? "#8A7535" : "#C9A84C",
-                  color: "#0A0A0A",
+                  background: saving ? "var(--gold-muted)" : "var(--gold)",
+                  color: "var(--background)",
                   fontSize: "11px",
                   fontWeight: 500,
                   fontFamily: "'Hanken Grotesk', sans-serif",
@@ -635,7 +635,7 @@ function DetailPanel({ id, onClose }: { id: number; onClose: () => void }) {
           </div>
         ) : (
           <div className="flex-1 flex items-center justify-center">
-            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Demande introuvable</p>
+            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Demande introuvable</p>
           </div>
         )}
       </div>
@@ -698,21 +698,21 @@ export default function CustomCareDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
-        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--background)" }}>
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
       </div>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-6" style={{ background: "#0A0A0A" }}>
-        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.04em" }}>Acces reserve</h2>
-        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Connectez-vous pour acceder au dashboard Custom Care.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-6" style={{ background: "var(--background)" }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.04em" }}>Acces reserve</h2>
+        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Connectez-vous pour acceder au dashboard Custom Care.</p>
         <a href="/login" style={{
           padding: "12px 28px",
-          background: "#C9A84C",
-          color: "#0A0A0A",
+          background: "var(--gold)",
+          color: "var(--background)",
           fontSize: "11px",
           fontWeight: 500,
           fontFamily: "'Hanken Grotesk', sans-serif",
@@ -730,16 +730,16 @@ export default function CustomCareDashboard() {
   const totalPages = Math.ceil(total / LIMIT);
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <AdminNav />
 
       {/* Toolbar */}
-      <div style={{ borderBottom: "1px solid #1E1E1E" }}>
+      <div style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex items-center justify-end gap-2 px-5 py-2.5" style={{ maxWidth: "1280px", margin: "0 auto" }}>
           <button onClick={() => refetch()} className="p-2 transition-colors duration-300"
-            style={{ color: "#3A3632", border: "1px solid #1E1E1E", borderRadius: "2px", background: "transparent" }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#6B6560"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#3A3632"; }}
+            style={{ color: "var(--foreground-faint)", border: "1px solid var(--border)", borderRadius: "2px", background: "transparent" }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-faint)"; }}
           >
             <RefreshCw className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </button>
@@ -750,13 +750,13 @@ export default function CustomCareDashboard() {
               fontWeight: 500,
               letterSpacing: "0.06em",
               textTransform: "uppercase" as const,
-              color: "#6B6560",
-              border: "1px solid #1E1E1E",
+              color: "var(--foreground-muted)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               background: "transparent",
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
           >
             <Download className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> Export CSV
           </button>
@@ -764,8 +764,8 @@ export default function CustomCareDashboard() {
             href="/customcare"
             style={{
               padding: "8px 20px",
-              background: "#C9A84C",
-              color: "#0A0A0A",
+              background: "var(--gold)",
+              color: "var(--background)",
               fontSize: "11px",
               fontWeight: 500,
               fontFamily: "'Hanken Grotesk', sans-serif",
@@ -783,19 +783,19 @@ export default function CustomCareDashboard() {
       <div className="px-5 py-8" style={{ maxWidth: "1280px", margin: "0 auto" }}>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mb-10" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mb-10" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
           {[
             { label: "Total demandes", value: total, highlight: true },
             { label: "Nouvelles", value: items.filter(i => i.statut === "nouvelle").length, highlight: false },
             { label: "En cours", value: items.filter(i => i.statut === "en_cours").length, highlight: false },
             { label: "Effectuees", value: items.filter(i => i.statut === "effectuee").length, highlight: false },
           ].map((stat) => (
-            <div key={stat.label} className="p-5" style={{ background: "#0A0A0A" }}>
+            <div key={stat.label} className="p-5" style={{ background: "var(--background)" }}>
               <p className="tabular-nums" style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "32px",
                 fontWeight: 600,
-                color: stat.highlight ? "#C9A84C" : "#F0EDE6",
+                color: stat.highlight ? "var(--gold)" : "var(--foreground)",
                 lineHeight: 1,
                 letterSpacing: "0.02em",
               }}>
@@ -809,15 +809,15 @@ export default function CustomCareDashboard() {
         {/* Filtres */}
         <div className="flex flex-col sm:flex-row gap-3 mb-5">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
             <input
               value={search}
               onChange={e => { setSearch(e.target.value); setPage(0); }}
               placeholder="Rechercher un lead, sujet..."
               className="w-full transition-colors duration-300 focus:outline-none"
               style={{
-                background: "#111111",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 paddingLeft: "36px",
                 paddingRight: "14px",
@@ -825,13 +825,13 @@ export default function CustomCareDashboard() {
                 paddingBottom: "10px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
             {search && (
-              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632" }}>
+              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-faint)" }}>
                 <X className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </button>
             )}
@@ -840,13 +840,13 @@ export default function CustomCareDashboard() {
             value={statutFilter}
             onChange={e => { setStatutFilter(e.target.value); setPage(0); }}
             style={{
-              background: "#111111",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               padding: "10px 14px",
               fontSize: "13px",
               fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               outline: "none",
             }}
           >
@@ -856,13 +856,13 @@ export default function CustomCareDashboard() {
             value={prioriteFilter}
             onChange={e => { setPrioriteFilter(e.target.value); setPage(0); }}
             style={{
-              background: "#111111",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               padding: "10px 14px",
               fontSize: "13px",
               fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               outline: "none",
             }}
           >
@@ -872,15 +872,15 @@ export default function CustomCareDashboard() {
         </div>
 
         {/* Tableau */}
-        <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
             </div>
           ) : items.length === 0 ? (
             <div className="text-center py-20">
-              <MessageSquare className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucune demande trouvee</p>
+              <MessageSquare className="w-10 h-10 mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucune demande trouvee</p>
             </div>
           ) : (
             <>
@@ -888,9 +888,9 @@ export default function CustomCareDashboard() {
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                    <tr style={{ borderBottom: "1px solid var(--border)" }}>
                       {["Lead", "Sujet", "Priorite", "Statut", "Assigne", "Date", ""].map(h => (
-                        <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "#0D0D0D" }}>{h}</th>
+                        <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "var(--surface-header)" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -900,16 +900,16 @@ export default function CustomCareDashboard() {
                         key={item.id}
                         onClick={() => setSelectedId(item.id)}
                         className="cursor-pointer transition-colors duration-300"
-                        style={{ borderBottom: "1px solid #151515" }}
-                        onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                        style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                        onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                         onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                       >
                         <td className="px-5 py-3">
-                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{item.prenom} {item.nom}</p>
-                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{item.telephone}</p>
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{item.prenom} {item.nom}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{item.telephone}</p>
                         </td>
                         <td className="px-5 py-3">
-                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{item.sujet}</p>
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{item.sujet}</p>
                         </td>
                         <td className="px-5 py-3">
                           <PrioriteBadge priorite={item.priorite} />
@@ -918,21 +918,21 @@ export default function CustomCareDashboard() {
                           <StatutBadge statut={item.statut} />
                         </td>
                         <td className="px-5 py-3">
-                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{item.assigneA || "—"}</span>
+                          <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{item.assigneA || "—"}</span>
                         </td>
-                        <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                        <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                           {new Date(item.createdAt).toLocaleDateString("fr-FR")}
                         </td>
                         <td className="px-5 py-3">
                           <div className="flex items-center gap-1">
-                            <button onClick={(e) => { e.stopPropagation(); setSelectedId(item.id); }} className="p-1.5 transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632" }}>
+                            <button onClick={(e) => { e.stopPropagation(); setSelectedId(item.id); }} className="p-1.5 transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-faint)" }}>
                               <ChevronRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                             </button>
                             <button
                               onClick={(e) => handleDelete(e, item.id, `${item.prenom} ${item.nom}`)}
-                              className="p-1.5 transition-colors duration-300" style={{ color: "#3A3632" }}
-                              onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-                              onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                              className="p-1.5 transition-colors duration-300" style={{ color: "var(--foreground-faint)" }}
+                              onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+                              onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
                               title="Supprimer"
                             >
                               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -950,21 +950,21 @@ export default function CustomCareDashboard() {
                 {items.map(item => (
                   <div key={item.id}
                     className="p-4 cursor-pointer transition-colors duration-300"
-                    style={{ borderBottom: "1px solid #151515" }}
+                    style={{ borderBottom: "1px solid var(--border-subtle)" }}
                     onClick={() => setSelectedId(item.id)}
-                    onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                    onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                     onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{item.prenom} {item.nom}</p>
-                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>{item.sujet}</p>
+                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{item.prenom} {item.nom}</p>
+                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>{item.sujet}</p>
                       </div>
                       <StatutBadge statut={item.statut} />
                     </div>
                     <div className="flex items-center gap-3 mt-2">
                       <PrioriteBadge priorite={item.priorite} />
-                      <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{new Date(item.createdAt).toLocaleDateString("fr-FR")}</span>
+                      <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{new Date(item.createdAt).toLocaleDateString("fr-FR")}</span>
                     </div>
                   </div>
                 ))}
@@ -976,20 +976,20 @@ export default function CustomCareDashboard() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between mt-5">
-            <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+            <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
               {page * LIMIT + 1}–{Math.min((page + 1) * LIMIT, total)} sur {total}
             </p>
             <div className="flex items-center gap-2">
               <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}
                 className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
-                style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px" }}
+                style={{ color: "var(--foreground-muted)", border: "1px solid var(--border)", borderRadius: "2px" }}
               >
                 <ChevronLeft className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </button>
-              <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", padding: "0 8px" }}>{page + 1} / {totalPages}</span>
+              <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", padding: "0 8px" }}>{page + 1} / {totalPages}</span>
               <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1}
                 className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
-                style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px" }}
+                style={{ color: "var(--foreground-muted)", border: "1px solid var(--border)", borderRadius: "2px" }}
               >
                 <ChevronRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </button>

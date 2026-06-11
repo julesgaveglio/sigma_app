@@ -91,19 +91,19 @@ interface CrmNote {
 // ─── Config étapes ────────────────────────────────────────────────────────────
 
 const ETAPES: { key: Etape; label: string; responsable: string; color: string; bg: string; icon: string; borderTop: string }[] = [
-  { key: "sigma_cash", label: "Sigma Cash", responsable: "Hanna", color: "text-[#C9A84C]", bg: "bg-[#111111] border-[#1E1E1E]", icon: "", borderTop: "#C9A84C" },
-  { key: "sigma_credit", label: "Sigma Crédit", responsable: "Hanna", color: "text-[#F0EDE6]", bg: "bg-[#111111] border-[#1E1E1E]", icon: "", borderTop: "#6B6560" },
-  { key: "welcome_call", label: "Welcome Call", responsable: "Maria", color: "text-[#F0EDE6]", bg: "bg-[#111111] border-[#1E1E1E]", icon: "", borderTop: "#4A4A4A" },
-  { key: "courtage", label: "Courtage", responsable: "Manon", color: "text-[#F0EDE6]", bg: "bg-[#111111] border-[#1E1E1E]", icon: "", borderTop: "#3A3A3A" },
-  { key: "point_personnalise", label: "Point Personnalisé", responsable: "Maria", color: "text-[#F0EDE6]", bg: "bg-[#111111] border-[#1E1E1E]", icon: "", borderTop: "#2A2A2A" },
-  { key: "recherche_bien", label: "Recherche bien", responsable: "Élodie", color: "text-[#F0EDE6]", bg: "bg-[#111111] border-[#1E1E1E]", icon: "", borderTop: "#1E1E1E" },
+  { key: "sigma_cash", label: "Sigma Cash", responsable: "Hanna", color: "text-[var(--gold)]", bg: "bg-[var(--surface)] border-[var(--border)]", icon: "", borderTop: "var(--stage-sigma-cash)" },
+  { key: "sigma_credit", label: "Sigma Crédit", responsable: "Hanna", color: "text-[var(--foreground)]", bg: "bg-[var(--surface)] border-[var(--border)]", icon: "", borderTop: "var(--stage-sigma-credit)" },
+  { key: "welcome_call", label: "Welcome Call", responsable: "Maria", color: "text-[var(--foreground)]", bg: "bg-[var(--surface)] border-[var(--border)]", icon: "", borderTop: "var(--stage-welcome-call)" },
+  { key: "courtage", label: "Courtage", responsable: "Manon", color: "text-[var(--foreground)]", bg: "bg-[var(--surface)] border-[var(--border)]", icon: "", borderTop: "var(--stage-courtage)" },
+  { key: "point_personnalise", label: "Point Personnalisé", responsable: "Maria", color: "text-[var(--foreground)]", bg: "bg-[var(--surface)] border-[var(--border)]", icon: "", borderTop: "var(--stage-point-perso)" },
+  { key: "recherche_bien", label: "Recherche bien", responsable: "Élodie", color: "text-[var(--foreground)]", bg: "bg-[var(--surface)] border-[var(--border)]", icon: "", borderTop: "var(--stage-recherche-bien)" },
 ];
 
 const STATUT_COLORS: Record<Statut, string> = {
-  actif: "bg-[#4A7A5A]/15 text-[#4A7A5A] border-[#4A7A5A]/30",
-  en_pause: "bg-[#6B6560]/15 text-[#6B6560] border-[#6B6560]/30",
-  cloture: "bg-[#3A3632]/15 text-[#3A3632] border-[#3A3632]/30",
-  perdu: "bg-[#A04040]/15 text-[#A04040] border-[#A04040]/30",
+  actif: "bg-[var(--success)]/15 text-[var(--success)] border-[var(--success)]/30",
+  en_pause: "bg-[var(--foreground-muted)]/15 text-[var(--foreground-muted)] border-[var(--foreground-muted)]/30",
+  cloture: "bg-[var(--foreground-faint)]/15 text-[var(--foreground-faint)] border-[var(--foreground-faint)]/30",
+  perdu: "bg-[var(--destructive)]/15 text-[var(--destructive)] border-[var(--destructive)]/30",
 };
 
 const STATUT_LABELS: Record<Statut, string> = {
@@ -143,10 +143,10 @@ function KanbanCard({
   const leadExt = lead as CrmLead & { formule?: string; montantFormule?: number };
 
   const FORMULE_BADGE: Record<string, { label: string; color: string; emoji: string }> = {
-    starter:     { label: "Starter",     color: "bg-[#161616] text-[#6B6560] border-[#1E1E1E]",     emoji: "" },
-    premium:     { label: "Premium",     color: "bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/25", emoji: "" },
-    sdt_starter: { label: "SDT Starter", color: "bg-[#161616] text-[#6B6560] border-[#1E1E1E]",   emoji: "" },
-    sdt_premium: { label: "SDT Premium", color: "bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/25", emoji: "" },
+    starter:     { label: "Starter",     color: "bg-[var(--surface-raised)] text-[var(--foreground-muted)] border-[var(--border)]",     emoji: "" },
+    premium:     { label: "Premium",     color: "bg-[var(--gold)]/10 text-[var(--gold)] border-[var(--gold)]/25", emoji: "" },
+    sdt_starter: { label: "SDT Starter", color: "bg-[var(--surface-raised)] text-[var(--foreground-muted)] border-[var(--border)]",   emoji: "" },
+    sdt_premium: { label: "SDT Premium", color: "bg-[var(--gold)]/10 text-[var(--gold)] border-[var(--gold)]/25", emoji: "" },
   };
 
   return (
@@ -154,14 +154,14 @@ function KanbanCard({
       onClick={onClick}
       draggable
       onDragStart={(e) => onDragStart(e, lead.id)}
-      className="bg-[#111111] border border-[#1E1E1E] rounded-[2px] p-4 cursor-grab active:cursor-grabbing hover:border-[#C9A84C]/30 transition-all duration-300 group select-none"
+      className="bg-[var(--surface)] border border-[var(--border)] rounded-[2px] p-4 cursor-grab active:cursor-grabbing hover:border-[var(--gold)]/30 transition-all duration-300 group select-none"
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-[#F0EDE6] text-sm group-hover:text-[#C9A84C] transition-colors duration-300" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="font-semibold text-[var(--foreground)] text-sm group-hover:text-[var(--gold)] transition-colors duration-300" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
             {lead.prenom} {lead.nom}
           </p>
-          <p className="text-xs text-[#6B6560] mt-0.5 truncate" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{lead.email}</p>
+          <p className="text-xs text-[var(--foreground-muted)] mt-0.5 truncate" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{lead.email}</p>
         </div>
         <div className="flex flex-col items-end gap-1 ml-2 flex-shrink-0">
           <span className={`text-[11px] px-2 py-0.5 rounded-[2px] border uppercase tracking-[0.08em] font-medium ${STATUT_COLORS[lead.statut]}`} style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
@@ -177,50 +177,50 @@ function KanbanCard({
 
       {/* Indicateurs modules */}
       <div className="flex gap-1.5 mb-3">
-        <span className={`text-[11px] px-1.5 py-0.5 rounded-[2px] border ${lead.leadId ? "bg-[#161616] text-[#F0EDE6] border-[#1E1E1E]" : "bg-[#111111] text-[#3A3632] border-[#1E1E1E]"}`} style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+        <span className={`text-[11px] px-1.5 py-0.5 rounded-[2px] border ${lead.leadId ? "bg-[var(--surface-raised)] text-[var(--foreground)] border-[var(--border)]" : "bg-[var(--surface)] text-[var(--foreground-faint)] border-[var(--border)]"}`} style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
           EC {lead.leadId ? "+" : "-"}
         </span>
-        <span className={`text-[11px] px-1.5 py-0.5 rounded-[2px] border ${lead.mandatId ? "bg-[#161616] text-[#F0EDE6] border-[#1E1E1E]" : "bg-[#111111] text-[#3A3632] border-[#1E1E1E]"}`} style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+        <span className={`text-[11px] px-1.5 py-0.5 rounded-[2px] border ${lead.mandatId ? "bg-[var(--surface-raised)] text-[var(--foreground)] border-[var(--border)]" : "bg-[var(--surface)] text-[var(--foreground-faint)] border-[var(--border)]"}`} style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
           Mandat {lead.mandatId ? "+" : "-"}
         </span>
-        <span className={`text-[11px] px-1.5 py-0.5 rounded-[2px] border ${lead.hexaId ? "bg-[#161616] text-[#F0EDE6] border-[#1E1E1E]" : "bg-[#111111] text-[#3A3632] border-[#1E1E1E]"}`} style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+        <span className={`text-[11px] px-1.5 py-0.5 rounded-[2px] border ${lead.hexaId ? "bg-[var(--surface-raised)] text-[var(--foreground)] border-[var(--border)]" : "bg-[var(--surface)] text-[var(--foreground-faint)] border-[var(--border)]"}`} style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
           Credit {lead.hexaId ? "+" : "-"}
         </span>
       </div>
 
       {lead.etape === "welcome_call" && (
         <div className="mt-2">
-          <div className="flex justify-between text-[11px] text-[#6B6560] mb-1" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+          <div className="flex justify-between text-[11px] text-[var(--foreground-muted)] mb-1" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
             <span className="uppercase tracking-[0.08em]">Onboarding</span>
             <span className="tabular-nums">{wcDone}/7</span>
           </div>
-          <div className="h-[2px] bg-[#1E1E1E] overflow-hidden">
-            <div className="h-full bg-[#C9A84C] transition-all duration-300" style={{ width: `${(wcDone / 7) * 100}%` }} />
+          <div className="h-[2px] bg-[var(--border)] overflow-hidden">
+            <div className="h-full bg-[var(--gold)] transition-all duration-300" style={{ width: `${(wcDone / 7) * 100}%` }} />
           </div>
         </div>
       )}
 
       {lead.etape === "point_personnalise" && (
         <div className="mt-2">
-          <div className="flex justify-between text-[11px] text-[#6B6560] mb-1" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+          <div className="flex justify-between text-[11px] text-[var(--foreground-muted)] mb-1" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
             <span className="uppercase tracking-[0.08em]">Point Personnalise</span>
             <span className="tabular-nums">{[lead.avisRetourExp, lead.enveloppeOk, lead.mandatSigne].filter(Boolean).length}/3</span>
           </div>
-          <div className="h-[2px] bg-[#1E1E1E] overflow-hidden">
-            <div className="h-full bg-[#6B6560] transition-all duration-300" style={{ width: `${([lead.avisRetourExp, lead.enveloppeOk, lead.mandatSigne].filter(Boolean).length / 3) * 100}%` }} />
+          <div className="h-[2px] bg-[var(--border)] overflow-hidden">
+            <div className="h-full bg-[var(--foreground-muted)] transition-all duration-300" style={{ width: `${([lead.avisRetourExp, lead.enveloppeOk, lead.mandatSigne].filter(Boolean).length / 3) * 100}%` }} />
           </div>
         </div>
       )}
 
       {lead.etape === "courtage" && lead.enveloppeValidee && (
-        <p className="text-xs text-[#F0EDE6] mt-1 tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{lead.enveloppeValidee.toLocaleString("fr-FR")} EUR</p>
+        <p className="text-xs text-[var(--foreground)] mt-1 tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{lead.enveloppeValidee.toLocaleString("fr-FR")} EUR</p>
       )}
 
       {(lead.etape === "sigma_cash" || lead.etape === "sigma_credit") && (
         <SigmaCashMiniCard leadEmail={lead.email} />
       )}
 
-      <p className="text-xs text-[#3A3632] mt-2 tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+      <p className="text-xs text-[var(--foreground-faint)] mt-2 tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
         {new Date(lead.createdAt).toLocaleDateString("fr-FR")}
       </p>
     </div>
@@ -234,8 +234,8 @@ function BienPropositionsHistory({ leadId }: { leadId: number }) {
 
   if (isLoading) return (
     <div className="flex items-center gap-2 py-2">
-      <div className="w-4 h-4 border border-[#6B6560] border-t-transparent rounded-full animate-spin" />
-      <span className="text-xs text-[#6B6560]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Chargement des fiches envoyees...</span>
+      <div className="w-4 h-4 border border-[var(--foreground-muted)] border-t-transparent rounded-full animate-spin" />
+      <span className="text-xs text-[var(--foreground-muted)]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Chargement des fiches envoyees...</span>
     </div>
   );
 
@@ -246,16 +246,16 @@ function BienPropositionsHistory({ leadId }: { leadId: number }) {
 
   return (
     <div>
-      <h3 className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-3 flex items-center gap-2" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+      <h3 className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-3 flex items-center gap-2" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
         Fiches biens envoyees
         {propositions && propositions.length > 0 && (
-          <span className="bg-[#161616] text-[#6B6560] text-[11px] px-2 py-0.5 rounded-[2px] border border-[#1E1E1E] tabular-nums">
+          <span className="bg-[var(--surface-raised)] text-[var(--foreground-muted)] text-[11px] px-2 py-0.5 rounded-[2px] border border-[var(--border)] tabular-nums">
             {propositions.length} fiche{propositions.length > 1 ? "s" : ""}
           </span>
         )}
       </h3>
       {(!propositions || propositions.length === 0) ? (
-        <p className="text-xs text-[#3A3632] italic" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Aucune fiche bien envoyee pour ce lead.</p>
+        <p className="text-xs text-[var(--foreground-faint)] italic" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Aucune fiche bien envoyee pour ce lead.</p>
       ) : (
         <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
           {propositions.map((p) => {
@@ -281,68 +281,68 @@ function BienPropositionsHistory({ leadId }: { leadId: number }) {
             const ref = p.bienReference ? `SF-${String(p.bienReference).padStart(6, "0")}` : "";
             return (
               <div key={p.id} className={`border rounded-[2px] p-3 flex items-start gap-3 ${
-                isOffMarket ? "bg-[#111111] border-[#C9A84C]/15" : "bg-[#111111] border-[#1E1E1E]"
+                isOffMarket ? "bg-[var(--surface)] border-[var(--gold)]/15" : "bg-[var(--surface)] border-[var(--border)]"
               }`}>
                 {/* Miniature image off-market */}
                 {isOffMarket && omImage && (
                   <img src={omImage} alt={omTitre}
-                    className="w-14 h-14 object-cover rounded-[2px] shrink-0 border border-[#1E1E1E]" />
+                    className="w-14 h-14 object-cover rounded-[2px] shrink-0 border border-[var(--border)]" />
                 )}
                 <div className="flex-1 min-w-0">
                   {/* Badge source + type */}
                   <div className="flex items-center gap-2 mb-1">
                     {isOffMarket ? (
-                      <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-[2px] bg-[#C9A84C]/10 text-[#C9A84C] border border-[#C9A84C]/25 uppercase tracking-[0.08em]">
+                      <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-[2px] bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/25 uppercase tracking-[0.08em]">
                         Off Market
                       </span>
                     ) : (
-                      ref && <span className="text-xs font-medium text-[#6B6560]">{ref}</span>
+                      ref && <span className="text-xs font-medium text-[var(--foreground-muted)]">{ref}</span>
                     )}
-                    <span className="text-xs text-[#6B6560]">
+                    <span className="text-xs text-[var(--foreground-muted)]">
                       {isOffMarket ? omTypeLabel ?? "" : `${typeLabel}${surface}`}
                     </span>
                   </div>
                   {/* Titre / localisation */}
                   {isOffMarket ? (
                     <>
-                      <p className="text-xs text-[#F0EDE6] font-medium truncate">{omTitre}</p>
-                      {omRegion && <p className="text-xs text-[#6B6560]">{omRegion}</p>}
+                      <p className="text-xs text-[var(--foreground)] font-medium truncate">{omTitre}</p>
+                      {omRegion && <p className="text-xs text-[var(--foreground-muted)]">{omRegion}</p>}
                       <div className="flex items-center gap-3 mt-1">
-                        {omPrix && <span className="text-xs text-[#C9A84C] font-medium tabular-nums">{omPrix}</span>}
-                        {omRenta && <span className="text-xs text-[#6B6560] tabular-nums">{omRenta} brut</span>}
+                        {omPrix && <span className="text-xs text-[var(--gold)] font-medium tabular-nums">{omPrix}</span>}
+                        {omRenta && <span className="text-xs text-[var(--foreground-muted)] tabular-nums">{omRenta} brut</span>}
                       </div>
                     </>
                   ) : (
                     <>
-                      {ville && <p className="text-xs text-[#6B6560] truncate">{ville}</p>}
-                      {prix && <p className="text-xs text-[#F0EDE6] font-medium mt-0.5 tabular-nums">{prix}</p>}
+                      {ville && <p className="text-xs text-[var(--foreground-muted)] truncate">{ville}</p>}
+                      {prix && <p className="text-xs text-[var(--foreground)] font-medium mt-0.5 tabular-nums">{prix}</p>}
                     </>
                   )}
                   {/* Date + auteur */}
                   <div className="flex items-center gap-3 mt-1.5">
-                    <span className="text-xs text-[#3A3632] tabular-nums">
+                    <span className="text-xs text-[var(--foreground-faint)] tabular-nums">
                       {new Date(p.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
                     </span>
-                    {p.envoyePar && <span className="text-xs text-[#3A3632]">par {p.envoyePar}</span>}
+                    {p.envoyePar && <span className="text-xs text-[var(--foreground-faint)]">par {p.envoyePar}</span>}
                   </div>
                 </div>
                 {/* Actions */}
                 <div className="flex flex-col gap-1.5 shrink-0">
                   {p.pdfUrl && (
                     <a href={p.pdfUrl} target="_blank" rel="noopener noreferrer"
-                      className="text-[11px] bg-[#161616] hover:bg-[#1E1E1E] text-[#6B6560] hover:text-[#F0EDE6] px-2 py-1 rounded-[2px] border border-[#1E1E1E] transition-colors duration-300 text-center whitespace-nowrap uppercase tracking-[0.08em]">
+                      className="text-[11px] bg-[var(--surface-raised)] hover:bg-[var(--border)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] px-2 py-1 rounded-[2px] border border-[var(--border)] transition-colors duration-300 text-center whitespace-nowrap uppercase tracking-[0.08em]">
                       PDF
                     </a>
                   )}
                   {isOffMarket && (p as any).offMarketBienId && (
                     <a href={`/off-market?id=${(p as any).offMarketBienId}`}
-                      className="text-[11px] bg-[#161616] hover:bg-[#1E1E1E] text-[#6B6560] hover:text-[#F0EDE6] px-2 py-1 rounded-[2px] border border-[#1E1E1E] transition-colors duration-300 text-center whitespace-nowrap">
+                      className="text-[11px] bg-[var(--surface-raised)] hover:bg-[var(--border)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] px-2 py-1 rounded-[2px] border border-[var(--border)] transition-colors duration-300 text-center whitespace-nowrap">
                       Voir fiche
                     </a>
                   )}
                   {!isOffMarket && p.bienId && (
                     <a href={`/recherche-bien?id=${p.bienId}`}
-                      className="text-[11px] bg-[#161616] hover:bg-[#1E1E1E] text-[#6B6560] hover:text-[#F0EDE6] px-2 py-1 rounded-[2px] border border-[#1E1E1E] transition-colors duration-300 text-center whitespace-nowrap">
+                      className="text-[11px] bg-[var(--surface-raised)] hover:bg-[var(--border)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] px-2 py-1 rounded-[2px] border border-[var(--border)] transition-colors duration-300 text-center whitespace-nowrap">
                       Voir fiche
                     </a>
                   )}
@@ -382,14 +382,14 @@ function SendDossierCourtierButton({
   };
 
   return (
-    <div className="mt-3 pt-3 border-t border-[#1E1E1E]">
+    <div className="mt-3 pt-3 border-t border-[var(--border)]">
       <div className="flex items-end gap-2">
         <div className="flex-1">
-          <label className="text-[11px] text-[#6B6560] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Email du courtier (pour envoi dossier)</label>
+          <label className="text-[11px] text-[var(--foreground-muted)] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Email du courtier (pour envoi dossier)</label>
           <Input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="bg-[#161616] border-[#1E1E1E] text-sm h-8 rounded-[2px] text-[#F0EDE6] placeholder:text-[#3A3632] focus:border-[#C9A84C]"
+            className="bg-[var(--surface-raised)] border-[var(--border)] text-sm h-8 rounded-[2px] text-[var(--foreground)] placeholder:text-[var(--foreground-faint)] focus:border-[var(--gold)]"
             placeholder="courtier@cabinet.fr"
             type="email"
           />
@@ -398,14 +398,14 @@ function SendDossierCourtierButton({
           onClick={handleSend}
           disabled={sendMutation.isPending}
           size="sm"
-          className="bg-[#C9A84C] hover:brightness-110 text-[#0A0A0A] font-medium h-8 px-3 flex items-center gap-1.5 shrink-0 rounded-[2px] text-[11px] uppercase tracking-[0.1em]"
+          className="bg-[var(--gold)] hover:brightness-110 text-[var(--background)] font-medium h-8 px-3 flex items-center gap-1.5 shrink-0 rounded-[2px] text-[11px] uppercase tracking-[0.1em]"
           style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
         >
           <Send className="w-3.5 h-3.5" strokeWidth={1.5} />
           {sendMutation.isPending ? "Envoi..." : "Envoyer le dossier"}
         </Button>
       </div>
-      <p className="text-xs text-[#3A3632] mt-1" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Genere le PDF complet et l'envoie au courtier + copie Manon</p>
+      <p className="text-xs text-[var(--foreground-faint)] mt-1" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Genere le PDF complet et l'envoie au courtier + copie Manon</p>
     </div>
   );
 }
@@ -416,28 +416,28 @@ function SigmaCashMiniCard({ leadEmail }: { leadEmail: string }) {
   const { data } = trpc.sales.getCloseByEmail.useQuery({ email: leadEmail });
   if (!data) return null;
   const fmt = (n: number) => n.toLocaleString("fr-FR", { maximumFractionDigits: 0 }) + " €";
-  const statutColor = data.statutEncaissement === "recu" ? "text-[#4A7A5A]" : data.statutEncaissement === "initie" ? "text-[#6B6560]" : "text-[#C9A84C]";
+  const statutColor = data.statutEncaissement === "recu" ? "text-[var(--success)]" : data.statutEncaissement === "initie" ? "text-[var(--foreground-muted)]" : "text-[var(--gold)]";
   const statutLabel = data.statutEncaissement === "recu" ? "Recu" : data.statutEncaissement === "initie" ? "Initie" : "En attente";
   return (
-    <div className="mt-2 pt-2 border-t border-[#1E1E1E] space-y-1">
+    <div className="mt-2 pt-2 border-t border-[var(--border)] space-y-1">
       <div className="flex justify-between text-xs" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
-        <span className="text-[#6B6560]">Genere</span>
-        <span className="text-[#F0EDE6] font-medium tabular-nums">{fmt(data.montantGenere)}</span>
+        <span className="text-[var(--foreground-muted)]">Genere</span>
+        <span className="text-[var(--foreground)] font-medium tabular-nums">{fmt(data.montantGenere)}</span>
       </div>
       {data.resteAPayer > 0 && (
         <div className="flex justify-between text-xs" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
-          <span className="text-[#6B6560]">Reste</span>
-          <span className="text-[#C9A84C] font-medium tabular-nums">{fmt(data.resteAPayer)}</span>
+          <span className="text-[var(--foreground-muted)]">Reste</span>
+          <span className="text-[var(--gold)] font-medium tabular-nums">{fmt(data.resteAPayer)}</span>
         </div>
       )}
       <div className="flex justify-between text-xs" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
-        <span className="text-[#6B6560]">Statut</span>
+        <span className="text-[var(--foreground-muted)]">Statut</span>
         <span className={`font-medium ${statutColor}`}>{statutLabel}</span>
       </div>
       {(data.dateVirementPrevu || data.datePrelevement) && (
         <div className="flex justify-between text-xs" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
-          <span className="text-[#6B6560]">{data.dateVirementPrevu ? "Virement le" : "Prel. le"}</span>
-          <span className="text-[#F0EDE6] tabular-nums">{data.dateVirementPrevu || data.datePrelevement}</span>
+          <span className="text-[var(--foreground-muted)]">{data.dateVirementPrevu ? "Virement le" : "Prel. le"}</span>
+          <span className="text-[var(--foreground)] tabular-nums">{data.dateVirementPrevu || data.datePrelevement}</span>
         </div>
       )}
     </div>
@@ -453,9 +453,9 @@ const MODE_LABELS: Record<string, string> = {
 };
 
 const STATUT_ENC_COLORS: Record<string, string> = {
-  en_attente: "bg-[#C9A84C]/10 text-[#C9A84C] border-[#C9A84C]/25",
-  initie: "bg-[#6B6560]/15 text-[#6B6560] border-[#6B6560]/30",
-  recu: "bg-[#4A7A5A]/15 text-[#4A7A5A] border-[#4A7A5A]/30",
+  en_attente: "bg-[var(--gold)]/10 text-[var(--gold)] border-[var(--gold)]/25",
+  initie: "bg-[var(--foreground-muted)]/15 text-[var(--foreground-muted)] border-[var(--foreground-muted)]/30",
+  recu: "bg-[var(--success)]/15 text-[var(--success)] border-[var(--success)]/30",
 };
 
 const STATUT_ENC_LABELS: Record<string, string> = {
@@ -480,14 +480,14 @@ function SigmaEncaissementPanel({ leadEmail }: { leadEmail: string }) {
 
   if (isLoading) return (
     <div className="flex items-center gap-2 py-3">
-      <div className="w-4 h-4 border border-[#6B6560] border-t-transparent rounded-full animate-spin" />
-      <span className="text-xs text-[#6B6560]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Chargement des donnees encaissement...</span>
+      <div className="w-4 h-4 border border-[var(--foreground-muted)] border-t-transparent rounded-full animate-spin" />
+      <span className="text-xs text-[var(--foreground-muted)]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Chargement des donnees encaissement...</span>
     </div>
   );
 
   if (!closeData) return (
-    <div className="bg-[#111111] border border-[#1E1E1E] rounded-[2px] p-4">
-      <p className="text-xs text-[#6B6560] italic" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Aucun rapport de vente lie trouve pour cet email.</p>
+    <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[2px] p-4">
+      <p className="text-xs text-[var(--foreground-muted)] italic" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Aucun rapport de vente lie trouve pour cet email.</p>
     </div>
   );
 
@@ -495,73 +495,73 @@ function SigmaEncaissementPanel({ leadEmail }: { leadEmail: string }) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Console Encaissement</h3>
+      <h3 className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Console Encaissement</h3>
 
       {/* Montants */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-[#111111] border border-[#1E1E1E] rounded-[2px] p-3 text-center">
-          <p className="text-[11px] text-[#6B6560] mb-1 uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Genere</p>
-          <p className="text-lg font-semibold text-[#F0EDE6] tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{fmt(closeData.montantGenere)}</p>
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[2px] p-3 text-center">
+          <p className="text-[11px] text-[var(--foreground-muted)] mb-1 uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Genere</p>
+          <p className="text-lg font-semibold text-[var(--foreground)] tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{fmt(closeData.montantGenere)}</p>
         </div>
-        <div className="bg-[#111111] border border-[#1E1E1E] rounded-[2px] p-3 text-center">
-          <p className="text-[11px] text-[#6B6560] mb-1 uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Encaisse</p>
-          <p className="text-lg font-semibold text-[#4A7A5A] tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{fmt(closeData.montantEncaisse)}</p>
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[2px] p-3 text-center">
+          <p className="text-[11px] text-[var(--foreground-muted)] mb-1 uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Encaisse</p>
+          <p className="text-lg font-semibold text-[var(--success)] tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{fmt(closeData.montantEncaisse)}</p>
         </div>
-        <div className="bg-[#111111] border border-[#1E1E1E] rounded-[2px] p-3 text-center">
-          <p className="text-[11px] text-[#6B6560] mb-1 uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Reste</p>
-          <p className={`text-lg font-semibold tabular-nums ${closeData.resteAPayer > 0 ? "text-[#C9A84C]" : "text-[#3A3632]"}`} style={{ fontFamily: "'Cormorant Garamond', serif" }}>{fmt(closeData.resteAPayer)}</p>
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[2px] p-3 text-center">
+          <p className="text-[11px] text-[var(--foreground-muted)] mb-1 uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Reste</p>
+          <p className={`text-lg font-semibold tabular-nums ${closeData.resteAPayer > 0 ? "text-[var(--gold)]" : "text-[var(--foreground-faint)]"}`} style={{ fontFamily: "'Cormorant Garamond', serif" }}>{fmt(closeData.resteAPayer)}</p>
         </div>
       </div>
 
       {/* Détail paiement */}
-      <div className="bg-[#111111] border border-[#1E1E1E] rounded-[2px] p-4 space-y-2" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[2px] p-4 space-y-2" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
         <div className="flex justify-between items-center">
-          <span className="text-xs text-[#6B6560]">Mode de paiement</span>
-          <span className="text-xs font-medium text-[#F0EDE6]">{MODE_LABELS[closeData.modePaiement ?? ""] ?? closeData.modePaiement ?? "—"}</span>
+          <span className="text-xs text-[var(--foreground-muted)]">Mode de paiement</span>
+          <span className="text-xs font-medium text-[var(--foreground)]">{MODE_LABELS[closeData.modePaiement ?? ""] ?? closeData.modePaiement ?? "—"}</span>
         </div>
         {closeData.montantCb > 0 && (
           <div className="flex justify-between items-center">
-            <span className="text-xs text-[#6B6560]">CB Stripe</span>
-            <span className="text-xs text-[#F0EDE6] tabular-nums">{fmt(closeData.montantCb)}</span>
+            <span className="text-xs text-[var(--foreground-muted)]">CB Stripe</span>
+            <span className="text-xs text-[var(--foreground)] tabular-nums">{fmt(closeData.montantCb)}</span>
           </div>
         )}
         {closeData.montantVirement > 0 && (
           <div className="flex justify-between items-center">
-            <span className="text-xs text-[#6B6560]">Virement</span>
-            <span className="text-xs text-[#F0EDE6] tabular-nums">{fmt(closeData.montantVirement)}</span>
+            <span className="text-xs text-[var(--foreground-muted)]">Virement</span>
+            <span className="text-xs text-[var(--foreground)] tabular-nums">{fmt(closeData.montantVirement)}</span>
           </div>
         )}
         {closeData.montantPrelevement > 0 && (
           <div className="flex justify-between items-center">
-            <span className="text-xs text-[#6B6560]">Prelevement</span>
-            <span className="text-xs text-[#F0EDE6] tabular-nums">{fmt(closeData.montantPrelevement)}</span>
+            <span className="text-xs text-[var(--foreground-muted)]">Prelevement</span>
+            <span className="text-xs text-[var(--foreground)] tabular-nums">{fmt(closeData.montantPrelevement)}</span>
           </div>
         )}
         {closeData.montantCreditImpot > 0 && (
           <div className="flex justify-between items-center">
-            <span className="text-xs text-[#6B6560]">Credit d'impot</span>
-            <span className="text-xs text-[#C9A84C] font-medium tabular-nums">{fmt(closeData.montantCreditImpot)}</span>
+            <span className="text-xs text-[var(--foreground-muted)]">Credit d'impot</span>
+            <span className="text-xs text-[var(--gold)] font-medium tabular-nums">{fmt(closeData.montantCreditImpot)}</span>
           </div>
         )}
         {(closeData.dateVirementPrevu || closeData.datePrelevement) && (
-          <div className="flex justify-between items-center pt-1 border-t border-[#1E1E1E]">
-            <span className="text-xs text-[#6B6560]">{closeData.dateVirementPrevu ? "Date virement prevu" : "Date prelevement"}</span>
-            <span className="text-xs text-[#F0EDE6] tabular-nums">{closeData.dateVirementPrevu || closeData.datePrelevement}</span>
+          <div className="flex justify-between items-center pt-1 border-t border-[var(--border)]">
+            <span className="text-xs text-[var(--foreground-muted)]">{closeData.dateVirementPrevu ? "Date virement prevu" : "Date prelevement"}</span>
+            <span className="text-xs text-[var(--foreground)] tabular-nums">{closeData.dateVirementPrevu || closeData.datePrelevement}</span>
           </div>
         )}
         <div className="flex justify-between items-center">
-          <span className="text-xs text-[#6B6560]">Closer</span>
-          <span className="text-xs text-[#F0EDE6]">{closeData.closerNom}</span>
+          <span className="text-xs text-[var(--foreground-muted)]">Closer</span>
+          <span className="text-xs text-[var(--foreground)]">{closeData.closerNom}</span>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-xs text-[#6B6560]">Date close</span>
-          <span className="text-xs text-[#F0EDE6] tabular-nums">{new Date(closeData.dateCall).toLocaleDateString("fr-FR")}</span>
+          <span className="text-xs text-[var(--foreground-muted)]">Date close</span>
+          <span className="text-xs text-[var(--foreground)] tabular-nums">{new Date(closeData.dateCall).toLocaleDateString("fr-FR")}</span>
         </div>
       </div>
 
       {/* Statut encaissement */}
       <div>
-        <p className="text-[11px] text-[#6B6560] mb-2 uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Statut encaissement</p>
+        <p className="text-[11px] text-[var(--foreground-muted)] mb-2 uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Statut encaissement</p>
         <div className="flex gap-2 flex-wrap">
           {(["en_attente", "initie", "recu"] as const).map(s => (
             <button
@@ -571,7 +571,7 @@ function SigmaEncaissementPanel({ leadEmail }: { leadEmail: string }) {
               className={`px-3 py-1.5 text-[11px] rounded-[2px] border transition-all duration-300 uppercase tracking-[0.08em] ${
                 closeData.statutEncaissement === s
                   ? `${STATUT_ENC_COLORS[s]} font-medium`
-                  : "border-[#1E1E1E] text-[#3A3632] hover:border-[#6B6560] hover:text-[#6B6560]"
+                  : "border-[var(--border)] text-[var(--foreground-faint)] hover:border-[var(--foreground-muted)] hover:text-[var(--foreground-muted)]"
               }`}
               style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
             >
@@ -584,8 +584,8 @@ function SigmaEncaissementPanel({ leadEmail }: { leadEmail: string }) {
       {/* Modifier date virement prévu */}
       <div>
         <div className="flex items-center justify-between mb-1">
-          <p className="text-[11px] text-[#6B6560] uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Date virement prevu</p>
-          <button onClick={() => { setEditDate(!editDate); setNewDate(closeData.dateVirementPrevu ?? ""); }} className="text-xs text-[#6B6560] hover:text-[#F0EDE6] transition-colors duration-300" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+          <p className="text-[11px] text-[var(--foreground-muted)] uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Date virement prevu</p>
+          <button onClick={() => { setEditDate(!editDate); setNewDate(closeData.dateVirementPrevu ?? ""); }} className="text-xs text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors duration-300" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
             {editDate ? "Annuler" : "Modifier"}
           </button>
         </div>
@@ -595,22 +595,22 @@ function SigmaEncaissementPanel({ leadEmail }: { leadEmail: string }) {
               type="date"
               value={newDate}
               onChange={e => setNewDate(e.target.value)}
-              className="flex-1 bg-[#161616] border border-[#1E1E1E] text-[#F0EDE6] text-xs rounded-[2px] px-3 py-1.5 focus:outline-none focus:border-[#C9A84C] transition-colors duration-300"
+              className="flex-1 bg-[var(--surface-raised)] border border-[var(--border)] text-[var(--foreground)] text-xs rounded-[2px] px-3 py-1.5 focus:outline-none focus:border-[var(--gold)] transition-colors duration-300"
             />
             <button
               onClick={() => {
                 updateStatut.mutate({ closeId: closeData.id, statutEncaissement: closeData.statutEncaissement ?? "en_attente", dateVirementPrevu: newDate });
                 setEditDate(false);
               }}
-              className="bg-[#C9A84C] hover:brightness-110 text-[#0A0A0A] text-[11px] font-medium px-3 py-1.5 rounded-[2px] uppercase tracking-[0.1em]"
+              className="bg-[var(--gold)] hover:brightness-110 text-[var(--background)] text-[11px] font-medium px-3 py-1.5 rounded-[2px] uppercase tracking-[0.1em]"
               style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
             >
               OK
             </button>
           </div>
         ) : (
-          <p className="text-xs text-[#F0EDE6] bg-[#111111] border border-[#1E1E1E] rounded-[2px] px-3 py-1.5 tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
-            {closeData.dateVirementPrevu || <span className="text-[#3A3632] italic">Non renseignee</span>}
+          <p className="text-xs text-[var(--foreground)] bg-[var(--surface)] border border-[var(--border)] rounded-[2px] px-3 py-1.5 tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+            {closeData.dateVirementPrevu || <span className="text-[var(--foreground-faint)] italic">Non renseignee</span>}
           </p>
         )}
       </div>
@@ -728,11 +728,11 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
 
   if (isLoading) return (
     <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border border-[#6B6560] border-t-transparent rounded-full animate-spin" />
+      <div className="w-8 h-8 border border-[var(--foreground-muted)] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
-  if (!rawData) return <p className="text-[#6B6560] text-center py-8" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Lead introuvable.</p>;
+  if (!rawData) return <p className="text-[var(--foreground-muted)] text-center py-8" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Lead introuvable.</p>;
 
   // Normaliser la réponse : séparer le champ texte `notes` (DB) du tableau `noteHistory`
   const normalized = normalizeLead(rawData as unknown as Record<string, unknown>);
@@ -757,8 +757,8 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
       {/* En-tete */}
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-[#F0EDE6] tracking-[0.04em]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{lead.prenom} {lead.nom}</h2>
-          <p className="text-[#6B6560] text-sm" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{lead.email}{lead.telephone ? ` · ${lead.telephone}` : ""}</p>
+          <h2 className="text-xl font-semibold text-[var(--foreground)] tracking-[0.04em]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{lead.prenom} {lead.nom}</h2>
+          <p className="text-[var(--foreground-muted)] text-sm" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{lead.email}{lead.telephone ? ` · ${lead.telephone}` : ""}</p>
         </div>
         <div className="flex gap-2 items-center">
           <span className={`text-[11px] px-2 py-1 rounded-[2px] border uppercase tracking-[0.08em] font-medium ${STATUT_COLORS[lead.statut]}`} style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
@@ -768,7 +768,7 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
             value={lead.statut}
             onValueChange={(v) => updateMutation.mutate({ id: lead.id, statut: v as Statut })}
           >
-            <SelectTrigger className="h-7 w-32 text-xs bg-[#161616] border-[#1E1E1E] text-[#F0EDE6] rounded-[2px]">
+            <SelectTrigger className="h-7 w-32 text-xs bg-[var(--surface-raised)] border-[var(--border)] text-[var(--foreground)] rounded-[2px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -782,19 +782,19 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
       </div>
 
       {/* Etape actuelle + navigation */}
-      <div className="rounded-[2px] border border-[#1E1E1E] p-4 bg-[#111111]" style={{ borderTop: `2px solid ${etapeInfo.borderTop}` }}>
+      <div className="rounded-[2px] border border-[var(--border)] p-4 bg-[var(--surface)]" style={{ borderTop: `2px solid ${etapeInfo.borderTop}` }}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div>
-              <p className="font-semibold text-[#F0EDE6] tracking-[0.02em]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{etapeInfo.label}</p>
-              <p className="text-[11px] text-[#6B6560] uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Responsable : {etapeInfo.responsable}</p>
+              <p className="font-semibold text-[var(--foreground)] tracking-[0.02em]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{etapeInfo.label}</p>
+              <p className="text-[11px] text-[var(--foreground-muted)] uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Responsable : {etapeInfo.responsable}</p>
             </div>
           </div>
           <div className="flex gap-2">
             <Button
               size="sm"
               variant="outline"
-              className="text-[11px] border-[#1E1E1E] text-[#6B6560] hover:text-[#F0EDE6] hover:border-[#6B6560] rounded-[2px] uppercase tracking-[0.08em] transition-colors duration-300"
+              className="text-[11px] border-[var(--border)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:border-[var(--foreground-muted)] rounded-[2px] uppercase tracking-[0.08em] transition-colors duration-300"
               style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
               onClick={() => setShowPlanRdv(true)}
             >
@@ -805,7 +805,7 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
               <Button
                 size="sm"
                 variant="outline"
-                className="text-[11px] border-[#1E1E1E] text-[#6B6560] hover:text-[#F0EDE6] hover:border-[#6B6560] rounded-[2px] uppercase tracking-[0.08em] transition-colors duration-300"
+                className="text-[11px] border-[var(--border)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:border-[var(--foreground-muted)] rounded-[2px] uppercase tracking-[0.08em] transition-colors duration-300"
                 style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
                 onClick={advanceEtape}
               >
@@ -824,9 +824,9 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
                 key={e.key}
                 onClick={() => updateMutation.mutate({ id: lead.id, etape: e.key })}
                 className={`flex-1 text-[11px] py-1.5 rounded-[2px] border transition-all duration-300 uppercase tracking-[0.06em] ${
-                  isCurrent ? "bg-[#161616] border-[#1E1E1E] text-[#F0EDE6] font-medium" :
-                  isDone ? "bg-[#161616] text-[#6B6560] border-[#1E1E1E]" :
-                  "bg-[#111111] text-[#3A3632] border-[#1E1E1E]"
+                  isCurrent ? "bg-[var(--surface-raised)] border-[var(--border)] text-[var(--foreground)] font-medium" :
+                  isDone ? "bg-[var(--surface-raised)] text-[var(--foreground-muted)] border-[var(--border)]" :
+                  "bg-[var(--surface)] text-[var(--foreground-faint)] border-[var(--border)]"
                 }`}
                 style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
               >
@@ -839,34 +839,34 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
 
       {/* Dossiers associes */}
       <div>
-        <h3 className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Dossiers associes</h3>
+        <h3 className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Dossiers associes</h3>
         <div className="grid grid-cols-3 gap-3">
           <a
             href={lead.leadId ? `/dashboard?lead=${lead.leadId}` : undefined}
-            className={`rounded-[2px] border p-3 text-center transition-all duration-300 ${lead.leadId ? "border-[#1E1E1E] bg-[#111111] hover:bg-[#161616] cursor-pointer" : "border-[#1E1E1E] bg-[#111111] opacity-40"}`}
+            className={`rounded-[2px] border p-3 text-center transition-all duration-300 ${lead.leadId ? "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-raised)] cursor-pointer" : "border-[var(--border)] bg-[var(--surface)] opacity-40"}`}
           >
-            <p className="text-[11px] font-medium text-[#F0EDE6] mt-1 uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Etat Civil</p>
-            <p className="text-xs text-[#6B6560] tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{lead.leadId ? `#${lead.leadId}` : "Non lie"}</p>
+            <p className="text-[11px] font-medium text-[var(--foreground)] mt-1 uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Etat Civil</p>
+            <p className="text-xs text-[var(--foreground-muted)] tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{lead.leadId ? `#${lead.leadId}` : "Non lie"}</p>
           </a>
           <a
             href={lead.mandatId ? `/dashboard/mandats?mandat=${lead.mandatId}` : undefined}
-            className={`rounded-[2px] border p-3 text-center transition-all duration-300 ${lead.mandatId ? "border-[#1E1E1E] bg-[#111111] hover:bg-[#161616] cursor-pointer" : "border-[#1E1E1E] bg-[#111111] opacity-40"}`}
+            className={`rounded-[2px] border p-3 text-center transition-all duration-300 ${lead.mandatId ? "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-raised)] cursor-pointer" : "border-[var(--border)] bg-[var(--surface)] opacity-40"}`}
           >
-            <p className="text-[11px] font-medium text-[#F0EDE6] mt-1 uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Mandat</p>
-            <p className="text-xs text-[#6B6560] tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{lead.mandatId ? `#${lead.mandatId}` : "Non lie"}</p>
+            <p className="text-[11px] font-medium text-[var(--foreground)] mt-1 uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Mandat</p>
+            <p className="text-xs text-[var(--foreground-muted)] tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{lead.mandatId ? `#${lead.mandatId}` : "Non lie"}</p>
           </a>
           <a
             href={lead.hexaId ? `/dashboard/hexa?dossier=${lead.hexaId}` : undefined}
-            className={`rounded-[2px] border p-3 text-center transition-all duration-300 ${lead.hexaId ? "border-[#1E1E1E] bg-[#111111] hover:bg-[#161616] cursor-pointer" : "border-[#1E1E1E] bg-[#111111] opacity-40"}`}
+            className={`rounded-[2px] border p-3 text-center transition-all duration-300 ${lead.hexaId ? "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-raised)] cursor-pointer" : "border-[var(--border)] bg-[var(--surface)] opacity-40"}`}
           >
-            <p className="text-[11px] font-medium text-[#F0EDE6] mt-1 uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Sigma Credit</p>
-            <p className="text-xs text-[#6B6560] tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{lead.hexaId ? `#${lead.hexaId}` : "Non lie"}</p>
+            <p className="text-[11px] font-medium text-[var(--foreground)] mt-1 uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Sigma Credit</p>
+            <p className="text-xs text-[var(--foreground-muted)] tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{lead.hexaId ? `#${lead.hexaId}` : "Non lie"}</p>
           </a>
         </div>
       </div>
 
       {/* Timeline des activites */}
-      <div className="border-t border-[#1E1E1E] pt-4">
+      <div className="border-t border-[var(--border)] pt-4">
         <LeadTimeline crmLeadId={lead.id} nomLead={`${lead.prenom} ${lead.nom}`} />
       </div>
 
@@ -875,14 +875,14 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
         <Button
           onClick={handleDownloadDossier}
           disabled={pdfLoading || !lead.leadId}
-          className="w-full bg-[#C9A84C] hover:brightness-110 text-[#0A0A0A] font-medium flex items-center gap-2 justify-center rounded-[2px] text-[11px] uppercase tracking-[0.1em] py-3"
+          className="w-full bg-[var(--gold)] hover:brightness-110 text-[var(--background)] font-medium flex items-center gap-2 justify-center rounded-[2px] text-[11px] uppercase tracking-[0.1em] py-3"
           style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
         >
           <Download className="w-4 h-4" strokeWidth={1.5} />
           {pdfLoading ? "Generation en cours..." : "Telecharger le dossier complet (PDF)"}
         </Button>
         {!lead.leadId && (
-          <p className="text-xs text-[#3A3632] text-center mt-1" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Fiche d'etat civil requise pour generer le dossier</p>
+          <p className="text-xs text-[var(--foreground-faint)] text-center mt-1" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Fiche d'etat civil requise pour generer le dossier</p>
         )}
       </div>
 
@@ -894,7 +894,7 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
       {/* Checklist Welcome Call */}
       {lead.etape === "welcome_call" && (
         <div>
-          <h3 className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Checklist Welcome Call — Maria</h3>
+          <h3 className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Checklist Welcome Call — Maria</h3>
           <div className="space-y-2">
             {[
               { key: "welcomeCallFait", label: "Welcome call effectué" },
@@ -910,9 +910,9 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
                   type="checkbox"
                   checked={!!lead[key as keyof CrmLead]}
                   onChange={(e) => toggle(key, e.target.checked)}
-                  className="w-4 h-4 accent-[#C9A84C] cursor-pointer"
+                  className="w-4 h-4 accent-[var(--gold)] cursor-pointer"
                 />
-                <span className={`text-sm transition-colors duration-300 ${lead[key as keyof CrmLead] ? "text-[#3A3632] line-through" : "text-[#F0EDE6] group-hover:text-[#F0EDE6]"}`} style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+                <span className={`text-sm transition-colors duration-300 ${lead[key as keyof CrmLead] ? "text-[var(--foreground-faint)] line-through" : "text-[var(--foreground)] group-hover:text-[var(--foreground)]"}`} style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
                   {label}
                 </span>
               </label>
@@ -920,12 +920,12 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
 
             {/* Avis — 3 etats */}
             <div className="pt-1">
-              <p className="text-sm text-[#F0EDE6] mb-2" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Avis Google / Trustpilot</p>
+              <p className="text-sm text-[var(--foreground)] mb-2" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Avis Google / Trustpilot</p>
               <div className="flex gap-2 flex-wrap">
                 {([
-                  { value: "en_attente", label: "En attente", color: "border-[#1E1E1E] text-[#6B6560]" },
-                  { value: "depose", label: "Depose", color: "border-[#4A7A5A]/40 text-[#4A7A5A]" },
-                  { value: "pas_davis", label: "Pas d'avis", color: "border-[#A04040]/40 text-[#A04040]" },
+                  { value: "en_attente", label: "En attente", color: "border-[var(--border)] text-[var(--foreground-muted)]" },
+                  { value: "depose", label: "Depose", color: "border-[var(--success)]/40 text-[var(--success)]" },
+                  { value: "pas_davis", label: "Pas d'avis", color: "border-[var(--destructive)]/40 text-[var(--destructive)]" },
                 ] as const).map(opt => (
                   <button
                     key={opt.value}
@@ -936,8 +936,8 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
                     }}
                     className={`px-3 py-1 text-[11px] rounded-[2px] border transition-all duration-300 uppercase tracking-[0.08em] ${
                       (lead as any).avisStatut === opt.value
-                        ? `${opt.color} bg-[#161616] font-medium`
-                        : "border-[#1E1E1E] text-[#3A3632] hover:border-[#6B6560] hover:text-[#6B6560]"
+                        ? `${opt.color} bg-[var(--surface-raised)] font-medium`
+                        : "border-[var(--border)] text-[var(--foreground-faint)] hover:border-[var(--foreground-muted)] hover:text-[var(--foreground-muted)]"
                     }`}
                     style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
                   >
@@ -949,13 +949,13 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
               {/* Note obligatoire si Pas d'avis */}
               {(lead as any).avisStatut === "pas_davis" && (
                 <div className="mt-2">
-                  <p className="text-xs text-[#A04040] mb-1" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Note obligatoire — pourquoi le lead ne veut pas laisser d'avis ?</p>
+                  <p className="text-xs text-[var(--destructive)] mb-1" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Note obligatoire — pourquoi le lead ne veut pas laisser d'avis ?</p>
                   <textarea
                     defaultValue={(lead as any).avisNote ?? ""}
                     onBlur={(e) => updateMutation.mutate({ id: lead.id, avisNote: e.target.value })}
                     placeholder="Ex : lead reticent, probleme de confidentialite..."
                     rows={2}
-                    className="w-full bg-[#111111] border border-[#A04040]/30 text-[#F0EDE6] text-xs p-2 rounded-[2px] resize-none focus:outline-none focus:border-[#A04040] transition-colors duration-300"
+                    className="w-full bg-[var(--surface)] border border-[var(--destructive)]/30 text-[var(--foreground)] text-xs p-2 rounded-[2px] resize-none focus:outline-none focus:border-[var(--destructive)] transition-colors duration-300"
                     style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
                   />
                 </div>
@@ -968,7 +968,7 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
       {/* Checklist Point Personnalisé */}
       {lead.etape === "point_personnalise" && (
         <div>
-          <h3 className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Checklist Point Personnalise — Maria</h3>
+          <h3 className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Checklist Point Personnalise — Maria</h3>
           <div className="space-y-2">
             {[
               { key: "avisRetourExp", label: "Avis + retour d'experience recolte" },
@@ -980,9 +980,9 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
                   type="checkbox"
                   checked={!!lead[key as keyof CrmLead]}
                   onChange={(e) => toggle(key, e.target.checked)}
-                  className="w-4 h-4 accent-[#C9A84C] cursor-pointer"
+                  className="w-4 h-4 accent-[var(--gold)] cursor-pointer"
                 />
-                <span className={`text-sm transition-colors duration-300 ${lead[key as keyof CrmLead] ? "text-[#3A3632] line-through" : "text-[#F0EDE6] group-hover:text-[#F0EDE6]"}`} style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+                <span className={`text-sm transition-colors duration-300 ${lead[key as keyof CrmLead] ? "text-[var(--foreground-faint)] line-through" : "text-[var(--foreground)] group-hover:text-[var(--foreground)]"}`} style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
                   {label}
                 </span>
               </label>
@@ -994,10 +994,10 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
       {/* Courtage */}
       {lead.etape === "courtage" && (
         <div>
-          <h3 className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Suivi Courtage — Manon</h3>
+          <h3 className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-3" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Suivi Courtage — Manon</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[11px] text-[#6B6560] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Courtier assigne</label>
+              <label className="text-[11px] text-[var(--foreground-muted)] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Courtier assigne</label>
               <AssigneeSelect
                 mode="courtier"
                 value={lead.courtierAssigne ?? ""}
@@ -1012,32 +1012,32 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
               />
             </div>
             <div>
-              <label className="text-[11px] text-[#6B6560] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Email du courtier</label>
+              <label className="text-[11px] text-[var(--foreground-muted)] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Email du courtier</label>
               <Input
                 defaultValue={(lead as any).courtierEmail ?? ""}
                 onBlur={(e) => updateMutation.mutate({ id: lead.id, courtierEmail: e.target.value } as any)}
-                className="bg-[#161616] border-[#1E1E1E] text-sm h-8 rounded-[2px] text-[#F0EDE6] focus:border-[#C9A84C]"
+                className="bg-[var(--surface-raised)] border-[var(--border)] text-sm h-8 rounded-[2px] text-[var(--foreground)] focus:border-[var(--gold)]"
                 placeholder="courtier@cabinet.fr"
                 type="email"
               />
             </div>
             <div>
-              <label className="text-[11px] text-[#6B6560] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Enveloppe validee (EUR)</label>
+              <label className="text-[11px] text-[var(--foreground-muted)] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Enveloppe validee (EUR)</label>
               <Input
                 type="number"
                 defaultValue={lead.enveloppeValidee ?? ""}
                 onBlur={(e) => updateMutation.mutate({ id: lead.id, enveloppeValidee: e.target.value ? parseInt(e.target.value) : undefined })}
-                className="bg-[#161616] border-[#1E1E1E] text-sm h-8 rounded-[2px] text-[#F0EDE6] tabular-nums focus:border-[#C9A84C]"
+                className="bg-[var(--surface-raised)] border-[var(--border)] text-sm h-8 rounded-[2px] text-[var(--foreground)] tabular-nums focus:border-[var(--gold)]"
                 placeholder="Ex. 350000"
               />
             </div>
             <div>
-              <label className="text-[11px] text-[#6B6560] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Date annonce enveloppe</label>
+              <label className="text-[11px] text-[var(--foreground-muted)] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Date annonce enveloppe</label>
               <Input
                 type="date"
                 defaultValue={lead.enveloppeDate ?? ""}
                 onBlur={(e) => updateMutation.mutate({ id: lead.id, enveloppeDate: e.target.value })}
-                className="bg-[#161616] border-[#1E1E1E] text-sm h-8 rounded-[2px] text-[#F0EDE6] tabular-nums focus:border-[#C9A84C]"
+                className="bg-[var(--surface-raised)] border-[var(--border)] text-sm h-8 rounded-[2px] text-[var(--foreground)] tabular-nums focus:border-[var(--gold)]"
               />
             </div>
           </div>
@@ -1055,24 +1055,24 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
         <div className="space-y-4">
           {/* Bloc Mandat de Recherche */}
           {(lead.numeroMandat || lead.budgetMax || lead.zoneRecherche || lead.projetType) && (
-            <div className="bg-[#111111] border border-[#1E1E1E] rounded-[2px] p-3">
-              <h4 className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-3 flex items-center gap-1.5" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[2px] p-3">
+              <h4 className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-3 flex items-center gap-1.5" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
                 Mandat de Recherche
               </h4>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 {lead.numeroMandat && (
                   <div className="col-span-2 flex items-center gap-2 flex-wrap">
-                    <span className="text-[#6B6560]">N Mandat :</span>
-                    <span className="text-[#F0EDE6] font-mono">{lead.numeroMandat}</span>
+                    <span className="text-[var(--foreground-muted)]">N Mandat :</span>
+                    <span className="text-[var(--foreground)] font-mono">{lead.numeroMandat}</span>
                     {lead.dateSignatureMandat && lead.dateSignatureMandat !== '—' && (
-                      <span className="text-[#6B6560] ml-2 tabular-nums">Signe le {lead.dateSignatureMandat}</span>
+                      <span className="text-[var(--foreground-muted)] ml-2 tabular-nums">Signe le {lead.dateSignatureMandat}</span>
                     )}
                     {lead.mandatSignePdfUrl && (
                       <a
                         href={lead.mandatSignePdfUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded-[2px] bg-[#161616] text-[#6B6560] text-xs font-medium hover:text-[#F0EDE6] border border-[#1E1E1E] transition-colors duration-300"
+                        className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded-[2px] bg-[var(--surface-raised)] text-[var(--foreground-muted)] text-xs font-medium hover:text-[var(--foreground)] border border-[var(--border)] transition-colors duration-300"
                       >
                         Voir le mandat signe
                       </a>
@@ -1081,37 +1081,37 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
                 )}
                 {lead.projetType && (
                   <div className="flex items-center gap-2">
-                    <span className="text-[#6B6560]">Projet :</span>
-                    <span className="px-2 py-0.5 rounded-[2px] bg-[#161616] text-[#F0EDE6] font-medium border border-[#1E1E1E]">{lead.projetType}</span>
+                    <span className="text-[var(--foreground-muted)]">Projet :</span>
+                    <span className="px-2 py-0.5 rounded-[2px] bg-[var(--surface-raised)] text-[var(--foreground)] font-medium border border-[var(--border)]">{lead.projetType}</span>
                   </div>
                 )}
                 {lead.budgetMax && (
                   <div className="flex items-center gap-2">
-                    <span className="text-[#6B6560]">Budget max :</span>
-                    <span className="text-[#F0EDE6] font-semibold tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{lead.budgetMax.toLocaleString('fr-FR')} EUR</span>
+                    <span className="text-[var(--foreground-muted)]">Budget max :</span>
+                    <span className="text-[var(--foreground)] font-semibold tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{lead.budgetMax.toLocaleString('fr-FR')} EUR</span>
                   </div>
                 )}
                 {lead.villeResidence && (
                   <div className="flex items-center gap-2">
-                    <span className="text-[#6B6560]">Domicile :</span>
-                    <span className="text-[#F0EDE6]">{lead.villeResidence} ({lead.departement})</span>
+                    <span className="text-[var(--foreground-muted)]">Domicile :</span>
+                    <span className="text-[var(--foreground)]">{lead.villeResidence} ({lead.departement})</span>
                   </div>
                 )}
                 {lead.typeBien && (
                   <div className="col-span-2 flex items-start gap-2">
-                    <span className="text-[#6B6560] flex-shrink-0">Type de bien :</span>
-                    <span className="text-[#F0EDE6]">{lead.typeBien}</span>
+                    <span className="text-[var(--foreground-muted)] flex-shrink-0">Type de bien :</span>
+                    <span className="text-[var(--foreground)]">{lead.typeBien}</span>
                   </div>
                 )}
                 {lead.zoneRecherche && (
                   <div className="col-span-2 flex items-start gap-2">
-                    <span className="text-[#6B6560] flex-shrink-0">Zone :</span>
-                    <span className="text-[#F0EDE6] leading-relaxed">{lead.zoneRecherche}</span>
+                    <span className="text-[var(--foreground-muted)] flex-shrink-0">Zone :</span>
+                    <span className="text-[var(--foreground)] leading-relaxed">{lead.zoneRecherche}</span>
                   </div>
                 )}
               </div>
               {/* Bouton upload mandat signé + historique des versions */}
-              <div className="mt-3 pt-3 border-t border-[#1E1E1E] space-y-2">
+              <div className="mt-3 pt-3 border-t border-[var(--border)] space-y-2">
                 <label className="cursor-pointer">
                   <input
                     type="file"
@@ -1122,11 +1122,11 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
                   />
                   <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[2px] text-[11px] font-medium transition-colors duration-300 uppercase tracking-[0.08em] ${
                     isUploadingMandat
-                      ? 'bg-[#161616] text-[#3A3632] cursor-not-allowed'
-                      : 'bg-[#161616] hover:bg-[#1E1E1E] text-[#6B6560] hover:text-[#F0EDE6] border border-[#1E1E1E] cursor-pointer'
+                      ? 'bg-[var(--surface-raised)] text-[var(--foreground-faint)] cursor-not-allowed'
+                      : 'bg-[var(--surface-raised)] hover:bg-[var(--border)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] border border-[var(--border)] cursor-pointer'
                   }`} style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
                     {isUploadingMandat ? (
-                      <><span className="w-3 h-3 border border-[#6B6560] border-t-transparent rounded-full animate-spin inline-block" /> Upload en cours...</>
+                      <><span className="w-3 h-3 border border-[var(--foreground-muted)] border-t-transparent rounded-full animate-spin inline-block" /> Upload en cours...</>
                     ) : (
                       <>{lead.mandatSignePdfUrl ? `Remplacer le mandat signe${mandatVersionsList && mandatVersionsList.length > 0 ? ` (v${mandatVersionsList.length})` : ''}` : 'Uploader le mandat signe'}</>
                     )}
@@ -1135,21 +1135,21 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
                 {/* Historique des versions */}
                 {mandatVersionsList && mandatVersionsList.length > 0 && (
                   <div className="space-y-1">
-                    <p className="text-[11px] text-[#6B6560] font-medium uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Historique des versions</p>
+                    <p className="text-[11px] text-[var(--foreground-muted)] font-medium uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Historique des versions</p>
                     {mandatVersionsList.map((v: any) => (
                       <div key={v.id} className="flex items-center gap-2 text-xs" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
-                        <span className="px-1.5 py-0.5 rounded-[2px] bg-[#161616] text-[#6B6560] font-mono border border-[#1E1E1E] tabular-nums">v{v.version}</span>
+                        <span className="px-1.5 py-0.5 rounded-[2px] bg-[var(--surface-raised)] text-[var(--foreground-muted)] font-mono border border-[var(--border)] tabular-nums">v{v.version}</span>
                         <a
                           href={v.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#6B6560] hover:text-[#F0EDE6] truncate max-w-[160px] transition-colors duration-300"
+                          className="text-[var(--foreground-muted)] hover:text-[var(--foreground)] truncate max-w-[160px] transition-colors duration-300"
                           title={v.nom}
                         >
                           {v.nom}
                         </a>
-                        <span className="text-[#3A3632] ml-auto flex-shrink-0 tabular-nums">{new Date(v.uploadedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}</span>
-                        {v.uploadePar && <span className="text-[#3A3632] flex-shrink-0">— {v.uploadePar}</span>}
+                        <span className="text-[var(--foreground-faint)] ml-auto flex-shrink-0 tabular-nums">{new Date(v.uploadedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}</span>
+                        {v.uploadePar && <span className="text-[var(--foreground-faint)] flex-shrink-0">— {v.uploadePar}</span>}
                       </div>
                     ))}
                   </div>
@@ -1163,13 +1163,13 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
                     disabled={isSendingMandatInvit}
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[2px] text-[11px] font-medium transition-colors duration-300 uppercase tracking-[0.08em] ${
                       isSendingMandatInvit
-                        ? 'bg-[#161616] text-[#3A3632] cursor-not-allowed'
-                        : 'bg-[#161616] hover:bg-[#1E1E1E] text-[#6B6560] hover:text-[#F0EDE6] border border-[#1E1E1E] cursor-pointer'
+                        ? 'bg-[var(--surface-raised)] text-[var(--foreground-faint)] cursor-not-allowed'
+                        : 'bg-[var(--surface-raised)] hover:bg-[var(--border)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] border border-[var(--border)] cursor-pointer'
                     }`}
                     style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
                   >
                     {isSendingMandatInvit ? (
-                      <><span className="w-3 h-3 border border-[#6B6560] border-t-transparent rounded-full animate-spin inline-block" /> Envoi en cours...</>
+                      <><span className="w-3 h-3 border border-[var(--foreground-muted)] border-t-transparent rounded-full animate-spin inline-block" /> Envoi en cours...</>
                     ) : (
                       <>Renvoyer l'invitation mandat</>
                     )}
@@ -1179,10 +1179,10 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
             </div>
           )}
 
-          <h3 className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Suivi Recherche bien — Elodie</h3>
+          <h3 className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Suivi Recherche bien — Elodie</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[11px] text-[#6B6560] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Agent assigne</label>
+              <label className="text-[11px] text-[var(--foreground-muted)] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Agent assigne</label>
               <AssigneeSelect
                 mode="agent"
                 value={lead.agentAssigne ?? ""}
@@ -1192,12 +1192,12 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
               />
             </div>
             <div>
-              <label className="text-[11px] text-[#6B6560] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Biens presentes</label>
+              <label className="text-[11px] text-[var(--foreground-muted)] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Biens presentes</label>
               <Input
                 type="number"
                 defaultValue={lead.nbBiensPresentes}
                 onBlur={(e) => updateMutation.mutate({ id: lead.id, nbBiensPresentes: parseInt(e.target.value) || 0 })}
-                className="bg-[#161616] border-[#1E1E1E] text-sm h-8 rounded-[2px] text-[#F0EDE6] tabular-nums focus:border-[#C9A84C]"
+                className="bg-[var(--surface-raised)] border-[var(--border)] text-sm h-8 rounded-[2px] text-[var(--foreground)] tabular-nums focus:border-[var(--gold)]"
                 min={0}
               />
             </div>
@@ -1207,9 +1207,9 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
                   type="checkbox"
                   checked={lead.offreAcceptee}
                   onChange={(e) => toggle("offreAcceptee", e.target.checked)}
-                  className="w-4 h-4 accent-[#C9A84C]"
+                  className="w-4 h-4 accent-[var(--gold)]"
                 />
-                <span className="text-sm text-[#F0EDE6]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Offre acceptee</span>
+                <span className="text-sm text-[var(--foreground)]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Offre acceptee</span>
               </label>
             </div>
           </div>
@@ -1218,8 +1218,8 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
 
       {/* ─── SECTION MARIE — Avis & Témoignages ─── */}
       {(lead.etape === "courtage" || lead.etape === "recherche_bien") && (
-        <div className="bg-[#111111] border border-[#1E1E1E] rounded-[2px] p-4">
-          <h3 className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-3 flex items-center gap-2" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+        <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[2px] p-4">
+          <h3 className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-3 flex items-center gap-2" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
             <Star className="w-3.5 h-3.5" strokeWidth={1.5} />
             Avis & Temoignages — Marie
           </h3>
@@ -1232,18 +1232,18 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
                   etapeSource: lead.etape === "courtage" ? "courtage" : "immo",
                 })}
                 disabled={assignerMarieMutation.isPending}
-                className="flex items-center gap-2 bg-[#161616] hover:bg-[#1E1E1E] text-[#6B6560] hover:text-[#F0EDE6] border border-[#1E1E1E] text-[11px] font-medium px-4 py-2 rounded-[2px] transition-colors duration-300 disabled:opacity-50 uppercase tracking-[0.08em]"
+                className="flex items-center gap-2 bg-[var(--surface-raised)] hover:bg-[var(--border)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] border border-[var(--border)] text-[11px] font-medium px-4 py-2 rounded-[2px] transition-colors duration-300 disabled:opacity-50 uppercase tracking-[0.08em]"
                 style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
               >
                 {assignerMarieMutation.isPending ? (
-                  <><span className="w-3 h-3 border border-[#6B6560] border-t-transparent rounded-full animate-spin" /> Assignation en cours...</>
+                  <><span className="w-3 h-3 border border-[var(--foreground-muted)] border-t-transparent rounded-full animate-spin" /> Assignation en cours...</>
                 ) : (
                   <><Star className="w-3.5 h-3.5" strokeWidth={1.5} /> Assigner Marie pour le temoignage</>
                 )}
               </button>
             ) : (
               <div className="flex items-center gap-2">
-                <span className="flex items-center gap-1.5 text-[11px] text-[#6B6560] bg-[#161616] border border-[#1E1E1E] px-3 py-1.5 rounded-[2px] uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+                <span className="flex items-center gap-1.5 text-[11px] text-[var(--foreground-muted)] bg-[var(--surface-raised)] border border-[var(--border)] px-3 py-1.5 rounded-[2px] uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
                   <Star className="w-3 h-3" strokeWidth={1.5} /> Marie assignee ({lead.marieAssigneeEtape === "courtage" ? "Courtage" : "Immo"})
                 </span>
                 <button
@@ -1251,7 +1251,7 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
                     crmLeadId: lead.id,
                     etapeSource: lead.etape === "courtage" ? "courtage" : "immo",
                   })}
-                  className="text-xs text-[#3A3632] hover:text-[#6B6560] underline transition-colors duration-300"
+                  className="text-xs text-[var(--foreground-faint)] hover:text-[var(--foreground-muted)] underline transition-colors duration-300"
                   style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
                 >
                   Ré-assigner
@@ -1266,12 +1266,12 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
                   type="checkbox"
                   checked={lead.testimonyMarieFait}
                   onChange={(e) => marquerTestimonyMutation.mutate({ crmLeadId: lead.id, fait: e.target.checked })}
-                  className="w-4 h-4 accent-[#C9A84C]"
+                  className="w-4 h-4 accent-[var(--gold)]"
                 />
-                <span className="text-sm text-[#F0EDE6] group-hover:text-[#F0EDE6] flex items-center gap-1.5" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
-                  {lead.testimonyMarieFait && <CheckCircle2 className="w-4 h-4 text-[#4A7A5A]" strokeWidth={1.5} />}
+                <span className="text-sm text-[var(--foreground)] group-hover:text-[var(--foreground)] flex items-center gap-1.5" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+                  {lead.testimonyMarieFait && <CheckCircle2 className="w-4 h-4 text-[var(--success)]" strokeWidth={1.5} />}
                   Testimony Marie fait
-                  {lead.testimonyMarieFait && <span className="text-xs text-[#4A7A5A] ml-1">(Manon / Elodie notifiee)</span>}
+                  {lead.testimonyMarieFait && <span className="text-xs text-[var(--success)] ml-1">(Manon / Elodie notifiee)</span>}
                 </span>
               </label>
             )}
@@ -1282,11 +1282,11 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
       {/* Notes globales */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Notes globales</h3>
+          <h3 className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Notes globales</h3>
           <Button
             size="sm"
             variant="ghost"
-            className="text-xs h-6 text-[#6B6560] hover:text-[#F0EDE6] transition-colors duration-300"
+            className="text-xs h-6 text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors duration-300"
             onClick={() => { setEditNotes(!editNotes); setGlobalNotes(lead.globalNotes ?? ""); }}
           >
             {editNotes ? "Annuler" : "Modifier"}
@@ -1297,12 +1297,12 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
             <Textarea
               value={globalNotes}
               onChange={(e) => setGlobalNotes(e.target.value)}
-              className="bg-[#161616] border-[#1E1E1E] text-sm min-h-[80px] rounded-[2px] text-[#F0EDE6] placeholder:text-[#3A3632] focus:border-[#C9A84C]"
+              className="bg-[var(--surface-raised)] border-[var(--border)] text-sm min-h-[80px] rounded-[2px] text-[var(--foreground)] placeholder:text-[var(--foreground-faint)] focus:border-[var(--gold)]"
               placeholder="Notes generales sur ce lead..."
             />
             <Button
               size="sm"
-              className="bg-[#C9A84C] hover:brightness-110 text-[#0A0A0A] text-[11px] rounded-[2px] uppercase tracking-[0.1em] font-medium"
+              className="bg-[var(--gold)] hover:brightness-110 text-[var(--background)] text-[11px] rounded-[2px] uppercase tracking-[0.1em] font-medium"
               style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
               onClick={() => {
                 updateMutation.mutate({ id: lead.id, notes: globalNotes });
@@ -1314,8 +1314,8 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
             </Button>
           </div>
         ) : (
-          <p className="text-sm text-[#6B6560] bg-[#111111] rounded-[2px] p-3 min-h-[60px] border border-[#1E1E1E]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
-            {lead.globalNotes ? lead.globalNotes : <span className="text-[#3A3632] italic">Aucune note</span>}
+          <p className="text-sm text-[var(--foreground-muted)] bg-[var(--surface)] rounded-[2px] p-3 min-h-[60px] border border-[var(--border)]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+            {lead.globalNotes ? lead.globalNotes : <span className="text-[var(--foreground-faint)] italic">Aucune note</span>}
           </p>
         )}
       </div>
@@ -1328,18 +1328,18 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
 
       {/* Modal Planifier RDV */}
       <Dialog open={showPlanRdv} onOpenChange={setShowPlanRdv}>
-        <DialogContent className="bg-[#111111] border-[#1E1E1E] text-[#F0EDE6] rounded-[2px]">
+        <DialogContent className="bg-[var(--surface)] border-[var(--border)] text-[var(--foreground)] rounded-[2px]">
           <DialogHeader>
-            <DialogTitle className="text-[#F0EDE6] tracking-[0.04em]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Planifier un RDV pour {lead.prenom} {lead.nom}</DialogTitle>
+            <DialogTitle className="text-[var(--foreground)] tracking-[0.04em]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Planifier un RDV pour {lead.prenom} {lead.nom}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <label className="text-[11px] text-[#6B6560] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Type de RDV</label>
+              <label className="text-[11px] text-[var(--foreground-muted)] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Type de RDV</label>
               <Select value={rdvType} onValueChange={(v: any) => setRdvType(v)}>
-                <SelectTrigger className="bg-[#161616] border-[#1E1E1E] text-[#F0EDE6] rounded-[2px]">
+                <SelectTrigger className="bg-[var(--surface-raised)] border-[var(--border)] text-[var(--foreground)] rounded-[2px]">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#111111] border-[#1E1E1E]">
+                <SelectContent className="bg-[var(--surface)] border-[var(--border)]">
                   <SelectItem value="welcome_call">Welcome Call (Maria)</SelectItem>
                   <SelectItem value="point_personnalise">Point Personnalise (Maria)</SelectItem>
                 </SelectContent>
@@ -1347,34 +1347,34 @@ function LeadDetail({ leadId, onClose }: { leadId: number; onClose: () => void }
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] text-[#6B6560] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Date</label>
+                <label className="text-[11px] text-[var(--foreground-muted)] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Date</label>
                 <Input
                   type="date"
                   value={rdvDate}
                   onChange={(e) => setRdvDate(e.target.value)}
-                  className="bg-[#161616] border-[#1E1E1E] text-[#F0EDE6] rounded-[2px] focus:border-[#C9A84C]"
+                  className="bg-[var(--surface-raised)] border-[var(--border)] text-[var(--foreground)] rounded-[2px] focus:border-[var(--gold)]"
                 />
               </div>
               <div>
-                <label className="text-[11px] text-[#6B6560] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Heure</label>
+                <label className="text-[11px] text-[var(--foreground-muted)] mb-1 block uppercase tracking-[0.08em] font-medium" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Heure</label>
                 <Input
                   type="time"
                   value={rdvHeure}
                   onChange={(e) => setRdvHeure(e.target.value)}
-                  className="bg-[#161616] border-[#1E1E1E] text-[#F0EDE6] rounded-[2px] focus:border-[#C9A84C]"
+                  className="bg-[var(--surface-raised)] border-[var(--border)] text-[var(--foreground)] rounded-[2px] focus:border-[var(--gold)]"
                 />
               </div>
             </div>
             <div className="flex gap-2 pt-2">
               <Button
                 variant="ghost"
-                className="flex-1 text-[#6B6560] hover:text-[#F0EDE6]"
+                className="flex-1 text-[var(--foreground-muted)] hover:text-[var(--foreground)]"
                 onClick={() => setShowPlanRdv(false)}
               >
                 Annuler
               </Button>
               <Button
-                className="flex-1 bg-[#C9A84C] hover:brightness-110 text-[#0A0A0A] font-medium rounded-[2px] text-[11px] uppercase tracking-[0.1em]"
+                className="flex-1 bg-[var(--gold)] hover:brightness-110 text-[var(--background)] font-medium rounded-[2px] text-[11px] uppercase tracking-[0.1em]"
                 style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
                 disabled={!rdvDate || createTaskMutation.isPending}
                 onClick={() => {
@@ -1436,12 +1436,12 @@ function LeadDocumentsSection({ crmLeadId }: { crmLeadId: number }) {
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Documents</h3>
+        <h3 className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Documents</h3>
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
           disabled={isUploading}
-          className="text-xs text-[#6B6560] hover:text-[#F0EDE6] disabled:opacity-50 transition-colors duration-300"
+          className="text-xs text-[var(--foreground-muted)] hover:text-[var(--foreground)] disabled:opacity-50 transition-colors duration-300"
           style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
         >
           {isUploading ? "Upload..." : "+ Ajouter"}
@@ -1450,28 +1450,28 @@ function LeadDocumentsSection({ crmLeadId }: { crmLeadId: number }) {
           accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xlsx,.xls,.csv" />
       </div>
       {isLoading ? (
-        <p className="text-xs text-[#3A3632] italic" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Chargement...</p>
+        <p className="text-xs text-[var(--foreground-faint)] italic" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Chargement...</p>
       ) : !docs || docs.length === 0 ? (
         <div
-          className="border border-dashed border-[#1E1E1E] rounded-[2px] p-4 text-center cursor-pointer hover:border-[#6B6560] transition-colors duration-300"
+          className="border border-dashed border-[var(--border)] rounded-[2px] p-4 text-center cursor-pointer hover:border-[var(--foreground-muted)] transition-colors duration-300"
           onClick={() => fileRef.current?.click()}
         >
-          <p className="text-xs text-[#3A3632]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Aucun document — cliquer pour en ajouter</p>
+          <p className="text-xs text-[var(--foreground-faint)]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Aucun document — cliquer pour en ajouter</p>
         </div>
       ) : (
         <div className="space-y-1.5">
           {docs.map((doc) => (
-            <div key={doc.id} className="flex items-center justify-between bg-[#111111] border border-[#1E1E1E] rounded-[2px] px-3 py-2">
+            <div key={doc.id} className="flex items-center justify-between bg-[var(--surface)] border border-[var(--border)] rounded-[2px] px-3 py-2">
               <a
                 href={doc.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 min-w-0 hover:text-[#F0EDE6] transition-colors duration-300 group"
+                className="flex items-center gap-2 min-w-0 hover:text-[var(--foreground)] transition-colors duration-300 group"
               >
-                <span className="text-base text-[#6B6560]">{getFileEmoji(doc.nom)}</span>
+                <span className="text-base text-[var(--foreground-muted)]">{getFileEmoji(doc.nom)}</span>
                 <div className="min-w-0">
-                  <p className="text-xs text-[#F0EDE6] group-hover:text-[#F0EDE6] truncate max-w-[260px]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{doc.nom}</p>
-                  <p className="text-xs text-[#3A3632] tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+                  <p className="text-xs text-[var(--foreground)] group-hover:text-[var(--foreground)] truncate max-w-[260px]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{doc.nom}</p>
+                  <p className="text-xs text-[var(--foreground-faint)] tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
                     {doc.taille ? formatFileSize(doc.taille) : ""}
                     {doc.uploadePar ? ` — ${doc.uploadePar}` : ""}
                     {" — "}{new Date(doc.uploadedAt).toLocaleDateString("fr-FR")}
@@ -1481,7 +1481,7 @@ function LeadDocumentsSection({ crmLeadId }: { crmLeadId: number }) {
               <button
                 type="button"
                 onClick={() => { if (confirm(`Supprimer "${doc.nom}" ?`)) deleteMutation.mutate({ id: doc.id }); }}
-                className="text-[#3A3632] hover:text-[#A04040] transition-colors duration-300 ml-2 flex-shrink-0 text-sm"
+                className="text-[var(--foreground-faint)] hover:text-[var(--destructive)] transition-colors duration-300 ml-2 flex-shrink-0 text-sm"
                 title="Supprimer"
               >
                 ✕
@@ -1489,10 +1489,10 @@ function LeadDocumentsSection({ crmLeadId }: { crmLeadId: number }) {
             </div>
           ))}
           <div
-            className="border border-dashed border-[#1E1E1E] rounded-[2px] px-3 py-2 text-center cursor-pointer hover:border-[#6B6560] transition-colors duration-300"
+            className="border border-dashed border-[var(--border)] rounded-[2px] px-3 py-2 text-center cursor-pointer hover:border-[var(--foreground-muted)] transition-colors duration-300"
             onClick={() => fileRef.current?.click()}
           >
-            <p className="text-xs text-[#3A3632]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>+ Ajouter un document</p>
+            <p className="text-xs text-[var(--foreground-faint)]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>+ Ajouter un document</p>
           </div>
         </div>
       )}
@@ -1633,51 +1633,51 @@ function CreateLeadModal({ open, onClose, defaultEtape }: { open: boolean; onClo
     });
   };
 
-  const selectClass = "bg-[#161616] border-[#1E1E1E] text-[#F0EDE6] text-sm rounded-[2px]";
-  const labelClass = "text-[11px] text-[#6B6560] mb-1 block uppercase tracking-[0.08em] font-medium";
+  const selectClass = "bg-[var(--surface-raised)] border-[var(--border)] text-[var(--foreground)] text-sm rounded-[2px]";
+  const labelClass = "text-[11px] text-[var(--foreground-muted)] mb-1 block uppercase tracking-[0.08em] font-medium";
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-[#111111] border-[#1E1E1E] max-w-2xl max-h-[90vh] overflow-y-auto rounded-[2px]">
+      <DialogContent className="bg-[var(--surface)] border-[var(--border)] max-w-2xl max-h-[90vh] overflow-y-auto rounded-[2px]">
         <DialogHeader>
-          <DialogTitle className="text-[#F0EDE6] tracking-[0.04em]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Ajouter un lead au pipeline</DialogTitle>
+          <DialogTitle className="text-[var(--foreground)] tracking-[0.04em]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Ajouter un lead au pipeline</DialogTitle>
         </DialogHeader>
         <div className="space-y-5 mt-2">
 
           {/* ── Identité ── */}
           <div>
-            <p className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-2">Identité</p>
+            <p className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-2">Identité</p>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className={labelClass}>Prénom *</label>
-                <Input value={form.prenom} onChange={e => setForm(f => ({ ...f, prenom: e.target.value }))} className="bg-[#161616] border-[#1E1E1E] text-sm rounded-[2px] text-[#F0EDE6] placeholder:text-[#3A3632] focus:border-[#C9A84C]" />
+                <Input value={form.prenom} onChange={e => setForm(f => ({ ...f, prenom: e.target.value }))} className="bg-[var(--surface-raised)] border-[var(--border)] text-sm rounded-[2px] text-[var(--foreground)] placeholder:text-[var(--foreground-faint)] focus:border-[var(--gold)]" />
               </div>
               <div>
                 <label className={labelClass}>Nom *</label>
-                <Input value={form.nom} onChange={e => setForm(f => ({ ...f, nom: e.target.value }))} className="bg-[#161616] border-[#1E1E1E] text-sm rounded-[2px] text-[#F0EDE6] placeholder:text-[#3A3632] focus:border-[#C9A84C]" />
+                <Input value={form.nom} onChange={e => setForm(f => ({ ...f, nom: e.target.value }))} className="bg-[var(--surface-raised)] border-[var(--border)] text-sm rounded-[2px] text-[var(--foreground)] placeholder:text-[var(--foreground-faint)] focus:border-[var(--gold)]" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3 mt-3">
               <div>
                 <label className={labelClass}>Email</label>
-                <Input type="text" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="exemple@email.com" className="bg-[#161616] border-[#1E1E1E] text-sm rounded-[2px] text-[#F0EDE6] placeholder:text-[#3A3632] focus:border-[#C9A84C]" />
+                <Input type="text" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="exemple@email.com" className="bg-[var(--surface-raised)] border-[var(--border)] text-sm rounded-[2px] text-[var(--foreground)] placeholder:text-[var(--foreground-faint)] focus:border-[var(--gold)]" />
               </div>
               <div>
                 <label className={labelClass}>Téléphone</label>
-                <Input value={form.telephone} onChange={e => setForm(f => ({ ...f, telephone: e.target.value }))} className="bg-[#161616] border-[#1E1E1E] text-sm rounded-[2px] text-[#F0EDE6] placeholder:text-[#3A3632] focus:border-[#C9A84C]" />
+                <Input value={form.telephone} onChange={e => setForm(f => ({ ...f, telephone: e.target.value }))} className="bg-[var(--surface-raised)] border-[var(--border)] text-sm rounded-[2px] text-[var(--foreground)] placeholder:text-[var(--foreground-faint)] focus:border-[var(--gold)]" />
               </div>
             </div>
           </div>
 
           {/* ── Pipeline ── */}
           <div>
-            <p className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-2">Pipeline</p>
+            <p className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-2">Pipeline</p>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className={labelClass}>Étape *</label>
                 <Select value={form.etape} onValueChange={val => setForm(f => ({ ...f, etape: val }))}>
                   <SelectTrigger className={selectClass}><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-[#111111] border-[#1E1E1E]">
+                  <SelectContent className="bg-[var(--surface)] border-[var(--border)]">
                     <SelectItem value="welcome_call">Welcome Call</SelectItem>
                     <SelectItem value="sigma_cash">Sigma Cash</SelectItem>
                     <SelectItem value="sigma_credit">Sigma Crédit</SelectItem>
@@ -1691,7 +1691,7 @@ function CreateLeadModal({ open, onClose, defaultEtape }: { open: boolean; onClo
                 <label className={labelClass}>Statut</label>
                 <Select value={form.statut} onValueChange={val => setForm(f => ({ ...f, statut: val }))}>
                   <SelectTrigger className={selectClass}><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-[#111111] border-[#1E1E1E]">
+                  <SelectContent className="bg-[var(--surface)] border-[var(--border)]">
                     <SelectItem value="actif">Actif</SelectItem>
                     <SelectItem value="en_pause">En pause</SelectItem>
                     <SelectItem value="cloture">Clôturé</SelectItem>
@@ -1714,13 +1714,13 @@ function CreateLeadModal({ open, onClose, defaultEtape }: { open: boolean; onClo
 
           {/* ── Informations commerciales ── */}
           <div>
-            <p className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-2">Informations commerciales</p>
+            <p className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-2">Informations commerciales</p>
             <div className="grid grid-cols-3 gap-3">
               <div>
                 <label className={labelClass}>Formule</label>
                 <Select value={form.formule} onValueChange={val => setForm(f => ({ ...f, formule: val }))}>
                   <SelectTrigger className={selectClass}><SelectValue placeholder="—" /></SelectTrigger>
-                  <SelectContent className="bg-[#111111] border-[#1E1E1E]">
+                  <SelectContent className="bg-[var(--surface)] border-[var(--border)]">
                     <SelectItem value="starter">Starter</SelectItem>
                     <SelectItem value="premium">Premium</SelectItem>
                     <SelectItem value="sdt_starter">SDT Starter</SelectItem>
@@ -1732,7 +1732,7 @@ function CreateLeadModal({ open, onClose, defaultEtape }: { open: boolean; onClo
                 <label className={labelClass}>Mode de paiement</label>
                 <Select value={form.modePaiement} onValueChange={val => setForm(f => ({ ...f, modePaiement: val }))}>
                   <SelectTrigger className={selectClass}><SelectValue placeholder="—" /></SelectTrigger>
-                  <SelectContent className="bg-[#111111] border-[#1E1E1E]">
+                  <SelectContent className="bg-[var(--surface)] border-[var(--border)]">
                     <SelectItem value="comptant">Comptant</SelectItem>
                     <SelectItem value="deux_fois">2 fois</SelectItem>
                     <SelectItem value="cinquante_pourcent">50 %</SelectItem>
@@ -1746,7 +1746,7 @@ function CreateLeadModal({ open, onClose, defaultEtape }: { open: boolean; onClo
                   min="0"
                   value={form.montantFormule}
                   onChange={e => setForm(f => ({ ...f, montantFormule: e.target.value }))}
-                  className="bg-[#161616] border-[#1E1E1E] text-sm rounded-[2px] text-[#F0EDE6] placeholder:text-[#3A3632] focus:border-[#C9A84C]"
+                  className="bg-[var(--surface-raised)] border-[var(--border)] text-sm rounded-[2px] text-[var(--foreground)] placeholder:text-[var(--foreground-faint)] focus:border-[var(--gold)]"
                   placeholder="0"
                 />
               </div>
@@ -1755,31 +1755,31 @@ function CreateLeadModal({ open, onClose, defaultEtape }: { open: boolean; onClo
 
           {/* ── Localisation ── */}
           <div>
-            <p className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-2">Localisation</p>
+            <p className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-2">Localisation</p>
             <div className="grid grid-cols-3 gap-3">
               <div className="col-span-1">
                 <label className={labelClass}>Ville</label>
-                <Input value={form.villeResidence} onChange={e => setForm(f => ({ ...f, villeResidence: e.target.value }))} className="bg-[#161616] border-[#1E1E1E] text-sm rounded-[2px] text-[#F0EDE6] placeholder:text-[#3A3632] focus:border-[#C9A84C]" />
+                <Input value={form.villeResidence} onChange={e => setForm(f => ({ ...f, villeResidence: e.target.value }))} className="bg-[var(--surface-raised)] border-[var(--border)] text-sm rounded-[2px] text-[var(--foreground)] placeholder:text-[var(--foreground-faint)] focus:border-[var(--gold)]" />
               </div>
               <div>
                 <label className={labelClass}>Département</label>
-                <Input value={form.departement} onChange={e => setForm(f => ({ ...f, departement: e.target.value }))} className="bg-[#161616] border-[#1E1E1E] text-sm rounded-[2px] text-[#F0EDE6] placeholder:text-[#3A3632] focus:border-[#C9A84C]" placeholder="ex: 69" />
+                <Input value={form.departement} onChange={e => setForm(f => ({ ...f, departement: e.target.value }))} className="bg-[var(--surface-raised)] border-[var(--border)] text-sm rounded-[2px] text-[var(--foreground)] placeholder:text-[var(--foreground-faint)] focus:border-[var(--gold)]" placeholder="ex: 69" />
               </div>
               <div>
                 <label className={labelClass}>Code postal</label>
-                <Input value={form.codePostal} onChange={e => setForm(f => ({ ...f, codePostal: e.target.value }))} className="bg-[#161616] border-[#1E1E1E] text-sm rounded-[2px] text-[#F0EDE6] placeholder:text-[#3A3632] focus:border-[#C9A84C]" />
+                <Input value={form.codePostal} onChange={e => setForm(f => ({ ...f, codePostal: e.target.value }))} className="bg-[var(--surface-raised)] border-[var(--border)] text-sm rounded-[2px] text-[var(--foreground)] placeholder:text-[var(--foreground-faint)] focus:border-[var(--gold)]" />
               </div>
             </div>
           </div>
 
           {/* ── Projet immobilier ── */}
           <div>
-            <p className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-2">Projet immobilier</p>
+            <p className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-2">Projet immobilier</p>
             <div>
               <label className={labelClass}>Type de projet</label>
               <Select value={form.projetType} onValueChange={val => setForm(f => ({ ...f, projetType: val }))}>
                 <SelectTrigger className={selectClass}><SelectValue placeholder="— Sélectionner —" /></SelectTrigger>
-                <SelectContent className="bg-[#111111] border-[#1E1E1E]">
+                <SelectContent className="bg-[var(--surface)] border-[var(--border)]">
                   <SelectItem value="Rés. principale">Résidence principale</SelectItem>
                   <SelectItem value="Invest. locatif">Investissement locatif</SelectItem>
                   <SelectItem value="RP + IL">RP + Invest. locatif</SelectItem>
@@ -1790,20 +1790,20 @@ function CreateLeadModal({ open, onClose, defaultEtape }: { open: boolean; onClo
 
           {/* ── Notes ── */}
           <div>
-            <p className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-2">Notes</p>
+            <p className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-2">Notes</p>
             <Textarea
               value={form.notes}
               onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-              className="bg-[#161616] border-[#1E1E1E] text-sm min-h-[80px] resize-none rounded-[2px] text-[#F0EDE6] placeholder:text-[#3A3632] focus:border-[#C9A84C]"
+              className="bg-[var(--surface-raised)] border-[var(--border)] text-sm min-h-[80px] resize-none rounded-[2px] text-[var(--foreground)] placeholder:text-[var(--foreground-faint)] focus:border-[var(--gold)]"
               placeholder="Informations complémentaires sur ce lead..."
             />
           </div>
 
           {/* ── Documents ── */}
           <div>
-            <p className="text-[11px] font-medium text-[#6B6560] uppercase tracking-[0.08em] mb-2">Documents</p>
+            <p className="text-[11px] font-medium text-[var(--foreground-muted)] uppercase tracking-[0.08em] mb-2">Documents</p>
             <div
-              className="border border-dashed border-[#1E1E1E] rounded-[2px] p-4 text-center cursor-pointer hover:border-[#6B6560] transition-colors duration-300"
+              className="border border-dashed border-[var(--border)] rounded-[2px] p-4 text-center cursor-pointer hover:border-[var(--foreground-muted)] transition-colors duration-300"
               onClick={() => fileInputRef.current?.click()}
             >
               <input
@@ -1814,26 +1814,26 @@ function CreateLeadModal({ open, onClose, defaultEtape }: { open: boolean; onClo
                 onChange={handleAddFiles}
                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xlsx,.xls,.csv"
               />
-              <p className="text-sm text-[#6B6560]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
-                <span className="text-[#F0EDE6] font-medium">Cliquer pour selectionner</span> ou glisser-deposer
+              <p className="text-sm text-[var(--foreground-muted)]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+                <span className="text-[var(--foreground)] font-medium">Cliquer pour selectionner</span> ou glisser-deposer
               </p>
-              <p className="text-xs text-[#3A3632] mt-1" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>PDF, Word, Excel, images — max 10 Mo par fichier</p>
+              <p className="text-xs text-[var(--foreground-faint)] mt-1" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>PDF, Word, Excel, images — max 10 Mo par fichier</p>
             </div>
             {pendingFiles.length > 0 && (
               <div className="mt-2 space-y-1.5">
                 {pendingFiles.map((file, idx) => (
-                  <div key={idx} className="flex items-center justify-between bg-[#161616] rounded-[2px] px-3 py-2 border border-[#1E1E1E]">
+                  <div key={idx} className="flex items-center justify-between bg-[var(--surface-raised)] rounded-[2px] px-3 py-2 border border-[var(--border)]">
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-lg text-[#6B6560]">{getFileEmoji(file.name)}</span>
+                      <span className="text-lg text-[var(--foreground-muted)]">{getFileEmoji(file.name)}</span>
                       <div className="min-w-0">
-                        <p className="text-xs text-[#F0EDE6] truncate max-w-[280px]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{file.name}</p>
-                        <p className="text-xs text-[#6B6560] tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{formatFileSize(file.size)}</p>
+                        <p className="text-xs text-[var(--foreground)] truncate max-w-[280px]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{file.name}</p>
+                        <p className="text-xs text-[var(--foreground-muted)] tabular-nums" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{formatFileSize(file.size)}</p>
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={(e) => { e.stopPropagation(); handleRemoveFile(idx); }}
-                      className="text-[#3A3632] hover:text-[#A04040] transition-colors duration-300 ml-2 flex-shrink-0 text-lg leading-none"
+                      className="text-[var(--foreground-faint)] hover:text-[var(--destructive)] transition-colors duration-300 ml-2 flex-shrink-0 text-lg leading-none"
                     >
                       ×
                     </button>
@@ -1844,16 +1844,16 @@ function CreateLeadModal({ open, onClose, defaultEtape }: { open: boolean; onClo
           </div>
 
           {formError && (
-            <div className="flex items-start gap-2 bg-[#A04040]/10 border border-[#A04040]/25 rounded-[2px] px-3 py-2 text-sm text-[#A04040]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
-              <span className="mt-0.5 shrink-0 text-[#A04040]">!</span>
+            <div className="flex items-start gap-2 bg-[var(--destructive)]/10 border border-[var(--destructive)]/25 rounded-[2px] px-3 py-2 text-sm text-[var(--destructive)]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+              <span className="mt-0.5 shrink-0 text-[var(--destructive)]">!</span>
               <span>{formError}</span>
             </div>
           )}
 
           <div className="flex gap-2 pt-1">
-            <Button variant="ghost" className="flex-1 text-[#6B6560] hover:text-[#F0EDE6]" onClick={onClose}>Annuler</Button>
+            <Button variant="ghost" className="flex-1 text-[var(--foreground-muted)] hover:text-[var(--foreground)]" onClick={onClose}>Annuler</Button>
             <Button
-              className="flex-1 bg-[#C9A84C] hover:brightness-110 text-[#0A0A0A] font-medium rounded-[2px] text-[11px] uppercase tracking-[0.1em]"
+              className="flex-1 bg-[var(--gold)] hover:brightness-110 text-[var(--background)] font-medium rounded-[2px] text-[11px] uppercase tracking-[0.1em]"
               style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}
               disabled={!form.nom || !form.prenom || createMutation.isPending || isUploading}
               onClick={handleSubmit}
@@ -2018,18 +2018,18 @@ export default function CrmPipeline() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
-        <div className="w-10 h-10 border border-[#6B6560] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
+        <div className="w-10 h-10 border border-[var(--foreground-muted)] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--background)] flex items-center justify-center">
         <div className="text-center">
-          <p className="text-[#6B6560] mb-4" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Connexion requise pour acceder au pipeline.</p>
-          <Button className="bg-[#C9A84C] hover:brightness-110 text-[#0A0A0A] rounded-[2px] font-medium text-[11px] uppercase tracking-[0.1em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }} onClick={() => window.location.href = "/login"}>
+          <p className="text-[var(--foreground-muted)] mb-4" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>Connexion requise pour acceder au pipeline.</p>
+          <Button className="bg-[var(--gold)] hover:brightness-110 text-[var(--background)] rounded-[2px] font-medium text-[11px] uppercase tracking-[0.1em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }} onClick={() => window.location.href = "/login"}>
             Se connecter
           </Button>
         </div>
@@ -2047,33 +2047,33 @@ export default function CrmPipeline() {
   const totalCloture = leads.filter(l => l.statut === "cloture" || l.statut === "perdu").length;
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
+    <div className="min-h-screen bg-[var(--background)]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>
       <AdminNav />
 
       <div className="max-w-[1800px] mx-auto px-4 pt-8 pb-16">
         {/* En-tete */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-[#F0EDE6] uppercase tracking-[0.08em]" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700 }}>Pipeline — Team Delivery</h1>
-            <p className="text-[#6B6560] text-sm mt-1">Suivi des leads dans l'ecosysteme Sigma Factory</p>
+            <h1 className="text-2xl font-bold text-[var(--foreground)] uppercase tracking-[0.08em]" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700 }}>Pipeline — Team Delivery</h1>
+            <p className="text-[var(--foreground-muted)] text-sm mt-1">Suivi des leads dans l'ecosysteme Sigma Factory</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex gap-2 mr-2">
-              <span className="text-[11px] px-3 py-1.5 rounded-[2px] bg-[#4A7A5A]/10 text-[#4A7A5A] border border-[#4A7A5A]/20 tabular-nums uppercase tracking-[0.08em]">{totalActifs} actifs</span>
-              <span className="text-[11px] px-3 py-1.5 rounded-[2px] bg-[#6B6560]/10 text-[#6B6560] border border-[#6B6560]/20 tabular-nums uppercase tracking-[0.08em]">{totalPause} en pause</span>
-              <span className="text-[11px] px-3 py-1.5 rounded-[2px] bg-[#161616] text-[#3A3632] border border-[#1E1E1E] tabular-nums uppercase tracking-[0.08em]">{totalCloture} clotures</span>
+              <span className="text-[11px] px-3 py-1.5 rounded-[2px] bg-[var(--success)]/10 text-[var(--success)] border border-[var(--success)]/20 tabular-nums uppercase tracking-[0.08em]">{totalActifs} actifs</span>
+              <span className="text-[11px] px-3 py-1.5 rounded-[2px] bg-[var(--foreground-muted)]/10 text-[var(--foreground-muted)] border border-[var(--foreground-muted)]/20 tabular-nums uppercase tracking-[0.08em]">{totalPause} en pause</span>
+              <span className="text-[11px] px-3 py-1.5 rounded-[2px] bg-[var(--surface-raised)] text-[var(--foreground-faint)] border border-[var(--border)] tabular-nums uppercase tracking-[0.08em]">{totalCloture} clotures</span>
             </div>
-            <Button variant="outline" size="sm" className={`text-[11px] border-[#1E1E1E] rounded-[2px] uppercase tracking-[0.08em] transition-colors duration-300 ${viewMode === "kanban" ? "bg-[#161616] text-[#F0EDE6]" : "text-[#6B6560]"}`} onClick={() => setViewMode("kanban")}>
+            <Button variant="outline" size="sm" className={`text-[11px] border-[var(--border)] rounded-[2px] uppercase tracking-[0.08em] transition-colors duration-300 ${viewMode === "kanban" ? "bg-[var(--surface-raised)] text-[var(--foreground)]" : "text-[var(--foreground-muted)]"}`} onClick={() => setViewMode("kanban")}>
               Kanban
             </Button>
-            <Button variant="outline" size="sm" className={`text-[11px] border-[#1E1E1E] rounded-[2px] uppercase tracking-[0.08em] transition-colors duration-300 ${viewMode === "liste" ? "bg-[#161616] text-[#F0EDE6]" : "text-[#6B6560]"}`} onClick={() => setViewMode("liste")}>
+            <Button variant="outline" size="sm" className={`text-[11px] border-[var(--border)] rounded-[2px] uppercase tracking-[0.08em] transition-colors duration-300 ${viewMode === "liste" ? "bg-[var(--surface-raised)] text-[var(--foreground)]" : "text-[var(--foreground-muted)]"}`} onClick={() => setViewMode("liste")}>
               Liste
             </Button>
-            <Button variant="outline" size="sm" className="text-[11px] border-[#1E1E1E] text-[#6B6560] hover:text-[#F0EDE6] gap-1.5 rounded-[2px] uppercase tracking-[0.08em] transition-colors duration-300" onClick={handleExportCsv}>
+            <Button variant="outline" size="sm" className="text-[11px] border-[var(--border)] text-[var(--foreground-muted)] hover:text-[var(--foreground)] gap-1.5 rounded-[2px] uppercase tracking-[0.08em] transition-colors duration-300" onClick={handleExportCsv}>
               <Download className="w-3.5 h-3.5" strokeWidth={1.5} />
               CSV
             </Button>
-            <Button size="sm" className="bg-[#C9A84C] hover:brightness-110 text-[#0A0A0A] font-medium text-[11px] rounded-[2px] uppercase tracking-[0.1em]" onClick={() => setShowCreate(true)}>
+            <Button size="sm" className="bg-[var(--gold)] hover:brightness-110 text-[var(--background)] font-medium text-[11px] rounded-[2px] uppercase tracking-[0.1em]" onClick={() => setShowCreate(true)}>
               + Ajouter un lead
             </Button>
           </div>
@@ -2085,13 +2085,13 @@ export default function CrmPipeline() {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher par nom, email ou téléphone..."
-            className="bg-[#111111] border-[#1E1E1E] text-[#F0EDE6] max-w-md text-sm rounded-[2px] placeholder:text-[#3A3632] focus:border-[#C9A84C] transition-colors duration-300"
+            className="bg-[var(--surface)] border-[var(--border)] text-[var(--foreground)] max-w-md text-sm rounded-[2px] placeholder:text-[var(--foreground-faint)] focus:border-[var(--gold)] transition-colors duration-300"
           />
         </div>
 
         {isLoading ? (
           <div className="flex items-center justify-center h-48">
-            <div className="w-8 h-8 border border-[#6B6560] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border border-[var(--foreground-muted)] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : viewMode === "kanban" ? (
           /* ─── Vue Kanban avec Drag & Drop ─── */
@@ -2108,21 +2108,21 @@ export default function CrmPipeline() {
                   onDrop={(e) => handleDrop(e, etape.key)}
                 >
                   {/* Header colonne */}
-                  <div className="rounded-[2px] border border-[#1E1E1E] p-2.5 mb-3 bg-[#111111]" style={{ borderTop: `2px solid ${etape.borderTop}` }}>
+                  <div className="rounded-[2px] border border-[var(--border)] p-2.5 mb-3 bg-[var(--surface)]" style={{ borderTop: `2px solid ${etape.borderTop}` }}>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
                         <div>
-                          <p className="font-medium text-xs leading-tight text-[#F0EDE6] uppercase tracking-[0.06em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{etape.label}</p>
-                          <p className="text-[10px] text-[#3A3632]">{etape.responsable}</p>
+                          <p className="font-medium text-xs leading-tight text-[var(--foreground)] uppercase tracking-[0.06em]" style={{ fontFamily: "'Hanken Grotesk', sans-serif" }}>{etape.label}</p>
+                          <p className="text-[10px] text-[var(--foreground-faint)]">{etape.responsable}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-[2px] bg-[#161616] text-[#6B6560] border border-[#1E1E1E] tabular-nums">
+                        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-[2px] bg-[var(--surface-raised)] text-[var(--foreground-muted)] border border-[var(--border)] tabular-nums">
                           {byEtape[etape.key].length}
                         </span>
                         <button
                           title={`Ajouter un lead dans ${etape.label}`}
-                          className="text-[10px] font-medium w-5 h-5 rounded-[2px] flex items-center justify-center transition-colors duration-300 text-[#6B6560] hover:bg-[#161616] hover:text-[#F0EDE6]"
+                          className="text-[10px] font-medium w-5 h-5 rounded-[2px] flex items-center justify-center transition-colors duration-300 text-[var(--foreground-muted)] hover:bg-[var(--surface-raised)] hover:text-[var(--foreground)]"
                           onClick={() => { setCreateDefaultEtape(etape.key); setShowCreate(true); }}
                         >+</button>
                       </div>
@@ -2132,12 +2132,12 @@ export default function CrmPipeline() {
                   {/* Zone de dépôt */}
                   <div
                     className={`space-y-3 flex-1 min-h-[120px] rounded-[2px] transition-all duration-300 p-1 ${
-                      isOver ? "bg-[#C9A84C]/5 border border-dashed border-[#C9A84C]/30" : "border border-transparent"
+                      isOver ? "bg-[var(--gold)]/5 border border-dashed border-[var(--gold)]/30" : "border border-transparent"
                     }`}
                   >
                     {byEtape[etape.key].length === 0 && !isOver ? (
-                      <div className="border border-dashed border-[#1E1E1E] rounded-[2px] p-6 text-center">
-                        <p className="text-xs text-[#3A3632]">Glissez un lead ici</p>
+                      <div className="border border-dashed border-[var(--border)] rounded-[2px] p-6 text-center">
+                        <p className="text-xs text-[var(--foreground-faint)]">Glissez un lead ici</p>
                       </div>
                     ) : (
                       byEtape[etape.key].map(lead => (
@@ -2156,43 +2156,43 @@ export default function CrmPipeline() {
           </div>
         ) : (
           /* ─── Vue Liste ─── */
-          <div className="bg-[#111111] border border-[#1E1E1E] rounded-[2px] overflow-hidden">
+          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-[2px] overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[#1E1E1E]">
-                  <th className="text-left text-[11px] text-[#6B6560] font-medium px-4 py-3 uppercase tracking-[0.08em]">Lead</th>
-                  <th className="text-left text-[11px] text-[#6B6560] font-medium px-4 py-3 uppercase tracking-[0.08em]">Etape</th>
-                  <th className="text-left text-[11px] text-[#6B6560] font-medium px-4 py-3 uppercase tracking-[0.08em]">Responsable</th>
-                  <th className="text-left text-[11px] text-[#6B6560] font-medium px-4 py-3 uppercase tracking-[0.08em]">Modules</th>
-                  <th className="text-left text-[11px] text-[#6B6560] font-medium px-4 py-3 uppercase tracking-[0.08em]">Statut</th>
-                  <th className="text-left text-[11px] text-[#6B6560] font-medium px-4 py-3 uppercase tracking-[0.08em]">Date</th>
+                <tr className="border-b border-[var(--border)]">
+                  <th className="text-left text-[11px] text-[var(--foreground-muted)] font-medium px-4 py-3 uppercase tracking-[0.08em]">Lead</th>
+                  <th className="text-left text-[11px] text-[var(--foreground-muted)] font-medium px-4 py-3 uppercase tracking-[0.08em]">Etape</th>
+                  <th className="text-left text-[11px] text-[var(--foreground-muted)] font-medium px-4 py-3 uppercase tracking-[0.08em]">Responsable</th>
+                  <th className="text-left text-[11px] text-[var(--foreground-muted)] font-medium px-4 py-3 uppercase tracking-[0.08em]">Modules</th>
+                  <th className="text-left text-[11px] text-[var(--foreground-muted)] font-medium px-4 py-3 uppercase tracking-[0.08em]">Statut</th>
+                  <th className="text-left text-[11px] text-[var(--foreground-muted)] font-medium px-4 py-3 uppercase tracking-[0.08em]">Date</th>
                   <th className="px-4 py-3" />
                 </tr>
               </thead>
               <tbody>
                 {leads.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="text-center text-[#6B6560] py-12 text-sm">Aucun lead dans le pipeline.</td>
+                    <td colSpan={7} className="text-center text-[var(--foreground-muted)] py-12 text-sm">Aucun lead dans le pipeline.</td>
                   </tr>
                 ) : leads.map(lead => {
                   const etapeInfo = ETAPES.find(e => e.key === lead.etape)!;
                   return (
-                    <tr key={lead.id} className="border-b border-[#151515] hover:bg-[#161616] transition-colors duration-300">
+                    <tr key={lead.id} className="border-b border-[var(--border-subtle)] hover:bg-[var(--surface-raised)] transition-colors duration-300">
                       <td className="px-4 py-3">
-                        <p className="font-medium text-[#F0EDE6]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{lead.prenom} {lead.nom}</p>
-                        <p className="text-xs text-[#6B6560]">{lead.email}</p>
+                        <p className="font-medium text-[var(--foreground)]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{lead.prenom} {lead.nom}</p>
+                        <p className="text-xs text-[var(--foreground-muted)]">{lead.email}</p>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-[11px] px-2 py-1 rounded-[2px] border border-[#1E1E1E] bg-[#161616] text-[#F0EDE6] uppercase tracking-[0.06em]">
+                        <span className="text-[11px] px-2 py-1 rounded-[2px] border border-[var(--border)] bg-[var(--surface-raised)] text-[var(--foreground)] uppercase tracking-[0.06em]">
                           {etapeInfo.label}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-xs text-[#6B6560]">{etapeInfo.responsable}</td>
+                      <td className="px-4 py-3 text-xs text-[var(--foreground-muted)]">{etapeInfo.responsable}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-1">
-                          {lead.leadId && <span className="text-[11px] px-1.5 py-0.5 rounded-[2px] bg-[#161616] text-[#6B6560] border border-[#1E1E1E]">EC</span>}
-                          {lead.mandatId && <span className="text-[11px] px-1.5 py-0.5 rounded-[2px] bg-[#161616] text-[#6B6560] border border-[#1E1E1E]">M</span>}
-                          {lead.hexaId && <span className="text-[11px] px-1.5 py-0.5 rounded-[2px] bg-[#161616] text-[#6B6560] border border-[#1E1E1E]">SC</span>}
+                          {lead.leadId && <span className="text-[11px] px-1.5 py-0.5 rounded-[2px] bg-[var(--surface-raised)] text-[var(--foreground-muted)] border border-[var(--border)]">EC</span>}
+                          {lead.mandatId && <span className="text-[11px] px-1.5 py-0.5 rounded-[2px] bg-[var(--surface-raised)] text-[var(--foreground-muted)] border border-[var(--border)]">M</span>}
+                          {lead.hexaId && <span className="text-[11px] px-1.5 py-0.5 rounded-[2px] bg-[var(--surface-raised)] text-[var(--foreground-muted)] border border-[var(--border)]">SC</span>}
                         </div>
                       </td>
                       <td className="px-4 py-3">
@@ -2200,15 +2200,15 @@ export default function CrmPipeline() {
                           {STATUT_LABELS[lead.statut]}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-xs text-[#6B6560] tabular-nums">
+                      <td className="px-4 py-3 text-xs text-[var(--foreground-muted)] tabular-nums">
                         {new Date(lead.createdAt).toLocaleDateString("fr-FR")}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
-                          <Button size="sm" variant="ghost" className="text-xs text-[#6B6560] hover:text-[#F0EDE6] h-7 transition-colors duration-300" onClick={() => setSelectedLeadId(lead.id)}>
+                          <Button size="sm" variant="ghost" className="text-xs text-[var(--foreground-muted)] hover:text-[var(--foreground)] h-7 transition-colors duration-300" onClick={() => setSelectedLeadId(lead.id)}>
                             Voir
                           </Button>
-                          <button onClick={(e) => handleDeleteCrm(e, lead.id, `${lead.prenom} ${lead.nom}`)} className="p-1.5 rounded-[2px] hover:bg-[#A04040]/10 text-[#3A3632] hover:text-[#A04040] transition-colors duration-300" title="Supprimer">
+                          <button onClick={(e) => handleDeleteCrm(e, lead.id, `${lead.prenom} ${lead.nom}`)} className="p-1.5 rounded-[2px] hover:bg-[var(--destructive)]/10 text-[var(--foreground-faint)] hover:text-[var(--destructive)] transition-colors duration-300" title="Supprimer">
                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                           </button>
                         </div>
@@ -2224,9 +2224,9 @@ export default function CrmPipeline() {
 
       {/* Modal fiche lead */}
       <Dialog open={selectedLeadId !== null} onOpenChange={() => setSelectedLeadId(null)}>
-        <DialogContent className="bg-[#111111] border-[#1E1E1E] max-w-2xl rounded-[2px]">
+        <DialogContent className="bg-[var(--surface)] border-[var(--border)] max-w-2xl rounded-[2px]">
           <DialogHeader>
-            <DialogTitle className="text-[#F0EDE6] tracking-[0.04em]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Fiche lead</DialogTitle>
+            <DialogTitle className="text-[var(--foreground)] tracking-[0.04em]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Fiche lead</DialogTitle>
           </DialogHeader>
           {selectedLeadId && <LeadDetail leadId={selectedLeadId} onClose={() => setSelectedLeadId(null)} />}
         </DialogContent>

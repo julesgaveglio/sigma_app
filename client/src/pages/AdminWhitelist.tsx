@@ -7,10 +7,10 @@ import { toast } from "sonner";
 import { UserPlus, Trash2, Shield, User, Crown, Loader2, Mail, Search, Building2, ToggleLeft, ToggleRight, Send } from "lucide-react";
 
 const ROLE_LABELS: Record<string, { label: string; icon: any; color: string; bg: string; border: string }> = {
-  user: { label: "Utilisateur", icon: User, color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
-  agent: { label: "Agent immo", icon: Building2, color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-  direction: { label: "Direction", icon: Crown, color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-  admin: { label: "Admin", icon: Shield, color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+  user: { label: "Utilisateur", icon: User, color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+  agent: { label: "Agent immo", icon: Building2, color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  direction: { label: "Direction", icon: Crown, color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  admin: { label: "Admin", icon: Shield, color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
 };
 
 export default function AdminWhitelist() {
@@ -63,8 +63,8 @@ export default function AdminWhitelist() {
   });
 
   if (authLoading) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
-      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--background)" }}>
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
     </div>
   );
 
@@ -72,9 +72,9 @@ export default function AdminWhitelist() {
 
   if (user.role !== "admin" && user.role !== "direction") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: "#0A0A0A" }}>
-        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.04em" }}>Acces refuse</h2>
-        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Acces reserve aux administrateurs.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: "var(--background)" }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.04em" }}>Acces refuse</h2>
+        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Acces reserve aux administrateurs.</p>
       </div>
     );
   }
@@ -89,20 +89,20 @@ export default function AdminWhitelist() {
 
   // Shared input style
   const inputStyle = {
-    background: "#161616",
-    border: "1px solid #1E1E1E",
+    background: "var(--surface-raised)",
+    border: "1px solid var(--border)",
     borderRadius: "2px",
     padding: "10px 12px",
     fontSize: "13px",
     fontFamily: "'Hanken Grotesk', sans-serif",
-    color: "#F0EDE6",
+    color: "var(--foreground)",
     outline: "none",
     transition: "border-color 300ms ease",
     width: "100%",
   } as React.CSSProperties;
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <AdminNav />
       <main className="px-5 py-8" style={{ maxWidth: "960px", margin: "0 auto" }}>
         {/* Header */}
@@ -112,7 +112,7 @@ export default function AdminWhitelist() {
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "24px",
               fontWeight: 600,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               letterSpacing: "0.04em",
             }}>
               Acces autorises
@@ -120,11 +120,11 @@ export default function AdminWhitelist() {
             <p style={{
               fontSize: "12px",
               fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               marginTop: "4px",
             }}>
               <span className="tabular-nums">{actifCount}</span> actif{actifCount > 1 ? "s" : ""}
-              {inactifCount > 0 && <span style={{ color: "#C9A84C", marginLeft: "8px" }}>· {inactifCount} suspendu{inactifCount > 1 ? "s" : ""}</span>}
+              {inactifCount > 0 && <span style={{ color: "var(--gold)", marginLeft: "8px" }}>· {inactifCount} suspendu{inactifCount > 1 ? "s" : ""}</span>}
             </p>
           </div>
           <button
@@ -132,8 +132,8 @@ export default function AdminWhitelist() {
             className="flex items-center gap-2 transition-opacity duration-300 hover:opacity-80"
             style={{
               padding: "10px 20px",
-              background: "#C9A84C",
-              color: "#0A0A0A",
+              background: "var(--gold)",
+              color: "var(--background)",
               fontSize: "11px",
               fontWeight: 500,
               fontFamily: "'Hanken Grotesk', sans-serif",
@@ -152,19 +152,19 @@ export default function AdminWhitelist() {
         {/* Formulaire d'ajout */}
         {showForm && (
           <div style={{
-            background: "#111111",
-            border: "1px solid #1E1E1E",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
             borderRadius: "2px",
             padding: "24px",
             marginBottom: "24px",
           }}>
             <div className="flex items-center gap-2 mb-5">
-              <UserPlus className="w-4 h-4" style={{ color: "#6B6560", strokeWidth: 1.5 }} />
+              <UserPlus className="w-4 h-4" style={{ color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
               <span style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "16px",
                 fontWeight: 600,
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 letterSpacing: "0.02em",
               }}>
                 Nouvel acces autorise
@@ -179,8 +179,8 @@ export default function AdminWhitelist() {
                   onChange={e => setNewNom(e.target.value)}
                   placeholder="ex: Jerome CHIBAU"
                   style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div>
@@ -191,8 +191,8 @@ export default function AdminWhitelist() {
                   onChange={e => setNewEmail(e.target.value)}
                   placeholder="ex: jerome@exemple.fr"
                   style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div>
@@ -201,8 +201,8 @@ export default function AdminWhitelist() {
                   value={newRole}
                   onChange={e => setNewRole(e.target.value as any)}
                   style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 >
                   <option value="agent">Agent immobilier (IAD, reseau...)</option>
                   <option value="user">Utilisateur (courtier, partenaire...)</option>
@@ -217,10 +217,10 @@ export default function AdminWhitelist() {
                 type="checkbox"
                 checked={sendWelcome}
                 onChange={e => setSendWelcome(e.target.checked)}
-                style={{ accentColor: "#C9A84C" }}
+                style={{ accentColor: "var(--gold)" }}
               />
-              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>
-                Envoyer automatiquement un <strong style={{ color: "#F0EDE6" }}>email de bienvenue</strong> avec le lien d'inscription
+              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>
+                Envoyer automatiquement un <strong style={{ color: "var(--foreground)" }}>email de bienvenue</strong> avec le lien d'inscription
               </span>
             </label>
             <div className="flex gap-3 mt-5">
@@ -230,8 +230,8 @@ export default function AdminWhitelist() {
                 className="flex items-center gap-2 transition-opacity duration-300"
                 style={{
                   padding: "10px 20px",
-                  background: (!newEmail || !newNom || addMutation.isPending) ? "#8A7535" : "#C9A84C",
-                  color: "#0A0A0A",
+                  background: (!newEmail || !newNom || addMutation.isPending) ? "var(--gold-muted)" : "var(--gold)",
+                  color: "var(--background)",
                   fontSize: "11px",
                   fontWeight: 500,
                   fontFamily: "'Hanken Grotesk', sans-serif",
@@ -256,8 +256,8 @@ export default function AdminWhitelist() {
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   letterSpacing: "0.06em",
                   textTransform: "uppercase" as const,
-                  color: "#6B6560",
-                  border: "1px solid #1E1E1E",
+                  color: "var(--foreground-muted)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   background: "transparent",
                   cursor: "pointer",
@@ -271,7 +271,7 @@ export default function AdminWhitelist() {
 
         {/* Barre de recherche */}
         <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
           <input
             type="text"
             value={search}
@@ -280,26 +280,26 @@ export default function AdminWhitelist() {
             className="w-full transition-colors duration-300 focus:outline-none"
             style={{
               ...inputStyle,
-              background: "#111111",
+              background: "var(--surface)",
               paddingLeft: "36px",
             }}
-            onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-            onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+            onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+            onBlur={e => (e.target.style.borderColor = "var(--border)")}
           />
         </div>
 
         {/* Liste */}
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-20">
-            <Mail className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun acces trouve</p>
+            <Mail className="w-10 h-10 mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucun acces trouve</p>
           </div>
         ) : (
-          <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
             {filtered.map((entry, idx) => {
               const roleInfo = ROLE_LABELS[entry.role] ?? ROLE_LABELS.user;
               const RoleIcon = roleInfo.icon;
@@ -311,10 +311,10 @@ export default function AdminWhitelist() {
                   className="transition-colors duration-300"
                   style={{
                     padding: "14px 20px",
-                    borderBottom: idx < filtered.length - 1 ? "1px solid #151515" : "none",
+                    borderBottom: idx < filtered.length - 1 ? "1px solid var(--border-subtle)" : "none",
                     opacity: isActif ? 1 : 0.5,
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                  onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                   onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                 >
                   {isEditing ? (
@@ -325,16 +325,16 @@ export default function AdminWhitelist() {
                         onChange={e => setEditNom(e.target.value)}
                         className="flex-1 focus:outline-none"
                         style={{ ...inputStyle, minWidth: "150px" }}
-                        onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                        onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                        onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                        onBlur={e => (e.target.style.borderColor = "var(--border)")}
                       />
-                      <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{entry.email}</span>
+                      <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{entry.email}</span>
                       <select
                         value={editRole}
                         onChange={e => setEditRole(e.target.value as any)}
                         style={{ ...inputStyle, width: "auto" }}
-                        onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                        onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                        onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                        onBlur={e => (e.target.style.borderColor = "var(--border)")}
                       >
                         <option value="agent">Agent immobilier</option>
                         <option value="user">Utilisateur</option>
@@ -347,8 +347,8 @@ export default function AdminWhitelist() {
                         className="transition-opacity duration-300 hover:opacity-80"
                         style={{
                           padding: "6px 14px",
-                          background: "#C9A84C",
-                          color: "#0A0A0A",
+                          background: "var(--gold)",
+                          color: "var(--background)",
                           fontSize: "11px",
                           fontWeight: 500,
                           fontFamily: "'Hanken Grotesk', sans-serif",
@@ -368,8 +368,8 @@ export default function AdminWhitelist() {
                           padding: "6px 14px",
                           fontSize: "11px",
                           fontFamily: "'Hanken Grotesk', sans-serif",
-                          color: "#6B6560",
-                          border: "1px solid #1E1E1E",
+                          color: "var(--foreground-muted)",
+                          border: "1px solid var(--border)",
                           borderRadius: "2px",
                           background: "transparent",
                           cursor: "pointer",
@@ -381,24 +381,24 @@ export default function AdminWhitelist() {
                   ) : (
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3 min-w-0">
-                        <RoleIcon className="w-4 h-4 shrink-0" style={{ color: isActif ? "#6B6560" : "#3A3632", strokeWidth: 1.5 }} />
+                        <RoleIcon className="w-4 h-4 shrink-0" style={{ color: isActif ? "var(--foreground-muted)" : "var(--foreground-faint)", strokeWidth: 1.5 }} />
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
                             <p style={{
                               fontFamily: "'Hanken Grotesk', sans-serif",
                               fontSize: "13px",
                               fontWeight: 500,
-                              color: "#F0EDE6",
+                              color: "var(--foreground)",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap" as const,
                             }}>{entry.nom ?? "—"}</p>
-                            {!isActif && <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "#C9A84C" }}>Suspendu</span>}
+                            {!isActif && <span style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase" as const, color: "var(--gold)" }}>Suspendu</span>}
                           </div>
                           <p style={{
                             fontSize: "11px",
                             fontFamily: "'Hanken Grotesk', sans-serif",
-                            color: "#3A3632",
+                            color: "var(--foreground-faint)",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap" as const,
@@ -429,16 +429,16 @@ export default function AdminWhitelist() {
                           onClick={() => resendMutation.mutate({ id: entry.id })}
                           disabled={resendMutation.isPending}
                           className="p-1.5 transition-opacity duration-300 hover:opacity-70"
-                          style={{ color: "#3A3632", background: "none", border: "none", cursor: "pointer" }}
+                          style={{ color: "var(--foreground-faint)", background: "none", border: "none", cursor: "pointer" }}
                           title="Renvoyer l'email de bienvenue"
                         >
-                          {resendMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#6B6560" }} /> : <Send className="w-4 h-4" style={{ strokeWidth: 1.5 }} />}
+                          {resendMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" style={{ color: "var(--foreground-muted)" }} /> : <Send className="w-4 h-4" style={{ strokeWidth: 1.5 }} />}
                         </button>
                         {/* Modifier */}
                         <button
                           onClick={() => { setEditId(entry.id); setEditNom(entry.nom ?? ""); setEditRole(entry.role as any); }}
                           className="p-1.5 transition-opacity duration-300 hover:opacity-70"
-                          style={{ color: "#3A3632", background: "none", border: "none", cursor: "pointer" }}
+                          style={{ color: "var(--foreground-faint)", background: "none", border: "none", cursor: "pointer" }}
                           title="Modifier le role"
                         >
                           <Shield className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
@@ -449,13 +449,13 @@ export default function AdminWhitelist() {
                           disabled={toggleMutation.isPending}
                           className="p-1.5 transition-colors duration-300"
                           style={{
-                            color: isActif ? "#4A7A5A" : "#C9A84C",
+                            color: isActif ? "var(--success)" : "var(--gold)",
                             background: "none",
                             border: "none",
                             cursor: "pointer",
                           }}
-                          onMouseEnter={e => (e.currentTarget.style.color = isActif ? "#C9A84C" : "#4A7A5A")}
-                          onMouseLeave={e => (e.currentTarget.style.color = isActif ? "#4A7A5A" : "#C9A84C")}
+                          onMouseEnter={e => (e.currentTarget.style.color = isActif ? "var(--gold)" : "var(--success)")}
+                          onMouseLeave={e => (e.currentTarget.style.color = isActif ? "var(--success)" : "var(--gold)")}
                           title={isActif ? "Suspendre l'acces" : "Reactiver l'acces"}
                         >
                           {isActif ? <ToggleRight className="w-5 h-5" style={{ strokeWidth: 1.5 }} /> : <ToggleLeft className="w-5 h-5" style={{ strokeWidth: 1.5 }} />}
@@ -469,9 +469,9 @@ export default function AdminWhitelist() {
                           }}
                           disabled={removeMutation.isPending}
                           className="p-1.5 transition-colors duration-300"
-                          style={{ color: "#3A3632", background: "none", border: "none", cursor: "pointer" }}
-                          onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-                          onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                          style={{ color: "var(--foreground-faint)", background: "none", border: "none", cursor: "pointer" }}
+                          onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+                          onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
                           title="Supprimer definitivement"
                         >
                           <Trash2 className="w-4 h-4" style={{ strokeWidth: 1.5 }} />

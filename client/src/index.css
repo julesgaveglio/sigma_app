@@ -108,6 +108,14 @@
   --foreground-faint: #3A3632;
   --border-subtle: #151515;
   --success: #4A7A5A;
+
+  /* Pipeline stage colors (subtle, institutional) */
+  --stage-sigma-cash: #C9A84C;
+  --stage-sigma-credit: #B0996A;
+  --stage-welcome-call: #7A8FA6;
+  --stage-courtage: #9A84B0;
+  --stage-point-perso: #A6808A;
+  --stage-recherche-bien: #6B9A7A;
 }
 
 /* ── Light Mode ── */
@@ -163,6 +171,14 @@
   --foreground-faint: #C0BBB5;
   --border-subtle: #EAE7E0;
   --success: #3A6A4A;
+
+  /* Pipeline stage colors (light mode — slightly deeper) */
+  --stage-sigma-cash: #A08530;
+  --stage-sigma-credit: #8A7A50;
+  --stage-welcome-call: #5A7090;
+  --stage-courtage: #7A6090;
+  --stage-point-perso: #8A6070;
+  --stage-recherche-bien: #4A7A5A;
 }
 
 @layer base {

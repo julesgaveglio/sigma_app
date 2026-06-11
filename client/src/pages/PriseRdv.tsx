@@ -94,11 +94,11 @@ export function PriseRdvPointPersonnalise() {
 
 /* ── Shared inline styles ── */
 const inputStyle: React.CSSProperties = {
-  background: "#161616",
-  border: "1px solid #1E1E1E",
+  background: "var(--surface-raised)",
+  border: "1px solid var(--border)",
   borderRadius: "2px",
   padding: "12px 14px",
-  color: "#F0EDE6",
+  color: "var(--foreground)",
   fontSize: "14px",
   fontFamily: "'Hanken Grotesk', sans-serif",
   width: "100%",
@@ -110,7 +110,7 @@ const labelStyle: React.CSSProperties = {
   fontFamily: "'Hanken Grotesk', sans-serif",
   fontSize: "11px",
   fontWeight: 500,
-  color: "#6B6560",
+  color: "var(--foreground-muted)",
   letterSpacing: "0.08em",
   textTransform: "uppercase",
   display: "block",
@@ -232,26 +232,26 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
       ? new Date(calYear, calMonth, selectedDay).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
       : "";
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A", padding: "24px" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--background)", padding: "24px" }}>
         <div style={{ maxWidth: "420px", width: "100%", textAlign: "center" }}>
           <div style={{
             width: "64px",
             height: "64px",
-            background: "#111111",
-            border: "1px solid #1E1E1E",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
             borderRadius: "2px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             margin: "0 auto 24px",
           }}>
-            <CheckCircle size={28} style={{ color: "#4A7A5A" }} />
+            <CheckCircle size={28} style={{ color: "var(--success)" }} />
           </div>
           <h1 style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: "24px",
             fontWeight: 600,
-            color: "#F0EDE6",
+            color: "var(--foreground)",
             letterSpacing: "0.04em",
             marginBottom: "8px",
           }}>
@@ -261,7 +261,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
             fontFamily: "'Hanken Grotesk', sans-serif",
             fontSize: "11px",
             fontWeight: 500,
-            color: "#6B6560",
+            color: "var(--foreground-muted)",
             letterSpacing: "0.08em",
             textTransform: "uppercase" as const,
             marginBottom: "32px",
@@ -270,29 +270,29 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
           </p>
 
           <div style={{
-            background: "#111111",
-            border: "1px solid #1E1E1E",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
             borderRadius: "2px",
             padding: "20px 24px",
             textAlign: "left",
             marginBottom: "24px",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
-              <Calendar size={16} style={{ color: "#3A3632" }} />
+              <Calendar size={16} style={{ color: "var(--foreground-faint)" }} />
               <span style={{
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "13px",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
               }}>
                 {dateStr}
               </span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <Clock size={16} style={{ color: "#3A3632" }} />
+              <Clock size={16} style={{ color: "var(--foreground-faint)" }} />
               <span style={{
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "13px",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
               }}>
                 {selectedHeure} — {selectedType?.label} ({selectedType?.duree})
               </span>
@@ -302,11 +302,11 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
           <p style={{
             fontFamily: "'Hanken Grotesk', sans-serif",
             fontSize: "13px",
-            color: "#6B6560",
+            color: "var(--foreground-muted)",
             lineHeight: "1.6",
             marginBottom: "24px",
           }}>
-            Maria vous contactera a l'heure convenue. Un email de confirmation vous a ete envoye a <strong style={{ color: "#F0EDE6" }}>{form.email}</strong>.
+            Maria vous contactera a l'heure convenue. Un email de confirmation vous a ete envoye a <strong style={{ color: "var(--foreground)" }}>{form.email}</strong>.
           </p>
           <a
             href="/"
@@ -314,7 +314,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
             style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "12px",
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               textDecoration: "none",
               letterSpacing: "0.04em",
             }}
@@ -343,10 +343,10 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A", color: "#F0EDE6" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)", color: "var(--foreground)" }}>
 
       {/* ── Header ── */}
-      <div style={{ borderBottom: "1px solid #1E1E1E", padding: "20px 24px" }}>
+      <div style={{ borderBottom: "1px solid var(--border)", padding: "20px 24px" }}>
         <div style={{
           maxWidth: "720px",
           margin: "0 auto",
@@ -360,7 +360,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
               fontSize: "18px",
               fontWeight: 700,
               letterSpacing: "0.2em",
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               margin: 0,
               textTransform: "uppercase" as const,
             }}>
@@ -369,7 +369,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
             <p style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "10px",
-              color: "#3A3632",
+              color: "var(--foreground-faint)",
               letterSpacing: "0.12em",
               textTransform: "uppercase" as const,
               marginTop: "4px",
@@ -382,7 +382,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "11px",
               fontWeight: 500,
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               letterSpacing: "0.08em",
               textTransform: "uppercase" as const,
             }}>
@@ -391,7 +391,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
             <div style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "12px",
-              color: "#3A3632",
+              color: "var(--foreground-faint)",
               marginTop: "2px",
             }}>
               avec Maria
@@ -410,7 +410,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "24px",
                 fontWeight: 600,
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 letterSpacing: "0.04em",
                 marginBottom: "8px",
               }}>
@@ -419,7 +419,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
               <p style={{
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "14px",
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 lineHeight: "1.6",
               }}>
                 Selectionnez le type d'echange avec Maria.
@@ -436,28 +436,28 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                     style={{
                       width: "100%",
                       textAlign: "left",
-                      background: "#111111",
-                      border: "1px solid #1E1E1E",
+                      background: "var(--surface)",
+                      border: "1px solid var(--border)",
                       borderRadius: "2px",
                       padding: "24px",
                       cursor: "pointer",
                     }}
-                    onMouseEnter={e => (e.currentTarget.style.borderColor = "#C9A84C")}
-                    onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--gold)")}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
                   >
                     <div style={{ display: "flex", alignItems: "flex-start", gap: "16px" }}>
                       <div style={{
                         width: "40px",
                         height: "40px",
-                        background: "#161616",
-                        border: "1px solid #1E1E1E",
+                        background: "var(--surface-raised)",
+                        border: "1px solid var(--border)",
                         borderRadius: "2px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         flexShrink: 0,
                       }}>
-                        <Icon size={20} style={{ color: "#6B6560" }} />
+                        <Icon size={20} style={{ color: "var(--foreground-muted)" }} />
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
@@ -465,7 +465,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                             fontFamily: "'Cormorant Garamond', serif",
                             fontSize: "18px",
                             fontWeight: 600,
-                            color: "#F0EDE6",
+                            color: "var(--foreground)",
                             letterSpacing: "0.02em",
                           }}>
                             {t.label}
@@ -474,7 +474,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                             fontFamily: "'Hanken Grotesk', sans-serif",
                             fontSize: "12px",
                             fontWeight: 500,
-                            color: "#3A3632",
+                            color: "var(--foreground-faint)",
                             fontVariantNumeric: "tabular-nums",
                           }}>
                             {t.duree}
@@ -483,7 +483,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                         <p style={{
                           fontFamily: "'Hanken Grotesk', sans-serif",
                           fontSize: "13px",
-                          color: "#6B6560",
+                          color: "var(--foreground-muted)",
                           lineHeight: "1.6",
                         }}>
                           {t.description}
@@ -505,7 +505,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                 <button
                   onClick={() => setStep("type")}
                   className="transition-opacity duration-300 ease-out hover:opacity-70"
-                  style={{ background: "none", border: "none", color: "#6B6560", cursor: "pointer", padding: 0 }}
+                  style={{ background: "none", border: "none", color: "var(--foreground-muted)", cursor: "pointer", padding: 0 }}
                 >
                   <ChevronLeft size={20} />
                 </button>
@@ -515,7 +515,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: "24px",
                   fontWeight: 600,
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   letterSpacing: "0.04em",
                 }}>
                   Choisissez une date
@@ -523,7 +523,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                 <p style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "12px",
-                  color: "#6B6560",
+                  color: "var(--foreground-muted)",
                   marginTop: "4px",
                 }}>
                   {selectedType?.label} — {selectedType?.duree}
@@ -538,7 +538,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                   <button
                     onClick={prevMonth}
                     className="transition-opacity duration-300 ease-out hover:opacity-70"
-                    style={{ background: "none", border: "none", color: "#6B6560", cursor: "pointer", padding: "4px" }}
+                    style={{ background: "none", border: "none", color: "var(--foreground-muted)", cursor: "pointer", padding: "4px" }}
                   >
                     <ChevronLeft size={16} />
                   </button>
@@ -546,14 +546,14 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     fontSize: "13px",
                     fontWeight: 500,
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                   }}>
                     {MOIS[calMonth]} {calYear}
                   </span>
                   <button
                     onClick={nextMonth}
                     className="transition-opacity duration-300 ease-out hover:opacity-70"
-                    style={{ background: "none", border: "none", color: "#6B6560", cursor: "pointer", padding: "4px" }}
+                    style={{ background: "none", border: "none", color: "var(--foreground-muted)", cursor: "pointer", padding: "4px" }}
                   >
                     <ChevronRight size={16} />
                   </button>
@@ -565,7 +565,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                       fontFamily: "'Hanken Grotesk', sans-serif",
                       fontSize: "10px",
                       fontWeight: 500,
-                      color: "#3A3632",
+                      color: "var(--foreground-faint)",
                       letterSpacing: "0.04em",
                       padding: "4px 0",
                     }}>
@@ -594,8 +594,8 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                           fontFamily: "'Hanken Grotesk', sans-serif",
                           fontSize: "13px",
                           fontWeight: selected ? 600 : 400,
-                          background: selected ? "#C9A84C" : "transparent",
-                          color: disabled ? "#1E1E1E" : selected ? "#0A0A0A" : "#F0EDE6",
+                          background: selected ? "var(--gold)" : "transparent",
+                          color: disabled ? "var(--border)" : selected ? "var(--background)" : "var(--foreground)",
                           border: "none",
                           borderRadius: "2px",
                           cursor: disabled ? "not-allowed" : "pointer",
@@ -613,7 +613,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                 <p style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "11px",
-                  color: "#3A3632",
+                  color: "var(--foreground-faint)",
                   marginBottom: "12px",
                 }}>
                   Horaires en heure de Paris (UTC+2)
@@ -623,7 +623,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                     <p style={{
                       fontFamily: "'Hanken Grotesk', sans-serif",
                       fontSize: "13px",
-                      color: "#6B6560",
+                      color: "var(--foreground-muted)",
                       marginBottom: "16px",
                     }}>
                       {new Date(calYear, calMonth, selectedDay).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}
@@ -641,9 +641,9 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                               fontSize: "13px",
                               fontWeight: 500,
                               fontVariantNumeric: "tabular-nums",
-                              background: selectedHeure === h ? "#C9A84C" : "transparent",
-                              color: selectedHeure === h ? "#0A0A0A" : "#F0EDE6",
-                              border: selectedHeure === h ? "1px solid #C9A84C" : "1px solid #1E1E1E",
+                              background: selectedHeure === h ? "var(--gold)" : "transparent",
+                              color: selectedHeure === h ? "var(--background)" : "var(--foreground)",
+                              border: selectedHeure === h ? "1px solid var(--gold)" : "1px solid var(--border)",
                               borderRadius: "2px",
                               cursor: "pointer",
                             }}
@@ -656,7 +656,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                       <div style={{
                         fontFamily: "'Hanken Grotesk', sans-serif",
                         fontSize: "13px",
-                        color: "#3A3632",
+                        color: "var(--foreground-faint)",
                         padding: "16px 0",
                       }}>
                         Aucun creneau disponible ce jour.
@@ -671,7 +671,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                     height: "100%",
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     fontSize: "13px",
-                    color: "#3A3632",
+                    color: "var(--foreground-faint)",
                   }}>
                     Selectionnez une date pour voir les creneaux
                   </div>
@@ -685,8 +685,8 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
               className="transition-opacity duration-300 ease-out"
               style={{
                 marginTop: "32px",
-                background: (!selectedDay || !selectedHeure) ? "#8A7535" : "#C9A84C",
-                color: "#0A0A0A",
+                background: (!selectedDay || !selectedHeure) ? "var(--gold-muted)" : "var(--gold)",
+                color: "var(--background)",
                 border: "none",
                 borderRadius: "2px",
                 padding: "14px 28px",
@@ -712,7 +712,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                 type="button"
                 onClick={() => setStep("date")}
                 className="transition-opacity duration-300 ease-out hover:opacity-70"
-                style={{ background: "none", border: "none", color: "#6B6560", cursor: "pointer", padding: 0 }}
+                style={{ background: "none", border: "none", color: "var(--foreground-muted)", cursor: "pointer", padding: 0 }}
               >
                 <ChevronLeft size={20} />
               </button>
@@ -721,7 +721,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                   fontFamily: "'Cormorant Garamond', serif",
                   fontSize: "24px",
                   fontWeight: 600,
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   letterSpacing: "0.04em",
                 }}>
                   Vos coordonnees
@@ -729,7 +729,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                 <p style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "12px",
-                  color: "#6B6560",
+                  color: "var(--foreground-muted)",
                   marginTop: "4px",
                 }}>
                   {selectedType?.label} — {selectedDay && new Date(calYear, calMonth, selectedDay).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })} a {selectedHeure}
@@ -745,8 +745,8 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                   onChange={set("prenom")}
                   required
                   style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div>
@@ -756,8 +756,8 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                   onChange={set("nom")}
                   required
                   style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div>
@@ -768,8 +768,8 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                   onChange={set("email")}
                   required
                   style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div>
@@ -779,8 +779,8 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                   onChange={set("telephone")}
                   required
                   style={inputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div style={{ gridColumn: "1 / -1" }}>
@@ -794,16 +794,16 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                     ...inputStyle,
                     resize: "none",
                   }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
             </div>
 
             {/* Recapitulatif */}
             <div style={{
-              background: "#111111",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               padding: "20px 24px",
               marginBottom: "32px",
@@ -812,7 +812,7 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "11px",
                 fontWeight: 500,
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase" as const,
                 marginBottom: "16px",
@@ -820,21 +820,21 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
                 Recapitulatif
               </p>
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
-                <Calendar size={16} style={{ color: "#3A3632" }} />
+                <Calendar size={16} style={{ color: "var(--foreground-faint)" }} />
                 <span style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "13px",
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                 }}>
                   {selectedDay && new Date(calYear, calMonth, selectedDay).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                 </span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <Clock size={16} style={{ color: "#3A3632" }} />
+                <Clock size={16} style={{ color: "var(--foreground-faint)" }} />
                 <span style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "13px",
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                 }}>
                   {selectedHeure} — {selectedType?.label} ({selectedType?.duree})
                 </span>
@@ -847,8 +847,8 @@ export default function PriseRdv({ presetType }: PriseRdvProps) {
               className="transition-opacity duration-300 ease-out"
               style={{
                 width: "100%",
-                background: bookRdv.isPending ? "#8A7535" : "#C9A84C",
-                color: "#0A0A0A",
+                background: bookRdv.isPending ? "var(--gold-muted)" : "var(--gold)",
+                color: "var(--background)",
                 border: "none",
                 borderRadius: "2px",
                 padding: "14px",

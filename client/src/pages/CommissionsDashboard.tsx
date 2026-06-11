@@ -10,9 +10,9 @@ import { Euro, TrendingUp, CheckCircle, Clock, Plus, Users, Star, FileText, Arro
 import AdminNav from "@/components/AdminNav";
 
 const STATUT_COLORS: Record<string, { color: string; bg: string; border: string }> = {
-  a_payer: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-  facture_recue: { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
-  paye: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  a_payer: { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  facture_recue: { color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+  paye: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
 };
 
 const STATUT_LABELS: Record<string, string> = {
@@ -24,7 +24,7 @@ const NIVEAU_LABELS: Record<string, string> = {
 };
 
 function StatutBadge({ statut }: { statut: string }) {
-  const s = STATUT_COLORS[statut] ?? { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
+  const s = STATUT_COLORS[statut] ?? { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" };
   return (
     <span style={{
       display: "inline-flex",
@@ -47,9 +47,9 @@ function StatutBadge({ statut }: { statut: string }) {
 
 function NiveauBadge({ niveau }: { niveau: string }) {
   const styles: Record<string, { color: string; bg: string; border: string }> = {
-    "0": { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
-    "1": { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-    "2": { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
+    "0": { color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+    "1": { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+    "2": { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" },
   };
   const s = styles[niveau] ?? styles["0"];
   return (
@@ -116,30 +116,30 @@ export default function CommissionsDashboard() {
   const totalCommissions = commissions?.length ?? 0;
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <AdminNav />
 
       {/* Toolbar */}
-      <div style={{ borderBottom: "1px solid #1E1E1E" }}>
+      <div style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex items-center justify-between px-5 py-2.5" style={{ maxWidth: "1280px", margin: "0 auto" }}>
           <div className="flex items-center gap-3">
             <a href="/dashboard/reseau"
               className="p-2 transition-colors duration-300"
-              style={{ color: "#3A3632", border: "1px solid #1E1E1E", borderRadius: "2px", background: "transparent" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#6B6560"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#3A3632"; }}
+              style={{ color: "var(--foreground-faint)", border: "1px solid var(--border)", borderRadius: "2px", background: "transparent" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-faint)"; }}
             >
               <ArrowLeft className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             </a>
-            <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#3A3632", letterSpacing: "0.04em" }}>Reseau</span>
+            <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground-faint)", letterSpacing: "0.04em" }}>Reseau</span>
           </div>
           <button
             onClick={() => setShowAddDialog(true)}
             className="flex items-center gap-2 transition-colors duration-300"
             style={{
               padding: "8px 20px",
-              background: "#C9A84C",
-              color: "#0A0A0A",
+              background: "var(--gold)",
+              color: "var(--background)",
               fontSize: "11px",
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontWeight: 500,
@@ -150,7 +150,7 @@ export default function CommissionsDashboard() {
               cursor: "pointer",
             }}
             onMouseEnter={e => (e.currentTarget.style.background = "#d4b45a")}
-            onMouseLeave={e => (e.currentTarget.style.background = "#C9A84C")}
+            onMouseLeave={e => (e.currentTarget.style.background = "var(--gold)")}
           >
             <Plus className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> Enregistrer une vente
           </button>
@@ -165,7 +165,7 @@ export default function CommissionsDashboard() {
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: "28px",
             fontWeight: 700,
-            color: "#F0EDE6",
+            color: "var(--foreground)",
             letterSpacing: "0.08em",
             textTransform: "uppercase" as const,
             lineHeight: 1,
@@ -175,7 +175,7 @@ export default function CommissionsDashboard() {
           <p style={{
             fontSize: "13px",
             fontFamily: "'Hanken Grotesk', sans-serif",
-            color: "#3A3632",
+            color: "var(--foreground-faint)",
             marginTop: "8px",
           }}>
             Suivi des retrocommissions N1 (10%) et N2 (5%)
@@ -183,19 +183,19 @@ export default function CommissionsDashboard() {
         </div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mb-10" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mb-10" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
           {[
             { label: "Total verse", value: `${totalPaye.toLocaleString("fr-FR")} EUR`, highlight: false },
             { label: "En attente", value: `${totalAPayer.toLocaleString("fr-FR")} EUR`, highlight: true },
             { label: "Lignes de commission", value: String(totalCommissions), highlight: false },
             { label: "Agents actifs", value: String(statsData?.actifs ?? 0), highlight: false },
           ].map((s, i) => (
-            <div key={s.label} className="p-5" style={{ background: "#0A0A0A" }}>
+            <div key={s.label} className="p-5" style={{ background: "var(--background)" }}>
               <p className="tabular-nums" style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "32px",
                 fontWeight: 600,
-                color: s.highlight ? "#C9A84C" : "#F0EDE6",
+                color: s.highlight ? "var(--gold)" : "var(--foreground)",
                 lineHeight: 1,
                 letterSpacing: "0.02em",
               }}>
@@ -221,9 +221,9 @@ export default function CommissionsDashboard() {
                 fontWeight: 500,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
-                border: `1px solid ${filtreStatut === key ? "#C9A84C" : "#1E1E1E"}`,
+                border: `1px solid ${filtreStatut === key ? "var(--gold)" : "var(--border)"}`,
                 background: filtreStatut === key ? "rgba(201,168,76,0.08)" : "transparent",
-                color: filtreStatut === key ? "#C9A84C" : "#3A3632",
+                color: filtreStatut === key ? "var(--gold)" : "var(--foreground-faint)",
                 cursor: "pointer",
               }}
             >
@@ -233,20 +233,20 @@ export default function CommissionsDashboard() {
         </div>
 
         {/* Table */}
-        <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
           {!commissions?.length ? (
             <div className="text-center py-20">
-              <Euro className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucune commission enregistree</p>
-              <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>Enregistrez une vente pour generer les retrocommissions automatiquement</p>
+              <Euro className="w-10 h-10 mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucune commission enregistree</p>
+              <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>Enregistrez une vente pour generer les retrocommissions automatiquement</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                  <tr style={{ borderBottom: "1px solid var(--border)" }}>
                     {["Agent", "Description", "Comm. Sigma HT", "Montant HT", "Niveau", "Statut", ""].map(h => (
-                      <th key={h} className={`px-5 py-3 label-uppercase ${h === "Comm. Sigma HT" || h === "Montant HT" ? "text-right" : h === "Niveau" ? "text-center" : "text-left"}`} style={{ background: "#0D0D0D" }}>
+                      <th key={h} className={`px-5 py-3 label-uppercase ${h === "Comm. Sigma HT" || h === "Montant HT" ? "text-right" : h === "Niveau" ? "text-center" : "text-left"}`} style={{ background: "var(--surface-header)" }}>
                         {h}
                       </th>
                     ))}
@@ -256,32 +256,32 @@ export default function CommissionsDashboard() {
                   {commissions.map((comm: any) => (
                     <tr key={comm.id}
                       className="transition-colors duration-300"
-                      style={{ borderBottom: "1px solid #151515" }}
-                      onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                      style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                      onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                       onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                     >
                       <td className="px-5 py-3">
-                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>Amb. #{comm.ambassadeurId}</p>
-                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{comm.reference}</p>
+                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>Amb. #{comm.ambassadeurId}</p>
+                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{comm.reference}</p>
                       </td>
                       <td className="px-5 py-3">
-                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{comm.descriptionVente ?? "—"}</p>
-                        <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{comm.dateEncaissement}</p>
+                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{comm.descriptionVente ?? "—"}</p>
+                        <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{comm.dateEncaissement}</p>
                       </td>
                       <td className="px-5 py-3 text-right">
-                        <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#6B6560" }}>{comm.commissionSigmaHt?.toLocaleString("fr-FR")} EUR</p>
+                        <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground-muted)" }}>{comm.commissionSigmaHt?.toLocaleString("fr-FR")} EUR</p>
                       </td>
                       <td className="px-5 py-3 text-right">
                         <p className="tabular-nums" style={{
                           fontFamily: "'Cormorant Garamond', serif",
                           fontSize: "20px",
                           fontWeight: 600,
-                          color: "#F0EDE6",
+                          color: "var(--foreground)",
                           lineHeight: 1,
                         }}>
                           {comm.montantHt?.toLocaleString("fr-FR")} EUR
                         </p>
-                        <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>{comm.tauxPourcent}%</p>
+                        <p className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>{comm.tauxPourcent}%</p>
                       </td>
                       <td className="px-5 py-3 text-center">
                         <NiveauBadge niveau={comm.niveau} />
@@ -301,7 +301,7 @@ export default function CommissionsDashboard() {
                               fontWeight: 500,
                               letterSpacing: "0.06em",
                               textTransform: "uppercase" as const,
-                              color: "#4A7A5A",
+                              color: "var(--success)",
                               border: "1px solid rgba(74,122,90,0.3)",
                               borderRadius: "2px",
                               background: "transparent",
@@ -314,7 +314,7 @@ export default function CommissionsDashboard() {
                           </button>
                         )}
                         {comm.statut === "paye" && comm.valideParNom && (
-                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Valide par {comm.valideParNom}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Valide par {comm.valideParNom}</p>
                         )}
                       </td>
                     </tr>
@@ -328,13 +328,13 @@ export default function CommissionsDashboard() {
 
       {/* Dialog ajouter vente */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", maxWidth: "520px", padding: 0 }}>
-          <div className="px-6 py-4" style={{ borderBottom: "1px solid #1E1E1E" }}>
+        <DialogContent style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", maxWidth: "520px", padding: 0 }}>
+          <div className="px-6 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
             <h2 style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "20px",
               fontWeight: 600,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               letterSpacing: "0.02em",
             }}>
               Enregistrer une vente
@@ -346,12 +346,12 @@ export default function CommissionsDashboard() {
             <div>
               <p className="label-uppercase mb-2">Agent</p>
               <Select value={form.ambassadeurId} onValueChange={v => set("ambassadeurId", v)}>
-                <SelectTrigger style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", color: "#F0EDE6", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>
+                <SelectTrigger style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", color: "var(--foreground)", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>
                   <SelectValue placeholder="Selectionner un agent" />
                 </SelectTrigger>
-                <SelectContent style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+                <SelectContent style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px" }}>
                   {ambassadeursList?.map((amb: any) => (
-                    <SelectItem key={amb.id} value={String(amb.id)} style={{ color: "#F0EDE6", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>
+                    <SelectItem key={amb.id} value={String(amb.id)} style={{ color: "var(--foreground)", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>
                       {amb.prenom} {amb.nom} — N{amb.niveau}
                     </SelectItem>
                   ))}
@@ -370,16 +370,16 @@ export default function CommissionsDashboard() {
                   placeholder="8750"
                   className="w-full transition-colors duration-300 focus:outline-none"
                   style={{
-                    background: "#161616",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--surface-raised)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     padding: "10px 14px",
                     fontSize: "13px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                   }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div>
@@ -390,43 +390,43 @@ export default function CommissionsDashboard() {
                   onChange={e => set("dateEncaissement", e.target.value)}
                   className="w-full transition-colors duration-300 focus:outline-none"
                   style={{
-                    background: "#161616",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--surface-raised)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     padding: "10px 14px",
                     fontSize: "13px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                   }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
             </div>
 
             {/* Calcul automatique */}
             {commSigma > 0 && (
-              <div style={{ background: "#0A0A0A", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "16px" }}>
+              <div style={{ background: "var(--background)", border: "1px solid var(--border)", borderRadius: "2px", padding: "16px" }}>
                 <p className="label-uppercase mb-3">Retrocommissions calculees</p>
-                <div className="grid grid-cols-2 gap-px" style={{ background: "#1E1E1E", borderRadius: "2px" }}>
-                  <div className="p-4" style={{ background: "#0A0A0A" }}>
+                <div className="grid grid-cols-2 gap-px" style={{ background: "var(--border)", borderRadius: "2px" }}>
+                  <div className="p-4" style={{ background: "var(--background)" }}>
                     <p className="tabular-nums" style={{
                       fontFamily: "'Cormorant Garamond', serif",
                       fontSize: "22px",
                       fontWeight: 600,
-                      color: "#C9A84C",
+                      color: "var(--gold)",
                       lineHeight: 1,
                     }}>
                       {commN1.toLocaleString("fr-FR")} EUR
                     </p>
                     <p className="label-uppercase mt-1.5" style={{ fontSize: "10px" }}>Agent N1 (10%)</p>
                   </div>
-                  <div className="p-4" style={{ background: "#0A0A0A" }}>
+                  <div className="p-4" style={{ background: "var(--background)" }}>
                     <p className="tabular-nums" style={{
                       fontFamily: "'Cormorant Garamond', serif",
                       fontSize: "22px",
                       fontWeight: 600,
-                      color: "#F0EDE6",
+                      color: "var(--foreground)",
                       lineHeight: 1,
                     }}>
                       {commN2.toLocaleString("fr-FR")} EUR
@@ -446,16 +446,16 @@ export default function CommissionsDashboard() {
                 placeholder="Appartement T3 Lyon 3eme — Vente directe"
                 className="w-full transition-colors duration-300 focus:outline-none"
                 style={{
-                  background: "#161616",
-                  border: "1px solid #1E1E1E",
+                  background: "var(--surface-raised)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   padding: "10px 14px",
                   fontSize: "13px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                 }}
-                onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                onBlur={e => (e.target.style.borderColor = "var(--border)")}
               />
             </div>
 
@@ -468,27 +468,27 @@ export default function CommissionsDashboard() {
                 placeholder="VENTE-2026-001"
                 className="w-full transition-colors duration-300 focus:outline-none"
                 style={{
-                  background: "#161616",
-                  border: "1px solid #1E1E1E",
+                  background: "var(--surface-raised)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   padding: "10px 14px",
                   fontSize: "13px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                 }}
-                onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                onBlur={e => (e.target.style.borderColor = "var(--border)")}
               />
             </div>
 
             {/* Error */}
             {creerCommission.isError && (
-              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#A04040" }}>{creerCommission.error.message}</p>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--destructive)" }}>{creerCommission.error.message}</p>
             )}
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-4 flex items-center gap-3" style={{ borderTop: "1px solid #1E1E1E" }}>
+          <div className="px-6 py-4 flex items-center gap-3" style={{ borderTop: "1px solid var(--border)" }}>
             <button
               onClick={() => setShowAddDialog(false)}
               className="transition-colors duration-300"
@@ -499,14 +499,14 @@ export default function CommissionsDashboard() {
                 fontWeight: 500,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
-                color: "#6B6560",
-                border: "1px solid #1E1E1E",
+                color: "var(--foreground-muted)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 background: "transparent",
                 cursor: "pointer",
               }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
             >
               Annuler
             </button>
@@ -522,8 +522,8 @@ export default function CommissionsDashboard() {
               className="flex-1 transition-colors duration-300"
               style={{
                 padding: "10px 20px",
-                background: (!form.ambassadeurId || !form.commissionSigmaHt || !form.dateEncaissement || creerCommission.isPending) ? "#8A7535" : "#C9A84C",
-                color: "#0A0A0A",
+                background: (!form.ambassadeurId || !form.commissionSigmaHt || !form.dateEncaissement || creerCommission.isPending) ? "var(--gold-muted)" : "var(--gold)",
+                color: "var(--background)",
                 fontSize: "11px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontWeight: 500,

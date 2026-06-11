@@ -5,24 +5,24 @@ import { toast } from "sonner";
 import { useLocation } from "wouter";
 
 const TYPE_CONFIG: Record<string, { label: string; icon: any; color: string }> = {
-  bug: { label: "Bug", icon: Bug, color: "#A04040" },
-  amelioration: { label: "Amelioration", icon: Lightbulb, color: "#C9A84C" },
-  question: { label: "Question", icon: HelpCircle, color: "#6B6560" },
-  autre: { label: "Autre", icon: FileText, color: "#3A3632" },
+  bug: { label: "Bug", icon: Bug, color: "var(--destructive)" },
+  amelioration: { label: "Amelioration", icon: Lightbulb, color: "var(--gold)" },
+  question: { label: "Question", icon: HelpCircle, color: "var(--foreground-muted)" },
+  autre: { label: "Autre", icon: FileText, color: "var(--foreground-faint)" },
 };
 
 const STATUT_CONFIG: Record<string, { label: string; icon: any; color: string; bg: string; border: string }> = {
-  nouveau: { label: "Nouveau", icon: AlertTriangle, color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-  en_cours: { label: "En cours", icon: Clock, color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
-  resolu: { label: "Resolu", icon: CheckCircle, color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-  ignore: { label: "Ignore", icon: XCircle, color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" },
+  nouveau: { label: "Nouveau", icon: AlertTriangle, color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  en_cours: { label: "En cours", icon: Clock, color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+  resolu: { label: "Resolu", icon: CheckCircle, color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  ignore: { label: "Ignore", icon: XCircle, color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" },
 };
 
 const PRIORITE_CONFIG: Record<string, { label: string; color: string }> = {
-  faible: { label: "Faible", color: "#3A3632" },
-  normale: { label: "Normale", color: "#6B6560" },
-  haute: { label: "Haute", color: "#C9A84C" },
-  critique: { label: "Critique", color: "#A04040" },
+  faible: { label: "Faible", color: "var(--foreground-faint)" },
+  normale: { label: "Normale", color: "var(--foreground-muted)" },
+  haute: { label: "Haute", color: "var(--gold)" },
+  critique: { label: "Critique", color: "var(--destructive)" },
 };
 
 export default function FeedbacksDashboard() {
@@ -52,7 +52,7 @@ export default function FeedbacksDashboard() {
   const formatDate = (ts: number) => new Date(ts).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <div className="px-5 py-8" style={{ maxWidth: "1280px", margin: "0 auto" }}>
 
         {/* Bouton retour + titre */}
@@ -68,7 +68,7 @@ export default function FeedbacksDashboard() {
               fontSize: "11px",
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontWeight: 500,
-              color: "#3A3632",
+              color: "var(--foreground-faint)",
               letterSpacing: "0.04em",
             }}
           >
@@ -79,7 +79,7 @@ export default function FeedbacksDashboard() {
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "24px",
               fontWeight: 600,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               letterSpacing: "0.04em",
             }}>
               Signalements & Feedbacks
@@ -88,19 +88,19 @@ export default function FeedbacksDashboard() {
         </div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mb-10" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mb-10" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
           {[
             { label: "Total", value: stats?.total ?? 0, gold: true },
             { label: "Nouveaux", value: stats?.nouveau ?? 0, gold: false },
             { label: "En cours", value: stats?.en_cours ?? 0, gold: false },
             { label: "Critiques", value: stats?.critique ?? 0, gold: false },
           ].map((kpi) => (
-            <div key={kpi.label} className="p-5" style={{ background: "#0A0A0A" }}>
+            <div key={kpi.label} className="p-5" style={{ background: "var(--background)" }}>
               <p className="tabular-nums" style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "32px",
                 fontWeight: 600,
-                color: kpi.gold ? "#C9A84C" : "#F0EDE6",
+                color: kpi.gold ? "var(--gold)" : "var(--foreground)",
                 lineHeight: 1,
                 letterSpacing: "0.02em",
               }}>
@@ -128,8 +128,8 @@ export default function FeedbacksDashboard() {
                   letterSpacing: "0.04em",
                   textTransform: "uppercase" as const,
                   background: filtreStatut === s ? "rgba(201,168,76,0.06)" : "transparent",
-                  border: `1px solid ${filtreStatut === s ? "rgba(201,168,76,0.3)" : "#1E1E1E"}`,
-                  color: filtreStatut === s ? "#C9A84C" : "#3A3632",
+                  border: `1px solid ${filtreStatut === s ? "rgba(201,168,76,0.3)" : "var(--border)"}`,
+                  color: filtreStatut === s ? "var(--gold)" : "var(--foreground-faint)",
                   cursor: "pointer",
                 }}
               >
@@ -152,8 +152,8 @@ export default function FeedbacksDashboard() {
                   letterSpacing: "0.04em",
                   textTransform: "uppercase" as const,
                   background: filtreType === t ? "rgba(201,168,76,0.06)" : "transparent",
-                  border: `1px solid ${filtreType === t ? "rgba(201,168,76,0.3)" : "#1E1E1E"}`,
-                  color: filtreType === t ? "#C9A84C" : "#3A3632",
+                  border: `1px solid ${filtreType === t ? "rgba(201,168,76,0.3)" : "var(--border)"}`,
+                  color: filtreType === t ? "var(--gold)" : "var(--foreground-faint)",
                   cursor: "pointer",
                 }}
               >
@@ -166,13 +166,13 @@ export default function FeedbacksDashboard() {
               style={{
                 padding: "6px",
                 borderRadius: "2px",
-                border: "1px solid #1E1E1E",
+                border: "1px solid var(--border)",
                 background: "transparent",
-                color: "#3A3632",
+                color: "var(--foreground-faint)",
                 cursor: "pointer",
               }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#6B6560"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#3A3632"; }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-faint)"; }}
             >
               <RefreshCw className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
             </button>
@@ -182,8 +182,8 @@ export default function FeedbacksDashboard() {
         {/* Liste */}
         {!liste || liste.length === 0 ? (
           <div className="text-center py-24">
-            <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun signalement pour le moment</p>
+            <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucun signalement pour le moment</p>
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column" as const, gap: "2px" }}>
@@ -195,8 +195,8 @@ export default function FeedbacksDashboard() {
 
               return (
                 <div key={fb.id} style={{
-                  background: "#111111",
-                  border: "1px solid #1E1E1E",
+                  background: "var(--surface)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   padding: "16px 20px",
                 }}>
@@ -213,7 +213,7 @@ export default function FeedbacksDashboard() {
                           fontFamily: "'Hanken Grotesk', sans-serif",
                           fontSize: "13px",
                           fontWeight: 500,
-                          color: "#F0EDE6",
+                          color: "var(--foreground)",
                         }}>{fb.titre}</span>
                         <span style={{
                           display: "inline-flex",
@@ -251,11 +251,11 @@ export default function FeedbacksDashboard() {
                       <p style={{
                         fontSize: "13px",
                         fontFamily: "'Hanken Grotesk', sans-serif",
-                        color: "#6B6560",
+                        color: "var(--foreground-muted)",
                         marginBottom: "8px",
                         lineHeight: "1.6",
                       }}>{fb.description}</p>
-                      <div className="flex items-center gap-4 flex-wrap" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                      <div className="flex items-center gap-4 flex-wrap" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                         {fb.page && (
                           <span className="flex items-center gap-1">
                             <MapPin className="w-3 h-3" style={{ strokeWidth: 1.5 }} />
@@ -285,9 +285,9 @@ export default function FeedbacksDashboard() {
                           fontFamily: "'Hanken Grotesk', sans-serif",
                           padding: "4px 8px",
                           borderRadius: "2px",
-                          background: "#161616",
-                          border: "1px solid #1E1E1E",
-                          color: "#C9A84C",
+                          background: "var(--surface-raised)",
+                          border: "1px solid var(--border)",
+                          color: "var(--gold)",
                           outline: "none",
                           cursor: "pointer",
                         }}
@@ -303,13 +303,13 @@ export default function FeedbacksDashboard() {
                         style={{
                           padding: "4px",
                           borderRadius: "2px",
-                          border: "1px solid #1E1E1E",
+                          border: "1px solid var(--border)",
                           background: "transparent",
-                          color: "#3A3632",
+                          color: "var(--foreground-faint)",
                           cursor: "pointer",
                         }}
-                        onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-                        onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                        onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+                        onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
                       >
                         <Trash2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
                       </button>

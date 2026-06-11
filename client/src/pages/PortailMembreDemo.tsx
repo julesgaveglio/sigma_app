@@ -112,8 +112,8 @@ export default function PortailMembreDemo() {
   return (
     <div className="min-h-screen bg-[#080808] text-white">
       {/* Bandeau démo */}
-      <div className="bg-[#C9A84C]/20 border-b border-[#C9A84C]/30 px-4 py-2 text-center">
-        <p className="text-[#C9A84C] text-xs font-medium">
+      <div className="bg-[var(--gold)]/20 border-b border-[var(--gold)]/30 px-4 py-2 text-center">
+        <p className="text-[var(--gold)] text-xs font-medium">
           ✦ Aperçu démonstration — Espace Agent Sigma Factory
         </p>
       </div>
@@ -123,7 +123,7 @@ export default function PortailMembreDemo() {
         {/* Header profil */}
         <div className="flex items-start justify-between mb-8 gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-[#C9A84C]/20 border border-[#C9A84C]/40 flex items-center justify-center text-[#C9A84C] font-bold text-xl">
+            <div className="w-14 h-14 rounded-full bg-[var(--gold)]/20 border border-[var(--gold)]/40 flex items-center justify-center text-[var(--gold)] font-bold text-xl">
               {DEMO_AMBASSADEUR.prenom[0]}{DEMO_AMBASSADEUR.nom[0]}
             </div>
             <div>
@@ -138,10 +138,10 @@ export default function PortailMembreDemo() {
           <div className="text-right hidden sm:block">
             <p className="text-gray-500 text-xs mb-1">Votre code parrain</p>
             <div className="flex items-center gap-2">
-              <code className="text-[#C9A84C] font-mono text-sm bg-[#C9A84C]/10 px-3 py-1 rounded border border-[#C9A84C]/30">
+              <code className="text-[var(--gold)] font-mono text-sm bg-[var(--gold)]/10 px-3 py-1 rounded border border-[var(--gold)]/30">
                 {DEMO_AMBASSADEUR.codeParrain}
               </code>
-              <button onClick={copyCode} className="text-gray-400 hover:text-[#C9A84C] transition-colors">
+              <button onClick={copyCode} className="text-gray-400 hover:text-[var(--gold)] transition-colors">
                 {copiedCode ? <CheckCircle size={15} className="text-green-400" /> : <Copy size={15} />}
               </button>
             </div>
@@ -156,7 +156,7 @@ export default function PortailMembreDemo() {
               onClick={() => setActiveTab(tab.key)}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-all ${
                 activeTab === tab.key
-                  ? "bg-[#C9A84C] text-black"
+                  ? "bg-[var(--gold)] text-black"
                   : "text-gray-400 hover:text-white hover:bg-[#1a1a1a]"
               }`}
             >
@@ -172,7 +172,7 @@ export default function PortailMembreDemo() {
             {/* KPIs */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { label: "Total commissions", value: `${totalGeneral.toLocaleString("fr-FR")} €`, icon: <TrendingUp size={16} className="text-[#C9A84C]" />, sub: "Cumulé" },
+                { label: "Total commissions", value: `${totalGeneral.toLocaleString("fr-FR")} €`, icon: <TrendingUp size={16} className="text-[var(--gold)]" />, sub: "Cumulé" },
                 { label: "Payé", value: `${totalPaye.toLocaleString("fr-FR")} €`, icon: <CheckCircle size={16} className="text-green-400" />, sub: "Versé" },
                 { label: "En attente", value: `${totalAttente.toLocaleString("fr-FR")} €`, icon: <Clock size={16} className="text-yellow-400" />, sub: "À venir" },
                 { label: "Filleuls actifs", value: `${DEMO_FILLEULS.filter(f => f.statut === "actif").length}`, icon: <Users size={16} className="text-blue-400" />, sub: `sur ${DEMO_FILLEULS.length} total` },
@@ -188,7 +188,7 @@ export default function PortailMembreDemo() {
             {/* Graphique mensuel */}
             <div className="bg-[#111] border border-[#222] rounded-xl p-5">
               <div className="flex items-center gap-2 mb-4">
-                <BarChart2 size={16} className="text-[#C9A84C]" />
+                <BarChart2 size={16} className="text-[var(--gold)]" />
                 <h3 className="text-white font-semibold text-sm">Évolution mensuelle des commissions</h3>
               </div>
               <div className="flex items-end gap-2 h-32">
@@ -199,7 +199,7 @@ export default function PortailMembreDemo() {
                         className="w-full rounded-t-sm transition-all"
                         style={{
                           height: `${Math.max((m.montant / maxMontant) * 96, m.montant > 0 ? 4 : 0)}px`,
-                          background: m.mois === "Mar" ? "#C9A84C" : "#C9A84C33",
+                          background: m.mois === "Mar" ? "var(--gold)" : "var(--gold)33",
                         }}
                       />
                     </div>
@@ -211,14 +211,14 @@ export default function PortailMembreDemo() {
             </div>
 
             {/* Lien parrainage */}
-            <div className="bg-[#C9A84C]/8 border border-[#C9A84C]/25 rounded-xl p-5">
+            <div className="bg-[var(--gold)]/8 border border-[var(--gold)]/25 rounded-xl p-5">
               <div className="flex items-center gap-2 mb-3">
-                <Share2 size={16} className="text-[#C9A84C]" />
+                <Share2 size={16} className="text-[var(--gold)]" />
                 <h3 className="text-white font-semibold text-sm">Votre lien d'invitation</h3>
               </div>
               <div className="flex items-center gap-2 bg-[#0d0d0d] border border-[#333] rounded-lg px-3 py-2 mb-3">
                 <code className="text-gray-300 text-xs flex-1 truncate">{lienParrainage}</code>
-                <button onClick={copyLink} className="text-gray-400 hover:text-[#C9A84C] transition-colors flex-shrink-0">
+                <button onClick={copyLink} className="text-gray-400 hover:text-[var(--gold)] transition-colors flex-shrink-0">
                   {copiedLink ? <CheckCircle size={14} className="text-green-400" /> : <Copy size={14} />}
                 </button>
               </div>
@@ -272,7 +272,7 @@ export default function PortailMembreDemo() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               {[
-                { label: "Filleuls N1", value: DEMO_FILLEULS.filter(f => f.niveau === "1").length, color: "text-[#C9A84C]" },
+                { label: "Filleuls N1", value: DEMO_FILLEULS.filter(f => f.niveau === "1").length, color: "text-[var(--gold)]" },
                 { label: "Filleuls N2", value: DEMO_FILLEULS.filter(f => f.niveau === "2").length, color: "text-blue-400" },
               ].map((s, i) => (
                 <div key={i} className="bg-[#111] border border-[#222] rounded-xl p-4 text-center">
@@ -288,7 +288,7 @@ export default function PortailMembreDemo() {
               </div>
               {DEMO_FILLEULS.map((f, i) => (
                 <div key={f.id} className={`flex items-center gap-3 px-4 py-3 ${i < DEMO_FILLEULS.length - 1 ? "border-b border-[#1a1a1a]" : ""}`}>
-                  <div className="w-8 h-8 rounded-full bg-[#C9A84C]/15 border border-[#C9A84C]/30 flex items-center justify-center text-[#C9A84C] text-xs font-bold flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-[var(--gold)]/15 border border-[var(--gold)]/30 flex items-center justify-center text-[var(--gold)] text-xs font-bold flex-shrink-0">
                     {f.prenom[0]}{f.nom[0]}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -315,7 +315,7 @@ export default function PortailMembreDemo() {
               {DEMO_BIENS.map((b, i) => (
                 <div key={b.id} className={`flex items-center justify-between px-4 py-3 ${i < DEMO_BIENS.length - 1 ? "border-b border-[#1a1a1a]" : ""}`}>
                   <div className="flex items-center gap-3">
-                    <Home size={16} className="text-[#C9A84C] flex-shrink-0" />
+                    <Home size={16} className="text-[var(--gold)] flex-shrink-0" />
                     <div>
                       <p className="text-white text-sm">{b.titre}</p>
                       <p className="text-gray-500 text-xs">{b.prix.toLocaleString("fr-FR")} €</p>

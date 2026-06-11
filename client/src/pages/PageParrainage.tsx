@@ -28,12 +28,12 @@ export default function PageParrainage() {
   const goCourtier = () => navigate(`/inscription-courtier?parrain=${encodeURIComponent(code)}`);
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A", color: "#F0EDE6" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)", color: "var(--foreground)" }}>
 
       {/* ── Header ── */}
       <header style={{
-        borderBottom: "1px solid #1E1E1E",
-        background: "#0A0A0A",
+        borderBottom: "1px solid var(--border)",
+        background: "var(--background)",
       }}>
         <div style={{
           maxWidth: "1280px",
@@ -50,7 +50,7 @@ export default function PageParrainage() {
               fontWeight: 700,
               letterSpacing: "0.2em",
               lineHeight: 1,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               margin: 0,
               textTransform: "uppercase" as const,
             }}>
@@ -59,7 +59,7 @@ export default function PageParrainage() {
             <p style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "10px",
-              color: "#3A3632",
+              color: "var(--foreground-faint)",
               letterSpacing: "0.12em",
               textTransform: "uppercase" as const,
               marginTop: "4px",
@@ -72,7 +72,7 @@ export default function PageParrainage() {
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "11px",
               fontWeight: 500,
-              color: "#C9A84C",
+              color: "var(--gold)",
               letterSpacing: "0.08em",
               textTransform: "uppercase" as const,
             }}>
@@ -81,7 +81,7 @@ export default function PageParrainage() {
             <div style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "12px",
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               marginTop: "2px",
             }}>
               Invitation personnelle
@@ -92,7 +92,7 @@ export default function PageParrainage() {
 
       {/* ── Bloc parrain ── */}
       <div style={{
-        borderBottom: "1px solid #1E1E1E",
+        borderBottom: "1px solid var(--border)",
         padding: "48px 24px",
       }}>
         <div style={{ maxWidth: "720px", margin: "0 auto", textAlign: "center" }}>
@@ -100,7 +100,7 @@ export default function PageParrainage() {
             <div style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "13px",
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
             }}>
               Chargement...
             </div>
@@ -110,17 +110,17 @@ export default function PageParrainage() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "8px",
-                background: "#111111",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "8px 16px",
                 marginBottom: "20px",
               }}>
-                <CheckCircle size={14} style={{ color: "#4A7A5A" }} />
+                <CheckCircle size={14} style={{ color: "var(--success)" }} />
                 <span style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "12px",
-                  color: "#4A7A5A",
+                  color: "var(--success)",
                   fontWeight: 500,
                   letterSpacing: "0.04em",
                 }}>
@@ -131,7 +131,7 @@ export default function PageParrainage() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "28px",
                 fontWeight: 600,
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 letterSpacing: "0.04em",
                 marginBottom: "8px",
               }}>
@@ -140,7 +140,7 @@ export default function PageParrainage() {
               <p style={{
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "14px",
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 marginBottom: "24px",
                 lineHeight: "1.6",
               }}>
@@ -154,15 +154,15 @@ export default function PageParrainage() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "12px",
-                background: "#111111",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "14px 20px",
               }}>
                 <span style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "11px",
-                  color: "#6B6560",
+                  color: "var(--foreground-muted)",
                   letterSpacing: "0.04em",
                   textTransform: "uppercase" as const,
                 }}>
@@ -172,7 +172,7 @@ export default function PageParrainage() {
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontWeight: 600,
                   fontSize: "16px",
-                  color: "#C9A84C",
+                  color: "var(--gold)",
                   letterSpacing: "0.12em",
                   fontVariantNumeric: "tabular-nums",
                 }}>
@@ -184,7 +184,7 @@ export default function PageParrainage() {
                   style={{
                     background: "none",
                     border: "none",
-                    color: "#6B6560",
+                    color: "var(--foreground-muted)",
                     cursor: "pointer",
                     padding: "0",
                   }}
@@ -199,8 +199,8 @@ export default function PageParrainage() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "8px",
-                background: "#111111",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "8px 16px",
                 marginBottom: "20px",
@@ -208,7 +208,7 @@ export default function PageParrainage() {
                 <span style={{
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontSize: "12px",
-                  color: "#6B6560",
+                  color: "var(--foreground-muted)",
                 }}>
                   Code non reconnu
                 </span>
@@ -217,7 +217,7 @@ export default function PageParrainage() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "28px",
                 fontWeight: 600,
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 letterSpacing: "0.04em",
                 marginBottom: "8px",
               }}>
@@ -226,7 +226,7 @@ export default function PageParrainage() {
               <p style={{
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "14px",
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 lineHeight: "1.6",
               }}>
                 Inscrivez-vous en tant qu'agent ou courtier partenaire.
@@ -238,7 +238,7 @@ export default function PageParrainage() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "28px",
                 fontWeight: 600,
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 letterSpacing: "0.04em",
                 marginBottom: "8px",
               }}>
@@ -247,7 +247,7 @@ export default function PageParrainage() {
               <p style={{
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "14px",
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 lineHeight: "1.6",
               }}>
                 Inscrivez-vous en tant qu'agent ou courtier partenaire.
@@ -264,7 +264,7 @@ export default function PageParrainage() {
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: "32px",
             fontWeight: 600,
-            color: "#F0EDE6",
+            color: "var(--foreground)",
             letterSpacing: "0.04em",
             marginBottom: "16px",
           }}>
@@ -273,7 +273,7 @@ export default function PageParrainage() {
           <p style={{
             fontFamily: "'Hanken Grotesk', sans-serif",
             fontSize: "15px",
-            color: "#6B6560",
+            color: "var(--foreground-muted)",
             maxWidth: "560px",
             margin: "0 auto",
             lineHeight: "1.6",
@@ -292,18 +292,18 @@ export default function PageParrainage() {
         }}>
           {/* Agent */}
           <div style={{
-            background: "#111111",
-            border: "1px solid #1E1E1E",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
             borderRadius: "2px",
             padding: "32px",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "24px" }}>
-              <Home size={16} style={{ color: "#6B6560" }} />
+              <Home size={16} style={{ color: "var(--foreground-muted)" }} />
               <span style={{
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "11px",
                 fontWeight: 500,
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase" as const,
               }}>
@@ -321,13 +321,13 @@ export default function PageParrainage() {
                 gap: "12px",
                 marginBottom: i < 2 ? "20px" : "0",
               }}>
-                <item.icon size={16} style={{ color: "#3A3632", marginTop: "2px", flexShrink: 0 }} />
+                <item.icon size={16} style={{ color: "var(--foreground-faint)", marginTop: "2px", flexShrink: 0 }} />
                 <div>
                   <p style={{
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     fontSize: "13px",
                     fontWeight: 500,
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                     marginBottom: "4px",
                   }}>
                     {item.title}
@@ -335,7 +335,7 @@ export default function PageParrainage() {
                   <p style={{
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     fontSize: "12px",
-                    color: "#6B6560",
+                    color: "var(--foreground-muted)",
                     lineHeight: "1.6",
                   }}>
                     {item.desc}
@@ -347,18 +347,18 @@ export default function PageParrainage() {
 
           {/* Courtier */}
           <div style={{
-            background: "#111111",
-            border: "1px solid #1E1E1E",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
             borderRadius: "2px",
             padding: "32px",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "24px" }}>
-              <CreditCard size={16} style={{ color: "#6B6560" }} />
+              <CreditCard size={16} style={{ color: "var(--foreground-muted)" }} />
               <span style={{
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontSize: "11px",
                 fontWeight: 500,
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase" as const,
               }}>
@@ -376,13 +376,13 @@ export default function PageParrainage() {
                 gap: "12px",
                 marginBottom: i < 2 ? "20px" : "0",
               }}>
-                <item.icon size={16} style={{ color: "#3A3632", marginTop: "2px", flexShrink: 0 }} />
+                <item.icon size={16} style={{ color: "var(--foreground-faint)", marginTop: "2px", flexShrink: 0 }} />
                 <div>
                   <p style={{
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     fontSize: "13px",
                     fontWeight: 500,
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                     marginBottom: "4px",
                   }}>
                     {item.title}
@@ -390,7 +390,7 @@ export default function PageParrainage() {
                   <p style={{
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     fontSize: "12px",
-                    color: "#6B6560",
+                    color: "var(--foreground-muted)",
                     lineHeight: "1.6",
                   }}>
                     {item.desc}
@@ -413,8 +413,8 @@ export default function PageParrainage() {
             onClick={goAgent}
             className="transition-opacity duration-300 ease-out"
             style={{
-              background: "#C9A84C",
-              color: "#0A0A0A",
+              background: "var(--gold)",
+              color: "var(--background)",
               border: "none",
               borderRadius: "2px",
               padding: "32px 24px",
@@ -461,18 +461,18 @@ export default function PageParrainage() {
             onClick={goCourtier}
             className="transition-colors duration-300 ease-out"
             style={{
-              background: "#111111",
-              color: "#F0EDE6",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              color: "var(--foreground)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               padding: "32px 24px",
               textAlign: "left",
               cursor: "pointer",
             }}
-            onMouseEnter={e => (e.currentTarget.style.borderColor = "#C9A84C")}
-            onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--gold)")}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
           >
-            <CreditCard size={24} style={{ marginBottom: "16px", color: "#6B6560" }} />
+            <CreditCard size={24} style={{ marginBottom: "16px", color: "var(--foreground-muted)" }} />
             <h4 style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "20px",
@@ -485,7 +485,7 @@ export default function PageParrainage() {
             <p style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "12px",
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               lineHeight: "1.6",
               marginBottom: "16px",
             }}>
@@ -500,7 +500,7 @@ export default function PageParrainage() {
               fontWeight: 500,
               letterSpacing: "0.1em",
               textTransform: "uppercase" as const,
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
             }}>
               Rejoindre <ArrowRight size={14} />
             </div>
@@ -510,8 +510,8 @@ export default function PageParrainage() {
         {/* ── Sigma info ── */}
         <div style={{
           marginTop: "56px",
-          background: "#111111",
-          border: "1px solid #1E1E1E",
+          background: "var(--surface)",
+          border: "1px solid var(--border)",
           borderRadius: "2px",
           padding: "24px 28px",
           display: "flex",
@@ -520,13 +520,13 @@ export default function PageParrainage() {
           maxWidth: "640px",
           margin: "56px auto 0",
         }}>
-          <Shield size={20} style={{ color: "#3A3632", flexShrink: 0, marginTop: "2px" }} />
+          <Shield size={20} style={{ color: "var(--foreground-faint)", flexShrink: 0, marginTop: "2px" }} />
           <div>
             <p style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "11px",
               fontWeight: 500,
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               letterSpacing: "0.08em",
               textTransform: "uppercase" as const,
               marginBottom: "8px",
@@ -536,7 +536,7 @@ export default function PageParrainage() {
             <p style={{
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontSize: "12px",
-              color: "#3A3632",
+              color: "var(--foreground-faint)",
               lineHeight: "1.8",
             }}>
               Capital 5 000 EUR — RCS Lyon 999 672 777 — Carte pro CPI69012026000000022 — CCI Lyon Metropole<br />

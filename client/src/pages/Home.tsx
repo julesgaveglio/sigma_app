@@ -17,7 +17,7 @@ export default function Home() {
   // const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "var(--background)" }}>
       <main style={{
         flex: 1,
         display: "flex",
@@ -32,7 +32,7 @@ export default function Home() {
           fontSize: "28px",
           fontWeight: 700,
           letterSpacing: "0.2em",
-          color: "#C9A84C",
+          color: "var(--gold)",
           lineHeight: 1,
           marginBottom: "12px",
           textTransform: "uppercase" as const,
@@ -42,21 +42,21 @@ export default function Home() {
         <div style={{
           width: "40px",
           height: "1px",
-          background: "#1E1E1E",
+          background: "var(--border)",
           marginBottom: "32px",
         }} />
 
         {loading ? (
           <Loader2
             size={20}
-            style={{ color: "#3A3632" }}
+            style={{ color: "var(--foreground-faint)" }}
             className="animate-spin"
           />
         ) : (
           <p style={{
             fontFamily: "'Hanken Grotesk', sans-serif",
             fontSize: "14px",
-            color: "#6B6560",
+            color: "var(--foreground-muted)",
             lineHeight: "1.6",
             textAlign: "center",
             maxWidth: "400px",
@@ -73,8 +73,8 @@ export default function Home() {
               className="transition-opacity duration-300 ease-out"
               style={{
                 display: "inline-block",
-                background: "#C9A84C",
-                color: "#0A0A0A",
+                background: "var(--gold)",
+                color: "var(--background)",
                 border: "none",
                 borderRadius: "2px",
                 padding: "14px 28px",
@@ -96,8 +96,8 @@ export default function Home() {
               className="transition-opacity duration-300 ease-out"
               style={{
                 display: "inline-block",
-                background: "#C9A84C",
-                color: "#0A0A0A",
+                background: "var(--gold)",
+                color: "var(--background)",
                 border: "none",
                 borderRadius: "2px",
                 padding: "14px 28px",
@@ -120,7 +120,7 @@ export default function Home() {
         <p style={{
           fontFamily: "'Hanken Grotesk', sans-serif",
           fontSize: "10px",
-          color: "#1E1E1E",
+          color: "var(--border)",
           letterSpacing: "0.12em",
           textTransform: "uppercase" as const,
           marginTop: "80px",

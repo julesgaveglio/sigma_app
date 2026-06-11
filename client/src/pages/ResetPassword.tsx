@@ -53,12 +53,12 @@ export default function ResetPassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-5"
-         style={{ background: "#0A0A0A" }}>
+         style={{ background: "var(--background)" }}>
       <div className="w-full" style={{ maxWidth: "380px" }}>
 
         {/* ── Wordmark ── */}
         <header className="text-center mb-16">
-          <h1 className="text-[#C9A84C] mb-3"
+          <h1 className="text-[var(--gold)] mb-3"
               style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "28px",
@@ -73,8 +73,8 @@ export default function ResetPassword() {
 
         {/* ── Card ── */}
         <div style={{
-          background: "#111111",
-          border: "1px solid #1E1E1E",
+          background: "var(--surface)",
+          border: "1px solid var(--border)",
           borderRadius: "2px",
           padding: "40px 36px",
         }}>
@@ -84,14 +84,14 @@ export default function ResetPassword() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "20px",
                 fontWeight: 600,
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 letterSpacing: "0.04em",
                 marginBottom: "12px",
               }}>
                 Lien invalide
               </h2>
               <p style={{
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 lineHeight: "1.6",
@@ -104,8 +104,8 @@ export default function ResetPassword() {
                 className="transition-opacity duration-300 ease-out hover:opacity-80"
                 style={{
                   display: "inline-block",
-                  background: "#C9A84C",
-                  color: "#0A0A0A",
+                  background: "var(--gold)",
+                  color: "var(--background)",
                   textDecoration: "none",
                   borderRadius: "2px",
                   padding: "14px 28px",
@@ -125,14 +125,14 @@ export default function ResetPassword() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "20px",
                 fontWeight: 600,
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 letterSpacing: "0.04em",
                 marginBottom: "12px",
               }}>
                 Mot de passe modifie
               </h2>
               <p style={{
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 lineHeight: "1.6",
@@ -141,7 +141,7 @@ export default function ResetPassword() {
                 Votre mot de passe a été réinitialisé avec succès.
               </p>
               <p style={{
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 lineHeight: "1.6",
@@ -154,8 +154,8 @@ export default function ResetPassword() {
                 className="transition-opacity duration-300 ease-out hover:opacity-80"
                 style={{
                   display: "inline-block",
-                  background: "#C9A84C",
-                  color: "#0A0A0A",
+                  background: "var(--gold)",
+                  color: "var(--background)",
                   textDecoration: "none",
                   borderRadius: "2px",
                   padding: "14px 28px",
@@ -175,7 +175,7 @@ export default function ResetPassword() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "20px",
                 fontWeight: 600,
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 letterSpacing: "0.04em",
                 marginBottom: "8px",
                 textAlign: "center",
@@ -183,7 +183,7 @@ export default function ResetPassword() {
                 Nouveau mot de passe
               </h2>
               <p style={{
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 textAlign: "center",
@@ -195,12 +195,12 @@ export default function ResetPassword() {
 
               {error && (
                 <div style={{
-                  background: "#1A1010",
+                  background: "var(--surface-header)",
                   border: "1px solid #3A1E1E",
                   borderRadius: "2px",
                   padding: "12px 16px",
                   marginBottom: "24px",
-                  color: "#C06060",
+                  color: "var(--destructive)",
                   fontSize: "13px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
                 }}>
@@ -221,16 +221,16 @@ export default function ResetPassword() {
                     autoComplete="new-password"
                     className="w-full transition-colors duration-300 ease-out focus:outline-none"
                     style={{
-                      background: "#161616",
-                      border: "1px solid #1E1E1E",
+                      background: "var(--surface-raised)",
+                      border: "1px solid var(--border)",
                       borderRadius: "2px",
                       padding: "12px 14px",
-                      color: "#F0EDE6",
+                      color: "var(--foreground)",
                       fontSize: "14px",
                       fontFamily: "'Hanken Grotesk', sans-serif",
                     }}
-                    onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                    onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                    onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                    onBlur={e => (e.target.style.borderColor = "var(--border)")}
                   />
                 </div>
 
@@ -246,16 +246,16 @@ export default function ResetPassword() {
                     autoComplete="new-password"
                     className="w-full transition-colors duration-300 ease-out focus:outline-none"
                     style={{
-                      background: "#161616",
-                      border: "1px solid #1E1E1E",
+                      background: "var(--surface-raised)",
+                      border: "1px solid var(--border)",
                       borderRadius: "2px",
                       padding: "12px 14px",
-                      color: "#F0EDE6",
+                      color: "var(--foreground)",
                       fontSize: "14px",
                       fontFamily: "'Hanken Grotesk', sans-serif",
                     }}
-                    onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                    onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                    onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                    onBlur={e => (e.target.style.borderColor = "var(--border)")}
                   />
                 </div>
 
@@ -264,8 +264,8 @@ export default function ResetPassword() {
                   disabled={resetMutation.isPending}
                   className="w-full transition-opacity duration-300 ease-out"
                   style={{
-                    background: resetMutation.isPending ? "#8A7535" : "#C9A84C",
-                    color: "#0A0A0A",
+                    background: resetMutation.isPending ? "var(--gold-muted)" : "var(--gold)",
+                    color: "var(--background)",
                     border: "none",
                     borderRadius: "2px",
                     padding: "14px",
@@ -283,7 +283,7 @@ export default function ResetPassword() {
               </form>
 
               <div style={{
-                borderTop: "1px solid #1E1E1E",
+                borderTop: "1px solid var(--border)",
                 marginTop: "28px",
                 paddingTop: "24px",
                 textAlign: "center",
@@ -292,7 +292,7 @@ export default function ResetPassword() {
                   href="/login"
                   className="transition-opacity duration-300 ease-out hover:opacity-70"
                   style={{
-                    color: "#6B6560",
+                    color: "var(--foreground-muted)",
                     fontSize: "12px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     textDecoration: "none",
@@ -308,7 +308,7 @@ export default function ResetPassword() {
 
         {/* ── Footer ── */}
         <p className="text-center mt-10" style={{
-          color: "#1E1E1E",
+          color: "var(--border)",
           fontSize: "10px",
           fontFamily: "'Hanken Grotesk', sans-serif",
           letterSpacing: "0.12em",

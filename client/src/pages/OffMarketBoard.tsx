@@ -20,10 +20,10 @@ const STATUT_LABELS: Record<Statut, string> = {
 };
 
 const STATUT_STYLES: Record<Statut, { color: string; bg: string; border: string }> = {
-  disponible: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
-  sous_compromis: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
-  vendu: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
-  archive: { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" },
+  disponible: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" },
+  sous_compromis: { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" },
+  vendu: { color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" },
+  archive: { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" },
 };
 
 const STATUT_COLORS: Record<Statut, string> = {
@@ -138,16 +138,16 @@ function BienCard({ bien, onClick }: { bien: Bien; onClick: () => void }) {
       onClick={onClick}
       className="cursor-pointer transition-colors duration-300"
       style={{
-        background: "#111111",
-        border: "1px solid #1E1E1E",
+        background: "var(--surface)",
+        border: "1px solid var(--border)",
         borderRadius: "2px",
         overflow: "hidden",
       }}
       onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(201,168,76,0.3)")}
-      onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
     >
       {/* Image */}
-      <div style={{ position: "relative", height: "180px", background: "#0D0D0D", overflow: "hidden" }}>
+      <div style={{ position: "relative", height: "180px", background: "var(--surface-header)", overflow: "hidden" }}>
         {mainImg ? (
           <img
             src={mainImg}
@@ -159,7 +159,7 @@ function BienCard({ bien, onClick }: { bien: Bien; onClick: () => void }) {
           />
         ) : (
           <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Building style={{ width: "32px", height: "32px", color: "#1E1E1E", strokeWidth: 1.5 }} />
+            <Building style={{ width: "32px", height: "32px", color: "var(--border)", strokeWidth: 1.5 }} />
           </div>
         )}
         <div style={{ position: "absolute", top: "12px", left: "12px", display: "flex", gap: "6px" }}>
@@ -175,8 +175,8 @@ function BienCard({ bien, onClick }: { bien: Bien; onClick: () => void }) {
               fontWeight: 600,
               letterSpacing: "0.06em",
               textTransform: "uppercase" as const,
-              color: "#0A0A0A",
-              background: "#C9A84C",
+              color: "var(--background)",
+              background: "var(--gold)",
             }}>
               Nouveau
             </span>
@@ -188,7 +188,7 @@ function BienCard({ bien, onClick }: { bien: Bien; onClick: () => void }) {
             bottom: "10px",
             right: "10px",
             background: "rgba(0,0,0,0.6)",
-            color: "#F0EDE6",
+            color: "var(--foreground)",
             fontSize: "10px",
             fontFamily: "'Hanken Grotesk', sans-serif",
             padding: "2px 8px",
@@ -205,7 +205,7 @@ function BienCard({ bien, onClick }: { bien: Bien; onClick: () => void }) {
           fontFamily: "'Cormorant Garamond', serif",
           fontSize: "16px",
           fontWeight: 600,
-          color: "#F0EDE6",
+          color: "var(--foreground)",
           lineHeight: 1.3,
           marginBottom: "6px",
           display: "-webkit-box",
@@ -218,35 +218,35 @@ function BienCard({ bien, onClick }: { bien: Bien; onClick: () => void }) {
         </p>
 
         <div style={{ display: "flex", alignItems: "center", gap: "4px", marginBottom: "14px" }}>
-          <MapPin style={{ width: "12px", height: "12px", color: "#3A3632", strokeWidth: 1.5, flexShrink: 0 }} />
-          <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
+          <MapPin style={{ width: "12px", height: "12px", color: "var(--foreground-faint)", strokeWidth: 1.5, flexShrink: 0 }} />
+          <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
             {bien.region || bien.departement || "\u2014"}
           </span>
           {bien.typeBien && (
             <>
-              <span style={{ color: "#3A3632", margin: "0 2px" }}>\u00b7</span>
-              <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>{bien.typeBien}</span>
+              <span style={{ color: "var(--foreground-faint)", margin: "0 2px" }}>\u00b7</span>
+              <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>{bien.typeBien}</span>
             </>
           )}
         </div>
 
         {/* Data grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "#1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
-          <div style={{ background: "#0A0A0A", padding: "10px 12px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
+          <div style={{ background: "var(--background)", padding: "10px 12px" }}>
             <p className="label-uppercase" style={{ marginBottom: "2px", fontSize: "9px" }}>Prix bien</p>
-            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{formatPrice(bien.prixBien)}</p>
+            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{formatPrice(bien.prixBien)}</p>
           </div>
-          <div style={{ background: "#0A0A0A", padding: "10px 12px" }}>
+          <div style={{ background: "var(--background)", padding: "10px 12px" }}>
             <p className="label-uppercase" style={{ marginBottom: "2px", fontSize: "9px" }}>Invest. total</p>
-            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{formatPrice(bien.investissementTotal)}</p>
+            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{formatPrice(bien.investissementTotal)}</p>
           </div>
-          <div style={{ background: "#0A0A0A", padding: "10px 12px" }}>
-            <p style={{ marginBottom: "2px", fontSize: "9px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "#C9A84C" }}>Renta. brute</p>
-            <p className="tabular-nums" style={{ fontSize: "14px", fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, color: "#C9A84C" }}>{formatPct(bien.rentabiliteBrute)}</p>
+          <div style={{ background: "var(--background)", padding: "10px 12px" }}>
+            <p style={{ marginBottom: "2px", fontSize: "9px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "var(--gold)" }}>Renta. brute</p>
+            <p className="tabular-nums" style={{ fontSize: "14px", fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, color: "var(--gold)" }}>{formatPct(bien.rentabiliteBrute)}</p>
           </div>
-          <div style={{ background: "#0A0A0A", padding: "10px 12px" }}>
+          <div style={{ background: "var(--background)", padding: "10px 12px" }}>
             <p className="label-uppercase" style={{ marginBottom: "2px", fontSize: "9px" }}>Lots</p>
-            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{bien.nbLots ?? "\u2014"}</p>
+            <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{bien.nbLots ?? "\u2014"}</p>
           </div>
         </div>
       </div>
@@ -258,19 +258,19 @@ function ImageGallery({ images, title }: { images: string[]; title: string }) {
   const [current, setCurrent] = useState(0);
   if (!images.length) return null;
   return (
-    <div style={{ position: "relative", borderRadius: "2px", overflow: "hidden", background: "#0D0D0D" }}>
+    <div style={{ position: "relative", borderRadius: "2px", overflow: "hidden", background: "var(--surface-header)" }}>
       <img src={images[current]} alt={`${title} - photo ${current + 1}`} style={{ width: "100%", height: "280px", objectFit: "cover" }} />
       {images.length > 1 && (
         <>
           <button
-            style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.6)", color: "#F0EDE6", border: "none", borderRadius: "2px", padding: "6px", cursor: "pointer" }}
+            style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.6)", color: "var(--foreground)", border: "none", borderRadius: "2px", padding: "6px", cursor: "pointer" }}
             className="transition-opacity duration-300 hover:opacity-80"
             onClick={() => setCurrent(i => (i - 1 + images.length) % images.length)}
           >
             <ChevronLeft style={{ width: "16px", height: "16px", strokeWidth: 1.5 }} />
           </button>
           <button
-            style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.6)", color: "#F0EDE6", border: "none", borderRadius: "2px", padding: "6px", cursor: "pointer" }}
+            style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.6)", color: "var(--foreground)", border: "none", borderRadius: "2px", padding: "6px", cursor: "pointer" }}
             className="transition-opacity duration-300 hover:opacity-80"
             onClick={() => setCurrent(i => (i + 1) % images.length)}
           >
@@ -287,7 +287,7 @@ function ImageGallery({ images, title }: { images: string[]; title: string }) {
                   borderRadius: "1px",
                   border: "none",
                   cursor: "pointer",
-                  background: i === current ? "#F0EDE6" : "rgba(240,237,230,0.3)",
+                  background: i === current ? "var(--foreground)" : "rgba(240,237,230,0.3)",
                   transition: "background 300ms ease",
                 }}
               />
@@ -298,7 +298,7 @@ function ImageGallery({ images, title }: { images: string[]; title: string }) {
             top: "12px",
             right: "12px",
             background: "rgba(0,0,0,0.6)",
-            color: "#F0EDE6",
+            color: "var(--foreground)",
             fontSize: "10px",
             fontFamily: "'Hanken Grotesk', sans-serif",
             padding: "2px 8px",
@@ -366,23 +366,23 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
 
   const inputStyle: React.CSSProperties = {
     width: "100%",
-    background: "#161616",
-    border: "1px solid #1E1E1E",
+    background: "var(--surface-raised)",
+    border: "1px solid var(--border)",
     borderRadius: "2px",
     padding: "10px 12px",
     fontSize: "13px",
     fontFamily: "'Hanken Grotesk', sans-serif",
-    color: "#F0EDE6",
+    color: "var(--foreground)",
     resize: "none",
     outline: "none",
   };
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", maxWidth: "480px" }} className="text-[#F0EDE6]">
+      <DialogContent style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", maxWidth: "480px" }} className="text-[var(--foreground)]">
         <DialogHeader>
-          <DialogTitle style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em", display: "flex", alignItems: "center", gap: "8px" }}>
-            <Send style={{ width: "16px", height: "16px", color: "#6B6560", strokeWidth: 1.5 }} />
+          <DialogTitle style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em", display: "flex", alignItems: "center", gap: "8px" }}>
+            <Send style={{ width: "16px", height: "16px", color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
             {step === "done" ? "Fiche envoyee" : "Proposer a un lead"}
           </DialogTitle>
         </DialogHeader>
@@ -390,22 +390,22 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
         {/* Etape 1 : Generation PDF */}
         {step === "preview" && (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", padding: "32px 0" }}>
-            <Loader2 className="animate-spin" style={{ width: "20px", height: "20px", color: "#6B6560", strokeWidth: 1.5 }} />
-            <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Generation du PDF en cours...</p>
+            <Loader2 className="animate-spin" style={{ width: "20px", height: "20px", color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+            <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Generation du PDF en cours...</p>
           </div>
         )}
 
         {/* Etape 2 : Confirmation + envoi */}
         {step === "confirm" && (
         <div style={{ display: "flex", flexDirection: "column", gap: "16px", paddingTop: "8px" }}>
-          <div style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "12px 14px" }}>
+          <div style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "12px 14px" }}>
             <p className="label-uppercase" style={{ marginBottom: "4px" }}>Bien selectionne</p>
-            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{bien.titre}</p>
-            <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#C9A84C", marginTop: "4px" }}>{formatPrice(bien.prixBien)}</p>
+            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{bien.titre}</p>
+            <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--gold)", marginTop: "4px" }}>{formatPrice(bien.prixBien)}</p>
           </div>
 
           {/* Apercu PDF */}
-          <div style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "12px 14px" }}>
+          <div style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", padding: "12px 14px" }}>
             <p className="label-uppercase" style={{ marginBottom: "8px" }}>Fiche PDF generee</p>
             {pdfUrl ? (
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -419,7 +419,7 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
                     alignItems: "center",
                     gap: "6px",
                     background: "transparent",
-                    color: "#C9A84C",
+                    color: "var(--gold)",
                     border: "1px solid rgba(201,168,76,0.3)",
                     padding: "6px 12px",
                     fontSize: "11px",
@@ -442,8 +442,8 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
                     alignItems: "center",
                     gap: "6px",
                     background: "transparent",
-                    color: "#6B6560",
-                    border: "1px solid #1E1E1E",
+                    color: "var(--foreground-muted)",
+                    border: "1px solid var(--border)",
                     padding: "6px 12px",
                     fontSize: "11px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
@@ -458,21 +458,21 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
                 </a>
               </div>
             ) : (
-              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>PDF non disponible — la fiche sera envoyee sans piece jointe.</p>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>PDF non disponible — la fiche sera envoyee sans piece jointe.</p>
             )}
           </div>
 
           <div>
             <p className="label-uppercase" style={{ marginBottom: "6px" }}>Lead destinataire *</p>
             <Select value={selectedLeadId} onValueChange={setSelectedLeadId}>
-              <SelectTrigger style={{ background: "#161616", border: "1px solid #1E1E1E", borderRadius: "2px", color: "#F0EDE6", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>
+              <SelectTrigger style={{ background: "var(--surface-raised)", border: "1px solid var(--border)", borderRadius: "2px", color: "var(--foreground)", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>
                 <SelectValue placeholder="Choisir un lead..." />
               </SelectTrigger>
-              <SelectContent style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px" }} className="max-h-60">
+              <SelectContent style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px" }} className="max-h-60">
                 {leads.map((lead: any) => (
-                  <SelectItem key={lead.id} value={String(lead.id)} style={{ color: "#F0EDE6", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>
+                  <SelectItem key={lead.id} value={String(lead.id)} style={{ color: "var(--foreground)", fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif" }}>
                     <span className="flex items-center gap-2">
-                      <Users style={{ width: "12px", height: "12px", color: "#3A3632", strokeWidth: 1.5 }} />
+                      <Users style={{ width: "12px", height: "12px", color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                       {lead.prenom} {lead.nom} — {lead.email}
                     </span>
                   </SelectItem>
@@ -482,13 +482,13 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
             {/* Alerte doublon */}
             {doublonCheck?.alreadySent && (
               <div style={{ marginTop: "8px", background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.2)", borderRadius: "2px", padding: "10px 12px" }}>
-                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "#C9A84C", letterSpacing: "0.04em" }}>Ce bien a deja ete envoye a ce lead</p>
+                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 600, color: "var(--gold)", letterSpacing: "0.04em" }}>Ce bien a deja ete envoye a ce lead</p>
                 {doublonCheck.sentAt && (
-                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginTop: "2px" }}>
+                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", marginTop: "2px" }}>
                     Envoye le {new Date(doublonCheck.sentAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
                   </p>
                 )}
-                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>Vous pouvez quand meme renvoyer si necessaire.</p>
+                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>Vous pouvez quand meme renvoyer si necessaire.</p>
               </div>
             )}
           </div>
@@ -501,8 +501,8 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
               placeholder="Suite a notre echange, voici une opportunite off market qui correspond a vos criteres..."
               style={inputStyle}
               rows={3}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
 
@@ -514,14 +514,14 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
                 flex: 1,
                 padding: "10px 16px",
                 background: "transparent",
-                border: "1px solid #1E1E1E",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 fontSize: "11px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontWeight: 500,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 cursor: "pointer",
               }}
             >
@@ -534,7 +534,7 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
               style={{
                 flex: 1,
                 padding: "10px 16px",
-                background: (!selectedLeadId || proposerMutation.isPending) ? "#8A7535" : "#C9A84C",
+                background: (!selectedLeadId || proposerMutation.isPending) ? "var(--gold-muted)" : "var(--gold)",
                 border: "none",
                 borderRadius: "2px",
                 fontSize: "11px",
@@ -542,7 +542,7 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
                 fontWeight: 500,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase" as const,
-                color: "#0A0A0A",
+                color: "var(--background)",
                 cursor: (!selectedLeadId || proposerMutation.isPending) ? "not-allowed" : "pointer",
               }}
             >
@@ -560,10 +560,10 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
         {/* Etape 3 : Confirmation d'envoi */}
         {step === "done" && (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", padding: "32px 0", textAlign: "center" }}>
-            <CheckCircle style={{ width: "28px", height: "28px", color: "#4A7A5A", strokeWidth: 1.5 }} />
+            <CheckCircle style={{ width: "28px", height: "28px", color: "var(--success)", strokeWidth: 1.5 }} />
             <div>
-              <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>Fiche envoyee avec succes</p>
-              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginTop: "4px" }}>Le PDF a ete joint a l'email du lead.</p>
+              <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em" }}>Fiche envoyee avec succes</p>
+              <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", marginTop: "4px" }}>Le PDF a ete joint a l'email du lead.</p>
             </div>
             {pdfUrl && (
               <a
@@ -575,7 +575,7 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
                   alignItems: "center",
                   gap: "6px",
                   background: "transparent",
-                  color: "#C9A84C",
+                  color: "var(--gold)",
                   border: "1px solid rgba(201,168,76,0.3)",
                   padding: "8px 16px",
                   fontSize: "11px",
@@ -596,14 +596,14 @@ function ProposerLeadModal({ bien, onClose }: { bien: Bien; onClose: () => void 
               style={{
                 padding: "10px 24px",
                 background: "transparent",
-                border: "1px solid #1E1E1E",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 fontSize: "11px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontWeight: 500,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 cursor: "pointer",
               }}
             >
@@ -721,13 +721,13 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
 
   const inputStyle: React.CSSProperties = {
     width: "100%",
-    background: "#161616",
-    border: "1px solid #1E1E1E",
+    background: "var(--surface-raised)",
+    border: "1px solid var(--border)",
     borderRadius: "2px",
     padding: "10px 12px",
     fontSize: "13px",
     fontFamily: "'Hanken Grotesk', sans-serif",
-    color: "#F0EDE6",
+    color: "var(--foreground)",
     outline: "none",
   };
 
@@ -738,21 +738,21 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", maxWidth: "640px", maxHeight: "90vh", overflowY: "auto" }} className="text-[#F0EDE6]">
+      <DialogContent style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", maxWidth: "640px", maxHeight: "90vh", overflowY: "auto" }} className="text-[var(--foreground)]">
         <DialogHeader>
-          <DialogTitle style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em", display: "flex", alignItems: "center", gap: "8px" }}>
-            <Gem style={{ width: "16px", height: "16px", color: "#6B6560", strokeWidth: 1.5 }} />
+          <DialogTitle style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "18px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em", display: "flex", alignItems: "center", gap: "8px" }}>
+            <Gem style={{ width: "16px", height: "16px", color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
             Nouveau bien Off Market
           </DialogTitle>
         </DialogHeader>
         <div style={{ display: "flex", flexDirection: "column", gap: "24px", paddingTop: "8px" }}>
           {/* Infos de base */}
           <div>
-            <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Informations generales</p>
+            <p className="label-uppercase" style={{ marginBottom: "12px", color: "var(--foreground)" }}>Informations generales</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
               <div>
                 <p className="label-uppercase" style={{ marginBottom: "4px" }}>Titre *</p>
-                <input value={form.titre} onChange={f("titre")} placeholder="Ex: Immeuble De Rapport - 450 000 EUR" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                <input value={form.titre} onChange={f("titre")} placeholder="Ex: Immeuble De Rapport - 450 000 EUR" style={inputStyle} onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                 <div>
@@ -781,17 +781,17 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
                 </div>
                 <div>
                   <p className="label-uppercase" style={{ marginBottom: "4px" }}>Departement / Ville</p>
-                  <input value={form.departement} onChange={f("departement")} placeholder="Ex: Bas-Rhin (67)" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                  <input value={form.departement} onChange={f("departement")} placeholder="Ex: Bas-Rhin (67)" style={inputStyle} onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
                 </div>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                 <div>
                   <p className="label-uppercase" style={{ marginBottom: "4px" }}>Surface totale (m2)</p>
-                  <input value={form.surfaceTotale} onChange={f("surfaceTotale")} placeholder="Ex: 280" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                  <input value={form.surfaceTotale} onChange={f("surfaceTotale")} placeholder="Ex: 280" style={inputStyle} onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
                 </div>
                 <div>
                   <p className="label-uppercase" style={{ marginBottom: "4px" }}>Nombre de lots</p>
-                  <input type="number" value={form.nbLots} onChange={f("nbLots")} placeholder="Ex: 6" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                  <input type="number" value={form.nbLots} onChange={f("nbLots")} placeholder="Ex: 6" style={inputStyle} onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
                 </div>
               </div>
             </div>
@@ -799,79 +799,79 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
 
           {/* Donnees financieres */}
           <div>
-            <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Donnees financieres</p>
+            <p className="label-uppercase" style={{ marginBottom: "12px", color: "var(--foreground)" }}>Donnees financieres</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
               <div>
                 <p className="label-uppercase" style={{ marginBottom: "4px" }}>Prix du bien (EUR)</p>
-                <input value={form.prixBien} onChange={f("prixBien")} placeholder="Ex: 450000" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                <input value={form.prixBien} onChange={f("prixBien")} placeholder="Ex: 450000" style={inputStyle} onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
               </div>
               <div>
                 <p className="label-uppercase" style={{ marginBottom: "4px" }}>Honoraires (EUR)</p>
-                <input value={form.honoraires} onChange={f("honoraires")} placeholder="Calcule auto si vide" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                <input value={form.honoraires} onChange={f("honoraires")} placeholder="Calcule auto si vide" style={inputStyle} onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
               </div>
               <div>
                 <p className="label-uppercase" style={{ marginBottom: "4px" }}>Travaux estimes (EUR)</p>
-                <input value={form.travauxEstimation} onChange={f("travauxEstimation")} placeholder="Ex: 30000" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                <input value={form.travauxEstimation} onChange={f("travauxEstimation")} placeholder="Ex: 30000" style={inputStyle} onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
               </div>
               <div>
                 <p className="label-uppercase" style={{ marginBottom: "4px" }}>Investissement total (EUR)</p>
-                <input value={form.investissementTotal} onChange={f("investissementTotal")} placeholder="Calcule auto si vide" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                <input value={form.investissementTotal} onChange={f("investissementTotal")} placeholder="Calcule auto si vide" style={inputStyle} onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
               </div>
               <div>
                 <p className="label-uppercase" style={{ marginBottom: "4px" }}>Revenus annuels actuels (EUR)</p>
-                <input value={form.revenusAnnuels} onChange={f("revenusAnnuels")} placeholder="Ex: 36000" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                <input value={form.revenusAnnuels} onChange={f("revenusAnnuels")} placeholder="Ex: 36000" style={inputStyle} onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
               </div>
               <div>
                 <p className="label-uppercase" style={{ marginBottom: "4px" }}>Revenus potentiels LD (EUR)</p>
-                <input value={form.revenusPotenlielsLd} onChange={f("revenusPotenlielsLd")} placeholder="Ex: 42000" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                <input value={form.revenusPotenlielsLd} onChange={f("revenusPotenlielsLd")} placeholder="Ex: 42000" style={inputStyle} onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
               </div>
             </div>
           </div>
 
           {/* Rentabilites */}
           <div>
-            <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Rentabilites</p>
+            <p className="label-uppercase" style={{ marginBottom: "12px", color: "var(--foreground)" }}>Rentabilites</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
               <div>
                 <p className="label-uppercase" style={{ marginBottom: "4px" }}>Brute actuelle (%)</p>
-                <input value={form.rentabiliteBrute} onChange={f("rentabiliteBrute")} placeholder="Ex: 8.50" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                <input value={form.rentabiliteBrute} onChange={f("rentabiliteBrute")} placeholder="Ex: 8.50" style={inputStyle} onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
               </div>
               <div>
                 <p className="label-uppercase" style={{ marginBottom: "4px" }}>Potentielle LD (%)</p>
-                <input value={form.rentabilitePotentielleLd} onChange={f("rentabilitePotentielleLd")} placeholder="Ex: 10.20" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                <input value={form.rentabilitePotentielleLd} onChange={f("rentabilitePotentielleLd")} placeholder="Ex: 10.20" style={inputStyle} onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
               </div>
               <div>
                 <p className="label-uppercase" style={{ marginBottom: "4px" }}>Potentielle CD (%)</p>
-                <input value={form.rentabilitePotentielleCd} onChange={f("rentabilitePotentielleCd")} placeholder="Ex: 12.50" style={inputStyle} onFocus={e => (e.target.style.borderColor = "#C9A84C")} onBlur={e => (e.target.style.borderColor = "#1E1E1E")} />
+                <input value={form.rentabilitePotentielleCd} onChange={f("rentabilitePotentielleCd")} placeholder="Ex: 12.50" style={inputStyle} onFocus={e => (e.target.style.borderColor = "var(--gold)")} onBlur={e => (e.target.style.borderColor = "var(--border)")} />
               </div>
             </div>
           </div>
 
           {/* Photos */}
           <div>
-            <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Photos</p>
+            <p className="label-uppercase" style={{ marginBottom: "12px", color: "var(--foreground)" }}>Photos</p>
             <div
               onClick={() => fileInputRef.current?.click()}
               className="cursor-pointer transition-colors duration-300"
               style={{
-                border: "1px dashed #1E1E1E",
+                border: "1px dashed var(--border)",
                 borderRadius: "2px",
                 padding: "24px",
                 textAlign: "center",
               }}
               onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(201,168,76,0.3)")}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
             >
               {isUploading ? (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-                  <Loader2 className="animate-spin" style={{ width: "16px", height: "16px", color: "#6B6560", strokeWidth: 1.5 }} />
-                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Upload en cours...</span>
+                  <Loader2 className="animate-spin" style={{ width: "16px", height: "16px", color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Upload en cours...</span>
                 </div>
               ) : (
                 <>
-                  <Upload style={{ width: "20px", height: "20px", color: "#3A3632", margin: "0 auto 8px", strokeWidth: 1.5 }} />
-                  <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Cliquez pour ajouter des photos</p>
-                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "4px" }}>JPG, PNG, WebP — plusieurs fichiers acceptes</p>
+                  <Upload style={{ width: "20px", height: "20px", color: "var(--foreground-faint)", margin: "0 auto 8px", strokeWidth: 1.5 }} />
+                  <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Cliquez pour ajouter des photos</p>
+                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "4px" }}>JPG, PNG, WebP — plusieurs fichiers acceptes</p>
                 </>
               )}
             </div>
@@ -893,8 +893,8 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
                         position: "absolute",
                         bottom: "4px",
                         left: "4px",
-                        background: "#C9A84C",
-                        color: "#0A0A0A",
+                        background: "var(--gold)",
+                        color: "var(--background)",
                         fontSize: "9px",
                         fontFamily: "'Hanken Grotesk', sans-serif",
                         fontWeight: 600,
@@ -911,7 +911,7 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
                         top: "4px",
                         right: "4px",
                         background: "rgba(160,64,64,0.8)",
-                        color: "#F0EDE6",
+                        color: "var(--foreground)",
                         border: "none",
                         borderRadius: "2px",
                         padding: "2px",
@@ -935,14 +935,14 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
                 flex: 1,
                 padding: "10px 16px",
                 background: "transparent",
-                border: "1px solid #1E1E1E",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 fontSize: "11px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontWeight: 500,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 cursor: "pointer",
               }}
             >
@@ -955,7 +955,7 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
               style={{
                 flex: 1,
                 padding: "10px 16px",
-                background: (isSaving || isUploading) ? "#8A7535" : "#C9A84C",
+                background: (isSaving || isUploading) ? "var(--gold-muted)" : "var(--gold)",
                 border: "none",
                 borderRadius: "2px",
                 fontSize: "11px",
@@ -963,7 +963,7 @@ function NouveauBienModal({ onClose, onSuccess }: { onClose: () => void; onSucce
                 fontWeight: 500,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase" as const,
-                color: "#0A0A0A",
+                color: "var(--background)",
                 cursor: (isSaving || isUploading) ? "not-allowed" : "pointer",
               }}
             >
@@ -986,38 +986,38 @@ function HistoriqueEnvois({ bienId }: { bienId: number }) {
 
   if (isLoading) return (
     <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 0" }}>
-      <Loader2 className="animate-spin" style={{ width: "14px", height: "14px", color: "#6B6560", strokeWidth: 1.5 }} />
-      <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Chargement de l'historique...</span>
+      <Loader2 className="animate-spin" style={{ width: "14px", height: "14px", color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+      <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Chargement de l'historique...</span>
     </div>
   );
 
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
-        <Clock style={{ width: "14px", height: "14px", color: "#6B6560", strokeWidth: 1.5 }} />
-        <p className="label-uppercase" style={{ color: "#F0EDE6" }}>Historique des envois</p>
+        <Clock style={{ width: "14px", height: "14px", color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
+        <p className="label-uppercase" style={{ color: "var(--foreground)" }}>Historique des envois</p>
         {envois && envois.length > 0 && (
-          <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+          <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
             \u2014 {envois.length} envoi{envois.length > 1 ? "s" : ""}
           </span>
         )}
       </div>
       {!envois || envois.length === 0 ? (
-        <div style={{ background: "#0D0D0D", border: "1px dashed #1E1E1E", borderRadius: "2px", padding: "16px", textAlign: "center" }}>
-          <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun envoi enregistre pour ce bien</p>
+        <div style={{ background: "var(--surface-header)", border: "1px dashed var(--border)", borderRadius: "2px", padding: "16px", textAlign: "center" }}>
+          <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucun envoi enregistre pour ce bien</p>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "1px", background: "#1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
           {envois.map((envoi) => (
-            <div key={envoi.id} style={{ background: "#111111", padding: "12px 16px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px" }}>
+            <div key={envoi.id} style={{ background: "var(--surface)", padding: "12px 16px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px" }}>
               <div style={{ minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
                   {envoi.statut === "sent" ? (
-                    <CheckCircle style={{ width: "12px", height: "12px", color: "#4A7A5A", strokeWidth: 1.5, flexShrink: 0 }} />
+                    <CheckCircle style={{ width: "12px", height: "12px", color: "var(--success)", strokeWidth: 1.5, flexShrink: 0 }} />
                   ) : (
-                    <Eye style={{ width: "12px", height: "12px", color: "#3A3632", strokeWidth: 1.5, flexShrink: 0 }} />
+                    <Eye style={{ width: "12px", height: "12px", color: "var(--foreground-faint)", strokeWidth: 1.5, flexShrink: 0 }} />
                   )}
-                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
+                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
                     {envoi.leadPrenom} {envoi.leadNom}
                   </span>
                   <span style={{
@@ -1030,14 +1030,14 @@ function HistoriqueEnvois({ bienId }: { bienId: number }) {
                     borderRadius: "2px",
                     flexShrink: 0,
                     ...(envoi.statut === "sent"
-                      ? { color: "#4A7A5A", background: "rgba(74,122,90,0.08)", border: "1px solid rgba(74,122,90,0.2)" }
-                      : { color: "#3A3632", background: "rgba(58,54,50,0.08)", border: "1px solid rgba(58,54,50,0.2)" }
+                      ? { color: "var(--success)", background: "rgba(74,122,90,0.08)", border: "1px solid rgba(74,122,90,0.2)" }
+                      : { color: "var(--foreground-faint)", background: "rgba(58,54,50,0.08)", border: "1px solid rgba(58,54,50,0.2)" }
                     ),
                   }}>
                     {envoi.statut === "sent" ? "Envoye" : "Previsualise"}
                   </span>
                 </div>
-                <div style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", display: "flex", alignItems: "center", gap: "8px" }}>
+                <div style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", display: "flex", alignItems: "center", gap: "8px" }}>
                   <span>{envoi.emailDestinataire}</span>
                   <span>\u00b7</span>
                   <span>par {envoi.envoyePar?.split("@")[0]}</span>
@@ -1045,7 +1045,7 @@ function HistoriqueEnvois({ bienId }: { bienId: number }) {
                   <span className="tabular-nums">{new Date(envoi.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
                 </div>
                 {envoi.messagePersonnalise && (
-                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontStyle: "italic", color: "#6B6560", marginTop: "6px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>"{envoi.messagePersonnalise}"</p>
+                  <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", fontStyle: "italic", color: "var(--foreground-muted)", marginTop: "6px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }}>"{envoi.messagePersonnalise}"</p>
                 )}
               </div>
               {envoi.pdfUrl && (
@@ -1054,7 +1054,7 @@ function HistoriqueEnvois({ bienId }: { bienId: number }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="transition-opacity duration-300 hover:opacity-70"
-                  style={{ flexShrink: 0, color: "#6B6560" }}
+                  style={{ flexShrink: 0, color: "var(--foreground-muted)" }}
                   title="Voir le PDF envoye"
                 >
                   <ExternalLink style={{ width: "14px", height: "14px", strokeWidth: 1.5 }} />
@@ -1126,13 +1126,13 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-start justify-end" style={{ background: "rgba(0,0,0,0.7)" }} onClick={onClose}>
-        <div style={{ width: "100%", maxWidth: "600px", height: "100%", background: "#111111", borderLeft: "1px solid #1E1E1E", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
+        <div style={{ width: "100%", maxWidth: "600px", height: "100%", background: "var(--surface)", borderLeft: "1px solid var(--border)", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
           {/* Header */}
-          <div className="sticky top-0 z-10" style={{ background: "#111111", borderBottom: "1px solid #1E1E1E", padding: "16px 24px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px" }}>
+          <div className="sticky top-0 z-10" style={{ background: "var(--surface)", borderBottom: "1px solid var(--border)", padding: "16px 24px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px" }}>
             <div style={{ minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                <Gem style={{ width: "14px", height: "14px", color: "#6B6560", strokeWidth: 1.5, flexShrink: 0 }} />
-                <span className="label-uppercase" style={{ color: "#6B6560" }}>Off Market</span>
+                <Gem style={{ width: "14px", height: "14px", color: "var(--foreground-muted)", strokeWidth: 1.5, flexShrink: 0 }} />
+                <span className="label-uppercase" style={{ color: "var(--foreground-muted)" }}>Off Market</span>
                 {nouveau && (
                   <span style={{
                     fontSize: "10px",
@@ -1140,24 +1140,24 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
                     fontWeight: 600,
                     padding: "2px 8px",
                     borderRadius: "2px",
-                    background: "#C9A84C",
-                    color: "#0A0A0A",
+                    background: "var(--gold)",
+                    color: "var(--background)",
                     letterSpacing: "0.04em",
                     textTransform: "uppercase" as const,
                   }}>Nouveau</span>
                 )}
               </div>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6", lineHeight: 1.3, letterSpacing: "0.02em" }}>{bien.titre}</h2>
+              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "var(--foreground)", lineHeight: 1.3, letterSpacing: "0.02em" }}>{bien.titre}</h2>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "6px" }}>
                 <StatutBadge statut={statut} />
                 {bien.region && (
-                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", display: "flex", alignItems: "center", gap: "4px" }}>
+                  <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", display: "flex", alignItems: "center", gap: "4px" }}>
                     <MapPin style={{ width: "12px", height: "12px", strokeWidth: 1.5 }} />{bien.region}
                   </span>
                 )}
               </div>
             </div>
-            <button onClick={onClose} className="transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560", padding: "4px", marginTop: "4px", background: "transparent", border: "none", cursor: "pointer" }}>
+            <button onClick={onClose} className="transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-muted)", padding: "4px", marginTop: "4px", background: "transparent", border: "none", cursor: "pointer" }}>
               <X style={{ width: "16px", height: "16px", strokeWidth: 1.5 }} />
             </button>
           </div>
@@ -1176,7 +1176,7 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
                   alignItems: "center",
                   gap: "6px",
                   padding: "8px 16px",
-                  background: "#C9A84C",
+                  background: "var(--gold)",
                   border: "none",
                   borderRadius: "2px",
                   fontSize: "11px",
@@ -1184,7 +1184,7 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
                   fontWeight: 500,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase" as const,
-                  color: "#0A0A0A",
+                  color: "var(--background)",
                   cursor: "pointer",
                 }}
               >
@@ -1192,18 +1192,18 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
                 Proposer a un lead
               </button>
               <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Statut :</span>
+                <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Statut :</span>
                 <select
                   value={statut}
                   onChange={e => updateStatut.mutate({ id: bien.id, statut: e.target.value as Statut })}
                   style={{
-                    background: "#161616",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--surface-raised)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     padding: "6px 10px",
                     fontSize: "12px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                     outline: "none",
                   }}
                 >
@@ -1222,13 +1222,13 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
                   gap: "4px",
                   padding: "6px 10px",
                   background: "transparent",
-                  border: "1px solid #1E1E1E",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   fontSize: "11px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontWeight: 500,
                   letterSpacing: "0.04em",
-                  color: "#6B6560",
+                  color: "var(--foreground-muted)",
                   cursor: isGeolocating ? "not-allowed" : "pointer",
                 }}
                 title={geoCoords ? `GPS : ${geoCoords.lat}, ${geoCoords.lng}` : "Geolocaliser ce bien"}
@@ -1254,7 +1254,7 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontWeight: 500,
                   letterSpacing: "0.04em",
-                  color: "#A04040",
+                  color: "var(--destructive)",
                   cursor: "pointer",
                   marginLeft: "auto",
                 }}
@@ -1266,8 +1266,8 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
 
             {/* Financier */}
             <div>
-              <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Donnees financieres</p>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "#1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+              <p className="label-uppercase" style={{ marginBottom: "12px", color: "var(--foreground)" }}>Donnees financieres</p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
                 {[
                   { label: "Prix du bien", value: formatPrice(bien.prixBien) },
                   { label: "Honoraires", value: formatPrice(bien.honoraires) },
@@ -1276,31 +1276,31 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
                   { label: "Revenus potentiels LD", value: formatPrice(bien.revenusPotenlielsLd) },
                   { label: "Revenus potentiels CD", value: formatPrice(bien.revenusPotentielsCd) },
                 ].map(({ label, value }) => (
-                  <div key={label} style={{ background: "#0A0A0A", padding: "12px 14px" }}>
+                  <div key={label} style={{ background: "var(--background)", padding: "12px 14px" }}>
                     <p className="label-uppercase" style={{ marginBottom: "2px", fontSize: "9px" }}>{label}</p>
-                    <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{value}</p>
+                    <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{value}</p>
                   </div>
                 ))}
               </div>
               {/* Investissement total - highlight */}
               <div style={{ background: "rgba(201,168,76,0.06)", border: "1px solid rgba(201,168,76,0.2)", borderRadius: "2px", padding: "14px 16px", marginTop: "8px" }}>
                 <p style={{ fontSize: "9px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "rgba(201,168,76,0.7)", marginBottom: "2px" }}>Investissement total</p>
-                <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#C9A84C" }}>{formatPrice(bien.investissementTotal)}</p>
+                <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "var(--gold)" }}>{formatPrice(bien.investissementTotal)}</p>
               </div>
             </div>
 
             {/* Rentabilites */}
             <div>
-              <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Rentabilites</p>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1px", background: "#1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+              <p className="label-uppercase" style={{ marginBottom: "12px", color: "var(--foreground)" }}>Rentabilites</p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
                 {[
                   { label: "Brute actuelle", value: formatPct(bien.rentabiliteBrute) },
                   { label: "Potentielle LD", value: formatPct(bien.rentabilitePotentielleLd) },
                   { label: "Potentielle CD", value: formatPct(bien.rentabilitePotentielleCd) },
                 ].map(({ label, value }) => (
-                  <div key={label} style={{ background: "#0A0A0A", padding: "14px 12px", textAlign: "center" }}>
+                  <div key={label} style={{ background: "var(--background)", padding: "14px 12px", textAlign: "center" }}>
                     <p style={{ fontSize: "9px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "rgba(74,122,90,0.7)", marginBottom: "4px" }}>{label}</p>
-                    <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, color: "#4A7A5A" }}>{value}</p>
+                    <p className="tabular-nums" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, color: "var(--success)" }}>{value}</p>
                   </div>
                 ))}
               </div>
@@ -1309,19 +1309,19 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
             {/* Lots */}
             {lots.length > 0 && (
               <div>
-                <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>
+                <p className="label-uppercase" style={{ marginBottom: "12px", color: "var(--foreground)" }}>
                   Composition — {bien.nbLots} lot{(bien.nbLots ?? 0) > 1 ? "s" : ""}
                 </p>
-                <div style={{ display: "flex", flexDirection: "column", gap: "1px", background: "#1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "1px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
                   {lots.map((lot, i) => (
-                    <div key={i} style={{ background: "#0A0A0A", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
+                    <div key={i} style={{ background: "var(--background)", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
-                        <span className="tabular-nums" style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", flexShrink: 0 }}>#{i + 1}</span>
-                        <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lot.type}</span>
-                        {lot.surface && <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", flexShrink: 0 }}>{lot.surface}</span>}
+                        <span className="tabular-nums" style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", flexShrink: 0 }}>#{i + 1}</span>
+                        <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{lot.type}</span>
+                        {lot.surface && <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", flexShrink: 0 }}>{lot.surface}</span>}
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: "10px", flexShrink: 0 }}>
-                        {lot.loyer && <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#C9A84C" }}>{lot.loyer}</span>}
+                        {lot.loyer && <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--gold)" }}>{lot.loyer}</span>}
                         {lot.statut && (
                           <span style={{
                             fontSize: "10px",
@@ -1332,8 +1332,8 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
                             letterSpacing: "0.04em",
                             textTransform: "uppercase" as const,
                             ...(lot.statut.toLowerCase().includes("lou")
-                              ? { color: "#4A7A5A", background: "rgba(74,122,90,0.08)", border: "1px solid rgba(74,122,90,0.2)" }
-                              : { color: "#6B6560", background: "rgba(58,54,50,0.08)", border: "1px solid rgba(58,54,50,0.2)" }
+                              ? { color: "var(--success)", background: "rgba(74,122,90,0.08)", border: "1px solid rgba(74,122,90,0.2)" }
+                              : { color: "var(--foreground-muted)", background: "rgba(58,54,50,0.08)", border: "1px solid rgba(58,54,50,0.2)" }
                             ),
                           }}>
                             {lot.statut}
@@ -1349,12 +1349,12 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
             {/* Situation */}
             {situation.length > 0 && (
               <div>
-                <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Situation</p>
+                <p className="label-uppercase" style={{ marginBottom: "12px", color: "var(--foreground)" }}>Situation</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                   {situation.map((s, i) => (
                     <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
-                      <span style={{ color: "#3A3632", marginTop: "2px", flexShrink: 0 }}>\u2022</span>
-                      <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", lineHeight: 1.5 }}>{s}</span>
+                      <span style={{ color: "var(--foreground-faint)", marginTop: "2px", flexShrink: 0 }}>\u2022</span>
+                      <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", lineHeight: 1.5 }}>{s}</span>
                     </div>
                   ))}
                 </div>
@@ -1363,8 +1363,8 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
 
             {/* Infos generales */}
             <div>
-              <p className="label-uppercase" style={{ marginBottom: "12px", color: "#F0EDE6" }}>Informations generales</p>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "#1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+              <p className="label-uppercase" style={{ marginBottom: "12px", color: "var(--foreground)" }}>Informations generales</p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
                 {[
                   { label: "Type de bien", value: bien.typeBien },
                   { label: "Region", value: bien.region },
@@ -1373,9 +1373,9 @@ function BienDetail({ bien, onClose, onRefresh }: { bien: Bien; onClose: () => v
                   { label: "Nombre de lots", value: bien.nbLots?.toString() },
                   { label: "Ajoute le", value: new Date(bien.createdAt).toLocaleDateString("fr-FR") },
                 ].filter(f => f.value).map(({ label, value }) => (
-                  <div key={label} style={{ background: "#0A0A0A", padding: "12px 14px" }}>
+                  <div key={label} style={{ background: "var(--background)", padding: "12px 14px" }}>
                     <p className="label-uppercase" style={{ marginBottom: "2px", fontSize: "9px" }}>{label}</p>
-                    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{value}</p>
+                    <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{value}</p>
                   </div>
                 ))}
               </div>
@@ -1437,18 +1437,18 @@ export default function OffMarketBoard() {
   const nouveaux = biens.filter(b => isNew(b.createdAt)).length;
 
   const selectStyle: React.CSSProperties = {
-    background: "#111111",
-    border: "1px solid #1E1E1E",
+    background: "var(--surface)",
+    border: "1px solid var(--border)",
     borderRadius: "2px",
     padding: "8px 12px",
     fontSize: "13px",
     fontFamily: "'Hanken Grotesk', sans-serif",
-    color: "#F0EDE6",
+    color: "var(--foreground)",
     outline: "none",
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <AdminNav />
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "32px 20px 64px" }}>
         {/* Bouton retour si on vient de la carte */}
@@ -1466,7 +1466,7 @@ export default function OffMarketBoard() {
                 cursor: "pointer",
                 fontSize: "12px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
               }}
             >
               <ChevronLeft style={{ width: "14px", height: "14px", strokeWidth: 1.5 }} />
@@ -1483,7 +1483,7 @@ export default function OffMarketBoard() {
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "28px",
                 fontWeight: 700,
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase" as const,
                 lineHeight: 1,
@@ -1495,8 +1495,8 @@ export default function OffMarketBoard() {
                   fontWeight: 600,
                   padding: "2px 8px",
                   borderRadius: "2px",
-                  background: "#C9A84C",
-                  color: "#0A0A0A",
+                  background: "var(--gold)",
+                  color: "var(--background)",
                   letterSpacing: "0.04em",
                   textTransform: "uppercase" as const,
                 }}>
@@ -1504,7 +1504,7 @@ export default function OffMarketBoard() {
                 </span>
               )}
             </div>
-            <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Acces confidentiel — opportunites exclusives</p>
+            <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Acces confidentiel — opportunites exclusives</p>
           </div>
           <button
             onClick={() => setShowNouveauBien(true)}
@@ -1514,7 +1514,7 @@ export default function OffMarketBoard() {
               alignItems: "center",
               gap: "6px",
               padding: "10px 20px",
-              background: "#C9A84C",
+              background: "var(--gold)",
               border: "none",
               borderRadius: "2px",
               fontSize: "11px",
@@ -1522,7 +1522,7 @@ export default function OffMarketBoard() {
               fontWeight: 500,
               letterSpacing: "0.1em",
               textTransform: "uppercase" as const,
-              color: "#0A0A0A",
+              color: "var(--background)",
               cursor: "pointer",
               flexShrink: 0,
             }}
@@ -1533,19 +1533,19 @@ export default function OffMarketBoard() {
         </div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px", marginBottom: "32px" }}>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px", marginBottom: "32px" }}>
           {[
             { label: "Total", value: total, accent: true },
             { label: "Disponibles", value: disponibles },
             { label: "Sous compromis", value: sousCompromis },
             { label: "Vendus", value: vendus },
           ].map(({ label, value, accent }) => (
-            <div key={label} style={{ background: "#0A0A0A", padding: "20px" }}>
+            <div key={label} style={{ background: "var(--background)", padding: "20px" }}>
               <p className="tabular-nums" style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "32px",
                 fontWeight: 600,
-                color: accent ? "#C9A84C" : "#F0EDE6",
+                color: accent ? "var(--gold)" : "var(--foreground)",
                 lineHeight: 1,
                 letterSpacing: "0.02em",
               }}>
@@ -1559,7 +1559,7 @@ export default function OffMarketBoard() {
         {/* Filtres */}
         <div style={{ display: "flex", gap: "10px", marginBottom: "24px", flexWrap: "wrap" }}>
           <div style={{ position: "relative", flex: 1, minWidth: "200px", maxWidth: "360px" }}>
-            <Search style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "14px", height: "14px", color: "#3A3632", strokeWidth: 1.5 }} />
+            <Search style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "14px", height: "14px", color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
             <input
               type="text"
               value={search}
@@ -1567,8 +1567,8 @@ export default function OffMarketBoard() {
               placeholder="Rechercher un bien..."
               className="w-full transition-colors duration-300 focus:outline-none"
               style={{
-                background: "#111111",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 paddingLeft: "34px",
                 paddingRight: "12px",
@@ -1576,10 +1576,10 @@ export default function OffMarketBoard() {
                 paddingBottom: "8px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           <select value={statut} onChange={e => setStatut(e.target.value)} style={selectStyle}>
@@ -1608,12 +1608,12 @@ export default function OffMarketBoard() {
         {/* Grille */}
         {isLoading ? (
           <div className="flex items-center justify-center" style={{ padding: "80px 0" }}>
-            <Loader2 className="animate-spin" style={{ width: "20px", height: "20px", color: "#6B6560", strokeWidth: 1.5 }} />
+            <Loader2 className="animate-spin" style={{ width: "20px", height: "20px", color: "var(--foreground-muted)", strokeWidth: 1.5 }} />
           </div>
         ) : biens.length === 0 ? (
           <div style={{ textAlign: "center", padding: "80px 0" }}>
-            <Gem style={{ width: "28px", height: "28px", color: "#1E1E1E", margin: "0 auto 12px", strokeWidth: 1.5 }} />
-            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun bien off market trouve</p>
+            <Gem style={{ width: "28px", height: "28px", color: "var(--border)", margin: "0 auto 12px", strokeWidth: 1.5 }} />
+            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucun bien off market trouve</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

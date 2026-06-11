@@ -22,25 +22,25 @@ const ETAPES = [
     id: "avis_a_faire" as const,
     label: "Avis a faire",
     icon: Clock,
-    color: "#C9A84C",
+    color: "var(--gold)",
   },
   {
     id: "avis_effectue" as const,
     label: "Avis effectue",
     icon: CheckCircle2,
-    color: "#4A7A5A",
+    color: "var(--success)",
   },
   {
     id: "en_montage" as const,
     label: "En montage",
     icon: Layers,
-    color: "#F0EDE6",
+    color: "var(--foreground)",
   },
   {
     id: "montage_ok" as const,
     label: "Montage OK",
     icon: Star,
-    color: "#6B6560",
+    color: "var(--foreground-muted)",
   },
 ] as const;
 
@@ -81,8 +81,8 @@ function AvisCard({
 
   return (
     <div style={{
-      background: "#111111",
-      border: "1px solid #1E1E1E",
+      background: "var(--surface)",
+      border: "1px solid var(--border)",
       borderRadius: "2px",
       padding: "16px",
       display: "flex",
@@ -96,7 +96,7 @@ function AvisCard({
             fontFamily: "'Hanken Grotesk', sans-serif",
             fontSize: "13px",
             fontWeight: 500,
-            color: "#F0EDE6",
+            color: "var(--foreground)",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap" as const,
@@ -111,7 +111,7 @@ function AvisCard({
             fontWeight: 500,
             letterSpacing: "0.06em",
             textTransform: "uppercase" as const,
-            color: item.etapeSource === "courtage" ? "#6B6560" : "#4A7A5A",
+            color: item.etapeSource === "courtage" ? "var(--foreground-muted)" : "var(--success)",
             background: item.etapeSource === "courtage" ? "rgba(107,101,96,0.08)" : "rgba(74,122,90,0.08)",
             border: `1px solid ${item.etapeSource === "courtage" ? "rgba(107,101,96,0.2)" : "rgba(74,122,90,0.2)"}`,
           }}>
@@ -125,7 +125,7 @@ function AvisCard({
         {item.leadEmail && (
           <a href={`mailto:${item.leadEmail}`}
             className="flex items-center gap-1.5 transition-opacity duration-300 hover:opacity-70"
-            style={{ color: "#3A3632", fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", textDecoration: "none" }}
+            style={{ color: "var(--foreground-faint)", fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", textDecoration: "none" }}
           >
             <Mail className="w-3 h-3 shrink-0" style={{ strokeWidth: 1.5 }} />
             <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{item.leadEmail}</span>
@@ -134,7 +134,7 @@ function AvisCard({
         {item.leadTelephone && (
           <a href={`tel:${item.leadTelephone}`}
             className="flex items-center gap-1.5 transition-opacity duration-300 hover:opacity-70"
-            style={{ color: "#3A3632", fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", textDecoration: "none" }}
+            style={{ color: "var(--foreground-faint)", fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", textDecoration: "none" }}
           >
             <Phone className="w-3 h-3 shrink-0" style={{ strokeWidth: 1.5 }} />
             <span>{item.leadTelephone}</span>
@@ -143,7 +143,7 @@ function AvisCard({
       </div>
 
       {/* Notes libres */}
-      <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "8px" }}>
+      <div style={{ borderTop: "1px solid var(--border)", paddingTop: "8px" }}>
         {editingNotes ? (
           <div style={{ display: "flex", flexDirection: "column" as const, gap: "8px" }}>
             <textarea
@@ -154,18 +154,18 @@ function AvisCard({
               className="focus:outline-none"
               style={{
                 width: "100%",
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "8px 10px",
                 fontSize: "12px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 resize: "none",
                 transition: "border-color 300ms ease",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
               autoFocus
             />
             <div className="flex gap-2">
@@ -180,8 +180,8 @@ function AvisCard({
                   fontWeight: 500,
                   letterSpacing: "0.06em",
                   textTransform: "uppercase" as const,
-                  background: "#C9A84C",
-                  color: "#0A0A0A",
+                  background: "var(--gold)",
+                  color: "var(--background)",
                   border: "none",
                   cursor: "pointer",
                 }}
@@ -198,7 +198,7 @@ function AvisCard({
                   fontWeight: 500,
                   letterSpacing: "0.04em",
                   textTransform: "uppercase" as const,
-                  color: "#3A3632",
+                  color: "var(--foreground-faint)",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
@@ -215,13 +215,13 @@ function AvisCard({
           >
             {notesValue ? (
               <div className="flex items-start gap-2">
-                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", lineHeight: "1.6", flex: 1 }}>{notesValue}</p>
-                <Pencil className="w-3 h-3 shrink-0 mt-0.5 transition-opacity duration-300 opacity-0 group-hover:opacity-100" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", lineHeight: "1.6", flex: 1 }}>{notesValue}</p>
+                <Pencil className="w-3 h-3 shrink-0 mt-0.5 transition-opacity duration-300 opacity-0 group-hover:opacity-100" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
               </div>
             ) : (
               <div className="flex items-center gap-1.5 transition-opacity duration-300 hover:opacity-70">
-                <Pencil className="w-3 h-3" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
-                <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", fontStyle: "italic" }}>Ajouter une note...</span>
+                <Pencil className="w-3 h-3" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
+                <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", fontStyle: "italic" }}>Ajouter une note...</span>
               </div>
             )}
           </div>
@@ -229,7 +229,7 @@ function AvisCard({
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-2" style={{ borderTop: "1px solid #1E1E1E", paddingTop: "8px" }}>
+      <div className="flex items-center gap-2" style={{ borderTop: "1px solid var(--border)", paddingTop: "8px" }}>
         {etapeSuivante && (
           <button
             onClick={() => onEtapeChange(item.id, etapeSuivante.id)}
@@ -240,7 +240,7 @@ function AvisCard({
               fontWeight: 500,
               letterSpacing: "0.04em",
               textTransform: "uppercase" as const,
-              color: "#C9A84C",
+              color: "var(--gold)",
               background: "none",
               border: "none",
               cursor: "pointer",
@@ -256,9 +256,9 @@ function AvisCard({
           <button
             onClick={() => onDelete(item.id)}
             className="transition-colors duration-300"
-            style={{ color: "#3A3632", background: "none", border: "none", cursor: "pointer", padding: "2px" }}
-            onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-            onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+            style={{ color: "var(--foreground-faint)", background: "none", border: "none", cursor: "pointer", padding: "2px" }}
+            onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+            onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
             title="Supprimer"
           >
             <Trash2 className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
@@ -267,7 +267,7 @@ function AvisCard({
       </div>
 
       {/* Date */}
-      <p className="tabular-nums" style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+      <p className="tabular-nums" style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
         Ajoute le {new Date(item.createdAt).toLocaleDateString("fr-FR")}
       </p>
     </div>
@@ -334,7 +334,7 @@ export default function AvisPipe() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <AdminNav />
 
       <div className="px-5 py-8" style={{ maxWidth: "1280px", margin: "0 auto" }}>
@@ -345,7 +345,7 @@ export default function AvisPipe() {
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "24px",
               fontWeight: 600,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               letterSpacing: "0.04em",
             }}>
               Pipe Avis & Temoignages
@@ -353,7 +353,7 @@ export default function AvisPipe() {
             <p style={{
               fontSize: "12px",
               fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               marginTop: "4px",
             }}>
               {filteredItems.length} dossier{filteredItems.length !== 1 ? "s" : ""}
@@ -370,14 +370,14 @@ export default function AvisPipe() {
               fontWeight: 500,
               letterSpacing: "0.04em",
               textTransform: "uppercase" as const,
-              color: "#3A3632",
-              border: "1px solid #1E1E1E",
+              color: "var(--foreground-faint)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               background: "transparent",
               cursor: "pointer",
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#6B6560"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#3A3632"; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-faint)"; }}
           >
             <RefreshCw className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
             Actualiser
@@ -399,9 +399,9 @@ export default function AvisPipe() {
                 letterSpacing: "0.04em",
                 textTransform: "uppercase" as const,
                 borderRadius: "2px",
-                border: `1px solid ${sourceFilter === f.id ? "#C9A84C" : "#1E1E1E"}`,
+                border: `1px solid ${sourceFilter === f.id ? "var(--gold)" : "var(--border)"}`,
                 background: sourceFilter === f.id ? "rgba(201,168,76,0.06)" : "transparent",
-                color: sourceFilter === f.id ? "#C9A84C" : "#3A3632",
+                color: sourceFilter === f.id ? "var(--gold)" : "var(--foreground-faint)",
                 cursor: "pointer",
               }}
             >
@@ -410,7 +410,7 @@ export default function AvisPipe() {
                 fontSize: "10px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 padding: "0 4px",
-                color: sourceFilter === f.id ? "#C9A84C" : "#3A3632",
+                color: sourceFilter === f.id ? "var(--gold)" : "var(--foreground-faint)",
                 opacity: 0.7,
               }}>{f.count}</span>
             </button>
@@ -419,12 +419,12 @@ export default function AvisPipe() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-24">
-            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+            <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="text-center py-24">
-            <Star className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+            <Star className="w-10 h-10 mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+            <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
               {sourceFilter === "tous"
                 ? "Aucun dossier dans le pipe"
                 : `Aucun dossier pour la source "${sourceFilter === "courtage" ? "Courtage" : "Immo"}".`}
@@ -438,8 +438,8 @@ export default function AvisPipe() {
               const colItems = filteredItems.filter((i: any) => i.etape === etape.id);
               return (
                 <div key={etape.id} style={{
-                  background: "#0D0D0D",
-                  border: "1px solid #1E1E1E",
+                  background: "var(--surface-header)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   padding: "16px",
                 }}>
@@ -450,7 +450,7 @@ export default function AvisPipe() {
                     <span className="ml-auto tabular-nums" style={{
                       fontSize: "11px",
                       fontFamily: "'Hanken Grotesk', sans-serif",
-                      color: "#3A3632",
+                      color: "var(--foreground-faint)",
                     }}>{colItems.length}</span>
                   </div>
 
@@ -460,7 +460,7 @@ export default function AvisPipe() {
                       <p style={{
                         fontSize: "11px",
                         fontFamily: "'Hanken Grotesk', sans-serif",
-                        color: "#3A3632",
+                        color: "var(--foreground-faint)",
                         textAlign: "center" as const,
                         padding: "16px 0",
                       }}>Aucun dossier</p>

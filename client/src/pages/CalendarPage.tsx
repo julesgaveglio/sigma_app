@@ -273,20 +273,20 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
   const isBusy = createMut.isPending || updateMut.isPending;
 
   const STATUT_MODAL: Record<Statut, { label: string; color: string; bg: string; border: string }> = {
-    a_faire:  { label: "A faire",  color: "#C9A84C", bg: "rgba(201,168,76,0.08)",  border: "rgba(201,168,76,0.2)" },
-    en_cours: { label: "En cours", color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
-    termine:  { label: "Termine",  color: "#4A7A5A", bg: "rgba(74,122,90,0.08)",   border: "rgba(74,122,90,0.2)" },
+    a_faire:  { label: "A faire",  color: "var(--gold)", bg: "rgba(201,168,76,0.08)",  border: "rgba(201,168,76,0.2)" },
+    en_cours: { label: "En cours", color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" },
+    termine:  { label: "Termine",  color: "var(--success)", bg: "rgba(74,122,90,0.08)",   border: "rgba(74,122,90,0.2)" },
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)" }}>
-      <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", width: "100%", maxWidth: "520px" }}>
+      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", width: "100%", maxWidth: "520px" }}>
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-5 pb-4" style={{ borderBottom: "1px solid #1E1E1E" }}>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.02em" }}>
+        <div className="flex items-center justify-between px-6 pt-5 pb-4" style={{ borderBottom: "1px solid var(--border)" }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.02em" }}>
             {task ? "Modifier la tache" : "Nouvelle tache"}
           </h2>
-          <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }}>
+          <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-muted)" }}>
             <X className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </button>
         </div>
@@ -300,17 +300,17 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
               placeholder="Ex. Welcome Call — Sophie Martin"
               className="w-full focus:outline-none"
               style={{
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "10px 14px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 transition: "border-color 300ms ease",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           {/* Assigné à */}
@@ -334,9 +334,9 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
                       fontWeight: 500,
                       letterSpacing: "0.04em",
                       textTransform: "uppercase",
-                      border: `1px solid ${isSelected ? mc.accentBorder : "#1E1E1E"}`,
+                      border: `1px solid ${isSelected ? mc.accentBorder : "var(--border)"}`,
                       background: isSelected ? mc.accentBg : "transparent",
-                      color: isSelected ? mc.accent : "#3A3632",
+                      color: isSelected ? mc.accent : "var(--foreground-faint)",
                     }}
                   >
                     {m.label}
@@ -355,17 +355,17 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
                 onChange={e => setDateDebut(e.target.value)}
                 className="w-full focus:outline-none"
                 style={{
-                  background: "#161616",
-                  border: "1px solid #1E1E1E",
+                  background: "var(--surface-raised)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   padding: "10px 14px",
                   fontSize: "13px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   transition: "border-color 300ms ease",
                 }}
-                onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                onBlur={e => (e.target.style.borderColor = "var(--border)")}
               />
             </div>
             <div>
@@ -376,17 +376,17 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
                 onChange={e => setDateFin(e.target.value)}
                 className="w-full focus:outline-none"
                 style={{
-                  background: "#161616",
-                  border: "1px solid #1E1E1E",
+                  background: "var(--surface-raised)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   padding: "10px 14px",
                   fontSize: "13px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                   transition: "border-color 300ms ease",
                 }}
-                onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                onBlur={e => (e.target.style.borderColor = "var(--border)")}
               />
             </div>
           </div>
@@ -398,8 +398,8 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
               background: "rgba(160,64,64,0.06)",
               border: "1px solid rgba(160,64,64,0.2)",
             }}>
-              <Ban className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: "#A04040", strokeWidth: 1.5 }} />
-              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#A04040" }}>
+              <Ban className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: "var(--destructive)", strokeWidth: 1.5 }} />
+              <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--destructive)" }}>
                 {dispoWarning}
               </span>
             </div>
@@ -407,33 +407,33 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
           {/* Toute la journée */}
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={touteJournee} onChange={e => setTouteJournee(e.target.checked)}
-              style={{ accentColor: "#C9A84C" }} />
-            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Toute la journee</span>
+              style={{ accentColor: "var(--gold)" }} />
+            <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Toute la journee</span>
           </label>
           {/* Lead CRM lié */}
           <div>
             <p className="label-uppercase" style={{ marginBottom: "6px" }}>
               Lead CRM associe
-              {crmLoading && <span style={{ marginLeft: "8px", color: "#C9A84C", opacity: 0.6 }}>chargement...</span>}
-              {crmError && <span style={{ marginLeft: "8px", color: "#A04040", fontSize: "10px" }}>(erreur)</span>}
-              {!crmLoading && !crmError && crmLeads.length > 0 && <span style={{ marginLeft: "8px", color: "#3A3632" }}>{crmLeads.length} leads</span>}
+              {crmLoading && <span style={{ marginLeft: "8px", color: "var(--gold)", opacity: 0.6 }}>chargement...</span>}
+              {crmError && <span style={{ marginLeft: "8px", color: "var(--destructive)", fontSize: "10px" }}>(erreur)</span>}
+              {!crmLoading && !crmError && crmLeads.length > 0 && <span style={{ marginLeft: "8px", color: "var(--foreground-faint)" }}>{crmLeads.length} leads</span>}
             </p>
             <select
               value={crmLeadId}
               onChange={e => setCrmLeadId(e.target.value === "" ? "" : Number(e.target.value))}
               className="w-full focus:outline-none"
               style={{
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "10px 14px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 transition: "border-color 300ms ease",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             >
               <option value="">{crmLoading ? "Chargement..." : "— Aucun —"}</option>
               {crmLeads.map(l => (
@@ -451,26 +451,26 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
               placeholder="Details, contexte..."
               className="w-full focus:outline-none"
               style={{
-                background: "#161616",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface-raised)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 padding: "10px 14px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
                 resize: "none",
                 transition: "border-color 300ms ease",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           {/* Rappel */}
           <div className="flex items-center gap-3">
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={rappelEmail} onChange={e => setRappelEmail(e.target.checked)}
-                style={{ accentColor: "#C9A84C" }} />
-              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Rappel par email</span>
+                style={{ accentColor: "var(--gold)" }} />
+              <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Rappel par email</span>
             </label>
             {rappelEmail && (
               <select
@@ -478,13 +478,13 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
                 onChange={e => setRappelMinutes(Number(e.target.value))}
                 className="focus:outline-none"
                 style={{
-                  background: "#161616",
-                  border: "1px solid #1E1E1E",
+                  background: "var(--surface-raised)",
+                  border: "1px solid var(--border)",
                   borderRadius: "2px",
                   padding: "6px 10px",
                   fontSize: "12px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                 }}
               >
                 {RAPPELS.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
@@ -510,9 +510,9 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
                       fontWeight: 500,
                       letterSpacing: "0.04em",
                       textTransform: "uppercase",
-                      border: `1px solid ${statut === key ? val.border : "#1E1E1E"}`,
+                      border: `1px solid ${statut === key ? val.border : "var(--border)"}`,
                       background: statut === key ? val.bg : "transparent",
-                      color: statut === key ? val.color : "#3A3632",
+                      color: statut === key ? val.color : "var(--foreground-faint)",
                     }}
                   >
                     {val.label}
@@ -523,17 +523,17 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
           )}
           {/* Historique des statuts */}
           {task && history && history.length > 0 && (
-            <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "12px" }}>
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: "12px" }}>
               <p className="label-uppercase" style={{ marginBottom: "8px" }}>Historique</p>
               <div className="space-y-1">
                 {history.map((h) => {
                   const label = h.statut === "a_faire" ? "A faire" : h.statut === "en_cours" ? "En cours" : "Termine";
-                  const color = h.statut === "a_faire" ? "#C9A84C" : h.statut === "en_cours" ? "#F0EDE6" : "#4A7A5A";
+                  const color = h.statut === "a_faire" ? "var(--gold)" : h.statut === "en_cours" ? "var(--foreground)" : "var(--success)";
                   const date = new Date(h.changedAt).toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Paris" });
                   return (
                     <div key={h.id} className="flex items-center justify-between">
                       <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color }}>{label}</span>
-                      <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{h.changedBy} — {date}</span>
+                      <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{h.changedBy} — {date}</span>
                     </div>
                   );
                 })}
@@ -542,7 +542,7 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
           )}
           {/* Pièces jointes — uniquement en mode édition */}
           {task && (
-            <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "12px" }}>
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: "12px" }}>
               <div className="flex items-center justify-between mb-2">
                 <p className="label-uppercase">Pieces jointes</p>
                 <label className="flex items-center gap-1.5 cursor-pointer transition-opacity duration-300 hover:opacity-70" style={{
@@ -553,8 +553,8 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
                   fontWeight: 500,
                   letterSpacing: "0.04em",
                   textTransform: "uppercase",
-                  color: uploadingFile ? "#3A3632" : "#C9A84C",
-                  border: `1px solid ${uploadingFile ? "#1E1E1E" : "rgba(201,168,76,0.3)"}`,
+                  color: uploadingFile ? "var(--foreground-faint)" : "var(--gold)",
+                  border: `1px solid ${uploadingFile ? "var(--border)" : "rgba(201,168,76,0.3)"}`,
                   background: "transparent",
                 }}>
                   {uploadingFile ? (
@@ -571,23 +571,23 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
                     <div key={att.id} className="flex items-center gap-2" style={{
                       padding: "8px 10px",
                       borderRadius: "2px",
-                      background: "#161616",
-                      border: "1px solid #1E1E1E",
+                      background: "var(--surface-raised)",
+                      border: "1px solid var(--border)",
                     }}>
                       {att.mime_type.includes("pdf") ? (
-                        <FileText className="w-4 h-4 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                        <FileText className="w-4 h-4 shrink-0" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                       ) : att.mime_type.includes("image") ? (
-                        <ImageIcon className="w-4 h-4 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                        <ImageIcon className="w-4 h-4 shrink-0" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                       ) : (
-                        <Paperclip className="w-4 h-4 shrink-0" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+                        <Paperclip className="w-4 h-4 shrink-0" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
                       )}
                       <div className="flex-1 min-w-0">
                         <a href={att.file_url} target="_blank" rel="noopener noreferrer"
                           className="block truncate transition-opacity duration-300 hover:opacity-70"
-                          style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#C9A84C", textDecoration: "none" }}>
+                          style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--gold)", textDecoration: "none" }}>
                           {att.file_name}
                         </a>
-                        <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                        <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                           {formatFileSize(att.file_size)} · {att.uploaded_by}
                         </span>
                       </div>
@@ -595,9 +595,9 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
                         type="button"
                         onClick={() => { if (confirm(`Supprimer "${att.file_name}" ?`)) deleteAttMut.mutate({ attachmentId: att.id }); }}
                         className="shrink-0 transition-colors duration-300"
-                        style={{ color: "#3A3632" }}
-                        onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-                        onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                        style={{ color: "var(--foreground-faint)" }}
+                        onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+                        onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
                         title="Supprimer"
                       >
                         <X className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
@@ -606,14 +606,14 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
                   ))}
                 </div>
               ) : (
-                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", fontStyle: "italic" }}>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", fontStyle: "italic" }}>
                   Aucun fichier joint — devis, mandat, releve...
                 </p>
               )}
             </div>
           )}
           {/* Actions */}
-          <div className="flex items-center justify-between pt-3 mt-2" style={{ borderTop: "1px solid #1E1E1E" }}>
+          <div className="flex items-center justify-between pt-3 mt-2" style={{ borderTop: "1px solid var(--border)" }}>
             {task ? (
               <button
                 type="button"
@@ -625,7 +625,7 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
                   borderRadius: "2px",
                   background: "rgba(160,64,64,0.06)",
                   border: "1px solid rgba(160,64,64,0.2)",
-                  color: "#A04040",
+                  color: "var(--destructive)",
                   fontSize: "11px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontWeight: 500,
@@ -645,17 +645,17 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
                 style={{
                   padding: "8px 16px",
                   borderRadius: "2px",
-                  border: "1px solid #1E1E1E",
+                  border: "1px solid var(--border)",
                   background: "transparent",
-                  color: "#6B6560",
+                  color: "var(--foreground-muted)",
                   fontSize: "11px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontWeight: 500,
                   letterSpacing: "0.04em",
                   textTransform: "uppercase",
                 }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = "#2A2A2A")}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--border)")}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
               >
                 Annuler
               </button>
@@ -665,9 +665,9 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
                 style={{
                   padding: "8px 20px",
                   borderRadius: "2px",
-                  background: isBusy ? "#8A7535" : "#C9A84C",
+                  background: isBusy ? "var(--gold-muted)" : "var(--gold)",
                   border: "none",
-                  color: "#0A0A0A",
+                  color: "var(--background)",
                   fontSize: "11px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontWeight: 500,
@@ -677,7 +677,7 @@ function TaskModal({ task, defaultDate, onClose, onSaved, crmLeadsList }: ModalP
                   transition: "background 300ms ease",
                 }}
                 onMouseEnter={e => { if (!isBusy) e.currentTarget.style.background = "#D4B45A"; }}
-                onMouseLeave={e => { if (!isBusy) e.currentTarget.style.background = "#C9A84C"; }}
+                onMouseLeave={e => { if (!isBusy) e.currentTarget.style.background = "var(--gold)"; }}
               >
                 {isBusy ? "Enregistrement..." : task ? "Enregistrer" : "Creer"}
               </button>
@@ -702,22 +702,22 @@ function WeekView({ tasks, weekStart, onDayClick, onTaskClick, onMarquerTermine 
   const today = new Date();
 
   return (
-    <div className="grid grid-cols-7" style={{ gap: "1px", background: "#1E1E1E" }}>
+    <div className="grid grid-cols-7" style={{ gap: "1px", background: "var(--border)" }}>
       {days.map((day, i) => {
         const dayTasks = tasks.filter(t => isSameDay(new Date(t.dateDebut), day));
         const isToday = isSameDay(day, today);
         return (
-          <div key={i} style={{ minHeight: "140px", background: "#111111" }}>
+          <div key={i} style={{ minHeight: "140px", background: "var(--surface)" }}>
             {/* En-tête jour */}
             <div
               className="cursor-pointer transition-colors duration-300"
               style={{
                 textAlign: "center",
                 padding: "10px 4px 8px",
-                borderBottom: isToday ? "1px solid #C9A84C" : "1px solid #1E1E1E",
+                borderBottom: isToday ? "1px solid var(--gold)" : "1px solid var(--border)",
               }}
               onClick={() => onDayClick(day)}
-              onMouseEnter={e => { if (!isToday) e.currentTarget.style.background = "#161616"; }}
+              onMouseEnter={e => { if (!isToday) e.currentTarget.style.background = "var(--surface-raised)"; }}
               onMouseLeave={e => { if (!isToday) e.currentTarget.style.background = "transparent"; }}
             >
               <div style={{
@@ -726,7 +726,7 @@ function WeekView({ tasks, weekStart, onDayClick, onTaskClick, onMarquerTermine 
                 fontWeight: 500,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color: "#3A3632",
+                color: "var(--foreground-faint)",
                 marginBottom: "2px",
               }}>
                 {day.toLocaleDateString("fr-FR", { weekday: "short" })}
@@ -735,7 +735,7 @@ function WeekView({ tasks, weekStart, onDayClick, onTaskClick, onMarquerTermine 
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "20px",
                 fontWeight: 600,
-                color: isToday ? "#C9A84C" : "#F0EDE6",
+                color: isToday ? "var(--gold)" : "var(--foreground)",
                 lineHeight: 1,
               }}>
                 {day.getDate()}
@@ -750,7 +750,7 @@ function WeekView({ tasks, weekStart, onDayClick, onTaskClick, onMarquerTermine 
                     key={t.id}
                     className="flex items-center gap-1 cursor-pointer transition-opacity duration-300 hover:opacity-80"
                     style={{
-                      background: "#161616",
+                      background: "var(--surface-raised)",
                       border: `1px solid ${mc.accentBorder}`,
                       borderRadius: "2px",
                       padding: "4px 6px",
@@ -774,13 +774,13 @@ function WeekView({ tasks, weekStart, onDayClick, onTaskClick, onMarquerTermine 
                       style={{
                         fontSize: "11px",
                         fontFamily: "'Hanken Grotesk', sans-serif",
-                        color: t.statut === "termine" ? "#3A3632" : "#F0EDE6",
+                        color: t.statut === "termine" ? "var(--foreground-faint)" : "var(--foreground)",
                         textDecoration: t.statut === "termine" ? "line-through" : "none",
                         lineHeight: 1.3,
                       }}
                     >
                       {!t.touteJournee && (
-                        <span style={{ color: "#6B6560", marginRight: "3px" }}>{formatTime(t.dateDebut)}</span>
+                        <span style={{ color: "var(--foreground-muted)", marginRight: "3px" }}>{formatTime(t.dateDebut)}</span>
                       )}
                       {t.titre}
                     </span>
@@ -792,12 +792,12 @@ function WeekView({ tasks, weekStart, onDayClick, onTaskClick, onMarquerTermine 
                           width: "16px",
                           height: "16px",
                           borderRadius: "2px",
-                          border: "1px solid #3A3632",
+                          border: "1px solid var(--foreground-faint)",
                           background: "transparent",
-                          color: "#3A3632",
+                          color: "var(--foreground-faint)",
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor = "#4A7A5A"; e.currentTarget.style.color = "#4A7A5A"; }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor = "#3A3632"; e.currentTarget.style.color = "#3A3632"; }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--success)"; e.currentTarget.style.color = "var(--success)"; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--foreground-faint)"; e.currentTarget.style.color = "var(--foreground-faint)"; }}
                         title="Marquer termine"
                       >
                         <Check className="w-2.5 h-2.5" style={{ strokeWidth: 2 }} />
@@ -811,12 +811,12 @@ function WeekView({ tasks, weekStart, onDayClick, onTaskClick, onMarquerTermine 
                   className="cursor-pointer transition-colors duration-300"
                   style={{
                     height: "32px",
-                    border: "1px dashed #1E1E1E",
+                    border: "1px dashed var(--border)",
                     borderRadius: "2px",
                   }}
                   onClick={() => onDayClick(day)}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = "#3A3632")}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = "#1E1E1E")}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = "var(--foreground-faint)")}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = "var(--border)")}
                 />
               )}
             </div>
@@ -861,7 +861,7 @@ function MonthView({ tasks, currentDate, onDayClick, onTaskClick, onMarquerTermi
         ))}
       </div>
       {/* Grille */}
-      <div className="grid grid-cols-7" style={{ gap: "1px", background: "#1E1E1E" }}>
+      <div className="grid grid-cols-7" style={{ gap: "1px", background: "var(--border)" }}>
         {days.map((day, i) => {
           const isCurrentMonth = day.getMonth() === currentDate.getMonth();
           const isToday = isSameDay(day, today);
@@ -874,18 +874,18 @@ function MonthView({ tasks, currentDate, onDayClick, onTaskClick, onMarquerTermi
               style={{
                 minHeight: "80px",
                 padding: "6px",
-                background: "#111111",
-                borderTop: isToday ? "2px solid #C9A84C" : "none",
+                background: "var(--surface)",
+                borderTop: isToday ? "2px solid var(--gold)" : "none",
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
-              onMouseLeave={e => (e.currentTarget.style.background = "#111111")}
+              onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
+              onMouseLeave={e => (e.currentTarget.style.background = "var(--surface)")}
             >
               <div style={{
                 fontSize: "12px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontWeight: 500,
                 fontVariantNumeric: "tabular-nums",
-                color: isToday ? "#C9A84C" : isCurrentMonth ? "#6B6560" : "#1E1E1E",
+                color: isToday ? "var(--gold)" : isCurrentMonth ? "var(--foreground-muted)" : "var(--border)",
                 marginBottom: "4px",
               }}>
                 {day.getDate()}
@@ -898,7 +898,7 @@ function MonthView({ tasks, currentDate, onDayClick, onTaskClick, onMarquerTermi
                       key={t.id}
                       className="flex items-center gap-0.5 cursor-pointer transition-opacity duration-300 hover:opacity-80"
                       style={{
-                        background: "#161616",
+                        background: "var(--surface-raised)",
                         borderRadius: "2px",
                         padding: "2px 4px",
                         borderLeft: `2px solid ${mc.accent}`,
@@ -912,7 +912,7 @@ function MonthView({ tasks, currentDate, onDayClick, onTaskClick, onMarquerTermi
                         style={{
                           fontSize: "10px",
                           fontFamily: "'Hanken Grotesk', sans-serif",
-                          color: "#F0EDE6",
+                          color: "var(--foreground)",
                           lineHeight: 1.3,
                         }}
                       >
@@ -926,12 +926,12 @@ function MonthView({ tasks, currentDate, onDayClick, onTaskClick, onMarquerTermi
                             width: "12px",
                             height: "12px",
                             borderRadius: "2px",
-                            border: "1px solid #3A3632",
+                            border: "1px solid var(--foreground-faint)",
                             background: "transparent",
-                            color: "#3A3632",
+                            color: "var(--foreground-faint)",
                           }}
-                          onMouseEnter={e => { e.currentTarget.style.borderColor = "#4A7A5A"; e.currentTarget.style.color = "#4A7A5A"; }}
-                          onMouseLeave={e => { e.currentTarget.style.borderColor = "#3A3632"; e.currentTarget.style.color = "#3A3632"; }}
+                          onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--success)"; e.currentTarget.style.color = "var(--success)"; }}
+                          onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--foreground-faint)"; e.currentTarget.style.color = "var(--foreground-faint)"; }}
                           title="Marquer termine"
                         >
                           <Check className="w-2 h-2" style={{ strokeWidth: 2 }} />
@@ -941,7 +941,7 @@ function MonthView({ tasks, currentDate, onDayClick, onTaskClick, onMarquerTermi
                   );
                 })}
                 {dayTasks.length > 3 && (
-                  <div style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                  <div style={{ fontSize: "10px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                     +{dayTasks.length - 3} autres
                   </div>
                 )}
@@ -1092,8 +1092,8 @@ export default function CalendarPage() {
     : currentDate.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
-      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--background)" }}>
+      <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
     </div>
   );
 
@@ -1104,19 +1104,19 @@ export default function CalendarPage() {
 
   // Styles reutilisables pour inputs du panneau blocage
   const blockInputStyle: React.CSSProperties = {
-    background: "#161616",
-    border: "1px solid #1E1E1E",
+    background: "var(--surface-raised)",
+    border: "1px solid var(--border)",
     borderRadius: "2px",
     padding: "8px 12px",
     fontSize: "13px",
     fontFamily: "'Hanken Grotesk', sans-serif",
-    color: "#F0EDE6",
+    color: "var(--foreground)",
     outline: "none",
     transition: "border-color 300ms ease",
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <AdminNav />
 
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "32px 20px" }}>
@@ -1129,7 +1129,7 @@ export default function CalendarPage() {
               fontWeight: 700,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               lineHeight: 1,
             }}>
               Calendrier
@@ -1137,7 +1137,7 @@ export default function CalendarPage() {
             <p style={{
               fontSize: "13px",
               fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#3A3632",
+              color: "var(--foreground-faint)",
               marginTop: "6px",
             }}>
               Taches et rappels — Team Delivery
@@ -1155,12 +1155,12 @@ export default function CalendarPage() {
                 fontWeight: 500,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase",
-                border: `1px solid ${showBlockPanel ? "rgba(160,64,64,0.3)" : "#1E1E1E"}`,
+                border: `1px solid ${showBlockPanel ? "rgba(160,64,64,0.3)" : "var(--border)"}`,
                 background: showBlockPanel ? "rgba(160,64,64,0.06)" : "transparent",
-                color: showBlockPanel ? "#A04040" : "#6B6560",
+                color: showBlockPanel ? "var(--destructive)" : "var(--foreground-muted)",
               }}
-              onMouseEnter={e => { if (!showBlockPanel) { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; } }}
-              onMouseLeave={e => { if (!showBlockPanel) { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; } }}
+              onMouseEnter={e => { if (!showBlockPanel) { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground)"; } }}
+              onMouseLeave={e => { if (!showBlockPanel) { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; } }}
             >
               <Ban className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} />
               Bloquer creneau
@@ -1171,9 +1171,9 @@ export default function CalendarPage() {
               style={{
                 padding: "8px 20px",
                 borderRadius: "2px",
-                background: "#C9A84C",
+                background: "var(--gold)",
                 border: "none",
-                color: "#0A0A0A",
+                color: "var(--background)",
                 fontSize: "11px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontWeight: 500,
@@ -1183,7 +1183,7 @@ export default function CalendarPage() {
                 transition: "background 300ms ease",
               }}
               onMouseEnter={e => (e.currentTarget.style.background = "#D4B45A")}
-              onMouseLeave={e => (e.currentTarget.style.background = "#C9A84C")}
+              onMouseLeave={e => (e.currentTarget.style.background = "var(--gold)")}
             >
               <Plus className="w-3.5 h-3.5" style={{ strokeWidth: 2 }} />
               Nouvelle tache
@@ -1209,16 +1209,16 @@ export default function CalendarPage() {
                   fontWeight: 500,
                   letterSpacing: "0.04em",
                   textTransform: "uppercase",
-                  border: `1px solid ${isActive ? mc.accentBorder : "#1E1E1E"}`,
+                  border: `1px solid ${isActive ? mc.accentBorder : "var(--border)"}`,
                   background: isActive ? mc.accentBg : "transparent",
-                  color: isActive ? mc.accent : "#3A3632",
+                  color: isActive ? mc.accent : "var(--foreground-faint)",
                 }}
               >
                 <span style={{
                   width: "6px",
                   height: "6px",
                   borderRadius: "1px",
-                  background: isActive ? mc.accent : "#3A3632",
+                  background: isActive ? mc.accent : "var(--foreground-faint)",
                   flexShrink: 0,
                 }} />
                 {m.label}
@@ -1226,7 +1226,7 @@ export default function CalendarPage() {
             );
           })}
           {/* Séparateur + bouton Vue Maria */}
-          <div style={{ width: "1px", height: "20px", background: "#1E1E1E", margin: "0 4px" }} />
+          <div style={{ width: "1px", height: "20px", background: "var(--border)", margin: "0 4px" }} />
           <button
             onClick={() => { setModeMaria(v => !v); setVueMaria("toutes"); }}
             className="flex items-center gap-1.5 transition-colors duration-300"
@@ -1238,15 +1238,15 @@ export default function CalendarPage() {
               fontWeight: 500,
               letterSpacing: "0.04em",
               textTransform: "uppercase",
-              border: `1px solid ${modeMaria ? MEMBRE_COLORS.Maria.accentBorder : "#1E1E1E"}`,
+              border: `1px solid ${modeMaria ? MEMBRE_COLORS.Maria.accentBorder : "var(--border)"}`,
               background: modeMaria ? MEMBRE_COLORS.Maria.accentBg : "transparent",
-              color: modeMaria ? MEMBRE_COLORS.Maria.accent : "#3A3632",
+              color: modeMaria ? MEMBRE_COLORS.Maria.accent : "var(--foreground-faint)",
             }}
           >
             Vue Maria
           </button>
           {/* Bouton masquer terminées */}
-          <div style={{ width: "1px", height: "20px", background: "#1E1E1E", margin: "0 4px" }} />
+          <div style={{ width: "1px", height: "20px", background: "var(--border)", margin: "0 4px" }} />
           <button
             onClick={() => setMasquerTerminees(v => !v)}
             className="flex items-center gap-1.5 transition-colors duration-300"
@@ -1258,9 +1258,9 @@ export default function CalendarPage() {
               fontWeight: 500,
               letterSpacing: "0.04em",
               textTransform: "uppercase",
-              border: `1px solid ${masquerTerminees ? "rgba(240,237,230,0.15)" : "#1E1E1E"}`,
+              border: `1px solid ${masquerTerminees ? "rgba(240,237,230,0.15)" : "var(--border)"}`,
               background: masquerTerminees ? "rgba(240,237,230,0.06)" : "transparent",
-              color: masquerTerminees ? "#F0EDE6" : "#3A3632",
+              color: masquerTerminees ? "var(--foreground)" : "var(--foreground-faint)",
             }}
           >
             {masquerTerminees ? (
@@ -1274,7 +1274,7 @@ export default function CalendarPage() {
         {/* Sous-filtres Vue Maria */}
         {modeMaria && (
           <div className="flex items-center gap-2" style={{ marginBottom: "20px", paddingLeft: "4px" }}>
-            <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginRight: "4px" }}>Filtrer :</span>
+            <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginRight: "4px" }}>Filtrer :</span>
             {([
               { key: "toutes" as VueMaria, label: "Tous les RDV" },
               { key: "welcome_call" as VueMaria, label: "Welcome Call" },
@@ -1292,9 +1292,9 @@ export default function CalendarPage() {
                   fontWeight: 500,
                   letterSpacing: "0.04em",
                   textTransform: "uppercase",
-                  border: `1px solid ${vueMaria === key ? MEMBRE_COLORS.Maria.accentBorder : "#1E1E1E"}`,
+                  border: `1px solid ${vueMaria === key ? MEMBRE_COLORS.Maria.accentBorder : "var(--border)"}`,
                   background: vueMaria === key ? MEMBRE_COLORS.Maria.accentBg : "transparent",
-                  color: vueMaria === key ? MEMBRE_COLORS.Maria.accent : "#3A3632",
+                  color: vueMaria === key ? MEMBRE_COLORS.Maria.accent : "var(--foreground-faint)",
                 }}
               >
                 {label}
@@ -1316,7 +1316,7 @@ export default function CalendarPage() {
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "16px",
               fontWeight: 600,
-              color: "#A04040",
+              color: "var(--destructive)",
               letterSpacing: "0.02em",
               marginBottom: "16px",
             }}>
@@ -1327,16 +1327,16 @@ export default function CalendarPage() {
                 <p className="label-uppercase">Date</p>
                 <input type="date" value={blockDate} onChange={e => setBlockDate(e.target.value)}
                   style={blockInputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div className="flex flex-col gap-1">
                 <p className="label-uppercase">Heure (optionnel)</p>
                 <input type="time" value={blockHeure} onChange={e => setBlockHeure(e.target.value)}
                   style={blockInputStyle}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -1354,8 +1354,8 @@ export default function CalendarPage() {
                 <p className="label-uppercase">Raison (optionnel)</p>
                 <input type="text" placeholder="Ex: Conge, Reunion..." value={blockRaison} onChange={e => setBlockRaison(e.target.value)}
                   style={{ ...blockInputStyle, width: "192px" }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
               <div className="flex flex-col gap-1 justify-end">
@@ -1365,9 +1365,9 @@ export default function CalendarPage() {
                   style={{
                     padding: "8px 16px",
                     borderRadius: "2px",
-                    background: addBlockedSlot.isPending ? "#7A3030" : "#A04040",
+                    background: addBlockedSlot.isPending ? "#7A3030" : "var(--destructive)",
                     border: "none",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                     fontSize: "11px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     fontWeight: 500,
@@ -1377,7 +1377,7 @@ export default function CalendarPage() {
                     transition: "background 300ms ease",
                   }}
                   onMouseEnter={e => { if (!addBlockedSlot.isPending) e.currentTarget.style.background = "#B04848"; }}
-                  onMouseLeave={e => { if (!addBlockedSlot.isPending) e.currentTarget.style.background = "#A04040"; }}
+                  onMouseLeave={e => { if (!addBlockedSlot.isPending) e.currentTarget.style.background = "var(--destructive)"; }}
                 >
                   {addBlockedSlot.isPending ? "..." : "Bloquer"}
                 </button>
@@ -1390,14 +1390,14 @@ export default function CalendarPage() {
                 <div className="flex flex-col gap-1.5">
                   {(blockedSlots as any[]).map((slot: any) => (
                     <div key={slot.id} className="flex items-center justify-between" style={{
-                      background: "#161616",
+                      background: "var(--surface-raised)",
                       borderRadius: "2px",
                       padding: "8px 12px",
-                      border: "1px solid #1E1E1E",
+                      border: "1px solid var(--border)",
                     }}>
                       <div className="flex items-center gap-3">
-                        <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{slot.date}</span>
-                        {slot.heure && <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#C9A84C" }}>{slot.heure}</span>}
+                        <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{slot.date}</span>
+                        {slot.heure && <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--gold)" }}>{slot.heure}</span>}
                         {slot.typeRdv && (
                           <span style={{
                             fontSize: "10px",
@@ -1405,16 +1405,16 @@ export default function CalendarPage() {
                             fontWeight: 500,
                             letterSpacing: "0.04em",
                             textTransform: "uppercase",
-                            color: "#6B6560",
+                            color: "var(--foreground-muted)",
                             background: "rgba(240,237,230,0.04)",
-                            border: "1px solid #1E1E1E",
+                            border: "1px solid var(--border)",
                             borderRadius: "2px",
                             padding: "2px 8px",
                           }}>
                             {slot.typeRdv === "welcome_call" ? "Welcome Call" : slot.typeRdv === "point_personnalise" ? "Point Personnalise" : slot.typeRdv === "point_immobilier" ? "Point Immobilier" : "Tous"}
                           </span>
                         )}
-                        {slot.raison && <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", fontStyle: "italic" }}>{slot.raison}</span>}
+                        {slot.raison && <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", fontStyle: "italic" }}>{slot.raison}</span>}
                       </div>
                       <button
                         onClick={() => removeBlockedSlot.mutate({ id: slot.id })}
@@ -1422,7 +1422,7 @@ export default function CalendarPage() {
                         style={{
                           fontSize: "11px",
                           fontFamily: "'Hanken Grotesk', sans-serif",
-                          color: "#A04040",
+                          color: "var(--destructive)",
                           background: "transparent",
                           border: "none",
                           padding: "4px 8px",
@@ -1431,7 +1431,7 @@ export default function CalendarPage() {
                           textTransform: "uppercase",
                         }}
                         onMouseEnter={e => (e.currentTarget.style.color = "#C04848")}
-                        onMouseLeave={e => (e.currentTarget.style.color = "#A04040")}
+                        onMouseLeave={e => (e.currentTarget.style.color = "var(--destructive)")}
                       >
                         Supprimer
                       </button>
@@ -1448,17 +1448,17 @@ export default function CalendarPage() {
           <div className="flex items-center gap-2">
             <button onClick={prev}
               className="transition-colors duration-300"
-              style={{ padding: "8px", borderRadius: "2px", border: "1px solid #1E1E1E", background: "transparent", color: "#6B6560", cursor: "pointer" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
+              style={{ padding: "8px", borderRadius: "2px", border: "1px solid var(--border)", background: "transparent", color: "var(--foreground-muted)", cursor: "pointer" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
             >
               <ChevronLeft className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             </button>
             <button onClick={next}
               className="transition-colors duration-300"
-              style={{ padding: "8px", borderRadius: "2px", border: "1px solid #1E1E1E", background: "transparent", color: "#6B6560", cursor: "pointer" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
+              style={{ padding: "8px", borderRadius: "2px", border: "1px solid var(--border)", background: "transparent", color: "var(--foreground-muted)", cursor: "pointer" }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
             >
               <ChevronRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
             </button>
@@ -1467,9 +1467,9 @@ export default function CalendarPage() {
               style={{
                 padding: "6px 14px",
                 borderRadius: "2px",
-                border: "1px solid #1E1E1E",
+                border: "1px solid var(--border)",
                 background: "transparent",
-                color: "#6B6560",
+                color: "var(--foreground-muted)",
                 fontSize: "11px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
                 fontWeight: 500,
@@ -1477,8 +1477,8 @@ export default function CalendarPage() {
                 textTransform: "uppercase",
                 cursor: "pointer",
               }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
             >
               Aujourd'hui
             </button>
@@ -1486,7 +1486,7 @@ export default function CalendarPage() {
               fontSize: "14px",
               fontFamily: "'Hanken Grotesk', sans-serif",
               fontWeight: 500,
-              color: "#6B6560",
+              color: "var(--foreground-muted)",
               marginLeft: "8px",
               textTransform: "capitalize",
             }}>
@@ -1494,7 +1494,7 @@ export default function CalendarPage() {
             </span>
           </div>
           {/* Toggle vue */}
-          <div className="flex" style={{ border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+          <div className="flex" style={{ border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
             {(["semaine", "mois"] as Vue[]).map(v => (
               <button
                 key={v}
@@ -1509,11 +1509,11 @@ export default function CalendarPage() {
                   textTransform: "uppercase",
                   cursor: "pointer",
                   border: "none",
-                  background: vue === v ? "#C9A84C" : "transparent",
-                  color: vue === v ? "#0A0A0A" : "#3A3632",
+                  background: vue === v ? "var(--gold)" : "transparent",
+                  color: vue === v ? "var(--background)" : "var(--foreground-faint)",
                 }}
-                onMouseEnter={e => { if (vue !== v) e.currentTarget.style.color = "#F0EDE6"; }}
-                onMouseLeave={e => { if (vue !== v) e.currentTarget.style.color = "#3A3632"; }}
+                onMouseEnter={e => { if (vue !== v) e.currentTarget.style.color = "var(--foreground)"; }}
+                onMouseLeave={e => { if (vue !== v) e.currentTarget.style.color = "var(--foreground-faint)"; }}
               >
                 {v}
               </button>
@@ -1522,10 +1522,10 @@ export default function CalendarPage() {
         </div>
 
         {/* Calendrier */}
-        <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", padding: "16px", overflow: "hidden" }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", padding: "16px", overflow: "hidden" }}>
           {isLoading ? (
             <div className="flex items-center justify-center" style={{ height: "200px" }}>
-              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
             </div>
           ) : vue === "semaine" ? (
             <WeekView
@@ -1553,7 +1553,7 @@ export default function CalendarPage() {
             return (
               <div key={m.key} className="flex items-center gap-1.5">
                 <span style={{ width: "10px", height: "3px", borderRadius: "1px", background: mc.accent }} />
-                <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{m.label}</span>
+                <span style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{m.label}</span>
               </div>
             );
           })}

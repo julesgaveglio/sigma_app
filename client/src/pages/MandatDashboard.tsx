@@ -50,12 +50,12 @@ type Mandat = {
 // ─── Labels ───────────────────────────────────────────────────────────────────
 
 const STATUT_LABELS: Record<string, { label: string; style: { color: string; bg: string; border: string } }> = {
-  nouveau: { label: "Nouveau", style: { color: "#C9A84C", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" } },
-  en_cours: { label: "En cours", style: { color: "#F0EDE6", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" } },
-  en_attente_retour: { label: "En attente retour", style: { color: "#6B6560", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" } },
-  standby: { label: "Standby", style: { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } },
-  traite: { label: "Traite", style: { color: "#4A7A5A", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" } },
-  annule: { label: "Annule", style: { color: "#A04040", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" } },
+  nouveau: { label: "Nouveau", style: { color: "var(--gold)", bg: "rgba(201,168,76,0.08)", border: "rgba(201,168,76,0.2)" } },
+  en_cours: { label: "En cours", style: { color: "var(--foreground)", bg: "rgba(240,237,230,0.06)", border: "rgba(240,237,230,0.15)" } },
+  en_attente_retour: { label: "En attente retour", style: { color: "var(--foreground-muted)", bg: "rgba(107,101,96,0.08)", border: "rgba(107,101,96,0.2)" } },
+  standby: { label: "Standby", style: { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } },
+  traite: { label: "Traite", style: { color: "var(--success)", bg: "rgba(74,122,90,0.08)", border: "rgba(74,122,90,0.2)" } },
+  annule: { label: "Annule", style: { color: "var(--destructive)", bg: "rgba(160,64,64,0.08)", border: "rgba(160,64,64,0.2)" } },
 };
 
 const TYPE_BIEN_LABELS: Record<string, string> = {
@@ -82,7 +82,7 @@ const USAGE_LABELS: Record<string, string> = {
 // ─── StatutBadge ─────────────────────────────────────────────────────────────
 
 function StatutBadge({ statut }: { statut: string }) {
-  const s = STATUT_LABELS[statut] ?? { label: statut, style: { color: "#3A3632", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } };
+  const s = STATUT_LABELS[statut] ?? { label: statut, style: { color: "var(--foreground-faint)", bg: "rgba(58,54,50,0.08)", border: "rgba(58,54,50,0.2)" } };
   return (
     <span style={{
       display: "inline-flex",
@@ -144,19 +144,19 @@ function MandatDetail({ mandat, onClose, onUpdate }: {
       onClick={onClose}
     >
       <div className="w-full h-full overflow-y-auto"
-        style={{ maxWidth: "520px", background: "#111111", borderLeft: "1px solid #1E1E1E" }}
+        style={{ maxWidth: "520px", background: "var(--surface)", borderLeft: "1px solid var(--border)" }}
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
         <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between"
-          style={{ background: "#111111", borderBottom: "1px solid #1E1E1E" }}
+          style={{ background: "var(--surface)", borderBottom: "1px solid var(--border)" }}
         >
           <div>
             <h2 style={{
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: "20px",
               fontWeight: 600,
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               letterSpacing: "0.02em",
             }}>
               {mandat.nom} {mandat.prenoms}
@@ -164,13 +164,13 @@ function MandatDetail({ mandat, onClose, onUpdate }: {
             <p style={{
               fontSize: "11px",
               fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#3A3632",
+              color: "var(--foreground-faint)",
               marginTop: "2px",
             }}>
               Mandat #{mandat.id} — {new Date(mandat.createdAt).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" })}
             </p>
           </div>
-          <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "#6B6560" }}>
+          <button onClick={onClose} className="p-2 transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-muted)" }}>
             <X className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
           </button>
         </div>
@@ -181,12 +181,12 @@ function MandatDetail({ mandat, onClose, onUpdate }: {
             <p className="label-uppercase mb-3">Coordonnees</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Email :</span>
-                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.email}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Email :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{mandat.email}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Tel :</span>
-                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.telephone}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Tel :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{mandat.telephone}</span>
               </div>
             </div>
           </div>
@@ -196,39 +196,39 @@ function MandatDetail({ mandat, onClose, onUpdate }: {
             <p className="label-uppercase mb-3">Bien recherche</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Type :</span>
-                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{TYPE_BIEN_LABELS[mandat.typeBien] ?? mandat.typeBien}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Type :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{TYPE_BIEN_LABELS[mandat.typeBien] ?? mandat.typeBien}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Usage :</span>
-                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{USAGE_LABELS[mandat.usage] ?? mandat.usage}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Usage :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{USAGE_LABELS[mandat.usage] ?? mandat.usage}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Localisation :</span>
-                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.localisation}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Localisation :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{mandat.localisation}</span>
               </div>
               {(mandat.surfaceMin || mandat.surfaceMax) && (
                 <div className="flex items-center gap-2">
-                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Surface :</span>
-                  <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.surfaceMin ?? "—"}–{mandat.surfaceMax ?? "—"} m2</span>
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Surface :</span>
+                  <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{mandat.surfaceMin ?? "—"}–{mandat.surfaceMax ?? "—"} m2</span>
                 </div>
               )}
               {(mandat.nbPiecesMin || mandat.nbPiecesMax) && (
                 <div className="flex items-center gap-2">
-                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Pieces :</span>
-                  <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.nbPiecesMin ?? "—"}–{mandat.nbPiecesMax ?? "—"}</span>
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Pieces :</span>
+                  <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{mandat.nbPiecesMin ?? "—"}–{mandat.nbPiecesMax ?? "—"}</span>
                 </div>
               )}
               {mandat.etatBien && (
                 <div className="flex items-center gap-2">
-                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Etat :</span>
-                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", textTransform: "capitalize" as const }}>{mandat.etatBien.replace("_", " ")}</span>
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Etat :</span>
+                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", textTransform: "capitalize" as const }}>{mandat.etatBien.replace("_", " ")}</span>
                 </div>
               )}
               {mandat.travauxAcceptes && (
                 <div className="flex items-center gap-2">
-                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Travaux :</span>
-                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", textTransform: "capitalize" as const }}>{mandat.travauxAcceptes.replace("_", " ")}</span>
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Travaux :</span>
+                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", textTransform: "capitalize" as const }}>{mandat.travauxAcceptes.replace("_", " ")}</span>
                 </div>
               )}
             </div>
@@ -246,14 +246,14 @@ function MandatDetail({ mandat, onClose, onUpdate }: {
                     fontSize: "11px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
                     fontWeight: 400,
-                    color: "#6B6560",
-                    background: "#161616",
-                    border: "1px solid #1E1E1E",
+                    color: "var(--foreground-muted)",
+                    background: "var(--surface-raised)",
+                    border: "1px solid var(--border)",
                   }}>{c}</span>
                 ))}
               </div>
               {mandat.autresCriteres && (
-                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "8px" }}>{mandat.autresCriteres}</p>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "8px" }}>{mandat.autresCriteres}</p>
               )}
             </div>
           )}
@@ -263,46 +263,46 @@ function MandatDetail({ mandat, onClose, onUpdate }: {
             <p className="label-uppercase mb-3">Budget & financement</p>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Budget :</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Budget :</span>
                 <span className="tabular-nums" style={{
                   fontSize: "13px",
                   fontFamily: "'Hanken Grotesk', sans-serif",
                   fontWeight: 500,
-                  color: "#F0EDE6",
+                  color: "var(--foreground)",
                 }}>{mandat.budgetMax ? mandat.budgetMax.toLocaleString("fr-FR") + " EUR" : "A definir apres courtage"}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Financement :</span>
-                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.modeFinancement ? (FINANCEMENT_LABELS[mandat.modeFinancement] ?? mandat.modeFinancement) : "A definir"}</span>
+                <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Financement :</span>
+                <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{mandat.modeFinancement ? (FINANCEMENT_LABELS[mandat.modeFinancement] ?? mandat.modeFinancement) : "A definir"}</span>
               </div>
               {mandat.accordBancaire && (
                 <div className="flex items-center gap-2">
-                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Accord bancaire :</span>
-                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", textTransform: "capitalize" as const }}>{mandat.accordBancaire.replace("_", " ")}</span>
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Accord bancaire :</span>
+                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", textTransform: "capitalize" as const }}>{mandat.accordBancaire.replace("_", " ")}</span>
                 </div>
               )}
               {mandat.typeMandat && (
                 <div className="flex items-center gap-2">
-                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Type mandat :</span>
-                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6", textTransform: "capitalize" as const }}>{mandat.typeMandat}</span>
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Type mandat :</span>
+                  <span style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)", textTransform: "capitalize" as const }}>{mandat.typeMandat}</span>
                 </div>
               )}
               {mandat.dureeMandat && (
                 <div className="flex items-center gap-2">
-                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Duree :</span>
-                  <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{mandat.dureeMandat} mois</span>
+                  <span style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Duree :</span>
+                  <span className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{mandat.dureeMandat} mois</span>
                 </div>
               )}
             </div>
           </div>
 
           {/* Gestion interne */}
-          <div style={{ borderTop: "1px solid #1E1E1E", paddingTop: "24px" }}>
+          <div style={{ borderTop: "1px solid var(--border)", paddingTop: "24px" }}>
             <p className="label-uppercase mb-3">Gestion interne</p>
             <div className="space-y-4">
               {/* Statut buttons */}
               <div>
-                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginBottom: "8px" }}>Statut</p>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", marginBottom: "8px" }}>Statut</p>
                 <div className="flex flex-wrap gap-2">
                   {Object.entries(STATUT_LABELS).map(([key, val]) => (
                     <button key={key} onClick={() => setStatut(key)}
@@ -315,9 +315,9 @@ function MandatDetail({ mandat, onClose, onUpdate }: {
                         fontWeight: 500,
                         letterSpacing: "0.04em",
                         textTransform: "uppercase" as const,
-                        border: `1px solid ${statut === key ? val.style.border : "#1E1E1E"}`,
+                        border: `1px solid ${statut === key ? val.style.border : "var(--border)"}`,
                         background: statut === key ? val.style.bg : "transparent",
-                        color: statut === key ? val.style.color : "#3A3632",
+                        color: statut === key ? val.style.color : "var(--foreground-faint)",
                         cursor: "pointer",
                       }}>
                       {val.label}
@@ -328,7 +328,7 @@ function MandatDetail({ mandat, onClose, onUpdate }: {
 
               {/* Assigne */}
               <div>
-                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginBottom: "8px" }}>Assigne a</p>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", marginBottom: "8px" }}>Assigne a</p>
                 <AssigneeSelect
                   mode="team"
                   value={assigneA}
@@ -340,7 +340,7 @@ function MandatDetail({ mandat, onClose, onUpdate }: {
 
               {/* Notes */}
               <div>
-                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", marginBottom: "8px" }}>Notes internes</p>
+                <p style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", marginBottom: "8px" }}>Notes internes</p>
                 <textarea
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
@@ -348,18 +348,18 @@ function MandatDetail({ mandat, onClose, onUpdate }: {
                   placeholder="Observations, suivi..."
                   style={{
                     width: "100%",
-                    background: "#161616",
-                    border: "1px solid #1E1E1E",
+                    background: "var(--surface-raised)",
+                    border: "1px solid var(--border)",
                     borderRadius: "2px",
                     padding: "10px 12px",
                     fontSize: "13px",
                     fontFamily: "'Hanken Grotesk', sans-serif",
-                    color: "#F0EDE6",
+                    color: "var(--foreground)",
                     resize: "none",
                     outline: "none",
                   }}
-                  onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-                  onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+                  onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                  onBlur={e => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
 
@@ -370,8 +370,8 @@ function MandatDetail({ mandat, onClose, onUpdate }: {
                 style={{
                   width: "100%",
                   padding: "12px 28px",
-                  background: updateMutation.isPending ? "#8A7535" : "#C9A84C",
-                  color: "#0A0A0A",
+                  background: updateMutation.isPending ? "var(--gold-muted)" : "var(--gold)",
+                  color: "var(--background)",
                   fontSize: "11px",
                   fontWeight: 500,
                   fontFamily: "'Hanken Grotesk', sans-serif",
@@ -444,21 +444,21 @@ export default function MandatDashboard() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#0A0A0A" }}>
-        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--background)" }}>
+        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-6" style={{ background: "#0A0A0A" }}>
-        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "#F0EDE6", letterSpacing: "0.04em" }}>Acces reserve</h2>
-        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>Connectez-vous pour acceder au tableau de bord.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-6" style={{ background: "var(--background)" }}>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 600, color: "var(--foreground)", letterSpacing: "0.04em" }}>Acces reserve</h2>
+        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>Connectez-vous pour acceder au tableau de bord.</p>
         <a href="/login" style={{
           padding: "12px 28px",
-          background: "#C9A84C",
-          color: "#0A0A0A",
+          background: "var(--gold)",
+          color: "var(--background)",
           fontSize: "11px",
           fontWeight: 500,
           fontFamily: "'Hanken Grotesk', sans-serif",
@@ -478,13 +478,13 @@ export default function MandatDashboard() {
   const totalPages = Math.ceil(total / LIMIT);
 
   return (
-    <div className="min-h-screen" style={{ background: "#0A0A0A" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <AdminNav />
 
       {/* Toolbar */}
-      <div style={{ borderBottom: "1px solid #1E1E1E" }}>
+      <div style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex items-center justify-between px-5 py-2.5" style={{ maxWidth: "1280px", margin: "0 auto" }}>
-          <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+          <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
             {total} mandat{total > 1 ? "s" : ""}
           </p>
           <button onClick={handleExport} className="flex items-center gap-2 px-4 py-2 transition-colors duration-300"
@@ -494,14 +494,14 @@ export default function MandatDashboard() {
               fontWeight: 500,
               letterSpacing: "0.06em",
               textTransform: "uppercase" as const,
-              color: "#6B6560",
-              border: "1px solid #1E1E1E",
+              color: "var(--foreground-muted)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               background: "transparent",
               cursor: "pointer",
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#2A2A2A"; e.currentTarget.style.color = "#F0EDE6"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "#1E1E1E"; e.currentTarget.style.color = "#6B6560"; }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground)"; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--foreground-muted)"; }}
           >
             <Download className="w-3.5 h-3.5" style={{ strokeWidth: 1.5 }} /> Export CSV
           </button>
@@ -516,26 +516,26 @@ export default function MandatDashboard() {
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: "28px",
             fontWeight: 700,
-            color: "#F0EDE6",
+            color: "var(--foreground)",
             letterSpacing: "0.08em",
             textTransform: "uppercase" as const,
           }}>Mandats de Recherche</h1>
         </div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mb-10" style={{ background: "#1E1E1E", border: "1px solid #1E1E1E", borderRadius: "2px" }}>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px mb-10" style={{ background: "var(--border)", border: "1px solid var(--border)", borderRadius: "2px" }}>
           {[
             { label: "Total mandats", value: total },
             { label: "Nouveaux", value: mandats.filter(m => m.statut === "nouveau").length },
             { label: "En cours", value: mandats.filter(m => m.statut === "en_cours").length },
             { label: "Traites", value: mandats.filter(m => m.statut === "traite").length },
           ].map((stat, i) => (
-            <div key={stat.label} className="p-5" style={{ background: "#0A0A0A" }}>
+            <div key={stat.label} className="p-5" style={{ background: "var(--background)" }}>
               <p className="tabular-nums" style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: "32px",
                 fontWeight: 600,
-                color: i === 0 ? "#C9A84C" : "#F0EDE6",
+                color: i === 0 ? "var(--gold)" : "var(--foreground)",
                 lineHeight: 1,
                 letterSpacing: "0.02em",
               }}>
@@ -549,15 +549,15 @@ export default function MandatDashboard() {
         {/* Filtres */}
         <div className="flex flex-col sm:flex-row gap-3 mb-5">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#3A3632", strokeWidth: 1.5 }} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--foreground-faint)", strokeWidth: 1.5 }} />
             <input
               value={search}
               onChange={e => { setSearch(e.target.value); setPage(0); }}
               placeholder="Rechercher par nom, email, localisation..."
               className="w-full transition-colors duration-300 focus:outline-none"
               style={{
-                background: "#111111",
-                border: "1px solid #1E1E1E",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "2px",
                 paddingLeft: "36px",
                 paddingRight: "14px",
@@ -565,23 +565,23 @@ export default function MandatDashboard() {
                 paddingBottom: "10px",
                 fontSize: "13px",
                 fontFamily: "'Hanken Grotesk', sans-serif",
-                color: "#F0EDE6",
+                color: "var(--foreground)",
               }}
-              onFocus={e => (e.target.style.borderColor = "#C9A84C")}
-              onBlur={e => (e.target.style.borderColor = "#1E1E1E")}
+              onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+              onBlur={e => (e.target.style.borderColor = "var(--border)")}
             />
           </div>
           <select
             value={statut}
             onChange={e => { setStatut(e.target.value); setPage(0); }}
             style={{
-              background: "#111111",
-              border: "1px solid #1E1E1E",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
               borderRadius: "2px",
               padding: "10px 14px",
               fontSize: "13px",
               fontFamily: "'Hanken Grotesk', sans-serif",
-              color: "#F0EDE6",
+              color: "var(--foreground)",
               outline: "none",
             }}
           >
@@ -593,15 +593,15 @@ export default function MandatDashboard() {
         </div>
 
         {/* Tableau */}
-        <div style={{ background: "#111111", border: "1px solid #1E1E1E", borderRadius: "2px", overflow: "hidden" }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "2px", overflow: "hidden" }}>
           {isLoading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#6B6560" }} />
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "var(--foreground-muted)" }} />
             </div>
           ) : mandats.length === 0 ? (
             <div className="text-center py-20">
-              <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "#1E1E1E", strokeWidth: 1.5 }} />
-              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>Aucun mandat trouve</p>
+              <FileText className="w-10 h-10 mx-auto mb-3" style={{ color: "var(--border)", strokeWidth: 1.5 }} />
+              <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>Aucun mandat trouve</p>
             </div>
           ) : (
             <>
@@ -609,9 +609,9 @@ export default function MandatDashboard() {
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr style={{ borderBottom: "1px solid #1E1E1E" }}>
+                    <tr style={{ borderBottom: "1px solid var(--border)" }}>
                       {["#", "Acquereur", "Bien / Localisation", "Budget", "Statut", "Date", ""].map(h => (
-                        <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "#0D0D0D" }}>{h}</th>
+                        <th key={h} className="text-left px-5 py-3 label-uppercase" style={{ background: "var(--surface-header)" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -619,38 +619,38 @@ export default function MandatDashboard() {
                     {mandats.map((m) => (
                       <tr key={m.id}
                         className="cursor-pointer transition-colors duration-300"
-                        style={{ borderBottom: "1px solid #151515" }}
+                        style={{ borderBottom: "1px solid var(--border-subtle)" }}
                         onClick={() => setSelected(m)}
-                        onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                        onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                         onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                       >
-                        <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{m.id}</td>
+                        <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{m.id}</td>
                         <td className="px-5 py-3">
-                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{m.nom} {m.prenoms}</p>
-                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", maxWidth: "180px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{m.email}</p>
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{m.nom} {m.prenoms}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", maxWidth: "180px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{m.email}</p>
                         </td>
                         <td className="px-5 py-3">
-                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#F0EDE6" }}>{TYPE_BIEN_LABELS[m.typeBien] ?? m.typeBien}</p>
-                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{m.localisation}</p>
+                          <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground)" }}>{TYPE_BIEN_LABELS[m.typeBien] ?? m.typeBien}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{m.localisation}</p>
                         </td>
                         <td className="px-5 py-3">
-                          <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>
+                          <p className="tabular-nums" style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>
                             {m.budgetMax ? m.budgetMax.toLocaleString("fr-FR") + " EUR" : "A definir"}
                           </p>
-                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>{m.modeFinancement ? (FINANCEMENT_LABELS[m.modeFinancement] ?? m.modeFinancement) : "A definir"}</p>
+                          <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>{m.modeFinancement ? (FINANCEMENT_LABELS[m.modeFinancement] ?? m.modeFinancement) : "A definir"}</p>
                         </td>
                         <td className="px-5 py-3"><StatutBadge statut={m.statut} /></td>
-                        <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                        <td className="px-5 py-3 tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                           {new Date(m.createdAt).toLocaleDateString("fr-FR")}
                         </td>
                         <td className="px-5 py-3">
                           <div className="flex items-center gap-1">
-                            <button onClick={(e) => { e.stopPropagation(); setSelected(m); }} className="p-1.5 transition-opacity duration-300 hover:opacity-70" style={{ color: "#3A3632" }}>
+                            <button onClick={(e) => { e.stopPropagation(); setSelected(m); }} className="p-1.5 transition-opacity duration-300 hover:opacity-70" style={{ color: "var(--foreground-faint)" }}>
                               <Eye className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
                             </button>
-                            <button onClick={(e) => handleDelete(e, m.id, `${m.nom} ${m.prenoms}`)} className="p-1.5 transition-colors duration-300" style={{ color: "#3A3632" }}
-                              onMouseEnter={e => (e.currentTarget.style.color = "#A04040")}
-                              onMouseLeave={e => (e.currentTarget.style.color = "#3A3632")}
+                            <button onClick={(e) => handleDelete(e, m.id, `${m.nom} ${m.prenoms}`)} className="p-1.5 transition-colors duration-300" style={{ color: "var(--foreground-faint)" }}
+                              onMouseEnter={e => (e.currentTarget.style.color = "var(--destructive)")}
+                              onMouseLeave={e => (e.currentTarget.style.color = "var(--foreground-faint)")}
                               title="Supprimer"
                             >
                               <Trash2 className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
@@ -668,23 +668,23 @@ export default function MandatDashboard() {
                 {mandats.map(m => (
                   <div key={m.id}
                     className="p-4 cursor-pointer transition-colors duration-300"
-                    style={{ borderBottom: "1px solid #151515" }}
+                    style={{ borderBottom: "1px solid var(--border-subtle)" }}
                     onClick={() => setSelected(m)}
-                    onMouseEnter={e => (e.currentTarget.style.background = "#161616")}
+                    onMouseEnter={e => (e.currentTarget.style.background = "var(--surface-raised)")}
                     onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "#F0EDE6" }}>{m.nom} {m.prenoms}</p>
-                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632", marginTop: "2px" }}>{TYPE_BIEN_LABELS[m.typeBien] ?? m.typeBien} — {m.localisation}</p>
+                        <p style={{ fontSize: "13px", fontFamily: "'Hanken Grotesk', sans-serif", fontWeight: 500, color: "var(--foreground)" }}>{m.nom} {m.prenoms}</p>
+                        <p style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)", marginTop: "2px" }}>{TYPE_BIEN_LABELS[m.typeBien] ?? m.typeBien} — {m.localisation}</p>
                       </div>
                       <StatutBadge statut={m.statut} />
                     </div>
                     <div className="flex items-center gap-4 mt-2">
-                      <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560" }}>
+                      <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)" }}>
                         {m.budgetMax ? m.budgetMax.toLocaleString("fr-FR") + " EUR" : "A definir"}
                       </span>
-                      <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+                      <span className="tabular-nums" style={{ fontSize: "11px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
                         {new Date(m.createdAt).toLocaleDateString("fr-FR")}
                       </span>
                     </div>
@@ -698,20 +698,20 @@ export default function MandatDashboard() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between mt-5">
-            <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#3A3632" }}>
+            <p className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-faint)" }}>
               {page * LIMIT + 1}–{Math.min((page + 1) * LIMIT, total)} sur {total}
             </p>
             <div className="flex items-center gap-2">
               <button onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}
                 className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
-                style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px", background: "transparent" }}
+                style={{ color: "var(--foreground-muted)", border: "1px solid var(--border)", borderRadius: "2px", background: "transparent" }}
               >
                 <ChevronLeft className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </button>
-              <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "#6B6560", padding: "0 8px" }}>{page + 1} / {totalPages}</span>
+              <span className="tabular-nums" style={{ fontSize: "12px", fontFamily: "'Hanken Grotesk', sans-serif", color: "var(--foreground-muted)", padding: "0 8px" }}>{page + 1} / {totalPages}</span>
               <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page >= totalPages - 1}
                 className="p-2 transition-colors duration-300 disabled:opacity-20 disabled:cursor-not-allowed"
-                style={{ color: "#6B6560", border: "1px solid #1E1E1E", borderRadius: "2px", background: "transparent" }}
+                style={{ color: "var(--foreground-muted)", border: "1px solid var(--border)", borderRadius: "2px", background: "transparent" }}
               >
                 <ChevronRight className="w-4 h-4" style={{ strokeWidth: 1.5 }} />
               </button>
