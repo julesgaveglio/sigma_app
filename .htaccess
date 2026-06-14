@@ -1,0 +1,4 @@
+PassengerAppRoot /home/tqmx3080/app.sigmafactory.fr
+PassengerAppType node
+PassengerStartupFile dist/index.js
+PassengerNodejs /home/tqmx3080/nodevenv/app.sigmafactory.fr/20/bin/node
