@@ -108,25 +108,30 @@ export async function requestPasswordReset(email: string): Promise<{ success: bo
   }
 
   const user = result[0] as any;
-  if (!user.passwordHash) {
-    // Compte sans mot de passe local — inviter à s'inscrire
-    return { success: true };
-  }
 
   // Générer un mot de passe temporaire lisible
   const tempPassword = generateTempPassword();
   const tempPasswordHash = await bcrypt.hash(tempPassword, 12);
 
-  // Stocker le mot de passe temporaire (remplace le mot de passe actuel temporairement)
-  // On utilise resetToken pour stocker le hash temporaire et resetTokenExpiry pour l'expiration
+  // Stocker le mot de passe temporaire et l'expiration
+  // Fonctionne aussi pour les users sans passwordHash (premier accès)
   const expiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 heures
 
-  await db.update(users).set({
+  // Si le user n'a pas encore de passwordHash, en créer un placeholder
+  // pour que loginWithTempPassword puisse fonctionner ensuite
+  const updateData: Record<string, any> = {
     resetToken: tempPasswordHash,
     resetTokenExpiry: expiry,
-  } as any).where(eq(users.id, user.id));
+  };
+  if (!user.passwordHash) {
+    // Mettre un hash placeholder — sera remplacé par le vrai hash lors du login avec le temp password
+    updateData.passwordHash = await bcrypt.hash(crypto.randomBytes(32).toString("hex"), 12);
+  }
+
+  await db.update(users).set(updateData as any).where(eq(users.id, user.id));
 
   // Envoyer le mot de passe temporaire directement à l'utilisateur par email
+  const appUrl = (process.env.VITE_APP_URL || "https://app.sigmafactory.fr").replace(/\/$/, "");
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
@@ -146,8 +151,8 @@ export async function requestPasswordReset(email: string): Promise<{ success: bo
       <div style="color:#C9A84C;font-size:10px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Ton mot de passe temporaire</div>
       <div style="color:#fff;font-size:22px;font-weight:900;letter-spacing:3px;font-family:monospace">${tempPassword}</div>
     </div>
-    <p style="color:#aaa;font-size:13px;line-height:1.6;margin:0 0 20px">Pour te connecter :<br>1. Va sur <a href="https://www.sigmafactory.org/login" style="color:#C9A84C">www.sigmafactory.org/login</a><br>2. Saisis ton email et ce mot de passe temporaire<br>3. Une fois connectée, change ton mot de passe dans tes paramètres.</p>
-    <a href="https://www.sigmafactory.org/login" style="display:block;background:#C9A84C;color:#000;text-decoration:none;font-weight:900;font-size:13px;letter-spacing:2px;text-align:center;padding:14px 28px">SE CONNECTER →</a>
+    <p style="color:#aaa;font-size:13px;line-height:1.6;margin:0 0 20px">Pour te connecter :<br>1. Va sur <a href="${appUrl}/login" style="color:#C9A84C">${appUrl.replace("https://", "")}/login</a><br>2. Saisis ton email et ce mot de passe temporaire<br>3. Une fois connecté(e), change ton mot de passe dans tes paramètres.</p>
+    <a href="${appUrl}/login" style="display:block;background:#C9A84C;color:#000;text-decoration:none;font-weight:900;font-size:13px;letter-spacing:2px;text-align:center;padding:14px 28px">SE CONNECTER →</a>
   </div>
   <div style="padding:16px 32px;border-top:1px solid #1a1a1a;color:#444;font-size:11px;text-align:center">Sigma Factory — Accès réservé à l'équipe interne</div>
 </div></body></html>`,
@@ -165,18 +170,22 @@ export async function requestPasswordReset(email: string): Promise<{ success: bo
   return { success: true };
 }
 
-export async function resetPassword(token: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+export async function resetPassword(email: string, token: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
   const db = await getDb();
   if (!db) return { success: false, error: "Base de données indisponible" };
 
-  // Chercher par resetToken
-  const result = await db.select().from(users).where(eq(users.resetToken as any, token)).limit(1);
+  // Chercher l'utilisateur par email (le resetToken est un hash bcrypt, pas comparable avec eq())
+  const result = await db.select().from(users).where(eq(users.email, email.toLowerCase())).limit(1);
   if (result.length === 0) return { success: false, error: "Lien invalide ou expiré." };
 
   const user = result[0] as any;
-  if (!user.resetTokenExpiry || new Date(user.resetTokenExpiry) < new Date()) {
+  if (!user.resetToken || !user.resetTokenExpiry || new Date(user.resetTokenExpiry) < new Date()) {
     return { success: false, error: "Ce lien a expiré. Veuillez faire une nouvelle demande." };
   }
+
+  // Vérifier le token avec bcrypt (le resetToken stocké est un hash bcrypt)
+  const validToken = await bcrypt.compare(token, user.resetToken);
+  if (!validToken) return { success: false, error: "Lien invalide ou expiré." };
 
   const passwordHash = await bcrypt.hash(newPassword, 12);
   await db.update(users).set({

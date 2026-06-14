@@ -205,9 +205,9 @@ export const appRouter = router({
         return { success: true };
       }),
     resetPassword: publicProcedure
-      .input(z.object({ token: z.string().min(1), newPassword: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères") }))
+      .input(z.object({ email: z.string().email(), token: z.string().min(1), newPassword: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères") }))
       .mutation(async ({ input }) => {
-        const result = await resetPassword(input.token, input.newPassword);
+        const result = await resetPassword(input.email, input.token, input.newPassword);
         if (!result.success) {
           throw new TRPCError({ code: "BAD_REQUEST", message: result.error ?? "Erreur lors de la réinitialisation" });
         }

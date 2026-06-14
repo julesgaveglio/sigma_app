@@ -5,6 +5,7 @@ import { trpc } from "@/lib/trpc";
 export default function ResetPassword() {
   const [, navigate] = useLocation();
   const [token, setToken] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
@@ -14,10 +15,12 @@ export default function ResetPassword() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const t = params.get("token");
+    const e = params.get("email");
     if (!t) {
       setInvalidToken(true);
     } else {
       setToken(t);
+      if (e) setEmail(e);
     }
   }, []);
 
@@ -35,7 +38,7 @@ export default function ResetPassword() {
     e.preventDefault();
     setError("");
 
-    if (!password || !confirm) {
+    if (!email || !password || !confirm) {
       setError("Veuillez remplir tous les champs.");
       return;
     }
@@ -48,7 +51,7 @@ export default function ResetPassword() {
       return;
     }
 
-    resetMutation.mutate({ token, newPassword: password });
+    resetMutation.mutate({ email, token, newPassword: password });
   };
 
   return (
@@ -209,6 +212,31 @@ export default function ResetPassword() {
               )}
 
               <form onSubmit={handleSubmit}>
+                <div className="mb-5">
+                  <label className="label-uppercase block mb-2">
+                    Adresse email
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    placeholder="votre@email.fr"
+                    autoComplete="email"
+                    className="w-full transition-colors duration-300 ease-out focus:outline-none"
+                    style={{
+                      background: "var(--surface-raised)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "2px",
+                      padding: "12px 14px",
+                      color: "var(--foreground)",
+                      fontSize: "14px",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                    }}
+                    onFocus={e => (e.target.style.borderColor = "var(--gold)")}
+                    onBlur={e => (e.target.style.borderColor = "var(--border)")}
+                  />
+                </div>
+
                 <div className="mb-5">
                   <label className="label-uppercase block mb-2">
                     Nouveau mot de passe
