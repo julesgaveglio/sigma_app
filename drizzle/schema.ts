@@ -1404,3 +1404,25 @@ export const courtierSoumissions = mysqlTable("courtier_soumissions", {
 });
 export type CourtierSoumission = typeof courtierSoumissions.$inferSelect;
 export type InsertCourtierSoumission = typeof courtierSoumissions.$inferInsert;
+
+// ─── FATHOM CALLS (webhook) ────────────────────────────────────────────────
+
+export const fathomCalls = mysqlTable("fathom_calls", {
+  id: int("id").autoincrement().primaryKey(),
+  fathomRecordingId: varchar("fathomRecordingId", { length: 64 }),
+  fathomCallId: varchar("fathomCallId", { length: 64 }),
+  title: varchar("title", { length: 512 }),
+  recordedBy: varchar("recordedBy", { length: 256 }),
+  summary: text("summary"),
+  actionItems: text("actionItems"),
+  prospectName: varchar("prospectName", { length: 256 }),
+  prospectEmail: varchar("prospectEmail", { length: 320 }),
+  rdvType: varchar("rdvType", { length: 16 }),
+  debrief: varchar("debrief", { length: 512 }),
+  callUrl: varchar("callUrl", { length: 1024 }),
+  callDate: timestamp("callDate"),
+  rawPayload: text("rawPayload"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type FathomCall = typeof fathomCalls.$inferSelect;
+export type InsertFathomCall = typeof fathomCalls.$inferInsert;
