@@ -157,6 +157,60 @@ async function startServer() {
     }
   });
 
+  // ─── WEBHOOK BONZAI — Paiements Bonzai Pro ──────────────────────────
+  app.post("/api/webhooks/bonzai", async (req, res) => {
+    try {
+      const payload = req.body;
+      console.log("[Bonzai Webhook] Event recu:", JSON.stringify(payload).slice(0, 500));
+
+      const eventType = payload.event_type;
+      if (!eventType) {
+        return res.status(400).json({ error: "Missing event_type" });
+      }
+
+      const user = payload.user || {};
+      const product = payload.product || {};
+      const order = payload.order || {};
+      const vendor = payload.vendor || {};
+
+      if (eventType === "product_access_granted") {
+        console.log(`[Bonzai] ACCES ACCORDE: ${user.name} (${user.email}) → produit "${product.name}" | order #${payload.order_id} | type: ${payload.type}`);
+
+        // Stocker dans fathom_calls en reutilisant la table existante comme log generique
+        // TODO: creer une table dediee bonzai_events si besoin
+        const db = await getDb();
+        if (db) {
+          const { fathomCalls } = await import("../../drizzle/schema");
+          await db.insert(fathomCalls).values({
+            fathomRecordingId: `bonzai-${payload.id || Date.now()}`,
+            fathomCallId: String(payload.order_id || ""),
+            title: `Paiement Bonzai: ${product.name}`,
+            recordedBy: vendor.name || "Bonzai",
+            summary: `${user.name} (${user.email}) a achete "${product.name}" — type: ${payload.type}, order #${payload.order_id}`,
+            actionItems: "",
+            prospectName: user.name || "",
+            prospectEmail: user.email || "",
+            rdvType: "PAIEMENT",
+            debrief: `Achat ${product.name}`,
+            callUrl: "",
+            callDate: payload.timestamp ? new Date(payload.timestamp * 1000) : new Date(),
+            rawPayload: JSON.stringify(payload),
+          });
+          console.log(`[Bonzai] Paiement stocke en BDD`);
+        }
+      } else if (eventType === "product_access_revoked") {
+        console.log(`[Bonzai] ACCES REVOQUE: ${user.name} (${user.email}) → produit "${product.name}"`);
+      } else {
+        console.log(`[Bonzai] Event inconnu: ${eventType}`);
+      }
+
+      res.status(200).json({ ok: true, event: eventType });
+    } catch (error) {
+      console.error("[Bonzai Webhook] Erreur:", error);
+      res.status(500).json({ error: "Internal error" });
+    }
+  });
+
   // ─── WEBHOOK SIGMA-WON — Pont CRM Sales → App Delivery ─────────────
   app.post("/api/webhooks/sigma-won", async (req, res) => {
     try {
