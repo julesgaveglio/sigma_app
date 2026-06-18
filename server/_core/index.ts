@@ -157,6 +157,100 @@ async function startServer() {
     }
   });
 
+  // ─── WEBHOOK SIGMA-WON — Pont CRM Sales → App Delivery ─────────────
+  app.post("/api/webhooks/sigma-won", async (req, res) => {
+    try {
+      // Auth via X-Inter-Service-Token (meme cle partagee entre les 2 apps)
+      const token = req.headers["x-inter-service-token"];
+      const expectedToken = process.env.INTER_SERVICE_API_KEY;
+      if (!expectedToken || token !== expectedToken) {
+        console.warn("[Sigma-Won] Token invalide ou manquant");
+        return res.status(401).json({ error: "Invalid token" });
+      }
+
+      const payload = req.body;
+      console.log("[Sigma-Won] Event recu:", JSON.stringify(payload).slice(0, 300));
+
+      if (payload.event !== "opportunity.won") {
+        return res.status(200).json({ ok: true, skipped: true, reason: "event not opportunity.won" });
+      }
+
+      const db = await getDb();
+      if (!db) {
+        return res.status(500).json({ error: "Database not available" });
+      }
+
+      const sigmaOppId = payload.sigma_opportunity_id;
+      if (!sigmaOppId) {
+        return res.status(400).json({ error: "Missing sigma_opportunity_id" });
+      }
+
+      const contact = payload.contact || {};
+      const opportunity = payload.opportunity || {};
+
+      // Deduplication : verifier si ce sigma_opportunity_id existe deja
+      const { crmLeads, crmNotes } = await import("../../drizzle/schema");
+      const { eq } = await import("drizzle-orm");
+
+      const existing = await db.select({ id: crmLeads.id })
+        .from(crmLeads)
+        .where(eq(crmLeads.sigmaOpportunityId, sigmaOppId))
+        .limit(1);
+
+      if (existing.length > 0) {
+        console.log(`[Sigma-Won] Dedup: opp ${sigmaOppId} deja importee → crm_lead #${existing[0]!.id}`);
+        return res.status(200).json({ ok: true, duplicate: true, crm_lead_id: existing[0]!.id });
+      }
+
+      // Mapper la formule depuis l'offre CRM
+      let formule: "starter" | "premium" | "sdt_starter" | "sdt_premium" | null = null;
+      const offreKind = opportunity.offre?.kind || opportunity.offre_kind;
+      if (offreKind) {
+        const mapping: Record<string, typeof formule> = {
+          "idrh": "premium",
+          "idrh_starter": "starter",
+          "hzc": "premium",
+          "atypique": "premium",
+          "treso": "sdt_premium",
+          "sdt": "sdt_starter",
+        };
+        formule = mapping[offreKind.toLowerCase()] ?? null;
+      }
+
+      // Creer le crm_lead en etape welcome_call
+      const result = await db.insert(crmLeads).values({
+        nom: contact.last_name || "Inconnu",
+        prenom: contact.first_name || "Inconnu",
+        email: contact.email || "",
+        telephone: contact.phone || null,
+        formule,
+        montantFormule: opportunity.amount_cents ? Math.round(opportunity.amount_cents / 100) : null,
+        etape: "welcome_call",
+        statut: "actif",
+        responsable: "Maria",
+        sigmaOpportunityId: sigmaOppId,
+      });
+
+      const newId = result[0]?.insertId;
+
+      // Ajouter une note d'import
+      if (newId) {
+        await db.insert(crmNotes).values({
+          crmLeadId: newId,
+          etape: "welcome_call",
+          auteur: "Systeme (CRM Sales)",
+          contenu: `Lead importe depuis CRM Sales — Opportunite ${sigmaOppId} gagnee le ${payload.won_at || "date inconnue"}. Montant: ${opportunity.amount_cents ? (opportunity.amount_cents / 100) + "€" : "non renseigne"}.`,
+        });
+      }
+
+      console.log(`[Sigma-Won] crm_lead #${newId} cree pour ${contact.first_name} ${contact.last_name} (opp ${sigmaOppId})`);
+      res.status(200).json({ ok: true, crm_lead_id: newId });
+    } catch (error) {
+      console.error("[Sigma-Won] Erreur:", error);
+      res.status(500).json({ error: "Internal error" });
+    }
+  });
+
   // tRPC API
   app.use(
     "/api/trpc",

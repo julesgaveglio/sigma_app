@@ -397,6 +397,9 @@ export const crmLeads = mysqlTable("crm_leads", {
   notes: text("notes"),
   statut: mysqlEnum("statut", ["actif", "en_pause", "cloture", "perdu"]).default("actif").notNull(),
 
+  // Pont CRM Sales (sigma-ecosystem) — deduplication webhook won
+  sigmaOpportunityId: varchar("sigmaOpportunityId", { length: 64 }),
+
   // Métadonnées
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
